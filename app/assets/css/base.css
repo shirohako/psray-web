@@ -1,0 +1,83 @@
+html,
+#sidebar {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  scroll-behavior: smooth;
+}
+
+.platform-ps4 {
+  @apply bg-sky-100 text-sky-600;
+}
+
+.platform-ps5 {
+  @apply bg-blue-100 text-blue-600;
+}
+
+.platform-ps3 {
+  @apply bg-red-100 text-red-600;
+}
+
+.platform-psvita {
+  @apply bg-green-100 text-green-600;
+}
+
+.platform-pspc {
+  @apply bg-orange-100 text-orange-600;
+}
+
+.button-55 {
+  align-self: center;
+  background-color: #fff;
+  background-image: none;
+  background-position: 0 90%;
+  background-repeat: repeat no-repeat;
+  background-size: 4px 3px;
+  border-style: solid;
+  border-width: 2px;
+  box-shadow: rgba(0, 0, 0, 0.2) 15px 28px 25px -18px;
+  box-sizing: border-box;
+  color: #41403e;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 0.9rem;
+  line-height: 23px;
+  outline: none;
+  padding: 0.5rem;
+  text-decoration: none;
+  transition: all 235ms ease-in-out;
+  border-bottom-left-radius: 15px 255px;
+  border-bottom-right-radius: 225px 15px;
+  border-top-left-radius: 255px 15px;
+  border-top-right-radius: 15px 225px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.button-55:hover {
+  box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px -5px;
+  transform: translate3d(0, 2px, 0);
+}
+
+/* 奖杯组页面自定义设置 */
+.trophy-icon-default {
+  @apply size-16 md:size-24;
+}
+
+.trophy-icon-small {
+  @apply size-14 md:size-20;
+}
+
+.trophy-icon-mini {
+  @apply size-12 md:size-16;
+}
+
+.trophy-gap-default {
+  @apply px-2 py-2.5 md:px-3 md:py-3;
+}
+
+.trophy-gap-compact {
+  @apply px-1 py-2 md:px-2 md:py-2.5;
+}
+
+.trophy-gap-dense {
+  @apply px-0.5 py-1.5 md:px-2 md:py-1.5;
+}
