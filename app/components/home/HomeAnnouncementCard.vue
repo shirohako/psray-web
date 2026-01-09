@@ -6,10 +6,11 @@
     </div>
 
     <div class="announcement-card__list">
-      <div
+      <NuxtLink
         v-for="announcement in announcements"
         :key="announcement.id"
         class="announcement-item"
+        to="/announcements"
       >
         <div class="announcement-item__header">
           <div class="announcement-item__badge">
@@ -18,7 +19,7 @@
           <span class="announcement-item__date">{{ announcement.date }}</span>
         </div>
         <h4 class="announcement-item__title">{{ announcement.title }}</h4>
-      </div>
+      </NuxtLink>
 
       <div v-if="announcements.length === 0" class="announcement-empty">
         {{ emptyText }}
@@ -84,11 +85,14 @@ withDefaults(defineProps<Props>(), {
 }
 
 .announcement-item {
+  display: block;
   padding: 1rem;
   border-radius: 0.5rem;
   background-color: rgb(249 250 251);
   transition: all 0.2s;
   cursor: pointer;
+  color: inherit;
+  text-decoration: none;
 }
 
 .announcement-item:hover {

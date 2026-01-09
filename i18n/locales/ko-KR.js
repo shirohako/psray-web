@@ -144,11 +144,60 @@ export default {
       "logged_in_text": "다시 오신 것을 환영합니다!",
       "my_ranking": "내 랭킹"
     },
+    "announcements": {
+      "title": "최근 공지",
+      "empty": "공지 없음",
+      "type": {
+        "update": "업데이트",
+        "notice": "공지",
+        "feature": "새 기능"
+      },
+      "item_1": {
+        "title": "웹사이트 최적화 진행 중",
+        "content": "사용자 경험을 지속적으로 개선하고 알려진 문제를 수정하고 있습니다. 응원 감사합니다."
+      },
+      "item_2": {
+        "title": "트로피 동기화 시스템 업그레이드",
+        "content": "PSN 트로피 동기화 속도가 향상되어 최신 게임 데이터를 더 빨리 받을 수 있습니다."
+      },
+      "item_3": {
+        "title": "PSRay 커뮤니티에 오신 것을 환영합니다",
+        "content": "PSRay에 참여해 주셔서 감사합니다! 여기서 게임 여정을 기록하고 마음 맞는 플레이어를 만나보세요."
+      }
+    },
+    "hot_games": {
+      "title": "인기 게임",
+      "empty": "데이터 없음",
+      "error": "불러오기 실패",
+      "players": "명이 플레이 중"
+    },
+    "recent_games": {
+      "title": "최근 추가",
+      "empty": "데이터 없음",
+      "error": "불러오기 실패"
+    },
+    "active_users": {
+      "title": "활동 유저",
+      "empty": "데이터 없음",
+      "error": "불러오기 실패"
+    },
+    "recent_tips": {
+      "title": "최근 게시된 팁",
+      "empty": "데이터 없음",
+      "error": "불러오기 실패"
+    },
     "recent_sync": {
       "title": "최근 동기화된 플레이어",
       "empty": "데이터 없음",
       "error": "불러오기 실패"
     }
+  },
+  announcements_page: {
+    "title": "공지",
+    "subtitle": "사이트 최신 소식과 업데이트를 확인하세요. 공지별로 언어를 전환할 수 있습니다.",
+    "count_label": "합계",
+    "empty": "공지 없음",
+    "error": "불러오기 실패"
   },
   // 동기화 페이지
   sync: {

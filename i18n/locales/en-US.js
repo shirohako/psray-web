@@ -223,6 +223,13 @@ export default {
       "error": "Failed to load"
     }
   },
+  announcements_page: {
+    "title": "Announcements",
+    "subtitle": "Latest site updates and releases, with per-announcement language switching.",
+    "count_label": "Total",
+    "empty": "No announcements",
+    "error": "Failed to load"
+  },
   // Sync Page
   sync: {
     "title": "Sync PSN Account on PSRay",

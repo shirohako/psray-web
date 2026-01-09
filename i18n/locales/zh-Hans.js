@@ -224,6 +224,13 @@ export default {
       "error": "加载失败"
     }
   },
+  announcements_page: {
+    "title": "公告",
+    "subtitle": "站内最新动态与功能更新，支持逐条切换公告语言。",
+    "count_label": "总数",
+    "empty": "暂无公告",
+    "error": "加载失败"
+  },
   // 同步页面
   sync: {
     "title": "在 PSRay 同步 PSN 信息",

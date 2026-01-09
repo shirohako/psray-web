@@ -144,11 +144,60 @@ export default {
       "logged_in_text": "歡迎回來",
       "my_ranking": "我的排名"
     },
+    "announcements": {
+      "title": "最近公告",
+      "empty": "暫無公告",
+      "type": {
+        "update": "更新",
+        "notice": "公告",
+        "feature": "新功能"
+      },
+      "item_1": {
+        "title": "網站功能持續優化中",
+        "content": "我們正在不斷改進用戶體驗，修復已知問題，感謝您的支持與耐心。"
+      },
+      "item_2": {
+        "title": "獎盃同步系統升級",
+        "content": "PSN 獎盃同步速度已提升，現在可以更快地獲取您的最新遊戲資料。"
+      },
+      "item_3": {
+        "title": "歡迎來到 PSRay 社群",
+        "content": "感謝加入 PSRay！在這裡記錄遊戲旅程，結識志同道合的玩家朋友。"
+      }
+    },
+    "hot_games": {
+      "title": "熱門遊戲",
+      "empty": "暫無資料",
+      "error": "載入失敗",
+      "players": "人在玩"
+    },
+    "recent_games": {
+      "title": "最近新增",
+      "empty": "暫無資料",
+      "error": "載入失敗"
+    },
+    "active_users": {
+      "title": "活躍用戶",
+      "empty": "暫無資料",
+      "error": "載入失敗"
+    },
+    "recent_tips": {
+      "title": "最近發布的小貼士",
+      "empty": "暫無資料",
+      "error": "載入失敗"
+    },
     "recent_sync": {
       "title": "最近被同步的玩家",
       "empty": "暫無資料",
       "error": "載入失敗"
     }
+  },
+  announcements_page: {
+    "title": "公告",
+    "subtitle": "站內最新動態與功能更新，支援逐條切換公告語言。",
+    "count_label": "總數",
+    "empty": "暫無公告",
+    "error": "載入失敗"
   },
   // 同步頁面
   sync: {

@@ -144,11 +144,60 @@ export default {
       "logged_in_text": "こんにちは",
       "my_ranking": "私のランキング"
     },
+    "announcements": {
+      "title": "最近のお知らせ",
+      "empty": "お知らせはありません",
+      "type": {
+        "update": "アップデート",
+        "notice": "お知らせ",
+        "feature": "新機能"
+      },
+      "item_1": {
+        "title": "サイト最適化を進行中",
+        "content": "ユーザー体験を継続的に改善し、既知の問題を修正しています。ご支援ありがとうございます。"
+      },
+      "item_2": {
+        "title": "トロフィー同期システムをアップグレード",
+        "content": "PSNトロフィー同期速度が向上しました。最新のゲームデータをより速く取得できます。"
+      },
+      "item_3": {
+        "title": "PSRayコミュニティへようこそ",
+        "content": "PSRayに参加してくれてありがとうございます。ここでゲームの旅を記録し、仲間と出会いましょう。"
+      }
+    },
+    "hot_games": {
+      "title": "人気のゲーム",
+      "empty": "データなし",
+      "error": "読み込み失敗",
+      "players": "人がプレイ中"
+    },
+    "recent_games": {
+      "title": "最近追加されたゲーム",
+      "empty": "データなし",
+      "error": "読み込み失敗"
+    },
+    "active_users": {
+      "title": "アクティブユーザー",
+      "empty": "データなし",
+      "error": "読み込み失敗"
+    },
+    "recent_tips": {
+      "title": "最近投稿された攻略",
+      "empty": "データなし",
+      "error": "読み込み失敗"
+    },
     "recent_sync": {
       "title": "最近同期されたプレイヤー",
       "empty": "データなし",
       "error": "読み込み失敗"
     }
+  },
+  announcements_page: {
+    "title": "お知らせ",
+    "subtitle": "最新の更新情報を掲載します。お知らせごとに言語を切り替えられます。",
+    "count_label": "合計",
+    "empty": "お知らせがありません",
+    "error": "読み込み失敗"
   },
   // プロフィール 更新ページ
   sync: {
