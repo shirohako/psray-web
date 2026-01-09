@@ -45,7 +45,7 @@ export default defineNuxtConfig({
     },
   },
   icon: {
-    serverBundle: 'local'
+    serverBundle: 'auto'
   },
   umami: {
     id: 'a8667f99-db2b-432b-9cb0-d1b046e09c8f',

@@ -1,7 +1,6 @@
 <template>
   <div class="recent-games">
     <div class="recent-games__header">
-      <Icon name="material-symbols:new-releases-outline" class="recent-games__icon" />
       <h3 class="recent-games__title">{{ title }}</h3>
     </div>
 
