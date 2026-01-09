@@ -175,6 +175,53 @@ export default {
       "text_2": "立即成为 PSRay 社群一员",
       "logged_in_text": "欢迎回来",
       "my_ranking": "我的排名"
+    },
+    "announcements": {
+      "title": "最近公告",
+      "empty": "暂无公告",
+      "type": {
+        "update": "更新",
+        "notice": "公告",
+        "feature": "新功能"
+      },
+      "item_1": {
+        "title": "网站功能持续优化中",
+        "content": "我们正在不断改进用户体验，修复已知问题，感谢您的支持与耐心。"
+      },
+      "item_2": {
+        "title": "奖杯同步系统升级",
+        "content": "PSN 奖杯同步速度已提升，现在可以更快地获取您的最新游戏数据。"
+      },
+      "item_3": {
+        "title": "欢迎来到 PSRay 社区",
+        "content": "感谢加入 PSRay！在这里记录游戏历程，结识志同道合的玩家朋友。"
+      }
+    },
+    "hot_games": {
+      "title": "热门游戏",
+      "empty": "暂无数据",
+      "error": "加载失败",
+      "players": "人在玩"
+    },
+    "recent_games": {
+      "title": "最近添加",
+      "empty": "暂无数据",
+      "error": "加载失败"
+    },
+    "active_users": {
+      "title": "活跃用户",
+      "empty": "暂无数据",
+      "error": "加载失败"
+    },
+    "recent_tips": {
+      "title": "最近发布的小贴士",
+      "empty": "暂无数据",
+      "error": "加载失败"
+    },
+    "recent_sync": {
+      "title": "最近被同步的玩家",
+      "empty": "暂无数据",
+      "error": "加载失败"
     }
   },
   // 同步页面

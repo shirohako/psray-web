@@ -143,6 +143,11 @@ export default {
       "text_2": "立即成為 PSRay 社群一員",
       "logged_in_text": "歡迎回來",
       "my_ranking": "我的排名"
+    },
+    "recent_sync": {
+      "title": "最近被同步的玩家",
+      "empty": "暫無資料",
+      "error": "載入失敗"
     }
   },
   // 同步頁面

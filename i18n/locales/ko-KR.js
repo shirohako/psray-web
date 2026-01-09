@@ -143,6 +143,11 @@ export default {
       "text_2": "지금 PSRay 커뮤니티에 가입하세요!",
       "logged_in_text": "다시 오신 것을 환영합니다!",
       "my_ranking": "내 랭킹"
+    },
+    "recent_sync": {
+      "title": "최근 동기화된 플레이어",
+      "empty": "데이터 없음",
+      "error": "불러오기 실패"
     }
   },
   // 동기화 페이지

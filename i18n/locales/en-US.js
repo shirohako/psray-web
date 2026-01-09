@@ -174,6 +174,53 @@ export default {
       "text_2": "Join the PSRay community now!",
       "logged_in_text": "Welcome back!",
       "my_ranking": "My Ranking"
+    },
+    "announcements": {
+      "title": "Recent Announcements",
+      "empty": "No announcements",
+      "type": {
+        "update": "Update",
+        "notice": "Notice",
+        "feature": "New Feature"
+      },
+      "item_1": {
+        "title": "Website Optimization in Progress",
+        "content": "We are continuously improving user experience and fixing known issues. Thank you for your support and patience."
+      },
+      "item_2": {
+        "title": "Trophy Sync System Upgraded",
+        "content": "PSN trophy sync speed has been improved. You can now get your latest game data faster."
+      },
+      "item_3": {
+        "title": "Welcome to PSRay Community",
+        "content": "Thank you for joining PSRay! Record your gaming journey and meet like-minded players here."
+      }
+    },
+    "hot_games": {
+      "title": "Trending Games",
+      "empty": "No data available",
+      "error": "Failed to load",
+      "players": "playing"
+    },
+    "recent_games": {
+      "title": "Recently Added",
+      "empty": "No data available",
+      "error": "Failed to load"
+    },
+    "active_users": {
+      "title": "Active Users",
+      "empty": "No data available",
+      "error": "Failed to load"
+    },
+    "recent_tips": {
+      "title": "Recent Tips",
+      "empty": "No data available",
+      "error": "Failed to load"
+    },
+    "recent_sync": {
+      "title": "Recently Synced Players",
+      "empty": "No data available",
+      "error": "Failed to load"
     }
   },
   // Sync Page

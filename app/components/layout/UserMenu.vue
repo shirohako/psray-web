@@ -92,6 +92,12 @@ const items = computed(() => {
   } else {
     return [
       {
+        label: t('userMenu.sync'),
+        command: () => {
+          navigateTo('/sync');
+        },
+      },
+      {
         label: t('userMenu.login'),
         command: () => {
           navigateTo('/auth/login');

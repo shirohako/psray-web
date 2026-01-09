@@ -143,6 +143,11 @@ export default {
       "text_2": "PSRayの一員になるのは大歓迎です",
       "logged_in_text": "こんにちは",
       "my_ranking": "私のランキング"
+    },
+    "recent_sync": {
+      "title": "最近同期されたプレイヤー",
+      "empty": "データなし",
+      "error": "読み込み失敗"
     }
   },
   // プロフィール 更新ページ
