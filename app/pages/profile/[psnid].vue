@@ -98,7 +98,8 @@ const { data: play, refresh } = await useAsyncData(
     transform: data => {
       data.recentlyPlayed.forEach(game => {
         game.last_updated_at = format(fromUnixTime(game.last_updated_at), 'yyyy-MM-dd HH:mm:ss');
-        if (Object.prototype.hasOwnProperty.call(game, 'trophySet')) {
+        if (game.trophy_set) {
+          game.trophySet = game.trophy_set;
           const { owners, platinum_achievers, completed_players, trophyTitlePlatform } =
             game.trophySet;
           game.trophySet.platform = trophyTitlePlatform.split(',');

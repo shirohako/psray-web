@@ -32,10 +32,10 @@
         class="mr-2"
         :to="{
           name: 'player-profile',
-          params: { psnid: player.userProfile.psnid },
+          params: { psnid: player.user_profile.psnid },
         }"
       >
-        <img class="rounded-full" :src="player.userProfile.avatarUrl" style="width: 40px" />
+        <img class="rounded-full" :src="player.user_profile.avatarUrl" style="width: 40px" />
       </NuxtLink>
       <div class="grow">
         <NuxtLink
@@ -43,10 +43,10 @@
           :to="{
             name: 'trophies-detail',
             params: route.params,
-            query: { psnid: player.userProfile.psnid },
+            query: { psnid: player.user_profile.psnid },
           }"
         >
-          {{ player.userProfile.psnid }}
+          {{ player.user_profile.psnid }}
         </NuxtLink>
         <div class="text-xs">
           {{ formatISO9075(fromUnixTime(player.last_updated_at)) }}

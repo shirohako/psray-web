@@ -55,6 +55,12 @@
 </template>
 
 <script setup>
+import BaseInfo from '~/components/trophies/BaseInfo.vue'
+import Contribute from '~/components/trophies/Contribute.vue'
+import RecentPlayers from '~/components/trophies/RecentPlayers.vue'
+import RegionTags from '~/components/trophies/RegionTags.vue'
+import SimilarTrophies from '~/components/trophies/SimilarTrophies.vue'
+
 const route = useRoute()
 const router = useRouter()
 const language = ref(route.query.language || route.params.language)
