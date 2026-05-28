@@ -70,7 +70,7 @@ useSeoMeta({
 const { data, pending, error } = await useAsyncData('announcements-page', async () => {
   try {
     const res = await api.get('/announcement/list');
-    const items = res.data?.data?.data;
+    const items = res.data?.data;
     return Array.isArray(items) ? items : [];
   } catch (err) {
     console.error('Failed to fetch announcements:', err);

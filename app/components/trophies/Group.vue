@@ -82,21 +82,23 @@ const sort = ref('default'); // 排序
 const drawer = useState('trophies-drawer');
 
 const processedTrophies = computed(() => {
+  const trophies = props.trophies ?? [];
+  const earned = props.earnedTrophies ?? new Map();
   let _processedTrophies = [];
 
   if (filter.value != 'all') {
-    const condition = filter.value == 'earned' ? true : false;
-    for (let index = 0; index < props.trophies.length; index++) {
-      if (props.earnedTrophies.has(props.trophies[index]['id']) == condition) {
-        _processedTrophies.push(props.trophies[index]);
+    const condition = filter.value == 'earned';
+    for (let index = 0; index < trophies.length; index++) {
+      if (earned.has(trophies[index]['id']) == condition) {
+        _processedTrophies.push(trophies[index]);
       }
     }
   } else {
-    _processedTrophies = props.trophies;
+    _processedTrophies = trophies;
   }
 
   _processedTrophies.forEach(trophy => {
-    trophy['earned'] = props.earnedTrophies.has(trophy.id);
+    trophy['earned'] = earned.has(trophy.id);
     trophy['earnedDateTime'] = getEarnedDateTime(trophy.id);
   });
 
@@ -114,7 +116,7 @@ const processedTrophies = computed(() => {
 });
 
 function getEarnedDateTime(_trackedTrophyId) {
-  const _trophy = props.earnedTrophies.get(_trackedTrophyId);
+  const _trophy = (props.earnedTrophies ?? new Map()).get(_trackedTrophyId);
   if (_trophy) {
     return _trophy['earnedDateTime'];
   }

@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "pinia-plugin-persistedstate/nuxt",
     '@primevue/nuxt-module',
-    'nuxt-umami',
+    // 'nuxt-umami',
   ],
   build: {
     transpile: [/vue3-calendar-heatmap/]
@@ -47,11 +47,11 @@ export default defineNuxtConfig({
   icon: {
     serverBundle: 'auto'
   },
-  umami: {
-    id: 'a8667f99-db2b-432b-9cb0-d1b046e09c8f',
-    host: 'https://akari.abyss.moe',
-    autoTrack: true,
-  },
+  // umami: {
+  //   id: 'a8667f99-db2b-432b-9cb0-d1b046e09c8f',
+  //   host: 'https://akari.abyss.moe',
+  //   autoTrack: true,
+  // },
   primevue: {
     options: {
       theme: {

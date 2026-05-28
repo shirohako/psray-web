@@ -1,10 +1,11 @@
 <template>
   <!-- 游戏区域 -->
   <div class="mt-3">
+    <template v-for="played in recentlyPlayed" :key="played.id">
     <div
+      v-if="played.trophySet"
       class="flex my-3 border rounded-md py-2 px-4 flex-wrap lg:flex-nowrap hover:border-stone-300 hover:bg-slate-50 bg-opacity-50 relative"
       :class="played.trophySet?.platform"
-      v-for="played in recentlyPlayed"
     >
       <!-- 图片 -->
       <div class="flex shrink-0 justify-center items-center w-full lg:w-auto">
@@ -13,7 +14,7 @@
           :href="
             getLink(
               getTitle(
-                played.trophySet.localization,
+                played.trophySet?.localization,
                 played.trophySet.trophyTitleName,
                 played.trophySet.default_language,
               ),
@@ -34,7 +35,7 @@
             :href="
               getLink(
                 getTitle(
-                  played.trophySet.localization,
+                  played.trophySet?.localization,
                   played.trophySet.trophyTitleName,
                   played.trophySet.default_language,
                 ),
@@ -44,7 +45,7 @@
           >
             {{
               getTitle(
-                played.trophySet.localization,
+                played.trophySet?.localization,
                 played.trophySet.trophyTitleName,
                 played.trophySet.default_language,
               ).title
@@ -152,6 +153,7 @@
       </div>
       <div class="hanamaru" v-if="played.progress === 100"></div>
     </div>
+    </template>
   </div>
 </template>
 
