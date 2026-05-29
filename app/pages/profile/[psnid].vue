@@ -8,13 +8,7 @@
       <div class="col-span-3">
         <ProfileOverview :profile="profile" />
 
-        <ProfileGameList
-          :recently-played="play.recentlyPlayed"
-          :psnid="profile.psnid"
-          :total-records="totalRecords"
-          :offset="offset"
-          @page-change="changePage"
-        />
+        <ProfileGameList :psnid="profile.psnid" />
       </div>
     </div>
   </div>
@@ -32,9 +26,7 @@ import ProfileGameList from '~/components/profile/ProfileGameList.vue';
 const { t } = useI18n();
 const api = useApi();
 const route = useRoute();
-const router = useRouter();
 const psnid = route.params.psnid;
-const currentPage = ref(route.query.page || 1);
 
 const { data: profile, error } = await useAsyncData(
   'profile',
@@ -55,6 +47,9 @@ const { data: profile, error } = await useAsyncData(
       profile.updated_at = format(fromUnixTime(profile.updated_at), 'yyyy-MM-dd HH:mm:ss');
       profile.first_trophy = format(fromUnixTime(profile.first_trophy), 'yyyy-MM-dd HH:mm');
       profile.last_trophy = format(fromUnixTime(profile.last_trophy), 'yyyy-MM-dd HH:mm:ss');
+      profile.trophyLevel = profile.trophyLevel ?? profile.trophy_level;
+      profile.avatarUrl = profile.avatarUrl ?? profile.avatar_url;
+      profile.aboutMe = profile.aboutMe ?? profile.about_me;
       profile.earnedTrophiesCount = bronze + silver + gold + platinum;
       profile.completionRate = `${((profile.completed_games / profile.games_played) * 100).toFixed(
         1,
@@ -83,62 +78,6 @@ if (profile.value) {
     setResponseStatus(event, 404);
   }
 }
-
-const { data: play, refresh } = await useAsyncData(
-  psnid + '-play-' + currentPage.value,
-  async () => {
-    if (!profile.value) return { recentlyPlayed: [], totalPages: 0 };
-
-    const res = await api.get(`/profile/play?psnid=${psnid}`, {
-      params: { page: currentPage.value },
-    });
-    return res.data;
-  },
-  {
-    transform: data => {
-      data.recentlyPlayed.forEach(game => {
-        game.last_updated_at = format(fromUnixTime(game.last_updated_at), 'yyyy-MM-dd HH:mm:ss');
-        if (game.trophy_set) {
-          game.trophySet = game.trophy_set;
-          const { owners, platinum_achievers, completed_players, trophyTitlePlatform } =
-            game.trophySet;
-          game.trophySet.platform = trophyTitlePlatform.split(',');
-          if (owners !== 0) {
-            game.trophySet.platinumRate = ((platinum_achievers / owners) * 100).toFixed(1);
-            if (completed_players != platinum_achievers) {
-              game.trophySet.completedRate = ((completed_players / owners) * 100).toFixed(1);
-            }
-          } else {
-            game.trophySet.platinumRate = 0.0;
-          }
-        }
-      });
-      return data;
-    },
-  },
-);
-
-function changePage(PageState) {
-  currentPage.value = PageState.page + 1;
-  router.push({
-    name: route.name,
-    query: { ...route.query, page: currentPage.value },
-  });
-  refresh();
-}
-
-const offset = computed({
-  get() {
-    return (currentPage.value - 1) * 50;
-  },
-  set(newValue) {
-    return (currentPage.value = newValue / 50 - 1);
-  },
-});
-
-const totalRecords = computed(() => {
-  return play.value?.totalPages ? play.value.totalPages * 50 : 0;
-});
 </script>
 
 <style scoped>

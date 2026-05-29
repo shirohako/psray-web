@@ -7,6 +7,7 @@ const gitCommitDate = execSync('git log -1 --format=%cd --date=format:%Y%m%d').t
 
 export default defineNuxtConfig({
   devtools: { enabled: false },
+  ssr: false,
   compatibilityDate: '2025-03-08',
   routeRules: {
     '/**': { ssr: false },
