@@ -1,0 +1,124 @@
+<script setup lang="ts">
+import { ArrowDownWideNarrow, ArrowUpNarrowWide } from 'lucide'
+import { useTrophies, type TrophyPlayer, type PlayersMeta } from '~/services/trophies'
+
+const props = defineProps<{
+  /** Trophy database id (matches `Trophy.id`). */
+  trophyId: number | string
+  /** Trophy name, shown in the dialog title. */
+  trophyName?: string
+  open: boolean
+}>()
+const emit = defineEmits<{
+  'update:open': [v: boolean]
+  closed: []
+}>()
+
+const { trophyPlayers } = useTrophies()
+const page = ref(1)
+const order = ref<'desc' | 'asc'>('asc')
+const players = ref<TrophyPlayer[]>([])
+const meta = ref<PlayersMeta>()
+const pending = ref(false)
+
+const totalPages = computed(() => meta.value?.total_pages ?? 1)
+
+async function load() {
+  pending.value = true
+  try {
+    const res = await trophyPlayers(props.trophyId, { page: page.value, order: order.value })
+    players.value = res.data
+    meta.value = res.meta
+  } finally {
+    pending.value = false
+  }
+}
+
+function setPage(p: number) {
+  if (p === page.value) return
+  page.value = p
+  load()
+}
+
+// Flip sort direction and reload from the first page.
+function toggleOrder() {
+  order.value = order.value === 'desc' ? 'asc' : 'desc'
+  page.value = 1
+  load()
+}
+
+// (Re)load fresh each time the dialog opens.
+watch(() => props.open, (v) => {
+  if (!v) return
+  page.value = 1
+  order.value = 'asc'
+  load()
+}, { immediate: true })
+</script>
+
+<template>
+  <Dialog
+    :open="open"
+    size="lg"
+    @update:open="emit('update:open', $event)"
+    @closed="emit('closed')"
+  >
+    <template #title>
+      {{ $t('trophy.earners.title') }}
+      <span v-if="trophyName" class="ml-1 font-normal text-slate-400">· {{ trophyName }}</span>
+    </template>
+
+    <!-- Count + sort toggle -->
+    <div class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-slate-100 bg-white/90 px-4 py-2.5 backdrop-blur sm:px-5">
+      <span class="text-xs text-slate-400">{{ $t('leaderboard.totalPlayers', { count: fmt(meta?.total) }) }}</span>
+      <button
+        type="button"
+        class="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-200 hover:text-slate-900"
+        @click="toggleOrder"
+      >
+        <LucideIcon :icon="order === 'desc' ? ArrowDownWideNarrow : ArrowUpNarrowWide" class="size-4" />
+        {{ order === 'desc' ? $t('trophy.earners.newestFirst') : $t('trophy.earners.oldestFirst') }}
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div v-if="pending && !players.length" class="divide-y divide-slate-100">
+      <div v-for="i in 8" :key="i" class="flex items-center gap-3 px-4 py-3 sm:px-5">
+        <div class="size-10 shrink-0 animate-pulse rounded-full bg-slate-200" />
+        <div class="flex-1 space-y-2">
+          <div class="h-3.5 w-1/3 animate-pulse rounded bg-slate-200" />
+          <div class="h-2.5 w-1/4 animate-pulse rounded bg-slate-200" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty -->
+    <p v-else-if="!players.length" class="px-5 py-16 text-center text-sm text-slate-400">
+      {{ $t('trophy.earners.empty') }}
+    </p>
+
+    <!-- List -->
+    <ul v-else class="divide-y divide-slate-100 transition-opacity" :class="{ 'opacity-50': pending }">
+      <li v-for="p in players" :key="p.psnid">
+        <NuxtLink
+          :to="`/p/${p.psnid}`"
+          class="group flex items-center gap-3 px-4 py-2.5 transition hover:bg-slate-50 sm:px-5"
+          @click="emit('update:open', false)"
+        >
+          <img :src="p.avatar_url" :alt="p.psnid" class="size-10 shrink-0 rounded-full bg-slate-100 object-cover" />
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-1.5">
+              <RegionFlag :country="p.country" class="text-xs" />
+              <span class="truncate text-sm font-semibold text-slate-900 group-hover:text-slate-700">{{ p.psnid }}</span>
+            </div>
+            <div class="mt-0.5 text-xs tabular-nums text-slate-400">{{ $t('trophy.earners.earnedAt', { time: fmtDateTime(p.earned_at) }) }}</div>
+          </div>
+        </NuxtLink>
+      </li>
+    </ul>
+
+    <template v-if="totalPages > 1" #footer>
+      <Pagination :page="page" :total-pages="totalPages" @update:page="setPage" />
+    </template>
+  </Dialog>
+</template>

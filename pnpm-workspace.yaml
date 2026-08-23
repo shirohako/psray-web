@@ -1,0 +1,9 @@
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+
+minimumReleaseAgeExclude:
+  - '@psray/markdown-editor@0.1.0 || 0.2.0 || 0.2.1'
+
+overrides:
+  '@types/node': 26.0.0

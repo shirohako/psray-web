@@ -1,0 +1,301 @@
+<script setup lang="ts">
+import { House, Menu, Gamepad2, Trophy, LogOut, LogIn, UserPlus, User, RefreshCw, Settings, Search, Compass, type IconNode } from 'lucide'
+
+const route = useRoute()
+const appConfig = useAppConfig()
+const { user, loggedIn, logout } = useAuth()
+
+// Desktop (lg+) sidebar collapse state: full width <-> icon rail.
+// Default expanded; restored from localStorage on mount (read in onMounted to
+// avoid an SSR/hydration mismatch).
+const collapsed = ref(false)
+// Mobile (< lg) drawer state: the sidebar is fully hidden off-canvas and slides
+// in as an overlay layer above the content when opened.
+const mobileOpen = ref(false)
+
+// Site-wide settings drawer (slides in from the right).
+const settingsOpen = ref(false)
+
+onMounted(() => {
+  const saved = localStorage.getItem('sidebar:collapsed')
+  if (saved !== null) collapsed.value = saved === '1'
+})
+
+watch(collapsed, (v) => {
+  localStorage.setItem('sidebar:collapsed', v ? '1' : '0')
+})
+
+// The top-bar button collapses the rail on desktop, and opens/closes the
+// overlay drawer on mobile.
+function toggleSidebar() {
+  if (window.matchMedia('(min-width: 1024px)').matches) {
+    collapsed.value = !collapsed.value
+  } else {
+    mobileOpen.value = !mobileOpen.value
+  }
+}
+
+type MenuItem = {
+  /** Message key, resolved at render so the label follows the active locale. */
+  labelKey: string
+  to: string
+  icon: IconNode
+}
+
+const menu: MenuItem[] = [
+  { labelKey: 'nav.home', to: '/', icon: House },
+  { labelKey: 'nav.leaderboard', to: '/leaderboard', icon: Trophy },
+  { labelKey: 'nav.about', to: '/about', icon: Compass },
+]
+
+function isActive(to: string) {
+  return to === '/' ? route.path === '/' : route.path.startsWith(to)
+}
+
+const profilePath = computed(() => user.value?.psnid ? `/p/${encodeURIComponent(user.value.psnid)}` : '/')
+
+async function onLogout() {
+  await logout()
+  await navigateTo('/')
+}
+</script>
+
+<template>
+  <div class="min-h-screen bg-slate-50 text-slate-800">
+    <!-- Top bar -->
+    <header
+      class="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between gap-4 border-b border-slate-200 bg-white/80 px-3 backdrop-blur-md sm:px-4"
+    >
+      <!-- Left: collapse toggle + logo -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button
+          type="button"
+          @click="toggleSidebar"
+          :aria-label="collapsed ? $t('nav.aria.expandMenu') : $t('nav.aria.collapseMenu')"
+          class="grid size-10 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+        >
+          <LucideIcon :icon="Menu" class="size-6" stroke-width="1.75" />
+        </button>
+
+        <NuxtLink to="/" class="flex items-center gap-2.5">
+          <img
+            v-if="appConfig.brand.logo"
+            :src="appConfig.brand.logo"
+            alt="PSRay"
+            class="size-9 object-contain"
+          />
+          <span
+            v-else
+            class="grid size-9 place-items-center rounded-xl bg-slate-900 text-white shadow-sm shadow-slate-900/30"
+          >
+            <LucideIcon :icon="Gamepad2" class="size-5" />
+          </span>
+          <span class="text-lg font-bold tracking-tight text-slate-900">
+            PS<span class="text-slate-900">Ray</span>
+          </span>
+        </NuxtLink>
+      </div>
+
+      <!-- Right: quick actions + auth controls -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <div class="flex items-center gap-1">
+          <button
+            type="button"
+            :aria-label="$t('nav.aria.search')"
+            :title="$t('nav.aria.search')"
+            class="grid size-10 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+          >
+            <LucideIcon :icon="Search" class="size-5" stroke-width="1.75" />
+          </button>
+          <LanguageSwitcher />
+          <button
+            type="button"
+            :aria-label="$t('nav.aria.settings')"
+            :title="$t('nav.aria.settings')"
+            class="grid size-10 place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+            @click="settingsOpen = true"
+          >
+            <LucideIcon :icon="Settings" class="size-5" stroke-width="1.75" />
+          </button>
+        </div>
+
+        <DropdownMenu
+          v-if="loggedIn && user"
+          align="right"
+          class="flex min-w-0 cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 sm:px-3"
+        >
+          <img
+            v-if="user.avatar_url"
+            :src="user.avatar_url"
+            :alt="user.psnid"
+            class="size-8 shrink-0 rounded-full bg-slate-100 object-cover"
+          />
+          <span
+            v-else
+            class="grid size-8 shrink-0 place-items-center rounded-full bg-slate-900 text-xs font-bold text-white"
+          >
+            {{ user.psnid.slice(0, 1).toUpperCase() }}
+          </span>
+          <span class="hidden max-w-32 truncate sm:block">{{ user.psnid }}</span>
+
+          <template #menu="{ close }">
+            <NuxtLink
+              :to="profilePath"
+              class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+              @click="close"
+            >
+              <LucideIcon :icon="User" class="size-4 text-slate-400" />
+              {{ $t('nav.user.profile') }}
+            </NuxtLink>
+            <NuxtLink
+              :to="{ path: '/sync', query: { psnid: user.psnid } }"
+              class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+              @click="close"
+            >
+              <LucideIcon :icon="RefreshCw" class="size-4 text-slate-400" />
+              {{ $t('nav.user.sync') }}
+            </NuxtLink>
+            <NuxtLink
+              to="/settings"
+              class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+              @click="close"
+            >
+              <LucideIcon :icon="Settings" class="size-4 text-slate-400" />
+              {{ $t('nav.user.settings') }}
+            </NuxtLink>
+            <button
+              type="button"
+              class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+              @click="close(); onLogout()"
+            >
+              <LucideIcon :icon="LogOut" class="size-4 text-slate-400" />
+              {{ $t('nav.user.logout') }}
+            </button>
+          </template>
+        </DropdownMenu>
+
+        <template v-else>
+          <!-- Mobile (< sm): single icon trigger opening a login/register menu -->
+          <DropdownMenu align="right" class="sm:hidden">
+            <button
+              type="button"
+              :aria-label="$t('nav.aria.account')"
+              :title="$t('nav.aria.account')"
+              class="grid size-10 cursor-pointer place-items-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900"
+            >
+              <LucideIcon :icon="User" class="size-5" stroke-width="1.75" />
+            </button>
+
+            <template #menu="{ close }">
+              <NuxtLink
+                to="/auth/login"
+                class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                @click="close"
+              >
+                <LucideIcon :icon="LogIn" class="size-4 text-slate-400" />
+                {{ $t('nav.login') }}
+              </NuxtLink>
+              <NuxtLink
+                to="/auth/register"
+                class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                @click="close"
+              >
+                <LucideIcon :icon="UserPlus" class="size-4 text-slate-400" />
+                {{ $t('nav.register') }}
+              </NuxtLink>
+            </template>
+          </DropdownMenu>
+
+          <!-- Desktop (sm+): inline login + register buttons -->
+          <UiButton1
+            to="/auth/login"
+            :label="$t('nav.login')"
+            :icon="LogIn"
+            class="max-sm:hidden"
+          />
+          <NuxtLink
+            to="/auth/register"
+            class="hidden h-7 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 text-xs font-semibold text-slate-700 shadow-sm shadow-slate-900/5 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 sm:inline-flex"
+          >
+            <LucideIcon :icon="UserPlus" class="size-3.5" stroke-width="1.75" />
+            {{ $t('nav.register') }}
+          </NuxtLink>
+        </template>
+      </div>
+    </header>
+
+    <!-- Mobile backdrop: only visible while the drawer is open on small screens -->
+    <Transition
+      enter-active-class="transition-opacity duration-300"
+      enter-from-class="opacity-0"
+      leave-active-class="transition-opacity duration-300"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="mobileOpen"
+        class="fixed inset-0 top-16 z-30 bg-slate-900/50 lg:hidden"
+        @click="mobileOpen = false"
+      />
+    </Transition>
+
+    <!-- Left sidebar: overlay drawer on mobile, pushing rail on desktop -->
+    <aside
+      class="fixed bottom-0 left-0 top-16 z-40 flex w-56 flex-col border-r border-slate-200 bg-white transition-transform duration-300 ease-in-out lg:translate-x-0 lg:transition-[width]"
+      :class="[
+        mobileOpen ? 'translate-x-0 shadow-xl' : '-translate-x-full',
+        collapsed ? 'lg:w-17' : 'lg:w-56',
+      ]"
+    >
+      <nav class="flex-1 overflow-y-auto px-3 py-4">
+        <p
+          class="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-slate-400"
+          :class="collapsed ? 'lg:hidden' : ''"
+        >
+          {{ $t('nav.sectionLabel') }}
+        </p>
+        <ul class="space-y-1">
+          <li v-for="item in menu" :key="item.to">
+            <NuxtLink
+              :to="item.to"
+              :title="collapsed ? $t(item.labelKey) : undefined"
+              @click="mobileOpen = false"
+              class="group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition"
+              :class="[
+                isActive(item.to)
+                  ? 'bg-slate-100 text-slate-900'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
+                collapsed ? 'lg:justify-center' : '',
+              ]"
+            >
+              <LucideIcon
+                :icon="item.icon"
+                stroke-width="1.75"
+                class="size-6 shrink-0 transition-colors"
+                :class="isActive(item.to) ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-600'"
+              />
+              <span class="truncate" :class="collapsed ? 'lg:hidden' : ''">{{ $t(item.labelKey) }}</span>
+            </NuxtLink>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="border-t border-slate-100 px-6 py-4" :class="collapsed ? 'lg:hidden' : ''">
+        <p class="text-center text-[11px] text-slate-400">© 2026 PSRay</p>
+      </div>
+
+    </aside>
+
+    <!-- Main content: no offset on mobile (drawer overlays), pushed on desktop -->
+    <main
+      class="pt-16 transition-[padding] duration-300 ease-in-out"
+      :class="collapsed ? 'lg:pl-17' : 'lg:pl-56'"
+    >
+      <div class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+        <slot />
+      </div>
+    </main>
+
+    <!-- Site-wide preferences -->
+    <SettingsDrawer v-model:open="settingsOpen" />
+  </div>
+</template>
