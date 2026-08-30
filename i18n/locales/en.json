@@ -453,7 +453,12 @@
       "syncInterval": "Auto-sync interval",
       "lastSync": "Last updated",
       "nextSync": "Next sync",
-      "every": "Every {interval}",
+      "interval": {
+        "hour": { "one": "1 hour", "other": "{count} hours" },
+        "day": { "one": "1 day", "other": "{count} days" },
+        "week": { "one": "1 week", "other": "{count} weeks" },
+        "year": { "one": "1 year", "other": "{count} years" }
+      },
       "never": "Never"
     },
     "calendar": {

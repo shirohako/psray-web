@@ -453,7 +453,12 @@
       "syncInterval": "自動同步間隔",
       "lastSync": "最後更新時間",
       "nextSync": "預計下次同步",
-      "every": "每 {interval}",
+      "interval": {
+        "hour": { "one": "1 小時", "other": "{count} 小時" },
+        "day": { "one": "1 天", "other": "{count} 天" },
+        "week": { "one": "1 週", "other": "{count} 週" },
+        "year": { "one": "1 年", "other": "{count} 年" }
+      },
       "never": "不再自動更新"
     },
     "calendar": {

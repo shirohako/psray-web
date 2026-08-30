@@ -453,7 +453,12 @@
       "syncInterval": "自動更新",
       "lastSync": "最終更新日時",
       "nextSync": "次回の更新予定",
-      "every": "{interval}ごと",
+      "interval": {
+        "hour": { "one": "1 時間", "other": "{count} 時間" },
+        "day": { "one": "1 日", "other": "{count} 日" },
+        "week": { "one": "1 週間", "other": "{count} 週間" },
+        "year": { "one": "1 年", "other": "{count} 年" }
+      },
       "never": "停止中"
     },
     "calendar": {

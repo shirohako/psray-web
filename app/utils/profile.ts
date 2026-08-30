@@ -44,14 +44,20 @@ export function fmtDateTime(value: DateLike) {
  * Prefer larger units only when no rounding is needed: 168h becomes “1 week”,
  * 720h remains “30 days”, and the backend maximum 8760h becomes “1 year”.
  */
-export function formatHourInterval(
+export type HourIntervalUnit = 'hour' | 'day' | 'week' | 'year'
+
+export interface HourInterval {
+  amount: number
+  unit: HourIntervalUnit
+}
+
+export function resolveHourInterval(
   value: number | null | undefined,
-  locale = currentLocale(),
-): string | null {
+): HourInterval | null {
   if (value == null || !Number.isFinite(value) || value <= 0) return null
 
   let amount = value
-  let unit: Intl.NumberFormatOptions['unit'] = 'hour'
+  let unit: HourIntervalUnit = 'hour'
   if (value === 365 * 24) {
     amount = 1
     unit = 'year'
@@ -65,12 +71,22 @@ export function formatHourInterval(
     unit = 'day'
   }
 
+  return { amount, unit }
+}
+
+export function formatHourInterval(
+  value: number | null | undefined,
+  locale = currentLocale(),
+): string | null {
+  const interval = resolveHourInterval(value)
+  if (!interval) return null
+
   return new Intl.NumberFormat(locale, {
     style: 'unit',
-    unit,
+    unit: interval.unit,
     unitDisplay: 'long',
     maximumFractionDigits: 2,
-  }).format(amount)
+  }).format(interval.amount)
 }
 
 /**

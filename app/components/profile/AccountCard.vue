@@ -6,10 +6,11 @@ const props = defineProps<{ profile: Profile }>()
 const { t } = useI18n()
 
 const syncIntervalText = computed(() => {
-  const interval = formatHourInterval(props.profile.sync_interval)
-  return interval
-    ? t('profile.account.every', { interval })
-    : t('profile.account.never')
+  const interval = resolveHourInterval(props.profile.sync_interval)
+  if (!interval) return t('profile.account.never')
+
+  const form = interval.amount === 1 ? 'one' : 'other'
+  return t(`profile.account.interval.${interval.unit}.${form}`, { count: interval.amount })
 })
 
 const nextSyncText = computed(() => props.profile.sync_next_at == null
