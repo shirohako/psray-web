@@ -73,7 +73,7 @@ const nextSyncText = computed(() => props.profile.sync_next_at == null
           <dt class="inline-flex items-center gap-2 text-slate-500">
             <LucideIcon :icon="History" class="size-4 text-slate-400" />{{ $t('profile.account.lastSync') }}
           </dt>
-          <dd class="text-right font-mono font-medium text-slate-900">{{ fmtDateTime(profile.updated_at) }}</dd>
+          <dd class="text-right font-mono font-medium text-slate-900">{{ fmtDateTime(profile.last_synced_at) }}</dd>
         </div>
         <div class="flex items-center justify-between gap-3">
           <dt class="inline-flex items-center gap-2 text-slate-500">

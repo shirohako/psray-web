@@ -65,6 +65,8 @@ export interface Profile {
 
   sync_interval: number
   sync_next_at: ApiDate | null
+  /** Last successful trophy sync; `null` until a profile completes a new sync. */
+  last_synced_at: ApiDate | null
   registered_at: ApiDate | null
 
   used_space: number
