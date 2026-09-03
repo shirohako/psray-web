@@ -1,4 +1,7 @@
+import { createRequire } from 'node:module'
 import tailwindcss from "@tailwindcss/vite";
+
+const require = createRequire(import.meta.url)
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -7,10 +10,20 @@ export default defineNuxtConfig({
     // Serve large local SVG flags (and other public assets) precompressed when
     // the client advertises Brotli/Gzip support.
     compressPublicAssets: true,
+    externals: {
+      // satori shapes text through harfbuzzjs, whose `hb.js` loads a sibling
+      // `hb.wasm` by path at runtime. Nitro's dependency trace follows imports
+      // only, so without this the social-card routes build fine and then throw
+      // ENOENT on the first render in production.
+      traceInclude: [require.resolve('harfbuzzjs/hb.wasm')],
+    },
   },
   routeRules: {
     '/help/markdown': { redirect: { to: '/docs/markdown', statusCode: 301 } },
     '/flags/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    // Generated social cards. The handlers set the same value themselves; this
+    // covers the fallback redirect too, so a miss is not re-rendered per crawl.
+    '/og/**': { headers: { 'cache-control': 'public, max-age=21600, stale-while-revalidate=604800' } },
   },
   // Module id, not a path relative to this file — Nuxt 4.5 warns on the latter.
   css: ['~/assets/css/main.css'],

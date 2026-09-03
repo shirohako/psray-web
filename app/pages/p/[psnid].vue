@@ -138,7 +138,15 @@ useSeo({
   description: () => (profile.value
     ? t('seo.profile.description', { psnid: profile.value.psnid })
     : ''),
-  image: () => profile.value?.avatar_url ?? undefined,
+  // A generated 1200×630 card, not the raw PSN avatar: that is a 240×240 square,
+  // which every platform then stretches or shrinks to fit its 2:1 preview slot.
+  // Private profiles advertise nothing and fall back to the brand card.
+  image: () => (profile.value?.is_profile_public
+    ? `${siteUrl}/og/p/${encodeURIComponent(profile.value.psnid)}.png`
+    : undefined),
+  imageWidth: 1200,
+  imageHeight: 630,
+  imageType: 'image/png',
   canonicalPath: () => canonicalProfilePath.value,
   // A private profile exposes no trophy data, so there is nothing worth indexing.
   noindex: () => !profile.value?.is_profile_public,

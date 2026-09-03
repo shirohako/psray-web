@@ -176,6 +176,7 @@ function updateTipCount(trophyId: number, value: number) {
 const route = useRoute()
 const { t, locale } = useI18n()
 const id = computed(() => String(route.params.id))
+const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
 
 // Optional viewer progress is driven entirely by the `?psnid=` query param.
 // The player may have no record for this title — the API decides via
@@ -420,7 +421,12 @@ useSeo({
         platform: data.value.trophy_set.platform.join(' / '),
       })
     : ''),
-  image: () => data.value?.trophy_set.icon_url,
+  // The set icon is a 512×512 square; the generated card is already 2:1, so no
+  // platform has to crop the cover art to make it fit.
+  image: () => (data.value ? `${siteUrl}/og/trophies/${id.value}.png` : undefined),
+  imageWidth: 1200,
+  imageHeight: 630,
+  imageType: 'image/png',
   // Spell the body language out only when it isn't what the interface language
   // already implies, and go by what the server actually served rather than what
   // we asked for — a `?tlang=` the API fell back on must not claim to be its
