@@ -23,7 +23,7 @@ export default defineNuxtConfig({
     '/flags/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     // Generated social cards. The handlers set the same value themselves; this
     // covers the fallback redirect too, so a miss is not re-rendered per crawl.
-    '/og/**': { headers: { 'cache-control': 'public, max-age=21600, stale-while-revalidate=604800' } },
+    '/card/**': { headers: { 'cache-control': 'public, max-age=21600, stale-while-revalidate=604800' } },
   },
   // Module id, not a path relative to this file — Nuxt 4.5 warns on the latter.
   css: ['~/assets/css/main.css'],

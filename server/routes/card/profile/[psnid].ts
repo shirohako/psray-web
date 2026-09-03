@@ -4,7 +4,7 @@ import { brandLogo, imageDataUri, renderCard } from '../../../utils/ogRender'
 import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 
 /**
- * `GET /og/profile/:psnid.png` — the 1200×630 social card for a player profile.
+ * `GET /card/profile/:psnid.png` — the 1200×630 social card for a player profile.
  *
  * Platforms crop `og:image` to 2:1, which is why the avatar alone used to arrive
  * stretched: it is a 240×240 square. Here it is one fixed tile inside a card that

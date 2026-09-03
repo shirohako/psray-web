@@ -5,7 +5,7 @@ import { CARD_HEIGHT, CARD_WIDTH } from './ogCard'
 import { UNDECODABLE, pngPlease, sniffImageType } from './ogImage'
 
 /**
- * The satori → resvg pipeline behind `/og/*`, plus the asset fetching those
+ * The satori → resvg pipeline behind `/card/*`, plus the asset fetching those
  * cards need. Kept apart from `ogCard.ts` so the markup stays unit-testable.
  *
  * `@resvg/resvg-js` is a native module: production must run `pnpm install` and

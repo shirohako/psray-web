@@ -1,15 +1,15 @@
 import type { H3Event } from 'h3'
 
 /**
- * Shared plumbing for the `/og/*` card routes.
+ * Shared plumbing for the `/card/*` routes.
  *
  * ## The URL shape
  *
- * `/og/<kind>/<id>.png` — one kind of card per directory under `server/routes/og`,
+ * `/card/<kind>/<id>.png` — one kind of card per directory under `server/routes/card`,
  * spelled out (`profile`, `trophy`) rather than mirroring the page routes' `/p/`.
  *
  * A trailing segment is reserved for alternate treatments of the same subject:
- * `/og/<kind>/<id>/<style>.png`, served by a sibling `[id]/[style].ts`. Nothing
+ * `/card/<kind>/<id>/<style>.png`, served by a sibling `[id]/[style].ts`. Nothing
  * uses it yet — it exists so a second style can arrive without moving the URLs
  * link previews have already cached.
  *
@@ -26,7 +26,7 @@ export const OG_CACHE_CONTROL = 'public, max-age=21600, stale-while-revalidate=6
 /**
  * The route param, minus the `.png` the public URLs carry.
  *
- * radix3 params are whole path segments, so `/og/profile/Name.png` arrives as
+ * radix3 params are whole path segments, so `/card/profile/Name.png` arrives as
  * `Name.png` — naming the route file `[psnid].png.ts` would fold the extension
  * into the param *name* instead.
  */

@@ -4,7 +4,7 @@ import { brandLogo, imageDataUri, renderCard } from '../../../utils/ogRender'
 import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 
 /**
- * `GET /og/trophy/:id.png` — the 1200×630 social card for a trophy set.
+ * `GET /card/trophy/:id.png` — the 1200×630 social card for a trophy set.
  *
  * No `lang` is passed to the API: the card draws the set's *default*-language
  * name, so one render serves every locale and the cache stays keyed by id alone.
