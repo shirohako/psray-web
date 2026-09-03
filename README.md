@@ -35,12 +35,16 @@ pnpm dev               # http://localhost:3630 (or NUXT_PORT)
 | Variable | Meaning |
 | --- | --- |
 | `NUXT_PUBLIC_API_BASE` | Base URL of the PSRay API. Defaults to `http://localhost:8000/api`; production is `https://api.psray.net` |
-| `NUXT_PUBLIC_SITE_URL` | Absolute origin, no trailing slash. Canonical / hreflang / OG URLs are built from it |
+| `NUXT_PUBLIC_SITE_URL` | Absolute origin, no trailing slash. Canonical / hreflang / OG URLs are built from it. Defaults to `https://psray.net`; set it to your local origin when testing local metadata |
 | `NUXT_PORT` | Dev/preview port |
 
 ## Deployment
 
 `pnpm build` produces a Nitro server bundle in `.output/`; run it with
 `node .output/server/index.mjs` behind your process manager of choice, with the
-env vars above set. `nitro.compressPublicAssets` precompresses the flag SVGs, so
-serve `public/` assets with content negotiation enabled.
+env vars above set. Production must explicitly set
+`NUXT_PUBLIC_SITE_URL=https://psray.net`; the matching default is a safeguard
+against publishing localhost canonical or social-card URLs if deployment
+configuration is accidentally omitted. `nitro.compressPublicAssets`
+precompresses the flag SVGs, so serve `public/` assets with content negotiation
+enabled.

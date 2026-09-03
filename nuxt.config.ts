@@ -28,9 +28,11 @@ export default defineNuxtConfig({
     public: {
       // Override with NUXT_PUBLIC_API_BASE in .env
       apiBase: 'http://localhost:8000/api',
-      // Absolute origin, no trailing slash. Used to build canonical/hreflang/OG
-      // URLs. Override with NUXT_PUBLIC_SITE_URL in .env.
-      siteUrl: 'http://localhost:3000',
+      // Absolute production origin, no trailing slash. Used to build
+      // canonical/hreflang/OG URLs. Keep this production-safe so a missing
+      // deployment variable can never leak localhost URLs into social cards.
+      // Override with NUXT_PUBLIC_SITE_URL for local or alternate environments.
+      siteUrl: 'https://psray.net',
     },
   },
 
