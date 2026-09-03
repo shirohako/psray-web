@@ -63,7 +63,7 @@ describe('OG card markup', () => {
   it('falls back to a placeholder tile rather than a broken image', () => {
     const markup = profileCardHtml({ ...profile, avatar: null, flag: null })
     expect(markup).not.toContain('<img')
-    expect(markup).toContain('width:240px;height:240px')
+    expect(markup).toContain('width:176px;height:176px')
   })
 
   it('abbreviates the Vita platform badge the way the site does', () => {
@@ -77,6 +77,16 @@ describe('OG card markup', () => {
     const markup = trophyCardHtml(set)
     expect(markup).toContain('37%')
     expect(markup).toContain('12,480')
+  })
+
+  it('closes every element it opens', () => {
+    // satori-html tolerates unbalanced markup by silently renesting it, which
+    // shows up only as a wrong-looking card — so assert the structure here.
+    for (const markup of [profileCardHtml(profile), trophyCardHtml(set)]) {
+      const opened = (markup.match(/<div\b/g) ?? []).length
+      const closed = (markup.match(/<\/div>/g) ?? []).length
+      expect(closed).toBe(opened)
+    }
   })
 
   it('never draws a trophy set name, which would need CJK outlines', () => {

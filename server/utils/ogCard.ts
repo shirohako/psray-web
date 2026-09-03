@@ -52,9 +52,26 @@ const PLATFORM_COLORS: Record<string, string> = {
 }
 const PLATFORM_FALLBACK = '#475569'
 
-const INK = '#0f172a'
+/*
+ * Brand palette, sampled straight out of `public/images/psray-share.jpg` so the
+ * generated cards read as the same family as the static one: a near-white ground
+ * tinted blue toward the corner, a deep navy panel, and a blue→violet accent.
+ */
+const INK = '#0a1125'
 const MUTED = '#64748b'
-const HAIRLINE = '#e2e8f0'
+const HAIRLINE = '#e6eaf5'
+const SURFACE = '#ffffff'
+const GROUND_FROM = '#f9fafe'
+const GROUND_TO = '#e6edff'
+const NAVY_FROM = '#1b2450'
+const NAVY_TO = '#0e1433'
+const LAVENDER = '#b7cbfe'
+const LAVENDER_DIM = '#8094c9'
+const ACCENT_FROM = '#6d96ff'
+const ACCENT_TO = '#9fa5fd'
+
+/** Width of the navy stat panel; the light column takes whatever is left. */
+const PANEL_W = 372
 
 /** Same compact platform label the badges use on-site: `PSVITA` renders as `PSV`. */
 export const platformLabel = (platform: string): string =>
@@ -96,123 +113,169 @@ export interface TrophyCard {
   icon: string | null
 }
 
-/** The page ground: the same near-white slate the site itself sits on. */
-const shell = (body: string): string => `
-  <div style="display:flex;flex-direction:column;width:${CARD_WIDTH}px;height:${CARD_HEIGHT}px;padding:56px 64px;background-color:#f8fafc;font-family:Inter;">
-    ${body}
+/**
+ * The card frame: a light gradient column on the left, the navy stat panel on the
+ * right — the two surfaces the brand image is built from.
+ */
+const shell = (left: string, panel: string): string => `
+  <div style="display:flex;width:${CARD_WIDTH}px;height:${CARD_HEIGHT}px;background-image:linear-gradient(135deg,${GROUND_FROM} 0%,${GROUND_FROM} 45%,${GROUND_TO} 100%);font-family:Inter;">
+    <div style="display:flex;flex-direction:column;width:${CARD_WIDTH - PANEL_W}px;padding:52px 48px 44px 56px;">
+      ${left}
+    </div>
+    <div style="display:flex;flex-direction:column;width:${PANEL_W}px;padding:52px 48px 44px;background-image:linear-gradient(160deg,${NAVY_FROM} 0%,${NAVY_TO} 100%);border-radius:56px 0 0 56px;">
+      ${panel}
+    </div>
   </div>`
 
-/** The card body, vertically centred in whatever space the footer leaves. */
-const main = (body: string): string => `
-  <div style="display:flex;flex-direction:column;flex-grow:1;justify-content:center;">
-    ${body}
-  </div>`
+/** The blue→violet rule the brand art uses as its accent mark. */
+const accentBar = (width = 72): string => `
+  <div style="display:flex;width:${width}px;height:6px;border-radius:3px;background-image:linear-gradient(90deg,${ACCENT_FROM},${ACCENT_TO});"></div>`
 
-/** Wordmark left, domain right, sitting on a hairline above the card's bottom edge. */
-const footer = (): string => `
-  <div style="display:flex;align-items:center;justify-content:space-between;padding-top:28px;border-top:1px solid ${HAIRLINE};">
-    <div style="display:flex;font-size:30px;font-weight:600;color:${INK};letter-spacing:-0.5px;">PSRay</div>
-    <div style="display:flex;font-size:24px;color:${MUTED};">psray.net</div>
+/** The dot lattice scattered through the brand art, echoed on the navy panel. */
+const dotGrid = (cols: number, rows: number): string => `
+  <div style="display:flex;flex-direction:column;">
+    ${Array.from({ length: rows }, () => `
+      <div style="display:flex;margin-bottom:14px;">
+        ${Array.from({ length: cols }, () => `<div style="display:flex;width:7px;height:7px;border-radius:4px;background-color:${LAVENDER};opacity:0.28;margin-right:14px;"></div>`).join('')}
+      </div>`).join('')}
   </div>`
 
 /** One tier: a colour dot beside its count, with the tier name underneath. */
 const tierBlock = (tier: TierKey, count: number): string => `
   <div style="display:flex;flex-direction:column;">
     <div style="display:flex;align-items:center;">
-      <div style="display:flex;width:18px;height:18px;border-radius:9px;background-color:${TIER_COLORS[tier]};margin-right:12px;"></div>
-      <div style="display:flex;font-size:40px;font-weight:600;color:${INK};">${num(count)}</div>
+      <div style="display:flex;width:16px;height:16px;border-radius:8px;background-color:${TIER_COLORS[tier]};margin-right:11px;"></div>
+      <div style="display:flex;font-size:36px;font-weight:600;color:${INK};">${num(count)}</div>
     </div>
-    <div style="display:flex;font-size:20px;color:${MUTED};margin-top:4px;text-transform:capitalize;">${tier}</div>
+    <div style="display:flex;font-size:19px;color:${MUTED};margin-top:2px;text-transform:capitalize;">${tier}</div>
   </div>`
 
-/** All four tiers, spread edge to edge so the card has no dead column. */
-const tierRow = (t: TierCounts): string => `
-  <div style="display:flex;justify-content:space-between;">
+/**
+ * The four tiers on a floating white card — the same raised surface the brand
+ * image layers over its background.
+ */
+const tierCard = (t: TierCounts): string => `
+  <div style="display:flex;justify-content:space-between;padding:26px 32px;border-radius:24px;background-color:${SURFACE};box-shadow:0 18px 40px rgba(13,23,64,0.08);">
     ${TIERS.map(tier => tierBlock(tier, t[tier])).join('')}
   </div>`
 
 /** A rounded art tile, or a neutral placeholder of the same size when the fetch failed. */
 const artTile = (src: string | null, size: number, radius: number): string =>
   (src
-    ? `<img src="${src}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${radius}px;" />`
-    : `<div style="display:flex;width:${size}px;height:${size}px;border-radius:${radius}px;background-color:#e2e8f0;"></div>`)
+    ? `<img src="${src}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${radius}px;box-shadow:0 16px 36px rgba(13,23,64,0.16);" />`
+    : `<div style="display:flex;width:${size}px;height:${size}px;border-radius:${radius}px;background-color:#dfe6f7;"></div>`)
 
-const statBlock = (value: string, label: string): string => `
+/** A headline figure on the navy panel: big white number over a lavender caption. */
+const panelStat = (value: string, label: string, size = 62): string => `
   <div style="display:flex;flex-direction:column;">
-    <div style="display:flex;font-size:44px;font-weight:600;color:${INK};">${value}</div>
-    <div style="display:flex;font-size:20px;color:${MUTED};margin-top:4px;">${label}</div>
+    <div style="display:flex;font-size:${size}px;font-weight:600;color:#ffffff;letter-spacing:-1px;">${value}</div>
+    <div style="display:flex;font-size:20px;color:${LAVENDER};margin-top:2px;">${label}</div>
   </div>`
+
+/** Centres the light column's content as one block, rather than pooling the
+ *  slack between the last card and the wordmark. */
+const stack = (body: string): string => `
+  <div style="display:flex;flex-direction:column;flex-grow:1;justify-content:center;">
+    ${body}
+  </div>`
+
+/** Wordmark on the light column; the domain rides the foot of the navy panel. */
+const wordmark = (): string => `
+  <div style="display:flex;align-items:center;margin-top:auto;">
+    <div style="display:flex;font-size:30px;font-weight:600;color:${INK};letter-spacing:-0.5px;">PSRay</div>
+  </div>`
+
+const panelFooter = (): string => `
+  <div style="display:flex;margin-top:auto;font-size:21px;color:${LAVENDER_DIM};">psray.net</div>`
 
 const sumTiers = (t: TierCounts): number => t.platinum + t.gold + t.silver + t.bronze
 
 /**
- * Player card: avatar and identity on the left of the header, headline totals on
- * the right, the four tiers spread across the foot.
+ * Player card: avatar and identity on the light column, lifetime totals on the
+ * navy panel, the four tiers on a floating card between them.
  *
  * Everything drawn here is public profile data — callers must refuse private ones.
  */
 export function profileCardHtml(card: ProfileCard): string {
   const flag = card.flag
-    ? `<img src="${card.flag}" width="36" height="27" style="width:36px;height:27px;border-radius:3px;margin-right:16px;" />`
+    ? `<img src="${card.flag}" width="34" height="26" style="width:34px;height:26px;border-radius:3px;margin-right:14px;" />`
     : ''
 
-  return shell(`
-    ${main(`
-      <div style="display:flex;align-items:center;">
-        ${artTile(card.avatar, 240, 36)}
-        <div style="display:flex;flex-direction:column;margin-left:44px;">
-          <div style="display:flex;font-size:64px;font-weight:600;color:${INK};letter-spacing:-1px;">${esc(card.psnid)}</div>
-          <div style="display:flex;align-items:center;margin-top:16px;">
-            ${flag}
-            <div style="display:flex;font-size:28px;color:${MUTED};">Level ${num(card.trophyLevel)}</div>
-            ${card.rank == null ? '' : `<div style="display:flex;font-size:28px;color:${MUTED};margin-left:24px;">#${num(card.rank)}</div>`}
-          </div>
-        </div>
-        <div style="display:flex;margin-left:auto;">
-          <div style="display:flex;margin-right:56px;">${statBlock(num(sumTiers(card.trophies)), 'Trophies')}</div>
-          ${statBlock(num(card.playedGames), 'Games')}
+  const left = `
+    ${stack(`
+    <div style="display:flex;align-items:center;">
+      ${artTile(card.avatar, 176, 28)}
+      <div style="display:flex;flex-direction:column;margin-left:34px;">
+        ${accentBar(64)}
+        <div style="display:flex;font-size:56px;font-weight:600;color:${INK};letter-spacing:-1px;margin-top:14px;">${esc(card.psnid)}</div>
+        <div style="display:flex;align-items:center;margin-top:12px;">
+          ${flag}
+          <div style="display:flex;font-size:26px;color:${MUTED};">Level ${num(card.trophyLevel)}</div>
+          ${card.rank == null ? '' : `<div style="display:flex;font-size:26px;color:${MUTED};margin-left:22px;">#${num(card.rank)}</div>`}
         </div>
       </div>
+    </div>
 
-      <div style="display:flex;flex-direction:column;margin-top:56px;">
-        ${tierRow(card.trophies)}
-      </div>
+    <div style="display:flex;flex-direction:column;margin-top:40px;">
+      ${tierCard(card.trophies)}
+    </div>
     `)}
 
-    ${footer()}
-  `)
+    ${wordmark()}`
+
+  const panel = `
+    <div style="display:flex;">${dotGrid(5, 3)}</div>
+    <div style="display:flex;flex-direction:column;flex-grow:1;justify-content:center;">
+      ${panelStat(num(sumTiers(card.trophies)), 'Trophies')}
+      <div style="display:flex;flex-direction:column;margin-top:32px;">
+        ${panelStat(num(card.playedGames), 'Games', 40)}
+      </div>
+    </div>
+    ${panelFooter()}`
+
+  return shell(left, panel)
 }
 
 /**
- * Trophy-set card: cover art on the left, platforms, headline stats and the tier
- * breakdown filling the right. The set's name is intentionally absent — see the
- * note at the top of this file.
+ * Trophy-set card: cover art and platforms on the light column, how the set plays
+ * out across its owners on the navy panel. The set's name is intentionally absent
+ * — see the note at the top of this file.
  */
 export function trophyCardHtml(card: TrophyCard): string {
   const badges = card.platforms.map((platform) => {
     const label = platformLabel(platform)
     const fill = PLATFORM_COLORS[platform] ?? PLATFORM_FALLBACK
-    return `<div style="display:flex;align-items:center;height:44px;padding:0 20px;margin-right:12px;border-radius:22px;background-color:${fill};color:#ffffff;font-size:24px;font-weight:600;">${esc(label)}</div>`
+    return `<div style="display:flex;align-items:center;height:42px;padding:0 20px;margin-right:10px;border-radius:21px;background-color:${fill};color:#ffffff;font-size:23px;font-weight:600;">${esc(label)}</div>`
   }).join('')
 
-  return shell(`
-    ${main(`
-      <div style="display:flex;align-items:center;">
-        ${artTile(card.icon, 320, 32)}
-        <div style="display:flex;flex-direction:column;flex-grow:1;margin-left:48px;">
-          <div style="display:flex;">${badges}</div>
-          <div style="display:flex;justify-content:space-between;margin-top:36px;">
-            ${statBlock(num(sumTiers(card.trophies)), 'Trophies')}
-            ${statBlock(num(card.owners), 'Owners')}
-            ${statBlock(`${Math.round(card.averageProgress)}%`, 'Avg progress')}
-          </div>
-          <div style="display:flex;flex-direction:column;margin-top:36px;">
-            ${tierRow(card.trophies)}
-          </div>
-        </div>
+  const left = `
+    ${stack(`
+    <div style="display:flex;align-items:center;">
+      ${artTile(card.icon, 208, 28)}
+      <div style="display:flex;flex-direction:column;margin-left:34px;">
+        ${accentBar(64)}
+        <div style="display:flex;font-size:52px;font-weight:600;color:${INK};letter-spacing:-1px;margin-top:14px;">${num(sumTiers(card.trophies))}</div>
+        <div style="display:flex;font-size:22px;color:${MUTED};margin-top:2px;">Trophies</div>
+        <div style="display:flex;margin-top:18px;">${badges}</div>
       </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;margin-top:40px;">
+      ${tierCard(card.trophies)}
+    </div>
     `)}
 
-    ${footer()}
-  `)
+    ${wordmark()}`
+
+  const panel = `
+    <div style="display:flex;">${dotGrid(5, 3)}</div>
+    <div style="display:flex;flex-direction:column;flex-grow:1;justify-content:center;">
+      ${panelStat(`${Math.round(card.averageProgress)}%`, 'Avg progress')}
+      <div style="display:flex;flex-direction:column;margin-top:32px;">
+        ${panelStat(num(card.owners), 'Owners', 40)}
+      </div>
+    </div>
+    ${panelFooter()}`
+
+  return shell(left, panel)
 }
