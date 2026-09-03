@@ -22,11 +22,6 @@ useSeo({
   title: () => t('seo.home.title'),
   siteNameFirst: true,
   description: () => t('seo.home.description'),
-  image: () => `${siteUrl}/images/psray-share.png`,
-  imageAlt: () => `PSRay — ${t('home.hero.title')}`,
-  imageWidth: 1200,
-  imageHeight: 630,
-  imageType: 'image/png',
 })
 
 // Minimal, honest structured data: what this site is and what it's called.

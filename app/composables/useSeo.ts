@@ -8,6 +8,7 @@ import {
   isUiLocale,
   type UiLocale,
 } from '#shared/locales'
+import { resolveSeoImage, type SeoImageType } from '~/utils/seoImage'
 import { resolveSeoLocalePolicy } from '~/utils/seoLocale'
 
 /**
@@ -42,7 +43,6 @@ import { resolveSeoLocalePolicy } from '~/utils/seoLocale'
 
 /** A value, or a getter for one — so callers can hang SEO off pending async data. */
 type Source<T> = T | (() => T)
-type SeoImageType = 'image/jpeg' | 'image/gif' | 'image/png' | 'image/webp' | 'image/avif'
 
 const read = <T>(source: Source<T> | undefined): T | undefined =>
   typeof source === 'function' ? (source as () => T)() : source
@@ -60,7 +60,10 @@ export interface SeoInput {
   /** Canonical pathname. Defaults to the current route path. */
   canonicalPath?: Source<string>
   description?: Source<string>
-  /** Absolute image URL for `og:image` / `twitter:image`. */
+  /**
+   * Absolute image URL for `og:image` / `twitter:image`. Omit it — or let it
+   * resolve to nothing while data loads — and the brand card stands in.
+   */
   image?: Source<string | undefined>
   /** Accessible description for the social preview image. */
   imageAlt?: Source<string | undefined>
@@ -99,7 +102,7 @@ export interface SeoInput {
 
 export function useSeo(input: SeoInput) {
   const route = useRoute()
-  const { locale } = useI18n()
+  const { t, locale } = useI18n()
   const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
 
   /**
@@ -131,6 +134,16 @@ export function useSeo(input: SeoInput) {
 
   const currentLang = computed(() => localePolicy.value.canonicalLang)
   const title = computed(() => withSiteTitle(read(input.title)!, input.siteNameFirst))
+
+  // `seo.home.title` is the site's own one-line pitch, which is exactly what
+  // the brand card depicts — no separate catalog key to keep translated.
+  const image = computed(() => resolveSeoImage(siteUrl, {
+    url: read(input.image),
+    alt: read(input.imageAlt),
+    width: read(input.imageWidth),
+    height: read(input.imageHeight),
+    type: read(input.imageType),
+  }, `PSRay — ${t('seo.home.title')}`))
 
   const canonical = computed(() =>
     input.staticLocale
@@ -175,25 +188,25 @@ export function useSeo(input: SeoInput) {
     ogSiteName: 'PSRay',
     ogTitle: () => title.value,
     ogDescription: () => read(input.description),
-    ogImage: () => read(input.image),
-    ogImageAlt: () => read(input.imageAlt),
-    ogImageWidth: () => read(input.imageWidth),
-    ogImageHeight: () => read(input.imageHeight),
-    ogImageType: () => read(input.imageType),
+    ogImage: () => image.value.url,
+    ogImageAlt: () => image.value.alt,
+    ogImageWidth: () => image.value.width,
+    ogImageHeight: () => image.value.height,
+    ogImageType: () => image.value.type,
     ogUrl: () => canonical.value,
     ogLocale: () => localePolicy.value.ogLocale,
     ogLocaleAlternate: () => input.staticLocale
       ? undefined
       : UI_LOCALES.filter(code => code !== activeLocale.value).map(code => OG_LOCALE[code]),
-    twitterCard: () => (read(input.image) ? 'summary_large_image' : 'summary'),
+    twitterCard: 'summary_large_image',
     twitterSite: '@shionari_',
     twitterCreator: '@shionari_',
     twitterTitle: () => title.value,
     twitterDescription: () => read(input.description),
-    twitterImage: () => read(input.image),
-    twitterImageAlt: () => read(input.imageAlt),
-    twitterImageWidth: () => read(input.imageWidth),
-    twitterImageHeight: () => read(input.imageHeight),
+    twitterImage: () => image.value.url,
+    twitterImageAlt: () => image.value.alt,
+    twitterImageWidth: () => image.value.width,
+    twitterImageHeight: () => image.value.height,
     // `follow` even when noindex: these pages still link on to indexable ones.
     robots: () => (read(input.noindex) ? 'noindex, follow' : undefined),
   })
