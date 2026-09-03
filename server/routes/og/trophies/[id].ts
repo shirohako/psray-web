@@ -6,9 +6,9 @@ import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 /**
  * `GET /og/trophies/:id.png` — the 1200×630 social card for a trophy set.
  *
- * No `lang` is passed to the API: every field the card draws (icon, platforms,
- * trophy counts, owners) is language-independent, and the set's localised name
- * is printed by the link preview itself, from `og:title`.
+ * No `lang` is passed to the API: the card draws the set's *default*-language
+ * name, so one render serves every locale and the cache stays keyed by id alone.
+ * The preview's own title line still carries the reader's language, from `og:title`.
  */
 const buildCard = defineCachedFunction(async (id: string): Promise<string | null> => {
   let detail: TrophySetDetail
@@ -24,6 +24,8 @@ const buildCard = defineCachedFunction(async (id: string): Promise<string | null
   if (!set) return null
 
   const png = await renderCard(trophyCardHtml({
+    // The set's own default-language name, so the card does not vary by request.
+    name: set.name,
     platforms: set.platform ?? [],
     trophies: {
       platinum: set.defined_trophies.platinum,

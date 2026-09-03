@@ -3,6 +3,7 @@ import {
   CARD_HEIGHT,
   CARD_WIDTH,
   TIER_COLORS,
+  clampTitle,
   num,
   platformLabel,
   profileCardHtml,
@@ -22,6 +23,7 @@ const profile = {
 }
 
 const set = {
+  name: 'Life is Strange: Double Exposure',
   platforms: ['PS5', 'PSVITA'],
   trophies,
   owners: 12480,
@@ -89,9 +91,25 @@ describe('OG card markup', () => {
     }
   })
 
-  it('never draws a trophy set name, which would need CJK outlines', () => {
-    // The card carries no localisable prose at all — only ASCII labels.
-    const text = trophyCardHtml(set).replace(/<[^>]*>/g, ' ')
-    expect(text).not.toMatch(/[^\x00-\x7F]/)
+  it('titles the trophy card with the set name', () => {
+    expect(trophyCardHtml(set)).toContain('Life is Strange: Double Exposure')
+  })
+
+  it('keeps a Japanese title to two lines, budgeting CJK glyphs as full width', () => {
+    const long = 'ライフ イズ ストレンジ ダブルエクスポージャー コンプリートエディション'
+    const clamped = clampTitle(long)
+    expect(clamped.endsWith('…')).toBe(true)
+    expect(clamped.length).toBeLessThan(long.length)
+    // A Latin title of the same character count still fits: half the width each.
+    expect(clampTitle('Life is Strange: Double Exposure')).toBe('Life is Strange: Double Exposure')
+  })
+
+  it('escapes a title that contains markup characters', () => {
+    expect(trophyCardHtml({ ...set, name: 'Trine 2 <Director\'s Cut>' }))
+      .toContain('Trine 2 &lt;Director\'s Cut&gt;')
+  })
+
+  it('clips the avatar to a circle so the PSN square shows no white corners', () => {
+    expect(profileCardHtml(profile)).toContain('width:176px;height:176px;border-radius:88px')
   })
 })

@@ -4,13 +4,13 @@
  * Pure string building, deliberately free of Nitro globals so `tests/ogCard.test.ts`
  * can import it directly. The rendering pipeline lives in `ogRender.ts`.
  *
- * ## Why the cards carry no game or player prose
+ * ## Text and scripts
  *
- * Every dynamic string here is ASCII: PSN IDs are `[A-Za-z0-9_-]`, platforms are
- * `PS5`/`PS4`/…, and everything else is a number. Trophy-set names are not drawn
- * at all — they arrive in up to 25 PSN languages, and rendering those would mean
- * shipping 10–16MB of CJK outlines to satori for text that Telegram, X and Discord
- * already print, localised, in the card's own title line.
+ * Most dynamic strings are ASCII: PSN IDs are `[A-Za-z0-9_-]`, platforms are
+ * `PS5`/`PS4`/…, and the rest are numbers. The exception is a trophy set's name,
+ * which arrives in whatever language the set defaults to — often Japanese. Rather
+ * than bundle CJK outlines, `ogRender.ts` fetches a per-title subset font at
+ * render time; see the note there.
  *
  * Satori only understands inline styles on a small CSS subset — no classes, no
  * shorthand `background`, and every flex container needs an explicit `display`.
@@ -77,6 +77,24 @@ const PANEL_W = 372
 export const platformLabel = (platform: string): string =>
   (platform === 'PSVITA' ? 'PSV' : platform)
 
+/**
+ * Trim a title to what fits two lines of the card's headline.
+ *
+ * Budgeted in ems rather than characters: a CJK glyph is about square, while a
+ * Latin one is roughly half that, so `ライフ イズ ストレンジ` and `Life is Strange`
+ * cost very different amounts of the same line.
+ */
+export function clampTitle(name: string, budget = 27): string {
+  let used = 0
+  let out = ''
+  for (const char of name) {
+    used += /[\u1100-\u11FF\u2E80-\u9FFF\uA960-\uA97F\uAC00-\uD7FF\uF900-\uFAFF\uFF00-\uFF60]/.test(char) ? 1 : 0.5
+    if (used > budget) return `${out.trimEnd()}…`
+    out += char
+  }
+  return out
+}
+
 /** Thousands separators, fixed to `en-US` so the card never depends on server locale. */
 export const num = (value: number): string => value.toLocaleString('en-US')
 
@@ -104,6 +122,8 @@ export interface ProfileCard {
 }
 
 export interface TrophyCard {
+  /** The set's name in its own default language — drawn as the card's title. */
+  name: string
   platforms: string[]
   trophies: TierCounts
   owners: number
@@ -159,7 +179,12 @@ const tierCard = (t: TierCounts): string => `
     ${TIERS.map(tier => tierBlock(tier, t[tier])).join('')}
   </div>`
 
-/** A rounded art tile, or a neutral placeholder of the same size when the fetch failed. */
+/**
+ * A rounded art tile, or a neutral placeholder of the same size when the fetch
+ * failed. PSN avatars are square PNGs whose art is a circle on a white ground, so
+ * they are asked for at `radius = size / 2` — the same `rounded-full` the site
+ * itself uses — which clips the white corners away instead of framing them.
+ */
 const artTile = (src: string | null, size: number, radius: number): string =>
   (src
     ? `<img src="${src}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${radius}px;box-shadow:0 16px 36px rgba(13,23,64,0.16);" />`
@@ -204,7 +229,7 @@ export function profileCardHtml(card: ProfileCard): string {
   const left = `
     ${stack(`
     <div style="display:flex;align-items:center;">
-      ${artTile(card.avatar, 176, 28)}
+      ${artTile(card.avatar, 176, 88)}
       <div style="display:flex;flex-direction:column;margin-left:34px;">
         ${accentBar(64)}
         <div style="display:flex;font-size:56px;font-weight:600;color:${INK};letter-spacing:-1px;margin-top:14px;">${esc(card.psnid)}</div>
@@ -252,10 +277,9 @@ export function trophyCardHtml(card: TrophyCard): string {
     ${stack(`
     <div style="display:flex;align-items:center;">
       ${artTile(card.icon, 208, 28)}
-      <div style="display:flex;flex-direction:column;margin-left:34px;">
+      <div style="display:flex;flex-direction:column;width:520px;margin-left:34px;">
         ${accentBar(64)}
-        <div style="display:flex;font-size:52px;font-weight:600;color:${INK};letter-spacing:-1px;margin-top:14px;">${num(sumTiers(card.trophies))}</div>
-        <div style="display:flex;font-size:22px;color:${MUTED};margin-top:2px;">Trophies</div>
+        <div style="display:flex;font-size:40px;font-weight:600;color:${INK};letter-spacing:-0.5px;line-height:1.25;margin-top:14px;">${esc(clampTitle(card.name))}</div>
         <div style="display:flex;margin-top:18px;">${badges}</div>
       </div>
     </div>
@@ -271,7 +295,10 @@ export function trophyCardHtml(card: TrophyCard): string {
     <div style="display:flex;">${dotGrid(5, 3)}</div>
     <div style="display:flex;flex-direction:column;flex-grow:1;justify-content:center;">
       ${panelStat(`${Math.round(card.averageProgress)}%`, 'Avg progress')}
-      <div style="display:flex;flex-direction:column;margin-top:32px;">
+      <div style="display:flex;flex-direction:column;margin-top:30px;">
+        ${panelStat(num(sumTiers(card.trophies)), 'Trophies', 40)}
+      </div>
+      <div style="display:flex;flex-direction:column;margin-top:30px;">
         ${panelStat(num(card.owners), 'Owners', 40)}
       </div>
     </div>
