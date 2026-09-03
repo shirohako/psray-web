@@ -1,6 +1,6 @@
 import type { Profile } from '~/services/profile'
 import { profileCardHtml } from '../../../utils/ogCard'
-import { imageDataUri, renderCard } from '../../../utils/ogRender'
+import { brandLogo, imageDataUri, renderCard } from '../../../utils/ogRender'
 import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 
 /**
@@ -47,6 +47,7 @@ const buildCard = defineCachedFunction(async (psnid: string): Promise<string | n
     playedGames: profile.played_game_count,
     avatar,
     flag,
+    logo: await brandLogo(),
   }))
 
   return png.toString('base64')

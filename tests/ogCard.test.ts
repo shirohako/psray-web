@@ -20,6 +20,7 @@ const profile = {
   playedGames: 987,
   avatar: 'data:image/png;base64,AAAA',
   flag: 'data:image/svg+xml;base64,BBBB',
+  logo: 'data:image/png;base64,LLLL',
 }
 
 const set = {
@@ -29,6 +30,7 @@ const set = {
   owners: 12480,
   averageProgress: 37.4,
   icon: 'data:image/png;base64,CCCC',
+  logo: 'data:image/png;base64,LLLL',
 }
 
 describe('OG card markup', () => {
@@ -63,9 +65,22 @@ describe('OG card markup', () => {
   })
 
   it('falls back to a placeholder tile rather than a broken image', () => {
-    const markup = profileCardHtml({ ...profile, avatar: null, flag: null })
+    const markup = profileCardHtml({ ...profile, avatar: null, flag: null, logo: null })
     expect(markup).not.toContain('<img')
     expect(markup).toContain('width:176px;height:176px')
+  })
+
+  it('signs both cards with the gamepad mark beside the wordmark', () => {
+    for (const markup of [profileCardHtml(profile), trophyCardHtml(set)]) {
+      expect(markup).toContain('data:image/png;base64,LLLL')
+      expect(markup).toContain('PSRay')
+    }
+  })
+
+  it('keeps the wordmark when the logo could not be read', () => {
+    const markup = trophyCardHtml({ ...set, logo: null })
+    expect(markup).toContain('PSRay')
+    expect(markup).not.toContain('LLLL')
   })
 
   it('abbreviates the Vita platform badge the way the site does', () => {
@@ -109,7 +124,7 @@ describe('OG card markup', () => {
       .toContain('Trine 2 &lt;Director\'s Cut&gt;')
   })
 
-  it('clips the avatar to a circle so the PSN square shows no white corners', () => {
-    expect(profileCardHtml(profile)).toContain('width:176px;height:176px;border-radius:88px')
+  it('rounds the avatar tile without clipping it to a circle', () => {
+    expect(profileCardHtml(profile)).toContain('width:176px;height:176px;border-radius:28px')
   })
 })

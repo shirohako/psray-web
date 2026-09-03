@@ -119,6 +119,8 @@ export interface ProfileCard {
   avatar: string | null
   /** Data URI for the country flag, or `null` — always best-effort. */
   flag: string | null
+  /** Data URI for the PSRay gamepad mark, or `null` if it could not be read. */
+  logo: string | null
 }
 
 export interface TrophyCard {
@@ -131,6 +133,8 @@ export interface TrophyCard {
   averageProgress: number
   /** Data URI for the trophy-set icon, or `null` when it could not be fetched. */
   icon: string | null
+  /** Data URI for the PSRay gamepad mark, or `null` if it could not be read. */
+  logo: string | null
 }
 
 /**
@@ -179,12 +183,7 @@ const tierCard = (t: TierCounts): string => `
     ${TIERS.map(tier => tierBlock(tier, t[tier])).join('')}
   </div>`
 
-/**
- * A rounded art tile, or a neutral placeholder of the same size when the fetch
- * failed. PSN avatars are square PNGs whose art is a circle on a white ground, so
- * they are asked for at `radius = size / 2` — the same `rounded-full` the site
- * itself uses — which clips the white corners away instead of framing them.
- */
+/** A rounded art tile, or a neutral placeholder of the same size when the fetch failed. */
 const artTile = (src: string | null, size: number, radius: number): string =>
   (src
     ? `<img src="${src}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${radius}px;box-shadow:0 16px 36px rgba(13,23,64,0.16);" />`
@@ -204,10 +203,14 @@ const stack = (body: string): string => `
     ${body}
   </div>`
 
-/** Wordmark on the light column; the domain rides the foot of the navy panel. */
-const wordmark = (): string => `
+/**
+ * The gamepad mark beside the wordmark, as the brand image pairs them. Falls back
+ * to the wordmark alone if the logo could not be read.
+ */
+const wordmark = (logo: string | null): string => `
   <div style="display:flex;align-items:center;margin-top:auto;">
-    <div style="display:flex;font-size:30px;font-weight:600;color:${INK};letter-spacing:-0.5px;">PSRay</div>
+    ${logo ? `<img src="${logo}" width="54" height="54" style="width:54px;height:54px;margin-right:14px;" />` : ''}
+    <div style="display:flex;font-size:34px;font-weight:600;color:${INK};letter-spacing:-0.8px;">PSRay</div>
   </div>`
 
 const panelFooter = (): string => `
@@ -229,7 +232,7 @@ export function profileCardHtml(card: ProfileCard): string {
   const left = `
     ${stack(`
     <div style="display:flex;align-items:center;">
-      ${artTile(card.avatar, 176, 88)}
+      ${artTile(card.avatar, 176, 28)}
       <div style="display:flex;flex-direction:column;margin-left:34px;">
         ${accentBar(64)}
         <div style="display:flex;font-size:56px;font-weight:600;color:${INK};letter-spacing:-1px;margin-top:14px;">${esc(card.psnid)}</div>
@@ -246,7 +249,7 @@ export function profileCardHtml(card: ProfileCard): string {
     </div>
     `)}
 
-    ${wordmark()}`
+    ${wordmark(card.logo)}`
 
   const panel = `
     <div style="display:flex;">${dotGrid(5, 3)}</div>
@@ -289,7 +292,7 @@ export function trophyCardHtml(card: TrophyCard): string {
     </div>
     `)}
 
-    ${wordmark()}`
+    ${wordmark(card.logo)}`
 
   const panel = `
     <div style="display:flex;">${dotGrid(5, 3)}</div>

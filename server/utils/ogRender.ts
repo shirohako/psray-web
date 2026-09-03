@@ -2,6 +2,7 @@ import { Resvg } from '@resvg/resvg-js'
 import satori from 'satori'
 import { html as toVdom } from 'satori-html'
 import { CARD_HEIGHT, CARD_WIDTH } from './ogCard'
+import { UNDECODABLE, pngPlease, sniffImageType } from './ogImage'
 
 /**
  * The satori → resvg pipeline behind `/og/*`, plus the asset fetching those
@@ -32,37 +33,45 @@ function loadFonts() {
   return fontsPromise
 }
 
-/** What satori can actually decode. AVIF and WebP are not on this list. */
-const DECODABLE = new Set(['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml'])
+/**
+ * The gamepad mark, inlined once and held for the process.
+ *
+ * A copy of `public/logo.png` lives under `server/assets/brand/` so the renderer
+ * can read it straight out of the server bundle: registering `public/` itself as
+ * a server asset would drag the whole flag set in with it.
+ */
+let logoPromise: Promise<string | null> | null = null
+
+export function brandLogo(): Promise<string | null> {
+  logoPromise ??= (async () => {
+    try {
+      const raw = await useStorage('assets:server').getItemRaw<Buffer>('brand/logo.png')
+      return raw ? `data:image/png;base64,${Buffer.from(raw).toString('base64')}` : null
+    }
+    catch {
+      return null
+    }
+  })()
+  return logoPromise
+}
 
 /**
  * Fetch a remote image and inline it as a data URI — satori resolves no URLs of
  * its own.
  *
- * Two PSN-specific wrinkles are handled here:
- *
- * - `image.api.playstation.com` transcodes to AVIF, ignoring `Accept`, but only
- *   for a bare URL: any query string at all gets the stored PNG back. Feeding
- *   satori the AVIF instead throws from deep inside its image decoder, so a
- *   `format=png` hint goes on URLs that carry no query of their own (leaving
- *   signed URLs, which always have one, untouched).
- * - Anything that still comes back in a format satori cannot read is dropped
- *   rather than passed on, so the card falls back to its placeholder tile.
- *
- * Best-effort throughout: a CDN hiccup should cost the card its art, not turn the
- * whole request into a 500.
+ * Best-effort throughout: a CDN hiccup, or a format satori cannot read, costs the
+ * card its art rather than turning the whole request into a 500.
  */
 export async function imageDataUri(url: string | null | undefined): Promise<string | null> {
   if (!url) return null
   try {
-    const target = url.includes('?') ? url : `${url}?format=png`
-    const response = await fetch(target, { signal: AbortSignal.timeout(5_000) })
+    const response = await fetch(pngPlease(url), { signal: AbortSignal.timeout(5_000) })
     if (!response.ok) return null
 
-    const type = (response.headers.get('content-type') || '').split(';')[0]!.trim().toLowerCase()
-    if (!DECODABLE.has(type)) return null
-
     const body = Buffer.from(await response.arrayBuffer())
+    const type = sniffImageType(body)
+    if (!type || UNDECODABLE.has(type)) return null
+
     return `data:${type};base64,${body.toString('base64')}`
   }
   catch {
@@ -89,14 +98,14 @@ const SCRIPT_FONTS: Record<string, string> = {
 /** Old enough that the CSS API answers with `woff`; satori cannot parse `woff2`. */
 const LEGACY_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/25.0.1349.2 Safari/537.36'
 
+type SatoriFont = Exclude<Parameters<typeof satori>[1]['fonts'], undefined>[number]
+
 /**
  * Fonts for one run of text, memoised by script and exact string. Cleared wholesale
  * once it grows past a few hundred titles rather than tracking per-entry age — a
  * card render costs one HTTP round trip at worst.
  */
 const scriptFonts = new Map<string, SatoriFont[]>()
-
-type SatoriFont = Exclude<Parameters<typeof satori>[1]['fonts'], undefined>[number]
 
 /**
  * Fetch just the glyphs a title actually uses.
