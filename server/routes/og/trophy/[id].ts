@@ -4,7 +4,7 @@ import { brandLogo, imageDataUri, renderCard } from '../../../utils/ogRender'
 import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 
 /**
- * `GET /og/trophies/:id.png` — the 1200×630 social card for a trophy set.
+ * `GET /og/trophy/:id.png` — the 1200×630 social card for a trophy set.
  *
  * No `lang` is passed to the API: the card draws the set's *default*-language
  * name, so one render serves every locale and the cache stays keyed by id alone.
@@ -41,7 +41,7 @@ const buildCard = defineCachedFunction(async (id: string): Promise<string | null
 
   return png.toString('base64')
 }, {
-  name: 'og-trophy-set',
+  name: 'og-trophy',
   maxAge: 60 * 60 * 6,
   getKey: (id: string) => id,
 })

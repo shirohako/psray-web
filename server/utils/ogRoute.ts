@@ -3,6 +3,16 @@ import type { H3Event } from 'h3'
 /**
  * Shared plumbing for the `/og/*` card routes.
  *
+ * ## The URL shape
+ *
+ * `/og/<kind>/<id>.png` — one kind of card per directory under `server/routes/og`,
+ * spelled out (`profile`, `trophy`) rather than mirroring the page routes' `/p/`.
+ *
+ * A trailing segment is reserved for alternate treatments of the same subject:
+ * `/og/<kind>/<id>/<style>.png`, served by a sibling `[id]/[style].ts`. Nothing
+ * uses it yet — it exists so a second style can arrive without moving the URLs
+ * link previews have already cached.
+ *
  * Cards are cached as **base64 strings**, not Buffers: Nitro's cache layer
  * serialises what it stores, and a Buffer does not survive that round trip.
  */
@@ -16,7 +26,7 @@ export const OG_CACHE_CONTROL = 'public, max-age=21600, stale-while-revalidate=6
 /**
  * The route param, minus the `.png` the public URLs carry.
  *
- * radix3 params are whole path segments, so `/og/p/Name.png` arrives as
+ * radix3 params are whole path segments, so `/og/profile/Name.png` arrives as
  * `Name.png` — naming the route file `[psnid].png.ts` would fold the extension
  * into the param *name* instead.
  */

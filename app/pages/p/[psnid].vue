@@ -142,7 +142,7 @@ useSeo({
   // which every platform then stretches or shrinks to fit its 2:1 preview slot.
   // Private profiles advertise nothing and fall back to the brand card.
   image: () => (profile.value?.is_profile_public
-    ? `${siteUrl}/og/p/${encodeURIComponent(profile.value.psnid)}.png`
+    ? `${siteUrl}/og/profile/${encodeURIComponent(profile.value.psnid)}.png`
     : undefined),
   imageWidth: 1200,
   imageHeight: 630,

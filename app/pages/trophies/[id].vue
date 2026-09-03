@@ -423,7 +423,7 @@ useSeo({
     : ''),
   // The set icon is a 512×512 square; the generated card is already 2:1, so no
   // platform has to crop the cover art to make it fit.
-  image: () => (data.value ? `${siteUrl}/og/trophies/${id.value}.png` : undefined),
+  image: () => (data.value ? `${siteUrl}/og/trophy/${id.value}.png` : undefined),
   imageWidth: 1200,
   imageHeight: 630,
   imageType: 'image/png',
