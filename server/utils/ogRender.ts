@@ -1,17 +1,19 @@
 import { Resvg } from '@resvg/resvg-js'
 import QRCode from 'qrcode'
+import sharp from 'sharp'
 import satori from 'satori'
 import { html as toVdom } from 'satori-html'
 import { CARD_HEIGHT, CARD_WIDTH } from './ogCard'
 import type { Size } from './ogImage'
-import { UNDECODABLE, imageSize, pngPlease, sniffImageType } from './ogImage'
+import { NEEDS_TRANSCODE, imageSize, pngPlease, sniffImageType } from './ogImage'
 
 /**
  * The satori → resvg pipeline behind `/card/*`, plus the asset fetching those
  * cards need. Kept apart from `ogCard.ts` so the markup stays unit-testable.
  *
- * `@resvg/resvg-js` is a native module: production must run `pnpm install` and
- * `pnpm build` on the deployment host, not ship a `.output` built elsewhere.
+ * `@resvg/resvg-js` and `sharp` are both native modules: production must run
+ * `pnpm install` and `pnpm build` on the deployment host, not ship a `.output`
+ * built elsewhere.
  */
 
 /**
@@ -95,8 +97,13 @@ export interface FetchedImage {
  * to a PNG first — the flags used to arrive as a 120px raster — pins it to that
  * raster's resolution and hands resvg a downscale to smear instead.
  *
- * Best-effort throughout: a CDN hiccup, or a format satori cannot read, costs the
- * card its art rather than turning the whole request into a 500.
+ * WebP and AVIF are the other way round: resvg cannot decode either, so sharp
+ * re-encodes them to PNG here, before the bytes are ever inlined. See
+ * `NEEDS_TRANSCODE`.
+ *
+ * Best-effort throughout: a CDN hiccup, a format we cannot identify, or a decode
+ * that fails costs the card its art — the tile falls back to its placeholder —
+ * rather than turning the whole request into a 500.
  */
 export async function fetchImage(url: string | null | undefined): Promise<FetchedImage | null> {
   if (!url) return null
@@ -104,9 +111,14 @@ export async function fetchImage(url: string | null | undefined): Promise<Fetche
     const response = await fetch(pngPlease(url), { signal: AbortSignal.timeout(5_000) })
     if (!response.ok) return null
 
-    const body = Buffer.from(await response.arrayBuffer())
-    const type = sniffImageType(body)
-    if (!type || UNDECODABLE.has(type)) return null
+    let body = Buffer.from(await response.arrayBuffer())
+    let type = sniffImageType(body)
+    if (!type) return null
+
+    if (NEEDS_TRANSCODE.has(type)) {
+      body = await sharp(body).png().toBuffer()
+      type = 'image/png'
+    }
 
     return {
       uri: `data:${type};base64,${body.toString('base64')}`,

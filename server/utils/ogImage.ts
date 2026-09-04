@@ -31,15 +31,27 @@ export function sniffImageType(bytes: Buffer): string | null {
 }
 
 /**
- * The one format satori cannot decode. PNG, JPEG, GIF, WebP and SVG all render;
- * handing it AVIF throws from inside its decoder instead of degrading.
+ * Formats resvg cannot draw, which `fetchImage` re-encodes to PNG on the way in.
+ *
+ * The constraint is resvg, not satori: satori never decodes a raster image, it
+ * only copies the data URI into an `<image>` in its output SVG, and resvg is what
+ * has to read the bytes. `@resvg/resvg-js` decodes neither WebP nor AVIF — 2.6.2
+ * and 2.7.0-alpha.2 both fail on plain `VP8` and extended `VP8X` alike — and it
+ * skips an `<image>` it cannot read **silently**, so the card used to render an
+ * empty white tile where the art should be.
+ *
+ * Both matter in production: every custom avatar on `img1.psray.net` is a WebP,
+ * and `image.api.playstation.com` hands out AVIF unless asked otherwise.
  */
-export const UNDECODABLE = new Set(['image/avif'])
+export const NEEDS_TRANSCODE = new Set(['image/avif', 'image/webp'])
 
 /**
  * `image.api.playstation.com` transcodes to AVIF, ignoring `Accept` — but only for
  * a bare URL: any query string at all gets the stored PNG back. Scoped to that one
  * host so custom-avatar URLs, which may be signed, are never rewritten.
+ *
+ * Since `NEEDS_TRANSCODE` this only saves work rather than rescuing the render:
+ * asking for the stored PNG beats fetching AVIF and decoding it again here.
  */
 export function pngPlease(url: string): string {
   if (url.includes('?')) return url

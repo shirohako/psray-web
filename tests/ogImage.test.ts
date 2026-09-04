@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { UNDECODABLE, fitWithin, imageSize, pngPlease, sniffImageType } from '../server/utils/ogImage'
+import { NEEDS_TRANSCODE, fitWithin, imageSize, pngPlease, sniffImageType } from '../server/utils/ogImage'
 
 const at = (path: string) => readFileSync(fileURLToPath(new URL(path, import.meta.url)))
 
@@ -12,18 +12,18 @@ describe('social-card image sniffing', () => {
     expect(sniffImageType(at('../public/flags/4x3/de.svg'))).toBe('image/svg+xml')
   })
 
-  it('accepts WebP, which satori renders and custom avatars are often stored as', () => {
+  it('marks WebP for transcoding — resvg cannot draw what every custom avatar is', () => {
     // RIFF container: the tag, a length, then the `WEBP` form type.
     const webp = Buffer.concat([Buffer.from('RIFF'), Buffer.alloc(4), Buffer.from('WEBPVP8 ')])
     expect(sniffImageType(webp)).toBe('image/webp')
-    expect(UNDECODABLE.has('image/webp')).toBe(false)
+    expect(NEEDS_TRANSCODE.has('image/webp')).toBe(true)
   })
 
-  it('flags AVIF, the one format satori throws on rather than degrades', () => {
+  it('marks AVIF for transcoding, which resvg cannot draw either', () => {
     // ISO-BMFF: 4-byte box length, `ftyp`, then the brand.
     const avif = Buffer.concat([Buffer.from([0, 0, 0, 0x20]), Buffer.from('ftypavif')])
     expect(sniffImageType(avif)).toBe('image/avif')
-    expect(UNDECODABLE.has('image/avif')).toBe(true)
+    expect(NEEDS_TRANSCODE.has('image/avif')).toBe(true)
   })
 
   it('reports nothing for truncated or non-image bytes', () => {
