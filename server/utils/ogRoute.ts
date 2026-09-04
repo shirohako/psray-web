@@ -6,7 +6,7 @@ import type { H3Event } from 'h3'
  * ## The URL shape
  *
  * `/card/<kind>/<id>.png` — one kind of card per directory under `server/routes/card`,
- * spelled out (`profile`, `trophy`) rather than mirroring the page routes' `/p/`.
+ * spelled out (`profile`, `trophies`) rather than mirroring the page routes' `/p/`.
  *
  * A trailing segment is reserved for alternate treatments of the same subject:
  * `/card/<kind>/<id>/<style>.png`, served by a sibling `[id]/[style].ts`. Nothing

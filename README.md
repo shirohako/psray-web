@@ -40,7 +40,7 @@ pnpm dev               # http://localhost:3630 (or NUXT_PORT)
 
 ## Deployment
 
-`/card/profile/:psnid.png` and `/card/trophy/:id.png` are rendered server-side (satori →
+`/card/profile/:psnid.png` and `/card/trophies/:id.png` are rendered server-side (satori →
 resvg) into the 1200x630 social cards the profile and trophy pages advertise as
 `og:image`. `@resvg/resvg-js` is a **native** module, so production must run
 `pnpm install && pnpm build` on the deployment host - a `.output/` built on a
