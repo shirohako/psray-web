@@ -18,7 +18,7 @@ const profile = {
   rank: 1234,
   trophies,
   playedGames: 987,
-  avatar: 'data:image/png;base64,AAAA',
+  avatar: { uri: 'data:image/png;base64,AAAA', natural: { width: 240, height: 240 } },
   flag: 'data:image/svg+xml;base64,BBBB',
   logo: 'data:image/png;base64,LLLL',
 }
@@ -29,7 +29,7 @@ const set = {
   trophies,
   owners: 12480,
   averageProgress: 37.4,
-  icon: 'data:image/png;base64,CCCC',
+  icon: { uri: 'data:image/png;base64,CCCC', natural: { width: 512, height: 512 } },
   logo: 'data:image/png;base64,LLLL',
 }
 
@@ -68,6 +68,15 @@ describe('OG card markup', () => {
     const markup = profileCardHtml({ ...profile, avatar: null, flag: null, logo: null })
     expect(markup).not.toContain('<img')
     expect(markup).toContain('width:176px;height:176px')
+  })
+
+  it('draws a landscape cover at its own shape instead of squashing it square', () => {
+    // PS3, PS4 and Vita sets ship 320x176 art; only PS5 sets are square.
+    const wide = trophyCardHtml({ ...set, icon: { uri: 'data:image/png;base64,WWWW', natural: { width: 320, height: 176 } } })
+    expect(wide).toContain('width:268px;height:147px')
+
+    // A PS5 square fills the box's height, not its width.
+    expect(trophyCardHtml(set)).toContain('width:208px;height:208px')
   })
 
   it('signs both cards with the gamepad mark beside the wordmark', () => {

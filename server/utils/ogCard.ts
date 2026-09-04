@@ -1,3 +1,6 @@
+import type { Size } from './ogImage'
+import { fitWithin } from './ogImage'
+
 /**
  * Social-card markup for the generated 1200×630 Open Graph images.
  *
@@ -95,6 +98,12 @@ export function clampTitle(name: string, budget = 27): string {
   return out
 }
 
+/** Art the card draws: inlined bytes plus the intrinsic size to lay it out by. */
+export interface CardImage {
+  uri: string
+  natural: Size | null
+}
+
 /** Thousands separators, fixed to `en-US` so the card never depends on server locale. */
 export const num = (value: number): string => value.toLocaleString('en-US')
 
@@ -115,8 +124,8 @@ export interface ProfileCard {
   rank: number | null
   trophies: TierCounts
   playedGames: number
-  /** Data URI for the PSN avatar, or `null` when it could not be fetched. */
-  avatar: string | null
+  /** The PSN avatar, or `null` when it could not be fetched. */
+  avatar: CardImage | null
   /** Data URI for the country flag, or `null` — always best-effort. */
   flag: string | null
   /** Data URI for the PSRay gamepad mark, or `null` if it could not be read. */
@@ -131,8 +140,8 @@ export interface TrophyCard {
   owners: number
   /** Average completion across owners, 0–100. */
   averageProgress: number
-  /** Data URI for the trophy-set icon, or `null` when it could not be fetched. */
-  icon: string | null
+  /** The trophy-set icon, or `null` when it could not be fetched. */
+  icon: CardImage | null
   /** Data URI for the PSRay gamepad mark, or `null` if it could not be read. */
   logo: string | null
 }
@@ -183,11 +192,21 @@ const tierCard = (t: TierCounts): string => `
     ${TIERS.map(tier => tierBlock(tier, t[tier])).join('')}
   </div>`
 
-/** A rounded art tile, or a neutral placeholder of the same size when the fetch failed. */
-const artTile = (src: string | null, size: number, radius: number): string =>
-  (src
-    ? `<img src="${src}" width="${size}" height="${size}" style="width:${size}px;height:${size}px;border-radius:${radius}px;box-shadow:0 16px 36px rgba(13,23,64,0.16);" />`
-    : `<div style="display:flex;width:${size}px;height:${size}px;border-radius:${radius}px;background-color:#dfe6f7;"></div>`)
+/**
+ * Art scaled to fill a box without distorting, or a neutral placeholder when the
+ * fetch failed.
+ *
+ * Trophy-set art is not one shape: PS5 sets ship a 512×512 square, everything
+ * older a 320×176 landscape. A fixed square box stretched every older cover, so
+ * the box bounds the art rather than dictating it.
+ */
+const artTile = (image: CardImage | null, maxWidth: number, maxHeight: number, radius: number): string => {
+  if (!image) {
+    return `<div style="display:flex;flex-shrink:0;width:${maxHeight}px;height:${maxHeight}px;border-radius:${radius}px;background-color:#dfe6f7;"></div>`
+  }
+  const { width, height } = fitWithin(image.natural, maxWidth, maxHeight)
+  return `<img src="${image.uri}" width="${width}" height="${height}" style="flex-shrink:0;width:${width}px;height:${height}px;border-radius:${radius}px;box-shadow:0 16px 36px rgba(13,23,64,0.16);" />`
+}
 
 /** A headline figure on the navy panel: big white number over a lavender caption. */
 const panelStat = (value: string, label: string, size = 62): string => `
@@ -232,7 +251,7 @@ export function profileCardHtml(card: ProfileCard): string {
   const left = `
     ${stack(`
     <div style="display:flex;align-items:center;">
-      ${artTile(card.avatar, 176, 28)}
+      ${artTile(card.avatar, 176, 176, 28)}
       <div style="display:flex;flex-direction:column;margin-left:34px;">
         ${accentBar(64)}
         <div style="display:flex;font-size:56px;font-weight:600;color:${INK};letter-spacing:-1px;margin-top:14px;">${esc(card.psnid)}</div>
@@ -279,8 +298,8 @@ export function trophyCardHtml(card: TrophyCard): string {
   const left = `
     ${stack(`
     <div style="display:flex;align-items:center;">
-      ${artTile(card.icon, 208, 28)}
-      <div style="display:flex;flex-direction:column;width:520px;margin-left:34px;">
+      ${artTile(card.icon, 268, 208, 28)}
+      <div style="display:flex;flex-direction:column;flex-grow:1;flex-shrink:1;margin-left:34px;">
         ${accentBar(64)}
         <div style="display:flex;font-size:40px;font-weight:600;color:${INK};letter-spacing:-0.5px;line-height:1.25;margin-top:14px;">${esc(clampTitle(card.name))}</div>
         <div style="display:flex;margin-top:18px;">${badges}</div>

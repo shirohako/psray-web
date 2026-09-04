@@ -1,6 +1,6 @@
 import type { Profile } from '~/services/profile'
 import { profileCardHtml } from '../../../utils/ogCard'
-import { brandLogo, imageDataUri, renderCard } from '../../../utils/ogRender'
+import { brandLogo, fetchImage, renderCard } from '../../../utils/ogRender'
 import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 
 /**
@@ -27,9 +27,9 @@ const buildCard = defineCachedFunction(async (psnid: string): Promise<string | n
   if (!profile?.is_profile_public) return null
 
   const [avatar, flag] = await Promise.all([
-    imageDataUri(profile.avatar_url),
+    fetchImage(profile.avatar_url),
     // The site already ships these SVGs; the card just borrows one over HTTP.
-    imageDataUri(profile.country
+    fetchImage(profile.country
       ? `${useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')}/flags/4x3/${profile.country.toLowerCase()}.svg`
       : null),
   ])
@@ -46,7 +46,8 @@ const buildCard = defineCachedFunction(async (psnid: string): Promise<string | n
     },
     playedGames: profile.played_game_count,
     avatar,
-    flag,
+    // Flags are drawn at a fixed 4:3, so only the bytes are needed.
+    flag: flag?.uri ?? null,
     logo: await brandLogo(),
   }))
 

@@ -1,6 +1,6 @@
 import type { TrophySetDetail } from '~/services/trophies'
 import { trophyCardHtml } from '../../../utils/ogCard'
-import { brandLogo, imageDataUri, renderCard } from '../../../utils/ogRender'
+import { brandLogo, fetchImage, renderCard } from '../../../utils/ogRender'
 import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 
 /**
@@ -35,7 +35,7 @@ const buildCard = defineCachedFunction(async (id: string): Promise<string | null
     },
     owners: set.owners,
     averageProgress: set.average_progress,
-    icon: await imageDataUri(set.icon_url),
+    icon: await fetchImage(set.icon_url),
     logo: await brandLogo(),
   }))
 

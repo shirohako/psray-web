@@ -2,7 +2,8 @@ import { Resvg } from '@resvg/resvg-js'
 import satori from 'satori'
 import { html as toVdom } from 'satori-html'
 import { CARD_HEIGHT, CARD_WIDTH } from './ogCard'
-import { UNDECODABLE, pngPlease, sniffImageType } from './ogImage'
+import type { Size } from './ogImage'
+import { UNDECODABLE, imageSize, pngPlease, sniffImageType } from './ogImage'
 
 /**
  * The satori → resvg pipeline behind `/card/*`, plus the asset fetching those
@@ -55,14 +56,20 @@ export function brandLogo(): Promise<string | null> {
   return logoPromise
 }
 
+/** A fetched image: inlined bytes plus the intrinsic size the card lays it out by. */
+export interface FetchedImage {
+  uri: string
+  natural: Size | null
+}
+
 /**
  * Fetch a remote image and inline it as a data URI — satori resolves no URLs of
- * its own.
+ * its own — along with the size read from its header.
  *
  * Best-effort throughout: a CDN hiccup, or a format satori cannot read, costs the
  * card its art rather than turning the whole request into a 500.
  */
-export async function imageDataUri(url: string | null | undefined): Promise<string | null> {
+export async function fetchImage(url: string | null | undefined): Promise<FetchedImage | null> {
   if (!url) return null
   try {
     const response = await fetch(pngPlease(url), { signal: AbortSignal.timeout(5_000) })
@@ -72,7 +79,10 @@ export async function imageDataUri(url: string | null | undefined): Promise<stri
     const type = sniffImageType(body)
     if (!type || UNDECODABLE.has(type)) return null
 
-    return `data:${type};base64,${body.toString('base64')}`
+    return {
+      uri: `data:${type};base64,${body.toString('base64')}`,
+      natural: imageSize(body),
+    }
   }
   catch {
     return null

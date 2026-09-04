@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
-import { UNDECODABLE, pngPlease, sniffImageType } from '../server/utils/ogImage'
+import { UNDECODABLE, fitWithin, imageSize, pngPlease, sniffImageType } from '../server/utils/ogImage'
 
 const at = (path: string) => readFileSync(fileURLToPath(new URL(path, import.meta.url)))
 
@@ -44,5 +44,40 @@ describe('social-card image sniffing', () => {
     ]) {
       expect(pngPlease(url)).toBe(url)
     }
+  })
+})
+
+describe('intrinsic size', () => {
+  it('reads PNG and JPEG headers', () => {
+    expect(imageSize(at('../public/logo.png'))).toEqual({ width: 256, height: 256 })
+    expect(imageSize(at('../public/images/psray-share.jpg'))).toEqual({ width: 1200, height: 630 })
+  })
+
+  it('reads a GIF screen descriptor', () => {
+    const gif = Buffer.concat([Buffer.from('GIF89a'), Buffer.from([0x40, 0x01, 0xF0, 0x00]), Buffer.alloc(4)])
+    expect(imageSize(gif)).toEqual({ width: 320, height: 240 })
+  })
+
+  it('reports nothing for SVG, which the flags arrive as at a fixed size', () => {
+    expect(imageSize(at('../public/flags/4x3/de.svg'))).toBeNull()
+  })
+})
+
+describe('fitting art to its box', () => {
+  it('fills the height for a PS5 square', () => {
+    expect(fitWithin({ width: 512, height: 512 }, 268, 208)).toEqual({ width: 208, height: 208 })
+  })
+
+  it('fills the width for the 320x176 art every older platform ships', () => {
+    expect(fitWithin({ width: 320, height: 176 }, 268, 208)).toEqual({ width: 268, height: 147 })
+  })
+
+  it('scales small art up so a tile is never half empty', () => {
+    expect(fitWithin({ width: 100, height: 100 }, 268, 208)).toEqual({ width: 208, height: 208 })
+  })
+
+  it('falls back to a square when the size could not be read', () => {
+    expect(fitWithin(null, 268, 208)).toEqual({ width: 208, height: 208 })
+    expect(fitWithin({ width: 0, height: 0 }, 268, 208)).toEqual({ width: 208, height: 208 })
   })
 })
