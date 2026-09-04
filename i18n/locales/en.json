@@ -37,7 +37,6 @@
       "collapseMenu": "Collapse menu",
       "expandMenu": "Expand menu",
       "language": "Language",
-      "search": "Search",
       "settings": "Settings"
     },
     "user": {
@@ -344,7 +343,7 @@
         "deleted": "Comment deleted",
         "deleteFailed": "Could not delete comment",
         "loginTitle": "Sign in to share a tip",
-        "loginHint": "Your Markdown guide can help the next player.",
+        "loginHint": "Your tip can help the next player.",
         "errors": {
           "contentRequired": "Write something before publishing.",
           "contentLength": "Tips can contain at most 20,000 characters.",

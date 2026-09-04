@@ -1,6 +1,6 @@
 import type { Profile } from '~/services/profile'
 import { profileCardHtml } from '../../../utils/ogCard'
-import { brandLogo, fetchImage, renderCard } from '../../../utils/ogRender'
+import { brandLogo, fetchImage, pageQrCode, renderCard } from '../../../utils/ogRender'
 import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 
 /**
@@ -26,18 +26,24 @@ const buildCard = defineCachedFunction(async (psnid: string): Promise<string | n
 
   if (!profile?.is_profile_public) return null
 
-  const [avatar, flag] = await Promise.all([
+  const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
+  const pageUrl = `${siteUrl}/p/${encodeURIComponent(profile.psnid)}`
+  const [avatar, flag, logo, qr] = await Promise.all([
     fetchImage(profile.avatar_url),
-    // The site already ships these SVGs; the card just borrows one over HTTP.
+    // The site already ships these SVGs; the card just borrows one over HTTP and
+    // draws it as a vector, so a 24px flag still resolves its own detail.
     fetchImage(profile.country
-      ? `${useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')}/flags/4x3/${profile.country.toLowerCase()}.svg`
+      ? `${siteUrl}/flags/4x3/${profile.country.toLowerCase()}.svg`
       : null),
+    brandLogo(),
+    pageQrCode(pageUrl),
   ])
 
   const png = await renderCard(profileCardHtml({
     psnid: profile.psnid,
     trophyLevel: profile.trophy_level,
     rank: profile.rank,
+    regionalRank: profile.server_rank,
     trophies: {
       platinum: profile.platinum,
       gold: profile.gold,
@@ -48,12 +54,18 @@ const buildCard = defineCachedFunction(async (psnid: string): Promise<string | n
     avatar,
     // Flags are drawn at a fixed 4:3, so only the bytes are needed.
     flag: flag?.uri ?? null,
-    logo: await brandLogo(),
+    country: profile.country || null,
+    logo,
+    url: pageUrl,
+    qr,
+    lastUpdatedAt: profile.last_synced_at,
   }))
 
   return png.toString('base64')
 }, {
-  name: 'og-profile',
+  // Version the render cache alongside the public `?v=3` image URL so a style
+  // deployment cannot inherit PNGs produced by the previous layout.
+  name: 'og-profile-v3',
   maxAge: 60 * 60 * 6,
   getKey: (psnid: string) => psnid.toLowerCase(),
 })

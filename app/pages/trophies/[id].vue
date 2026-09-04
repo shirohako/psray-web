@@ -423,7 +423,8 @@ useSeo({
     : ''),
   // The set icon is a 512×512 square; the generated card is already 2:1, so no
   // platform has to crop the cover art to make it fit.
-  image: () => (data.value ? `${siteUrl}/card/trophies/${id.value}.png` : undefined),
+  image: () => (data.value ? `${siteUrl}/card/trophies/${id.value}.png?v=3` : undefined),
+  // The rendered size, which `CARD_SCALE` in `server/utils/ogRender.ts` scales.
   imageWidth: 1200,
   imageHeight: 630,
   imageType: 'image/png',

@@ -37,7 +37,6 @@
       "collapseMenu": "メニューを折りたたむ",
       "expandMenu": "メニューを開く",
       "language": "言語",
-      "search": "検索",
       "settings": "設定"
     },
     "user": {
@@ -344,7 +343,7 @@
         "deleted": "コメントを削除しました",
         "deleteFailed": "コメントを削除できませんでした",
         "loginTitle": "ログインしてコメントを投稿",
-        "loginHint": "Markdown で書いた攻略情報が、次のプレイヤーの助けになります。",
+        "loginHint": "ちょっとしたコツが、次に挑むプレイヤーの助けになります。",
         "errors": {
           "contentRequired": "投稿内容を入力してください。",
           "contentLength": "コメントは 20,000 文字以内です。",

@@ -1,4 +1,5 @@
 import { Resvg } from '@resvg/resvg-js'
+import QRCode from 'qrcode'
 import satori from 'satori'
 import { html as toVdom } from 'satori-html'
 import { CARD_HEIGHT, CARD_WIDTH } from './ogCard'
@@ -12,6 +13,25 @@ import { UNDECODABLE, imageSize, pngPlease, sniffImageType } from './ogImage'
  * `@resvg/resvg-js` is a native module: production must run `pnpm install` and
  * `pnpm build` on the deployment host, not ship a `.output` built elsewhere.
  */
+
+/**
+ * Device-pixel scale of the rendered PNG.
+ *
+ * 1× — 1200×630, the geometry every platform crops to — because that is already
+ * the resolution the previews need: the widest slot any of them gives a card is
+ * around 600 CSS px (Twitter ~600, LinkedIn ~552, Discord ~500, Slack ~360), so
+ * 1200 source pixels is a 2× image everywhere it is actually seen.
+ *
+ * Rendering at 2× was measured at 562KB against 205KB — PNG is a poor container
+ * for this card, which is half smooth gradient and half photograph, and lossless
+ * detail nobody displays is pure weight. It only pays off for someone opening the
+ * `.png` URL at full size.
+ *
+ * Raise it only alongside a lossy encoder: at 2×, JPEG q85 lands near 277KB, half
+ * the PNG. `og:image:width` / `:height` on the pages must state the rendered size,
+ * so keep them in step with this.
+ */
+export const CARD_SCALE = 1
 
 /** Inter, in the two weights the cards use. Parsed once, then held for the process. */
 let fontsPromise: Promise<{ name: string; data: Buffer; weight: 400 | 600; style: 'normal' }[]> | null = null
@@ -37,17 +57,21 @@ function loadFonts() {
 /**
  * The gamepad mark, inlined once and held for the process.
  *
- * A copy of `public/logo.png` lives under `server/assets/brand/` so the renderer
- * can read it straight out of the server bundle: registering `public/` itself as
- * a server asset would drag the whole flag set in with it.
+ * A vector version lives under `server/assets/brand/` so the small header mark
+ * stays sharp after social platforms rescale the card. The PNG remains as a
+ * fallback; registering `public/` itself would drag the whole flag set in.
  */
 let logoPromise: Promise<string | null> | null = null
 
 export function brandLogo(): Promise<string | null> {
   logoPromise ??= (async () => {
     try {
-      const raw = await useStorage('assets:server').getItemRaw<Buffer>('brand/logo.png')
-      return raw ? `data:image/png;base64,${Buffer.from(raw).toString('base64')}` : null
+      const assets = useStorage('assets:server')
+      const svg = await assets.getItemRaw<Buffer>('brand/logo.svg')
+      if (svg) return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
+
+      const png = await assets.getItemRaw<Buffer>('brand/logo.png')
+      return png ? `data:image/png;base64,${Buffer.from(png).toString('base64')}` : null
     }
     catch {
       return null
@@ -66,6 +90,11 @@ export interface FetchedImage {
  * Fetch a remote image and inline it as a data URI — satori resolves no URLs of
  * its own — along with the size read from its header.
  *
+ * SVGs are passed through as SVG. satori nests them into its output untouched, so
+ * resvg draws them as vectors at the card's full device resolution; flattening one
+ * to a PNG first — the flags used to arrive as a 120px raster — pins it to that
+ * raster's resolution and hands resvg a downscale to smear instead.
+ *
  * Best-effort throughout: a CDN hiccup, or a format satori cannot read, costs the
  * card its art rather than turning the whole request into a 500.
  */
@@ -83,6 +112,29 @@ export async function fetchImage(url: string | null | undefined): Promise<Fetche
       uri: `data:${type};base64,${body.toString('base64')}`,
       natural: imageSize(body),
     }
+  }
+  catch {
+    return null
+  }
+}
+
+/**
+ * QR for the concrete public page represented by a card, not its image route.
+ *
+ * Emitted as SVG rather than `toDataURL`'s PNG: a QR is a grid of hard-edged
+ * squares, and the raster one had to be resampled into a 72px box, which blurred
+ * module boundaries. As vector geometry the modules land on the output grid at
+ * whatever scale the card is rasterised at.
+ */
+export async function pageQrCode(url: string): Promise<string | null> {
+  try {
+    const svg = await QRCode.toString(url, {
+      type: 'svg',
+      errorCorrectionLevel: 'M',
+      margin: 1,
+      color: { dark: '#111936', light: '#ffffff' },
+    })
+    return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
   }
   catch {
     return null
@@ -181,6 +233,6 @@ export async function renderCard(markup: string): Promise<Buffer> {
     fonts: await loadFonts(),
     loadAdditionalAsset: (code, segment) => loadScriptFont(code, segment),
   })
-  const png = new Resvg(svg, { fitTo: { mode: 'width', value: CARD_WIDTH } })
+  const png = new Resvg(svg, { fitTo: { mode: 'width', value: CARD_WIDTH * CARD_SCALE } })
   return Buffer.from(png.render().asPng())
 }

@@ -37,7 +37,6 @@
       "collapseMenu": "메뉴 접기",
       "expandMenu": "메뉴 펼치기",
       "language": "언어",
-      "search": "검색",
       "settings": "설정"
     },
     "user": {
@@ -344,7 +343,7 @@
         "deleted": "댓글을 삭제했습니다",
         "deleteFailed": "댓글을 삭제하지 못했습니다",
         "loginTitle": "로그인하여 댓글 작성",
-        "loginHint": "Markdown 공략으로 다음 플레이어를 도울 수 있습니다.",
+        "loginHint": "당신의 공략으로 다음 플레이어를 도울 수 있습니다.",
         "errors": {
           "contentRequired": "게시할 내용을 입력하세요.",
           "contentLength": "댓글은 최대 20,000자까지 작성할 수 있습니다.",

@@ -1,6 +1,6 @@
 import type { TrophySetDetail } from '~/services/trophies'
 import { trophyCardHtml } from '../../../utils/ogCard'
-import { brandLogo, fetchImage, renderCard } from '../../../utils/ogRender'
+import { brandLogo, fetchImage, pageQrCode, renderCard } from '../../../utils/ogRender'
 import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 
 /**
@@ -23,6 +23,14 @@ const buildCard = defineCachedFunction(async (id: string): Promise<string | null
   const set = detail?.trophy_set
   if (!set) return null
 
+  const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
+  const pageUrl = `${siteUrl}/trophies/${id}`
+  const [icon, logo, qr] = await Promise.all([
+    fetchImage(set.icon_url),
+    brandLogo(),
+    pageQrCode(pageUrl),
+  ])
+
   const png = await renderCard(trophyCardHtml({
     // The set's own default-language name, so the card does not vary by request.
     name: set.name,
@@ -34,14 +42,24 @@ const buildCard = defineCachedFunction(async (id: string): Promise<string | null
       bronze: set.defined_trophies.bronze,
     },
     owners: set.owners,
+    completedPlayers: set.completed_players,
+    platinumAchievers: set.platinum_achievers,
+    recentPlayers: set.recent_players,
     averageProgress: set.average_progress,
-    icon: await fetchImage(set.icon_url),
-    logo: await brandLogo(),
+    icon,
+    logo,
+    url: pageUrl,
+    qr,
+    // When PSRay last refreshed the set's stats — the same footer line the
+    // profile card draws, so a cached card says how current its numbers are.
+    lastUpdatedAt: set.updated_at,
   }))
 
   return png.toString('base64')
 }, {
-  name: 'og-trophy',
+  // Version the render cache alongside the public `?v=3` image URL so a style
+  // deployment cannot inherit PNGs produced by the previous layout.
+  name: 'og-trophy-v3',
   maxAge: 60 * 60 * 6,
   getKey: (id: string) => id,
 })

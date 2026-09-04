@@ -105,7 +105,7 @@ useSeo({
     <section id="about" class="scroll-mt-24 rounded-2xl border border-violet-200 bg-linear-to-br from-white to-violet-50/70 p-5 shadow-sm sm:p-7">
       <div class="flex items-center gap-3">
         <span class="grid size-12 shrink-0 place-items-center rounded-xl border border-violet-200 bg-white p-1.5 shadow-sm shadow-violet-900/10">
-          <img src="/logo.png" alt="" class="size-full object-contain" />
+          <img src="/logo.svg" alt="" class="size-full object-contain" />
         </span>
         <h2 class="text-xl font-bold tracking-tight text-slate-950">PSRay について</h2>
       </div>

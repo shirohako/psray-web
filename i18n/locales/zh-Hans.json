@@ -37,7 +37,6 @@
       "collapseMenu": "折叠菜单",
       "expandMenu": "展开菜单",
       "language": "语言",
-      "search": "搜索",
       "settings": "设置"
     },
     "user": {
@@ -344,7 +343,7 @@
         "deleted": "留言已删除",
         "deleteFailed": "无法删除留言",
         "loginTitle": "登录后发表留言",
-        "loginHint": "你的 Markdown 攻略可以帮助下一位玩家。",
+        "loginHint": "你的攻略可以帮助下一位玩家。",
         "errors": {
           "contentRequired": "请先填写留言内容。",
           "contentLength": "留言最多可以包含 20,000 个字符。",

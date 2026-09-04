@@ -7,7 +7,7 @@ const at = (path: string) => readFileSync(fileURLToPath(new URL(path, import.met
 
 describe('social-card image sniffing', () => {
   it('identifies the formats the cards actually pull in', () => {
-    expect(sniffImageType(at('../public/logo.png'))).toBe('image/png')
+    expect(sniffImageType(at('../server/assets/brand/logo.png'))).toBe('image/png')
     expect(sniffImageType(at('../public/images/psray-share.jpg'))).toBe('image/jpeg')
     expect(sniffImageType(at('../public/flags/4x3/de.svg'))).toBe('image/svg+xml')
   })
@@ -49,7 +49,7 @@ describe('social-card image sniffing', () => {
 
 describe('intrinsic size', () => {
   it('reads PNG and JPEG headers', () => {
-    expect(imageSize(at('../public/logo.png'))).toEqual({ width: 256, height: 256 })
+    expect(imageSize(at('../server/assets/brand/logo.png'))).toEqual({ width: 256, height: 256 })
     expect(imageSize(at('../public/images/psray-share.jpg'))).toEqual({ width: 1200, height: 630 })
   })
 

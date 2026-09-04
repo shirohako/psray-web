@@ -138,12 +138,13 @@ useSeo({
   description: () => (profile.value
     ? t('seo.profile.description', { psnid: profile.value.psnid })
     : ''),
-  // A generated 1200×630 card, not the raw PSN avatar: that is a 240×240 square,
-  // which every platform then stretches or shrinks to fit its 2:1 preview slot.
+  // A generated card, not the raw PSN avatar: that is a 240×240 square, which
+  // every platform then stretches or shrinks to fit its 2:1 preview slot.
   // Private profiles advertise nothing and fall back to the brand card.
   image: () => (profile.value?.is_profile_public
-    ? `${siteUrl}/card/profile/${encodeURIComponent(profile.value.psnid)}.png`
+    ? `${siteUrl}/card/profile/${encodeURIComponent(profile.value.psnid)}.png?v=3`
     : undefined),
+  // The rendered size, which `CARD_SCALE` in `server/utils/ogRender.ts` scales.
   imageWidth: 1200,
   imageHeight: 630,
   imageType: 'image/png',

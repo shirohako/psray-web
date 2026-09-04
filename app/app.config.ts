@@ -12,7 +12,7 @@ export default defineAppConfig({
      * the layout falls back to the built-in Zap icon. Use a local asset (e.g.
      * `/logo.svg` in `public/`) or any URL.
      */
-    logo: '/logo.png',
+    logo: '/logo.svg',
   },
   profile: {
     /**

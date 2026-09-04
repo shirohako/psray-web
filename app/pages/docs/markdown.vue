@@ -17,5 +17,5 @@ useSeo({
 </script>
 
 <template>
-  <MarkdownGuide brand="PSRay Markdown" image-src="/logo.png" image-alt="PSRay Logo" />
+  <MarkdownGuide brand="PSRay Markdown" image-src="/logo.svg" image-alt="PSRay Logo" />
 </template>
