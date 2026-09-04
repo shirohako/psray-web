@@ -1,4 +1,5 @@
 import { createRequire } from 'node:module'
+import { fileURLToPath } from 'node:url'
 import tailwindcss from "@tailwindcss/vite";
 
 const require = createRequire(import.meta.url)
@@ -10,6 +11,35 @@ export default defineNuxtConfig({
     // Serve large local SVG flags (and other public assets) precompressed when
     // the client advertises Brotli/Gzip support.
     compressPublicAssets: true,
+    storage: {
+      // Where `defineCachedFunction` keeps rendered social cards.
+      //
+      // Nitro's default is the in-memory driver, which empties on restart and
+      // is per-worker under a process manager — so every deploy put the next
+      // crawler of every card back on the cold path, a 3-13s satori render.
+      // Long enough that X abandons the image and downgrades the tweet from
+      // `summary_large_image` to its small `summary` card.
+      //
+      // On disk the renders outlive both, and since these entries are written
+      // stale-while-revalidate they carry no storage TTL: an expired card is
+      // still served instantly while it refreshes behind the response.
+      //
+      // `base` is resolved against the working directory, matching the `data`
+      // mount Nitro sets up itself — so production must start the server from
+      // the project root for cards to survive a restart.
+      cache: { driver: 'fsLite', base: './.data/cache' },
+    },
+    serverAssets: [
+      // The country flags the profile card draws, read from the bundle instead
+      // of fetched back off our own public URL — that round trip out through
+      // nginx and in again cost about a second of every cold render. Just the
+      // 4x3 set, 604KB: registering `public/` itself would drag in the
+      // animations and every other asset the server never touches.
+      {
+        baseName: 'flags',
+        dir: fileURLToPath(new URL('./public/flags/4x3', import.meta.url)),
+      },
+    ],
     externals: {
       // satori shapes text through harfbuzzjs, whose `hb.js` loads a sibling
       // `hb.wasm` by path at runtime. Nitro's dependency trace follows imports
@@ -21,8 +51,11 @@ export default defineNuxtConfig({
   routeRules: {
     '/help/markdown': { redirect: { to: '/docs/markdown', statusCode: 301 } },
     '/flags/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
-    // Generated social cards. The handlers set the same value themselves; this
-    // covers the fallback redirect too, so a miss is not re-rendered per crawl.
+    // Generated social cards. The handlers set their own `Cache-Control` on
+    // every path now — including the two fallback redirects, which differ:
+    // "nothing to draw" caches for hours, "still rendering" for a minute. This
+    // rule is the floor for anything that somehow answers without reaching one
+    // of them; see `server/utils/ogRoute.ts`.
     '/card/**': { headers: { 'cache-control': 'public, max-age=21600, stale-while-revalidate=604800' } },
   },
   // Module id, not a path relative to this file — Nuxt 4.5 warns on the latter.

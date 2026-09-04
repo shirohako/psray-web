@@ -1,7 +1,7 @@
 import type { TrophySetDetail } from '~/services/trophies'
 import { trophyCardHtml } from '../../../utils/ogCard'
 import { brandLogo, fetchImage, pageQrCode, renderCard } from '../../../utils/ogRender'
-import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
+import { OG_API_TIMEOUT, apiBase, ogParam, sendCard, sendFallback } from '../../../utils/ogRoute'
 
 /**
  * `GET /card/trophies/:id.png` — the 1200×630 social card for a trophy set.
@@ -13,7 +13,10 @@ import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 const buildCard = defineCachedFunction(async (id: string): Promise<string | null> => {
   let detail: TrophySetDetail
   try {
-    const response = await $fetch<{ data: TrophySetDetail }>(`${apiBase()}/trophies/${id}`)
+    const response = await $fetch<{ data: TrophySetDetail }>(
+      `${apiBase()}/trophies/${id}`,
+      { timeout: OG_API_TIMEOUT },
+    )
     detail = response.data
   }
   catch {
@@ -68,7 +71,8 @@ const buildCard = defineCachedFunction(async (id: string): Promise<string | null
 // crawlers and caches send before fetching the image.
 export default defineEventHandler(async (event) => {
   const id = ogParam(getRouterParam(event, 'id'))
-  if (!/^\d+$/.test(id)) return sendRedirect(event, OG_FALLBACK, 302)
+  if (!/^\d+$/.test(id)) return sendFallback(event)
 
-  return sendCard(event, await buildCard(id))
+  // Not awaited here: `sendCard` caps how long a crawler waits on a cold render.
+  return sendCard(event, buildCard(id))
 })

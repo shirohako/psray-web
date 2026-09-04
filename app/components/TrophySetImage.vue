@@ -70,7 +70,7 @@ const isSquare = computed(() => (props.platform ?? []).includes('PS5'))
     :alt="alt"
     loading="lazy"
     decoding="async"
-    class="max-h-full max-w-full rounded-lg object-contain shadow-sm ring-1 ring-black/5 transition-opacity duration-300"
+    class="max-h-full max-w-full rounded-lg object-contain shadow-sm ring-1 ring-black/5 transition-opacity duration-200"
     :class="loaded ? 'opacity-100' : 'opacity-0'"
     @load="onLoad"
     @error="onError"

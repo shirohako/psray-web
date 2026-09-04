@@ -82,6 +82,43 @@ export function brandLogo(): Promise<string | null> {
   return logoPromise
 }
 
+/**
+ * A country flag, as an inline SVG data URI. Read from the server bundle, and
+ * memoised per country for the process.
+ *
+ * The profile card used to borrow these from the site's own public URL —
+ * `fetchImage('https://psray.net/flags/4x3/fr.svg')` — which put a full HTTPS
+ * round trip out through nginx and back on the critical path of every cold
+ * render, about a second of it, to read a file already sitting on the same
+ * disk. `nitro.serverAssets` mounts the 4x3 set at `assets:flags` instead; only
+ * that directory, since `public/` at large would drag the animations in too.
+ *
+ * Still SVG on the way out: satori nests it into its output untouched, so resvg
+ * draws the flag as vector geometry at the card's full resolution.
+ */
+const flags = new Map<string, string | null>()
+
+export async function countryFlag(country: string | null | undefined): Promise<string | null> {
+  const code = country?.toLowerCase() ?? ''
+  // The set is named by ISO 3166-1 alpha-2; anything else cannot be a filename.
+  if (!/^[a-z]{2}$/.test(code)) return null
+
+  const cached = flags.get(code)
+  if (cached !== undefined) return cached
+
+  let uri: string | null = null
+  try {
+    const svg = await useStorage('assets:flags').getItemRaw<Buffer>(`${code}.svg`)
+    if (svg) uri = `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`
+  }
+  catch {
+    uri = null
+  }
+
+  flags.set(code, uri)
+  return uri
+}
+
 /** A fetched image: inlined bytes plus the intrinsic size the card lays it out by. */
 export interface FetchedImage {
   uri: string
@@ -104,6 +141,15 @@ export interface FetchedImage {
  * Best-effort throughout: a CDN hiccup, a format we cannot identify, or a decode
  * that fails costs the card its art — the tile falls back to its placeholder —
  * rather than turning the whole request into a 500.
+ *
+ * The timeout is generous on purpose, and deliberately longer than the render
+ * budget in `ogRoute.ts` — the two answer different questions. This one asks how
+ * long the art is worth waiting for, and the answer is "a while": PSN's own
+ * avatar CDN was measured at 1.7-3.0s for a 240px PNG, so anything tighter drops
+ * the avatar on a good fraction of renders, and a card whose subject is a blank
+ * tile is then cached in that state. What keeps a crawler from waiting this long
+ * is the budget, not this: it hands back the brand card and lets the render
+ * finish behind the response.
  */
 export async function fetchImage(url: string | null | undefined): Promise<FetchedImage | null> {
   if (!url) return null

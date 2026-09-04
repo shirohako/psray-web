@@ -1,7 +1,7 @@
 import type { Profile } from '~/services/profile'
 import { profileCardHtml } from '../../../utils/ogCard'
-import { brandLogo, fetchImage, pageQrCode, renderCard } from '../../../utils/ogRender'
-import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
+import { brandLogo, countryFlag, fetchImage, pageQrCode, renderCard } from '../../../utils/ogRender'
+import { OG_API_TIMEOUT, apiBase, ogParam, sendCard, sendFallback } from '../../../utils/ogRoute'
 
 /**
  * `GET /card/profile/:psnid.png` — the 1200×630 social card for a player profile.
@@ -17,7 +17,10 @@ import { OG_FALLBACK, apiBase, ogParam, sendCard } from '../../../utils/ogRoute'
 const buildCard = defineCachedFunction(async (psnid: string): Promise<string | null> => {
   let profile: Profile
   try {
-    const response = await $fetch<{ data: Profile }>(`${apiBase()}/profile/${encodeURIComponent(psnid)}`)
+    const response = await $fetch<{ data: Profile }>(
+      `${apiBase()}/profile/${encodeURIComponent(psnid)}`,
+      { timeout: OG_API_TIMEOUT },
+    )
     profile = response.data
   }
   catch {
@@ -30,11 +33,7 @@ const buildCard = defineCachedFunction(async (psnid: string): Promise<string | n
   const pageUrl = `${siteUrl}/p/${encodeURIComponent(profile.psnid)}`
   const [avatar, flag, logo, qr] = await Promise.all([
     fetchImage(profile.avatar_url),
-    // The site already ships these SVGs; the card just borrows one over HTTP and
-    // draws it as a vector, so a 24px flag still resolves its own detail.
-    fetchImage(profile.country
-      ? `${siteUrl}/flags/4x3/${profile.country.toLowerCase()}.svg`
-      : null),
+    countryFlag(profile.country),
     brandLogo(),
     pageQrCode(pageUrl),
   ])
@@ -52,8 +51,7 @@ const buildCard = defineCachedFunction(async (psnid: string): Promise<string | n
     },
     playedGames: profile.played_game_count,
     avatar,
-    // Flags are drawn at a fixed 4:3, so only the bytes are needed.
-    flag: flag?.uri ?? null,
+    flag,
     country: profile.country || null,
     logo,
     url: pageUrl,
@@ -75,7 +73,8 @@ const buildCard = defineCachedFunction(async (psnid: string): Promise<string | n
 export default defineEventHandler(async (event) => {
   const psnid = ogParam(getRouterParam(event, 'psnid'))
   // PSN online IDs are 3–16 of `[A-Za-z0-9_-]`; reject anything else unrendered.
-  if (!/^[A-Za-z0-9_-]{3,16}$/.test(psnid)) return sendRedirect(event, OG_FALLBACK, 302)
+  if (!/^[A-Za-z0-9_-]{3,16}$/.test(psnid)) return sendFallback(event)
 
-  return sendCard(event, await buildCard(psnid))
+  // Not awaited here: `sendCard` caps how long a crawler waits on a cold render.
+  return sendCard(event, buildCard(psnid))
 })
