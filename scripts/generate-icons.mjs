@@ -5,7 +5,7 @@ import { Resvg } from '@resvg/resvg-js'
 
 /**
  * Build every site icon from one source: `server/assets/brand/logo.svg`, the
- * vector trace of the brand mark that the social cards already draw.
+ * vector trace of the brand mark.
  *
  * Run with `pnpm generate:icons` after the brand art changes. Outputs:
  *

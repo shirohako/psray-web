@@ -1,7 +1,6 @@
 <!--
-  The PSRay gamepad mark, traced from the 256px `logo.png` beside it so the card
-  header draws the real brand artwork as vector instead of resampling a bitmap
-  down to 64px. 97.5% pixel overlap with that PNG (intersection over union).
+  The PSRay gamepad mark, traced from the original 256px brand PNG.
+  Source artwork for scripts/generate-icons.mjs.
 
   The outline is one filled path, not a stroke: the real mark's weight varies
   along its length and it opens at the top, where the two lobes meet, so a

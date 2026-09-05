@@ -176,7 +176,7 @@ function updateTipCount(trophyId: number, value: number) {
 const route = useRoute()
 const { t, locale } = useI18n()
 const id = computed(() => String(route.params.id))
-const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
+const cardBase = useRuntimeConfig().public.cardBase.replace(/\/+$/, '')
 
 // Optional viewer progress is driven entirely by the `?psnid=` query param.
 // The player may have no record for this title — the API decides via
@@ -423,8 +423,8 @@ useSeo({
     : ''),
   // The set icon is a 512×512 square; the generated card is already 2:1, so no
   // platform has to crop the cover art to make it fit.
-  image: () => (data.value ? `${siteUrl}/card/trophies/${id.value}.png?v=3` : undefined),
-  // The rendered size, which `CARD_SCALE` in `server/utils/ogRender.ts` scales.
+  image: () => (data.value ? `${cardBase}/card/trophies/${id.value}.png?v=3` : undefined),
+  // Dimensions of the backend-generated card.
   imageWidth: 1200,
   imageHeight: 630,
   imageType: 'image/png',

@@ -51,6 +51,7 @@ const { t, locale } = useI18n()
 const psnid = computed(() => String(route.params.psnid))
 const auth = useAuth()
 const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
+const cardBase = useRuntimeConfig().public.cardBase.replace(/\/+$/, '')
 
 const { data: profile, pending, error } = await useApiFetch<Profile>(
   () => `/profile/${psnid.value}`,
@@ -142,9 +143,9 @@ useSeo({
   // every platform then stretches or shrinks to fit its 2:1 preview slot.
   // Private profiles advertise nothing and fall back to the brand card.
   image: () => (profile.value?.is_profile_public
-    ? `${siteUrl}/card/profile/${encodeURIComponent(profile.value.psnid)}.png?v=3`
+    ? `${cardBase}/card/profile/${encodeURIComponent(profile.value.psnid.toLowerCase())}.png?v=3`
     : undefined),
-  // The rendered size, which `CARD_SCALE` in `server/utils/ogRender.ts` scales.
+  // Dimensions of the backend-generated card.
   imageWidth: 1200,
   imageHeight: 630,
   imageType: 'image/png',

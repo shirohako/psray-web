@@ -36,15 +36,17 @@ pnpm dev               # http://localhost:3630 (or NUXT_PORT)
 | --- | --- |
 | `NUXT_PUBLIC_API_BASE` | Base URL of the PSRay API. Defaults to `http://localhost:8000/api`; production is `https://api.psray.net` |
 | `NUXT_PUBLIC_SITE_URL` | Absolute origin, no trailing slash. Canonical / hreflang / OG URLs are built from it. Defaults to `https://psray.net`; set it to your local origin when testing local metadata |
+| `NUXT_PUBLIC_CARD_BASE` | Origin serving backend-generated OG images, without `/api` or `/card`. Defaults to `https://api.psray.net` |
 | `NUXT_PORT` | Dev/preview port |
 
 ## Deployment
 
-`/card/profile/:psnid.png` and `/card/trophies/:id.png` are rendered server-side (satori →
-resvg) into the 1200x630 social cards the profile and trophy pages advertise as
-`og:image`. `@resvg/resvg-js` is a **native** module, so production must run
-`pnpm install && pnpm build` on the deployment host - a `.output/` built on a
-different platform will fail to load it.
+Profile and trophy OG images are generated and updated by the backend. The frontend
+links directly to `${NUXT_PUBLIC_CARD_BASE}/card/profile/<lowercase-psnid>.png`
+and `${NUXT_PUBLIC_CARD_BASE}/card/trophies/<id>.png`; it has no card rendering routes
+or render cache. Trailing slashes are removed from the configured origin.
+Set `NUXT_PUBLIC_CARD_BASE=https://api.dev.psray.net` to use development cards.
+The static brand image remains the fallback for pages without a card.
 
 `pnpm build` produces a Nitro server bundle in `.output/`; run it with
 `node .output/server/index.mjs` behind your process manager of choice, with the
