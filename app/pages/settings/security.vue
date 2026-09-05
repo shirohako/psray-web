@@ -193,18 +193,18 @@ async function savePassword() {
               </p>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-2 sm:w-48">
+          <div class="grid grid-cols-2 gap-2 sm:min-w-48">
             <div class="rounded-lg bg-white/8 p-3 ring-1 ring-white/10">
-              <p class="text-[11px] font-medium text-stone-400">{{ $t('settings.security.status.email') }}</p>
-              <p class="mt-1 flex items-center gap-1.5 text-sm font-semibold text-emerald-300">
-                <LucideIcon :icon="BadgeCheck" class="size-4" />
+              <p class="truncate text-[11px] font-medium text-stone-400">{{ $t('settings.security.status.email') }}</p>
+              <p class="mt-1 flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-emerald-300">
+                <LucideIcon :icon="BadgeCheck" class="size-4 shrink-0" />
                 {{ $t('settings.security.status.bound') }}
               </p>
             </div>
             <div class="rounded-lg bg-white/8 p-3 ring-1 ring-white/10">
-              <p class="text-[11px] font-medium text-stone-400">{{ $t('settings.security.status.password') }}</p>
-              <p class="mt-1 flex items-center gap-1.5 text-sm font-semibold text-emerald-300">
-                <LucideIcon :icon="BadgeCheck" class="size-4" />
+              <p class="truncate text-[11px] font-medium text-stone-400">{{ $t('settings.security.status.password') }}</p>
+              <p class="mt-1 flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-emerald-300">
+                <LucideIcon :icon="BadgeCheck" class="size-4 shrink-0" />
                 {{ $t('settings.security.status.set') }}
               </p>
             </div>
