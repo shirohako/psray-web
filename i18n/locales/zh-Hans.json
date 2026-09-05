@@ -399,6 +399,15 @@
   },
   "profile": {
     "qrTitle": "个人资料二维码",
+    "cardPreview": {
+      "title": "个人资料卡片",
+      "description": "预览可分享的个人资料卡片。",
+      "loading": "正在加载卡片…",
+      "error": "卡片加载失败，请重试。",
+      "retry": "重试",
+      "openImage": "打开原图",
+      "alt": "{psnid} 的个人资料卡片"
+    },
     "tabs": {
       "recent": "最近玩过",
       "trophies": "获得的奖杯",

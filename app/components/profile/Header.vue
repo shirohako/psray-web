@@ -26,6 +26,7 @@ const bannerImage = computed(() => props.profile.banner_url || appConfig.profile
             <LucideIcon :icon="Crown" class="size-3.5" /> PS+
           </span>
         </Tooltip>
+        <ProfileCardPreviewButton v-if="profile.is_profile_public" :psnid="profile.psnid" />
         <QrCodeButton :title="$t('profile.qrTitle')" :caption="profile.psnid" />
       </div>
 

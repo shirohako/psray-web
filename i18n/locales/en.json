@@ -399,6 +399,15 @@
   },
   "profile": {
     "qrTitle": "Profile QR code",
+    "cardPreview": {
+      "title": "Profile card",
+      "description": "Preview your shareable profile card.",
+      "loading": "Loading card…",
+      "error": "Unable to load the card. Please try again.",
+      "retry": "Retry",
+      "openImage": "Open full image",
+      "alt": "Profile card for {psnid}"
+    },
     "tabs": {
       "recent": "Recently played",
       "trophies": "Earned trophies",

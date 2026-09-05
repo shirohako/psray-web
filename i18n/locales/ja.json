@@ -399,6 +399,15 @@
   },
   "profile": {
     "qrTitle": "プロフィールの QRコード",
+    "cardPreview": {
+      "title": "プロフィールカード",
+      "description": "シェア用プロフィールカードをプレビューします。",
+      "loading": "カードを読み込み中…",
+      "error": "カードを読み込めませんでした。もう一度お試しください。",
+      "retry": "再試行",
+      "openImage": "画像を開く",
+      "alt": "{psnid} のプロフィールカード"
+    },
     "tabs": {
       "recent": "最近プレイ",
       "trophies": "獲得トロフィー",
