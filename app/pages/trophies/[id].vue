@@ -138,7 +138,7 @@
           :defined-trophies="data.trophy_set.defined_trophies"
         />
 
-        <TrophySimilarSets v-if="data.similar_trophy_sets?.length" :sets="data.similar_trophy_sets" />
+        <TrophySimilarSets v-if="data.similar_trophy_sets?.length" :sets="data.similar_trophy_sets" :current-set="data.trophy_set" />
 
         <TrophyRecentPlayers :id="data.trophy_set.id" :players="data.recent_players" />
       </aside>

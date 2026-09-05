@@ -213,7 +213,7 @@ const displayedTipCount = computed(() => props.tipCount ?? props.trophy.tip_coun
       <p v-if="displayDetail" class="text-slate-500" :class="density.detail">{{ displayDetail }}</p>
       <div
         v-if="showEarned && earnedAt"
-        class="flex max-w-full flex-wrap items-center font-medium leading-none text-slate-400"
+        class="flex max-w-full flex-wrap items-center font-medium leading-normal text-slate-400"
         :class="density.earnedMeta"
       >
         <span class="inline-flex min-w-0 items-center gap-1" :title="$t('trophy.item.earnedAt')">

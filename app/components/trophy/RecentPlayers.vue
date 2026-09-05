@@ -20,9 +20,9 @@ const dialogOpen = ref(false)
         <NuxtLink :to="`/p/${p.psnid}`" class="group flex items-center gap-2.5 px-4 py-2.5 transition hover:bg-slate-50">
           <img :src="p.avatar_url" :alt="p.psnid" class="size-8 shrink-0 rounded-full bg-slate-100 object-cover" />
           <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-1.5 leading-none">
+            <div class="flex items-center gap-1.5">
               <RegionFlag :country="p.country" class="text-xs" />
-              <span class="min-w-0 truncate text-sm font-semibold leading-none text-slate-900 group-hover:text-slate-700">{{ p.psnid }}</span>
+              <span class="min-w-0 truncate text-sm font-semibold leading-5 text-slate-900 group-hover:text-slate-700">{{ p.psnid }}</span>
               <LucideIcon v-if="p.earned_platinum > 0" :icon="Trophy" class="size-3.5 shrink-0 text-cyan-500" :title="$t('trophy.recentPlayers.hasPlatinum')" />
             </div>
             <div class="mt-1 text-xs text-slate-400 tabular-nums">
