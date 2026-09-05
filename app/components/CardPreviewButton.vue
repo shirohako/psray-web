@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import { Image, ExternalLink, RefreshCw, Copy, Link } from 'lucide'
 
-const props = defineProps<{ psnid: string }>()
+/**
+ * Previews a backend-rendered share card in a dialog. `kind` + `slug` mirror the
+ * card routes used for `og:image`, so the dialog always shows the same image
+ * crawlers and chat apps get.
+ */
+const props = defineProps<{
+  /** Card route under `/card/`. */
+  kind: 'profile' | 'trophies'
+  /** Card identifier: a lowercased PSN ID, or a trophy set id. */
+  slug: string | number
+  /** Name shown in the dialog header and the image's alt text. */
+  caption: string
+}>()
 const config = useRuntimeConfig()
 const { t } = useI18n()
 const toast = useToast()
@@ -9,8 +21,11 @@ const open = ref(false)
 const loaded = ref(false)
 const failed = ref(false)
 const attempt = ref(0)
-const cardUrl = computed(() => `${config.public.cardBase.replace(/\/+$/, '')}/card/profile/${encodeURIComponent(props.psnid.toLowerCase())}.png?v=3`)
-const imageUrl = computed(() => `${cardUrl.value}${attempt.value ? `&preview=${attempt.value}` : ''}`)
+// `cardUrl` is what we show, copy and open: clean, no cache-busting noise.
+// `imageUrl` is what the <img> actually requests — the `v=` bump matches the
+// `og:image` URLs, and `preview=` forces a fresh fetch when a retry is asked for.
+const cardUrl = computed(() => `${config.public.cardBase.replace(/\/+$/, '')}/card/${props.kind}/${encodeURIComponent(String(props.slug))}.png`)
+const imageUrl = computed(() => `${cardUrl.value}?v=3${attempt.value ? `&preview=${attempt.value}` : ''}`)
 
 async function copyLink() {
   try {
@@ -34,7 +49,7 @@ function retry() {
   attempt.value = Date.now()
 }
 
-watch(() => props.psnid, () => {
+watch(() => cardUrl.value, () => {
   open.value = false
   loaded.value = false
   failed.value = false
@@ -45,23 +60,23 @@ watch(() => props.psnid, () => {
 <template>
   <button
     type="button"
-    :title="$t('profile.cardPreview.title')"
-    :aria-label="$t('profile.cardPreview.title')"
+    :title="$t('card.title')"
+    :aria-label="$t('card.title')"
     class="inline-flex size-8 items-center justify-center rounded-lg bg-white/15 text-white ring-1 ring-white/20 backdrop-blur-md transition hover:bg-white/25"
     @click="show"
   >
     <LucideIcon :icon="Image" class="size-4" />
   </button>
 
-  <Dialog v-model:open="open" :title="$t('profile.cardPreview.title')" size="2xl">
+  <Dialog v-model:open="open" :title="$t('card.title')" size="2xl">
     <div class="bg-linear-to-br from-slate-50 via-indigo-50/40 to-violet-50/50 p-4 sm:p-6">
       <div class="mb-4 flex items-center gap-3">
         <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-indigo-100/80 text-indigo-500">
           <LucideIcon :icon="Image" class="size-5" />
         </span>
         <div class="min-w-0">
-          <p class="truncate text-sm font-semibold text-slate-900">{{ psnid }}</p>
-          <p class="mt-0.5 text-xs leading-relaxed text-slate-500">{{ $t('profile.cardPreview.description') }}</p>
+          <p class="truncate text-sm font-semibold text-slate-900">{{ caption }}</p>
+          <p class="mt-0.5 text-xs leading-relaxed text-slate-500">{{ $t('card.description') }}</p>
         </div>
       </div>
 
@@ -69,21 +84,21 @@ watch(() => props.psnid, () => {
         <div v-if="!loaded && !failed" class="absolute inset-0 flex items-center justify-center bg-slate-100/80" role="status">
           <div class="flex items-center gap-2 text-sm text-slate-500">
             <LucideIcon :icon="RefreshCw" class="size-4 animate-spin motion-reduce:animate-none" />
-            {{ $t('profile.cardPreview.loading') }}
+            {{ $t('card.loading') }}
           </div>
         </div>
         <div v-if="failed" class="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center" role="alert">
-          <p class="text-sm text-slate-500">{{ $t('profile.cardPreview.error') }}</p>
+          <p class="text-sm text-slate-500">{{ $t('card.error') }}</p>
           <button type="button" class="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-2 text-xs font-medium text-white hover:bg-slate-700" @click="retry">
             <LucideIcon :icon="RefreshCw" class="size-3.5" />
-            {{ $t('profile.cardPreview.retry') }}
+            {{ $t('card.retry') }}
           </button>
         </div>
         <img
           v-if="open && !failed"
           :key="imageUrl"
           :src="imageUrl"
-          :alt="$t('profile.cardPreview.alt', { psnid })"
+          :alt="$t('card.alt', { name: caption })"
           width="1200"
           height="630"
           class="h-full w-full object-contain transition-opacity duration-200 motion-reduce:transition-none"
@@ -94,7 +109,7 @@ watch(() => props.psnid, () => {
       </div>
       <div class="mt-5 flex items-center gap-2 rounded-lg border border-slate-200/80 bg-white/90 p-2 pl-3">
         <LucideIcon :icon="Link" class="size-4 shrink-0 text-slate-400" />
-        <a :href="cardUrl" :title="cardUrl" target="_blank" rel="noopener noreferrer" class="min-w-0 flex-1 truncate text-xs leading-relaxed text-slate-600 hover:text-indigo-600 sm:text-sm">{{ cardUrl }}</a>
+        <span :title="cardUrl" class="min-w-0 flex-1 truncate text-xs leading-relaxed text-slate-600 sm:text-sm">{{ cardUrl }}</span>
         <button type="button" :title="$t('qr.copyLink')" :aria-label="$t('qr.copyLink')" class="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-indigo-50 px-2.5 py-2 text-xs font-medium text-indigo-600 transition hover:bg-indigo-100" @click="copyLink">
           <LucideIcon :icon="Copy" class="size-4" />
           <span class="hidden sm:inline">{{ $t('qr.copyLink') }}</span>
@@ -105,7 +120,7 @@ watch(() => props.psnid, () => {
       <div class="flex justify-end">
         <a :href="cardUrl" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
           <LucideIcon :icon="ExternalLink" class="size-4" />
-          {{ $t('profile.cardPreview.openImage') }}
+          {{ $t('card.openImage') }}
         </a>
       </div>
     </template>

@@ -187,6 +187,15 @@
     "linkCopied": "已複製連結",
     "generateFailed": "QR 碼產生失敗"
   },
+  "card": {
+    "title": "分享卡片",
+    "description": "預覽可分享的卡片圖片。",
+    "loading": "正在載入卡片…",
+    "error": "卡片載入失敗，請重試。",
+    "retry": "重試",
+    "openImage": "開啟原圖",
+    "alt": "{name} 的分享卡片"
+  },
   "time": {
     "year": "{y}年",
     "yearMonth": "{y}年{mo}個月",
@@ -399,15 +408,6 @@
   },
   "profile": {
     "qrTitle": "個人資料 QR 碼",
-    "cardPreview": {
-      "title": "個人資料卡片",
-      "description": "預覽可分享的個人資料卡片。",
-      "loading": "正在載入卡片…",
-      "error": "卡片載入失敗，請重試。",
-      "retry": "重試",
-      "openImage": "開啟原圖",
-      "alt": "{psnid} 的個人資料卡片"
-    },
     "tabs": {
       "recent": "最近玩過",
       "trophies": "獲得的獎盃",

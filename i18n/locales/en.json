@@ -187,6 +187,15 @@
     "linkCopied": "Link copied",
     "generateFailed": "Couldn’t generate the QR code"
   },
+  "card": {
+    "title": "Share card",
+    "description": "Preview the shareable card image.",
+    "loading": "Loading card…",
+    "error": "Unable to load the card. Please try again.",
+    "retry": "Retry",
+    "openImage": "Open full image",
+    "alt": "Share card for {name}"
+  },
   "time": {
     "year": "{y}y",
     "yearMonth": "{y}y {mo}mo",
@@ -399,15 +408,6 @@
   },
   "profile": {
     "qrTitle": "Profile QR code",
-    "cardPreview": {
-      "title": "Profile card",
-      "description": "Preview your shareable profile card.",
-      "loading": "Loading card…",
-      "error": "Unable to load the card. Please try again.",
-      "retry": "Retry",
-      "openImage": "Open full image",
-      "alt": "Profile card for {psnid}"
-    },
     "tabs": {
       "recent": "Recently played",
       "trophies": "Earned trophies",

@@ -40,8 +40,9 @@ const qrMeta = computed(() => [
       />
       <div class="absolute inset-0 bg-slate-900/70" />
 
-      <!-- Share via QR -->
-      <div class="absolute right-3 top-3 z-10 sm:right-4 sm:top-4">
+      <!-- Share: card preview + QR -->
+      <div class="absolute right-3 top-3 z-10 flex items-center gap-2 sm:right-4 sm:top-4">
+        <CardPreviewButton kind="trophies" :slug="trophySet.id" :caption="name" />
         <QrCodeButton :title="$t('trophy.banner.qrTitle')" :caption="name" :meta="qrMeta" />
       </div>
 
