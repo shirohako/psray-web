@@ -93,14 +93,17 @@ const displayTrophies = computed(() => {
       </div>
     </header>
 
-    <p v-if="!displayTrophies.length" class="px-5 py-10 text-center text-sm text-slate-400">
+    <!-- Re-keying on `filter` remounts these, which replays the cascade. -->
+    <p v-if="!displayTrophies.length" :key="`empty-${filter}`" class="animate-filter-in px-5 py-10 text-center text-sm text-slate-400">
       {{ $t('trophy.group.noMatches') }}
     </p>
 
-    <div v-else class="divide-y divide-slate-200">
+    <div v-else :key="`list-${filter}`" class="divide-y divide-slate-200">
       <TrophyItem
-        v-for="trophy in displayTrophies"
+        v-for="(trophy, index) in displayTrophies"
         :key="trophy.id"
+        class="animate-filter-in"
+        :style="{ animationDelay: `${Math.min(index, 7) * 24}ms` }"
         :trophy="trophy"
         :has-viewer="hasViewer"
         :earned="isEarned(trophy)"
@@ -117,3 +120,4 @@ const displayTrophies = computed(() => {
     </div>
   </section>
 </template>
+
