@@ -3,6 +3,7 @@ import { Gamepad2, RefreshCw, Search, UserRound } from 'lucide'
 import { DEFAULT_LOCALE, HTML_LANG, isUiLocale } from '#shared/locales'
 
 const { t, locale } = useI18n()
+const appConfig = useAppConfig()
 const psnid = ref('')
 const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
 
@@ -46,7 +47,13 @@ useHead(() => ({
     <!-- Hero: the one thing most visitors came to do -->
     <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div class="flex items-center gap-2.5">
-        <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-slate-900 text-white shadow-sm shadow-slate-900/20">
+        <img
+          v-if="appConfig.brand.logo"
+          :src="appConfig.brand.logo"
+          alt=""
+          class="size-9 shrink-0 object-contain"
+        />
+        <span v-else class="grid size-9 shrink-0 place-items-center rounded-lg bg-slate-900 text-white shadow-sm shadow-slate-900/20">
           <LucideIcon :icon="Gamepad2" class="size-5" />
         </span>
         <h1 class="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
@@ -62,7 +69,7 @@ useHead(() => ({
         :aria-label="$t('home.lookup.heading')"
         @submit.prevent="goToProfile"
       >
-        <div class="relative flex-1">
+        <div class="relative flex-1 sm:max-w-md">
           <LucideIcon
             :icon="Search"
             class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400"
@@ -89,7 +96,7 @@ useHead(() => ({
           <button
             type="button"
             :disabled="!psnid.trim()"
-            class="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-40 disabled:hover:bg-white sm:shrink-0"
+            class="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-60 disabled:hover:bg-white sm:shrink-0"
             @click="goToSync"
           >
             <LucideIcon :icon="RefreshCw" class="size-4 shrink-0" />
