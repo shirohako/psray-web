@@ -13,8 +13,15 @@ import type { Profile } from '~/services/profile'
 defineProps<{ profile: Profile, followPending?: boolean }>()
 defineEmits<{ toggleFollow: [] }>()
 
+// The border is transparent on purpose: a light hairline is invisible on the
+// white sync button but frames the dark follow button, which makes the two
+// read as different heights even though both are `sm:h-7`.
 const actionButtonBase =
-  'inline-flex h-8 shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-white/20 px-3 text-xs font-semibold leading-none shadow-sm shadow-slate-950/20 backdrop-blur transition sm:h-9 sm:px-4 sm:text-sm'
+  'inline-flex h-6 min-w-20 shrink-0 items-center justify-center gap-1 whitespace-nowrap rounded-lg border border-transparent px-2 text-xs font-semibold leading-none shadow-sm shadow-slate-950/20 backdrop-blur transition sm:h-7 sm:px-2.5'
+
+/** Skins for the inline sm+ buttons: sync is secondary, follow is the call to action. */
+const syncButtonSkin = 'bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+const followButtonSkin = 'bg-zinc-900/90 text-white hover:bg-zinc-950'
 </script>
 
 <template>
@@ -78,9 +85,9 @@ const actionButtonBase =
     <div class="hidden items-center gap-2 sm:flex">
       <NuxtLink
         :to="{ path: '/sync', query: { psnid: profile.psnid } }"
-        :class="[actionButtonBase, 'bg-white text-slate-700 hover:bg-slate-100 hover:text-slate-900']"
+        :class="[actionButtonBase, syncButtonSkin]"
       >
-        <LucideIcon :icon="RefreshCw" class="size-4" />
+        <LucideIcon :icon="RefreshCw" class="size-3" />
         {{ $t('profile.actions.sync') }}
       </NuxtLink>
 
@@ -91,15 +98,15 @@ const actionButtonBase =
           v-if="profile.is_following"
           align="right"
           panel-class="!min-w-32"
-          :class="[actionButtonBase, 'cursor-pointer bg-zinc-900/90 text-white hover:bg-zinc-950']"
+          :class="[actionButtonBase, followButtonSkin, 'cursor-pointer']"
         >
           <LucideIcon
             :icon="followPending ? Loader2 : UserCheck"
-            class="size-4"
+            class="size-3"
             :class="followPending && 'animate-spin'"
           />
           {{ $t('profile.actions.following') }}
-          <LucideIcon :icon="ChevronDown" class="size-3.5 text-zinc-400" />
+          <LucideIcon :icon="ChevronDown" class="size-3 text-zinc-400" />
           <template #menu="{ close }">
             <button
               type="button"
@@ -119,12 +126,12 @@ const actionButtonBase =
           v-else
           type="button"
           :disabled="followPending"
-          :class="[actionButtonBase, 'bg-zinc-900/90 text-white hover:bg-zinc-950 active:bg-zinc-950 disabled:opacity-60']"
+          :class="[actionButtonBase, followButtonSkin, 'active:bg-zinc-950 disabled:opacity-60']"
           @click="$emit('toggleFollow')"
         >
           <LucideIcon
             :icon="followPending ? Loader2 : UserPlus"
-            class="size-4"
+            class="size-3"
             :class="followPending && 'animate-spin'"
           />
           {{ $t('profile.actions.follow') }}

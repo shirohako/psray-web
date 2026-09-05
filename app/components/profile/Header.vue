@@ -21,9 +21,9 @@ const bannerImage = computed(() => props.profile.banner_url || appConfig.profile
 
       <!-- Top-right badges -->
       <div class="absolute right-4 top-4 z-10 flex items-center gap-2">
-        <Tooltip v-if="profile.is_plus" :content="$t('profile.identity.notRealtime')" placement="bottom" class="cursor-help">
-          <span class="inline-flex items-center gap-1 rounded-md bg-amber-400/95 px-2.5 py-1 text-xs font-bold text-amber-950 shadow-sm backdrop-blur-md">
-            <LucideIcon :icon="Crown" class="size-3.5" /> PS+
+        <Tooltip v-if="profile.is_plus" :content="$t('profile.identity.notRealtime')" placement="bottom">
+          <span class="inline-flex h-8 items-center gap-1.5 rounded-lg bg-amber-400/95 px-3 text-sm font-bold text-amber-950 shadow-sm backdrop-blur-md">
+            <LucideIcon :icon="Crown" class="size-4" /> PS+
           </span>
         </Tooltip>
         <ProfileCardPreviewButton v-if="profile.is_profile_public" :psnid="profile.psnid" />
