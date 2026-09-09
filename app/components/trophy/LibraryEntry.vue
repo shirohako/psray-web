@@ -104,7 +104,7 @@ function isoDate(value: string) {
       <div class="entry-rates tabular-nums">
         <div
           v-if="showPlatinumComparison"
-          class="flex items-center justify-center gap-1.5 whitespace-nowrap"
+          class="flex items-center justify-center gap-1.5 whitespace-nowrap text-[10px] text-slate-400"
           :title="t('library.platinumRate')"
           :aria-label="`${t('library.platinumRate')} ${rate(game.platinum_rate)}`"
         >
@@ -153,6 +153,8 @@ function isoDate(value: string) {
   transition: background-color 150ms;
 }
 .library-entry:hover { background: var(--color-slate-50); }
+.library-entry:not(.is-card):nth-child(even) { background: var(--color-slate-50); }
+.library-entry:not(.is-card):hover { background: var(--color-slate-100); }
 .library-entry:focus-visible { outline: 2px solid var(--color-sky-600); outline-offset: -2px; }
 .entry-art { width: 80px; height: 64px; grid-column: 1; }
 .entry-name { grid-column: 2; }
