@@ -26,6 +26,7 @@
     }
   },
   "nav": {
+    "trophies": "트로피",
     "about": "PSRay 소개",
     "home": "홈",
     "leaderboard": "랭킹",
@@ -363,6 +364,8 @@
     "similar": {
       "title": "연결된 트로피 세트",
       "subtitle": "같은 게임의 다른 플랫폼 / 다른 지역 트로피 세트",
+      "currentSet": "현재 세트",
+      "unknownRegion": "지역 미상",
       "setCount": "{n}세트",
       "owners": "{count}명 플레이"
     },
@@ -701,6 +704,79 @@
     },
     "settings": {
       "title": "계정 설정"
+    }
+  },
+  "library": {
+    "title": "모든 트로피 둘러보기",
+    "description": "게임 트로피 목록, 플레이어 수와 플래티넘 달성률을 확인하세요.",
+    "trophies": "트로피",
+    "platforms": "플랫폼",
+    "search": "게임 이름 또는 트로피 세트 ID 검색…",
+    "clearSearch": "검색 지우기",
+    "allPlatforms": "모든 플랫폼",
+    "results": "트로피 라이브러리",
+    "reset": "필터 초기화",
+    "grid": "카드 보기",
+    "list": "목록 보기",
+    "preview": "{name} 트로피 목록 보기",
+    "trophyCount": "트로피 {count}개",
+    "platinumRate": "플래티넘 달성률",
+    "empty": "검색 결과가 없습니다",
+    "emptyHint": "다른 검색어를 사용하거나 필터를 줄여 보세요.",
+    "range": "총 {total}개 게임 중 {start}–{end} 표시",
+    "players": "플레이어",
+    "game": "게임",
+    "progress": "달성 현황",
+    "completionTime": "참고 시간",
+    "browseBy": "탐색 분류",
+    "categories": {
+      "new": "신규 등록",
+      "trending": "최근 인기",
+      "popular": "인기 게임"
+    },
+    "multiSelect": "다중 선택 가능",
+    "removeFilter": "필터 제거: {name}",
+    "recentCount": "최근 {count}",
+    "playedCount": "플레이 {count}",
+    "completedCount": "완료 {count}",
+    "platinumCount": "플래티넘 {count}",
+    "completionRate": "완료율",
+    "difficultCount": "희귀 {count}",
+    "difficultHint": "PSN 공식 획득률 5% 미만",
+    "medianShort": "완료 시간 중앙값",
+    "averageTimeShort": "평균 완료",
+    "p10Short": "상위 10% 기준",
+    "fastestShort": "최단 완료",
+    "loadError": "트로피 목록을 불러올 수 없습니다",
+    "loadErrorHint": "네트워크 연결을 확인한 뒤 다시 시도하세요.",
+    "retry": "다시 불러오기",
+    "advanced": {
+      "title": "상세 필터",
+      "platinum": "플래티넘 트로피",
+      "owners": "플레이어 수",
+      "rate": "플래티넘 달성률"
+    },
+    "options": {
+      "platinum": {
+        "all": "전체",
+        "yes": "플래티넘 포함",
+        "no": "플래티넘 없음"
+      },
+      "owners": {
+        "all": "전체",
+        "under100": "100명 미만",
+        "from100": "100–999명",
+        "from1000": "1,000–9,999명",
+        "from10000": "10,000명 이상"
+      },
+      "rate": {
+        "all": "전체",
+        "under5": "5% 미만",
+        "from5": "5% 이상 15% 미만",
+        "from15": "15% 이상 30% 미만",
+        "from30": "30% 이상 50% 미만",
+        "from50": "50% 이상"
+      }
     }
   }
 }

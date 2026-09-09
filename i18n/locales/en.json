@@ -26,6 +26,7 @@
     }
   },
   "nav": {
+    "trophies": "Trophy library",
     "about": "About PSRay",
     "home": "Home",
     "leaderboard": "Leaderboard",
@@ -363,6 +364,8 @@
     "similar": {
       "title": "Linked trophy sets",
       "subtitle": "The same game on other platforms or in other regions",
+      "currentSet": "Current set",
+      "unknownRegion": "Region unknown",
       "setCount": "{n} set | {n} sets",
       "owners": "{count} players"
     },
@@ -701,6 +704,79 @@
     },
     "settings": {
       "title": "Settings"
+    }
+  },
+  "library": {
+    "title": "Browse all trophies",
+    "description": "Explore trophy lists, player counts and platinum completion rates.",
+    "trophies": "trophies",
+    "platforms": "platforms",
+    "search": "Search game titles or trophy set IDs…",
+    "clearSearch": "Clear search",
+    "allPlatforms": "All platforms",
+    "results": "Trophy library",
+    "reset": "Reset filters",
+    "grid": "Grid view",
+    "list": "List view",
+    "preview": "View the trophy list for {name}",
+    "trophyCount": "{count} trophies",
+    "platinumRate": "Platinum rate",
+    "empty": "No matching games",
+    "emptyHint": "Try another search or remove some filters.",
+    "range": "Showing {start}–{end} of {total} games",
+    "players": "Players",
+    "game": "Game",
+    "progress": "Progress",
+    "completionTime": "Reference times",
+    "browseBy": "Browse by",
+    "categories": {
+      "new": "Newly added",
+      "trending": "Trending now",
+      "popular": "Popular games"
+    },
+    "multiSelect": "Select multiple",
+    "removeFilter": "Remove filter: {name}",
+    "recentCount": "{count} recent",
+    "playedCount": "Played {count}",
+    "completedCount": "{count} complete",
+    "platinumCount": "{count} platinum",
+    "completionRate": "Completion rate",
+    "difficultCount": "{count} rare",
+    "difficultHint": "PSN official earn rate below 5%",
+    "medianShort": "Median time",
+    "averageTimeShort": "Average",
+    "p10Short": "Top 10% mark",
+    "fastestShort": "Fastest",
+    "loadError": "Could not load the trophy library",
+    "loadErrorHint": "Check your connection and try again.",
+    "retry": "Reload",
+    "advanced": {
+      "title": "Advanced filters",
+      "platinum": "Platinum trophy",
+      "owners": "Player count",
+      "rate": "Platinum rate"
+    },
+    "options": {
+      "platinum": {
+        "all": "Any",
+        "yes": "With platinum",
+        "no": "Without platinum"
+      },
+      "owners": {
+        "all": "Any",
+        "under100": "Under 100",
+        "from100": "100–999",
+        "from1000": "1,000–9,999",
+        "from10000": "10,000 or more"
+      },
+      "rate": {
+        "all": "Any",
+        "under5": "Under 5%",
+        "from5": "5% to under 15%",
+        "from15": "15% to under 30%",
+        "from30": "30% to under 50%",
+        "from50": "50% or more"
+      }
     }
   }
 }

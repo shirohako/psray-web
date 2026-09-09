@@ -61,6 +61,65 @@ export interface AvailableLanguage {
   name: string
 }
 
+/** Server-side ordering supported by `GET /trophies`. */
+export type TrophyBrowseSort = 'newest' | 'recent_hot' | 'popular'
+
+/** One trophy set returned by the public, paginated trophy browser. */
+export interface TrophyBrowseItem {
+  id: number
+  np_communication_id: string
+  /** Original/base-table title. */
+  name: string
+  /** Title selected from `lang` / `Accept-Language`; always use this in the UI. */
+  localized_name: string
+  default_language: string | null
+  display_language: string
+  available_languages: AvailableLanguage[]
+  platform: string[]
+  icon_url: string
+  defined_trophies: DefinedTrophies
+  owners: number
+  completed_players: number
+  completion_rate: number | null
+  platinum_achievers: number
+  platinum_rate: number | null
+  recent_players: number
+  average_progress: number
+  /** All duration fields are seconds and are null when no sample exists. */
+  average_completion_time: number | null
+  median_completion_time: number | null
+  p10_completion_time: number | null
+  fastest_completion_time: number | null
+  median_platinum_time: number | null
+  difficult_trophy_count: number
+  /** Official translations excluding the default language. */
+  translation_count: number
+  created_at: string
+  updated_at: string
+}
+
+export interface TrophyBrowseMeta {
+  page: number
+  per_page: number
+  total: number
+  total_pages: number
+}
+
+export interface TrophyBrowseQuery {
+  page?: number
+  per_page?: number
+  sort?: TrophyBrowseSort
+  q?: string
+  'platform[]'?: string[]
+  /** Query-string boolean encoded as 1/0 for backend validation. */
+  has_platinum?: 0 | 1
+  owners_min?: number
+  owners_max?: number
+  platinum_rate_min?: number
+  platinum_rate_max?: number
+  lang?: string
+}
+
 /** A trophy group (base game, or a DLC). */
 export interface TrophyGroup {
   id: number
@@ -238,6 +297,10 @@ export function useTrophies() {
   const { get, raw } = useApi()
 
   return {
+    /** Public trophy-set browser. All filters and ordering are applied server-side. */
+    browse: (query?: TrophyBrowseQuery) =>
+      raw.get<TrophyBrowseItem[], TrophyBrowseMeta>('/trophies', { query }),
+
     /** Trophy-set detail. Pass `psnid` to embed a user's progress. */
     find: (id: number | string, query?: { psnid?: string; lang?: string }) =>
       get<TrophySetDetail>(`/trophies/${id}`, { query }),

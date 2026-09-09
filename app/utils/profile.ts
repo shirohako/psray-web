@@ -191,7 +191,9 @@ export function platformList(platform: PlatformValue): string[] {
 
 /** Compact platform label for badges. */
 export function platformLabel(platform: string): string {
-  return platform === 'PSVITA' ? 'PSV' : platform
+  if (platform === 'PSVITA') return 'PSV'
+  if (platform === 'PSPC') return 'PSP'
+  return platform
 }
 
 /**
@@ -205,7 +207,8 @@ export function platformBadgeClass(platform: string): string {
     case 'PS3': return 'bg-teal-600 text-white'
     case 'PSVITA':
     case 'PSV': return 'bg-rose-500 text-white'
-    case 'PSP': return 'bg-amber-600 text-white'
+    case 'PSP':
+    case 'PSPC': return 'bg-amber-600 text-white'
     default: return 'bg-slate-600 text-white'
   }
 }

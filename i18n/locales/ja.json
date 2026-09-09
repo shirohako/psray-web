@@ -26,6 +26,7 @@
     }
   },
   "nav": {
+    "trophies": "トロフィー",
     "about": "PSRay について",
     "home": "ホーム",
     "leaderboard": "ランキング",
@@ -363,6 +364,8 @@
     "similar": {
       "title": "関連するトロフィーセット",
       "subtitle": "同じゲームの別プラットフォーム・別地域のトロフィーセット",
+      "currentSet": "現在のセット",
+      "unknownRegion": "地域不明",
       "setCount": "{n} セット",
       "owners": "{count} 人がプレイ"
     },
@@ -701,6 +704,79 @@
     },
     "settings": {
       "title": "アカウント設定"
+    }
+  },
+  "library": {
+    "title": "すべてのトロフィーを見る",
+    "description": "ゲームのトロフィー一覧、プレイヤー数、プラチナ獲得率をチェック。",
+    "trophies": "トロフィー",
+    "platforms": "プラットフォーム",
+    "search": "ゲーム名・トロフィーセット ID を検索…",
+    "clearSearch": "検索をクリア",
+    "allPlatforms": "すべて",
+    "results": "トロフィーライブラリ",
+    "reset": "絞り込みをリセット",
+    "grid": "カード表示",
+    "list": "リスト表示",
+    "preview": "{name} のトロフィー一覧を見る",
+    "trophyCount": "{count} トロフィー",
+    "platinumRate": "プラチナ率",
+    "empty": "該当するゲームがありません",
+    "emptyHint": "別のキーワードを試すか、絞り込み条件を減らしてください。",
+    "range": "{total} ゲーム中 {start}–{end} 件を表示",
+    "players": "プレイヤー",
+    "game": "ゲーム",
+    "progress": "達成状況",
+    "completionTime": "参考時間",
+    "browseBy": "表示カテゴリ",
+    "categories": {
+      "new": "新着",
+      "trending": "最近の人気",
+      "popular": "人気ゲーム"
+    },
+    "multiSelect": "複数選択可",
+    "removeFilter": "絞り込みを解除：{name}",
+    "recentCount": "最近 {count}",
+    "playedCount": "プレイ {count}",
+    "completedCount": "トルコン {count}",
+    "platinumCount": "プラチナ {count}",
+    "completionRate": "トルコン率",
+    "difficultCount": "レア {count}",
+    "difficultHint": "PSN公式獲得率 5%未満",
+    "medianShort": "トルコン時間中央値",
+    "averageTimeShort": "平均トルコン",
+    "p10Short": "上位10%目安",
+    "fastestShort": "最短トルコン",
+    "loadError": "トロフィー一覧を読み込めませんでした",
+    "loadErrorHint": "通信状態を確認して、もう一度お試しください。",
+    "retry": "再読み込み",
+    "advanced": {
+      "title": "詳細な絞り込み",
+      "platinum": "プラチナ",
+      "owners": "プレイヤー数",
+      "rate": "プラチナ獲得率"
+    },
+    "options": {
+      "platinum": {
+        "all": "指定なし",
+        "yes": "プラチナあり",
+        "no": "プラチナなし"
+      },
+      "owners": {
+        "all": "指定なし",
+        "under100": "100人未満",
+        "from100": "100～999人",
+        "from1000": "1,000～9,999人",
+        "from10000": "10,000人以上"
+      },
+      "rate": {
+        "all": "指定なし",
+        "under5": "5% 未満",
+        "from5": "5% 以上 15% 未満",
+        "from15": "15% 以上 30% 未満",
+        "from30": "30% 以上 50% 未満",
+        "from50": "50% 以上"
+      }
     }
   }
 }

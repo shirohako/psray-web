@@ -44,6 +44,7 @@ type MenuItem = {
 
 const menu: MenuItem[] = [
   { labelKey: 'nav.home', to: '/', icon: House },
+  { labelKey: 'nav.trophies', to: '/trophies', icon: Gamepad2 },
   { labelKey: 'nav.leaderboard', to: '/leaderboard', icon: Trophy },
   { labelKey: 'nav.about', to: '/about', icon: Compass },
 ]
