@@ -293,13 +293,14 @@
     },
     "statistics": {
       "title": "數據統計",
+      "updateHint": "統計數據每 8 小時更新一次。",
       "referenceTimes": "參考時間",
       "subtitle": "基於公開的 100% 完成記錄",
       "medianCompletion": "完成時間中位數",
-      "averageCompletion": "平均",
-      "p10Completion": "第 10 百分位",
-      "fastestCompletion": "最快",
-      "medianPlatinum": "白金時間中位數",
+      "averageCompletion": "平均獎盃完成時間",
+      "p10Completion": "獎盃完成時間第 10 百分位",
+      "fastestCompletion": "最短獎盃完成時間",
+      "medianPlatinum": "白金獲取時間中位數",
       "difficult": "高難度獎盃",
       "difficultHint": "PSN 官方獲取率低於 5%"
     },
@@ -314,8 +315,10 @@
     "players": {
       "title": "玩家排行",
       "recent": "最近在玩",
-      "progress": "最先完成",
-      "speedrun": "耗時最短",
+      "progress": "最早完成排行",
+      "progressHint": "按玩家達到 100% 的時間從早到晚排名",
+      "speedrun": "最快完成排行",
+      "speedrunHint": "按首個至最後一個獎盃的耗時從短到長排名",
       "empty": "暫無玩家記錄。"
     },
     "earners": {
@@ -739,7 +742,7 @@
     "range": "顯示 {start}–{end} 項，共 {total} 款遊戲",
     "players": "參與玩家",
     "game": "遊戲",
-    "progress": "達成情況",
+    "progress": "達成率",
     "completionTime": "參考時間",
     "showReferenceTimes": "顯示參考時間",
     "browseBy": "瀏覽分類",

@@ -88,6 +88,7 @@ const qrMeta = computed(() => [
           <div class="mt-4 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
             <button
               type="button"
+              :title="$t('trophy.players.speedrunHint')"
               class="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white ring-1 ring-white/15 backdrop-blur transition hover:bg-white/20"
               @click="openRanking('speedrun')"
             >
@@ -95,6 +96,7 @@ const qrMeta = computed(() => [
             </button>
             <button
               type="button"
+              :title="$t('trophy.players.progressHint')"
               class="inline-flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 text-xs font-medium text-white ring-1 ring-white/15 backdrop-blur transition hover:bg-white/20"
               @click="openRanking('progress')"
             >

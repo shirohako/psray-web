@@ -11,10 +11,10 @@ const props = withDefaults(defineProps<{
 }>(), { initialType: 'recent' })
 const emit = defineEmits<{ 'update:open': [v: boolean] }>()
 
-const tabs: { value: PlayerRankType; labelKey: string; icon: IconNode }[] = [
+const tabs: { value: PlayerRankType; labelKey: string; hintKey?: string; icon: IconNode }[] = [
   { value: 'recent', labelKey: 'trophy.players.recent', icon: History },
-  { value: 'progress', labelKey: 'trophy.players.progress', icon: Flag },
-  { value: 'speedrun', labelKey: 'trophy.players.speedrun', icon: Timer },
+  { value: 'progress', labelKey: 'trophy.players.progress', hintKey: 'trophy.players.progressHint', icon: Flag },
+  { value: 'speedrun', labelKey: 'trophy.players.speedrun', hintKey: 'trophy.players.speedrunHint', icon: Timer },
 ]
 
 const type = ref<PlayerRankType>('recent')
@@ -89,6 +89,7 @@ function rankClass(rank: number) {
           v-for="(t, index) in tabs"
           :key="t.value"
           type="button"
+          :title="t.hintKey ? $t(t.hintKey) : undefined"
           class="flex min-h-9 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-center text-sm font-medium transition"
           :class="[
             index === 0 ? 'col-span-2 sm:col-span-1' : '',

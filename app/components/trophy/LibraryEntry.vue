@@ -110,7 +110,7 @@ function isoDate(value: string) {
         >
           <LucideIcon :icon="Award" class="size-3 shrink-0 text-cyan-500" />
           <span class="shrink-0 text-[10px] text-slate-400">{{ $t('library.platinumLabel') }}</span>
-          <span class="shrink-0 text-xs" :class="game.platinum_rate === null ? 'text-slate-400' : 'font-semibold text-cyan-700'">
+          <span class="shrink-0">
             {{ rate(game.platinum_rate) }}
           </span>
         </div>

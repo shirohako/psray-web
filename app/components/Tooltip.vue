@@ -33,6 +33,8 @@ const slots = useSlots()
 const hasContent = computed(() => !!props.content || !!slots.content)
 const trigger = ref<HTMLElement | null>(null)
 const visible = ref(false)
+const hovered = ref(false)
+const focused = ref(false)
 const position = ref({ top: 0, left: 0 })
 
 const PANEL: Record<Placement, string> = {
@@ -87,6 +89,26 @@ function hide() {
   window.removeEventListener('resize', updatePosition)
 }
 
+function handleMouseEnter() {
+  hovered.value = true
+  show()
+}
+
+function handleMouseLeave() {
+  hovered.value = false
+  if (!focused.value) hide()
+}
+
+function handleFocusIn() {
+  focused.value = true
+  show()
+}
+
+function handleFocusOut() {
+  focused.value = false
+  if (!hovered.value) hide()
+}
+
 onUnmounted(hide)
 </script>
 
@@ -95,10 +117,10 @@ onUnmounted(hide)
     ref="trigger"
     class="inline-flex"
     v-bind="$attrs"
-    @mouseenter="show"
-    @mouseleave="hide"
-    @focusin="show"
-    @focusout="hide"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+    @focusin="handleFocusIn"
+    @focusout="handleFocusOut"
   >
     <slot />
     <Teleport v-if="hasContent && visible" to="body">

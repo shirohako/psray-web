@@ -293,13 +293,14 @@
     },
     "statistics": {
       "title": "統計データ",
+      "updateHint": "統計データは8時間ごとに更新されます。",
       "referenceTimes": "参考時間",
       "subtitle": "公開トロコン記録に基づく集計",
-      "medianCompletion": "トロコン時間中央値",
-      "averageCompletion": "平均",
-      "p10Completion": "10パーセンタイル",
-      "fastestCompletion": "最短",
-      "medianPlatinum": "プラチナ時間中央値",
+      "medianCompletion": "トロフィーコンプリート時間中央値",
+      "averageCompletion": "平均トロフィーコンプリート時間",
+      "p10Completion": "トロフィーコンプリート時間 10パーセンタイル",
+      "fastestCompletion": "最短トロフィーコンプリート時間",
+      "medianPlatinum": "プラチナ獲得時間中央値",
       "difficult": "高難度トロフィー",
       "difficultHint": "PSN公式獲得率 5%未満"
     },
@@ -314,8 +315,10 @@
     "players": {
       "title": "プレイヤーランキング",
       "recent": "最近プレイした順",
-      "progress": "コンプ達成が早い順",
-      "speedrun": "最短クリア時間",
+      "progress": "達成順ランキング",
+      "progressHint": "100%達成日時が早い順にランキング",
+      "speedrun": "最速ランキング",
+      "speedrunHint": "最初から最後のトロフィーまでの所要時間が短い順にランキング",
       "empty": "プレイヤー記録がまだありません。"
     },
     "earners": {
@@ -739,7 +742,7 @@
     "range": "{total} ゲーム中 {start}–{end} 件を表示",
     "players": "プレイヤー",
     "game": "ゲーム",
-    "progress": "達成状況",
+    "progress": "達成率",
     "completionTime": "参考時間",
     "showReferenceTimes": "参考時間を表示",
     "browseBy": "表示カテゴリ",

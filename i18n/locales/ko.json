@@ -293,13 +293,14 @@
     },
     "statistics": {
       "title": "통계",
+      "updateHint": "통계 데이터는 8시간마다 업데이트됩니다.",
       "referenceTimes": "참고 시간",
       "subtitle": "공개 100% 완료 기록 기준",
       "medianCompletion": "완료 시간 중앙값",
-      "averageCompletion": "평균",
-      "p10Completion": "10백분위수",
-      "fastestCompletion": "최단",
-      "medianPlatinum": "플래티넘 시간 중앙값",
+      "averageCompletion": "평균 트로피 완료 시간",
+      "p10Completion": "트로피 완료 시간 10백분위수",
+      "fastestCompletion": "최단 트로피 완료 시간",
+      "medianPlatinum": "플래티넘 획득 시간 중앙값",
       "difficult": "고난도 트로피",
       "difficultHint": "PSN 공식 획득률 5% 미만"
     },
@@ -314,8 +315,10 @@
     "players": {
       "title": "플레이어 랭킹",
       "recent": "최근 플레이",
-      "progress": "가장 먼저 완료",
-      "speedrun": "최단 시간",
+      "progress": "최초 완료 순위",
+      "progressHint": "100%를 먼저 달성한 시간순으로 집계",
+      "speedrun": "최단 완료 시간 순위",
+      "speedrunHint": "첫 트로피부터 마지막 트로피까지 걸린 시간이 짧은 순서",
       "empty": "아직 플레이어 기록이 없습니다."
     },
     "earners": {
@@ -739,7 +742,7 @@
     "range": "총 {total}개 게임 중 {start}–{end} 표시",
     "players": "플레이어",
     "game": "게임",
-    "progress": "달성 현황",
+    "progress": "달성률",
     "completionTime": "참고 시간",
     "showReferenceTimes": "참고 시간 표시",
     "browseBy": "탐색 분류",

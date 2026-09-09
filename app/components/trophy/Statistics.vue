@@ -64,10 +64,19 @@ const hasPlatinum = computed(() => props.trophySet.defined_trophies.platinum > 0
 
 <template>
   <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="trophy-statistics-heading">
-    <header class="border-b border-slate-100 px-4 py-2.5">
+    <header class="flex items-center gap-1.5 border-b border-slate-100 px-4 py-2.5">
       <h2 id="trophy-statistics-heading" class="text-sm font-semibold text-slate-900">
         {{ $t('trophy.statistics.title') }}
       </h2>
+      <Tooltip :content="$t('trophy.statistics.updateHint')" placement="top">
+        <button
+          type="button"
+          class="grid size-5 place-items-center rounded-full border border-slate-200 bg-white text-[11px] font-bold leading-none text-slate-400 transition hover:border-slate-300 hover:text-slate-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+          :aria-label="$t('trophy.statistics.updateHint')"
+        >
+          ?
+        </button>
+      </Tooltip>
     </header>
 
     <dl class="grid grid-cols-2 border-b border-slate-100">

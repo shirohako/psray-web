@@ -293,13 +293,14 @@
     },
     "statistics": {
       "title": "Statistics",
+      "updateHint": "Statistics are updated every 8 hours.",
       "referenceTimes": "Reference times",
       "subtitle": "Based on public 100% completion records",
       "medianCompletion": "Median completion time",
-      "averageCompletion": "Average",
-      "p10Completion": "10th percentile",
-      "fastestCompletion": "Fastest",
-      "medianPlatinum": "Median platinum time",
+      "averageCompletion": "Average completion time",
+      "p10Completion": "10th-percentile completion time",
+      "fastestCompletion": "Fastest completion time",
+      "medianPlatinum": "Median time to platinum",
       "difficult": "Rare trophies",
       "difficultHint": "PSN official earn rate below 5%"
     },
@@ -314,8 +315,10 @@
     "players": {
       "title": "Player rankings",
       "recent": "Recently playing",
-      "progress": "First to complete",
-      "speedrun": "Fastest completion",
+      "progress": "Finish order",
+      "progressHint": "Ranked by when players first reached 100%",
+      "speedrun": "Speedrun ranking",
+      "speedrunHint": "Ranked by each player's elapsed time from first to last trophy",
       "empty": "No player records yet."
     },
     "earners": {
@@ -739,7 +742,7 @@
     "range": "Showing {start}–{end} of {total} games",
     "players": "Players",
     "game": "Game",
-    "progress": "Progress",
+    "progress": "Completion rate",
     "completionTime": "Reference times",
     "showReferenceTimes": "Show reference times",
     "browseBy": "Browse by",
