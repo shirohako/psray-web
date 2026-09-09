@@ -43,7 +43,7 @@ useHead(() => ({
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl space-y-10">
+  <div class="mx-auto max-w-3xl space-y-10">
     <!-- Hero: the one thing most visitors came to do -->
     <section class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
       <div class="flex items-center gap-2.5">
@@ -81,14 +81,14 @@ useHead(() => ({
             autocapitalize="off"
             autocomplete="off"
             spellcheck="false"
-            class="w-full rounded-lg border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-slate-400 focus:outline-none"
+            class="w-full rounded-lg border border-slate-200 bg-white py-1.5 pl-9 pr-3 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-slate-400 focus:outline-none"
           />
         </div>
         <div class="grid grid-cols-1 gap-2 sm:flex sm:shrink-0">
           <button
             type="submit"
             :disabled="!psnid.trim()"
-            class="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm shadow-slate-900/30 transition hover:bg-slate-800 active:bg-slate-950 disabled:opacity-40 disabled:hover:bg-slate-900 sm:shrink-0"
+            class="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg bg-slate-900 px-4 py-1.5 text-sm font-semibold text-white shadow-sm shadow-slate-900/30 transition hover:bg-slate-800 active:bg-slate-950 disabled:opacity-40 disabled:hover:bg-slate-900 sm:shrink-0"
           >
             <LucideIcon :icon="UserRound" class="size-4 shrink-0" />
             {{ $t('home.lookup.view') }}
@@ -96,7 +96,7 @@ useHead(() => ({
           <button
             type="button"
             :disabled="!psnid.trim()"
-            class="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-60 disabled:hover:bg-white sm:shrink-0"
+            class="inline-flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 disabled:border-slate-300 disabled:bg-slate-50 disabled:text-slate-400 disabled:opacity-100 disabled:hover:bg-slate-50 disabled:hover:text-slate-400 sm:shrink-0"
             @click="goToSync"
           >
             <LucideIcon :icon="RefreshCw" class="size-4 shrink-0" />

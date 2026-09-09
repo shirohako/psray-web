@@ -59,7 +59,12 @@ const durationRows = computed(() => [
   },
 ])
 
-const hasPlatinum = computed(() => props.trophySet.defined_trophies.platinum > 0)
+// Without add-on groups, earning the platinum and reaching 100% describe the
+// same finish, so the separate platinum median would only duplicate the row.
+const showPlatinumTime = computed(() =>
+  props.trophySet.has_trophy_groups
+  && props.trophySet.defined_trophies.platinum > 0,
+)
 </script>
 
 <template>
@@ -102,22 +107,22 @@ const hasPlatinum = computed(() => props.trophySet.defined_trophies.platinum > 0
       </div>
 
       <div class="rounded-lg bg-slate-50 px-3.5 py-3">
-        <div class="flex items-center gap-1.5 text-xs text-slate-500">
+        <div class="flex items-center gap-1.5 text-[11px] text-slate-500">
           <LucideIcon :icon="Clock3" class="size-3.5 text-slate-400" />
           {{ $t('trophy.statistics.medianCompletion') }}
         </div>
-        <div class="mt-1.5 text-xl font-bold leading-none tracking-tight text-slate-900 tabular-nums">
+        <div class="mt-1 text-sm font-semibold leading-none tracking-tight text-slate-900 tabular-nums">
           {{ formatDuration(trophySet.median_completion_time) }}
         </div>
       </div>
 
       <dl class="mt-2 divide-y divide-slate-100">
-        <div v-for="row in durationRows" :key="row.key" class="flex items-center gap-2 py-2.5 text-sm">
+        <div v-for="row in durationRows" :key="row.key" class="flex items-center gap-2 py-2.5 text-xs">
           <LucideIcon :icon="row.icon" class="size-4 shrink-0" :class="row.iconClass" />
           <dt class="min-w-0 flex-1 text-slate-500">{{ $t(row.label) }}</dt>
           <dd class="shrink-0 font-semibold text-slate-800 tabular-nums">{{ formatDuration(row.value) }}</dd>
         </div>
-        <div v-if="hasPlatinum" class="flex items-center gap-2 py-2.5 text-sm">
+        <div v-if="showPlatinumTime" class="flex items-center gap-2 py-2.5 text-xs">
           <LucideIcon :icon="Award" class="size-4 shrink-0 text-cyan-500" />
           <dt class="min-w-0 flex-1 text-slate-500">{{ $t('trophy.statistics.medianPlatinum') }}</dt>
           <dd class="shrink-0 font-semibold text-slate-800 tabular-nums">{{ formatDuration(trophySet.median_platinum_time) }}</dd>
@@ -131,7 +136,7 @@ const hasPlatinum = computed(() => props.trophySet.defined_trophies.platinum > 0
             <dt class="text-xs font-semibold text-slate-700">{{ $t('trophy.statistics.difficult') }}</dt>
             <p class="mt-0.5 text-[10px] leading-4 text-slate-400">{{ $t('trophy.statistics.difficultHint') }}</p>
           </div>
-          <dd class="grid min-w-10 shrink-0 place-items-center rounded-lg bg-white px-2.5 py-2 text-lg font-bold leading-none text-slate-800 shadow-sm ring-1 ring-inset ring-slate-200 tabular-nums">
+          <dd class="grid min-w-10 shrink-0 place-items-center rounded-lg bg-white px-2.5 py-2 text-sm font-bold leading-none text-slate-800 shadow-sm ring-1 ring-inset ring-slate-200 tabular-nums">
             {{ fmt(trophySet.difficult_trophy_count) }}
           </dd>
         </div>
