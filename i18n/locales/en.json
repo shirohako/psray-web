@@ -728,6 +728,7 @@
     "game": "Game",
     "progress": "Progress",
     "completionTime": "Reference times",
+    "showReferenceTimes": "Show reference times",
     "browseBy": "Browse by",
     "categories": {
       "new": "Newly added",

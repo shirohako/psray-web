@@ -728,6 +728,7 @@
     "game": "遊戲",
     "progress": "達成情況",
     "completionTime": "參考時間",
+    "showReferenceTimes": "顯示參考時間",
     "browseBy": "瀏覽分類",
     "categories": {
       "new": "新推出",

@@ -728,6 +728,7 @@
     "game": "ゲーム",
     "progress": "達成状況",
     "completionTime": "参考時間",
+    "showReferenceTimes": "参考時間を表示",
     "browseBy": "表示カテゴリ",
     "categories": {
       "new": "新着",

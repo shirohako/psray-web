@@ -728,6 +728,7 @@
     "game": "游戏",
     "progress": "达成情况",
     "completionTime": "参考时间",
+    "showReferenceTimes": "显示参考时间",
     "browseBy": "浏览分类",
     "categories": {
       "new": "新推出",

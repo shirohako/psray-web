@@ -728,6 +728,7 @@
     "game": "게임",
     "progress": "달성 현황",
     "completionTime": "참고 시간",
+    "showReferenceTimes": "참고 시간 표시",
     "browseBy": "탐색 분류",
     "categories": {
       "new": "신규 등록",

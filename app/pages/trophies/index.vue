@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown, ChevronRight, Gamepad2, LayoutGrid, List, RotateCcw, Search, SlidersHorizontal, Trophy, X } from 'lucide'
+import { ChevronDown, Gamepad2, LayoutGrid, List, RotateCcw, Search, SlidersHorizontal, Trophy, X } from 'lucide'
 import type { TrophyBrowseItem, TrophyBrowseMeta } from '~/services/trophies'
 import { emptyLibraryFilters, trophyBrowsePath, trophyBrowseQuery, type LibraryCategory } from '~/utils/trophyLibrary'
 
@@ -7,16 +7,17 @@ const { t } = useI18n()
 const { acceptLanguage } = usePreferences()
 useSeo({ title: () => t('library.title'), description: () => t('library.description') })
 
-const category = ref<LibraryCategory>('new')
+const category = ref<LibraryCategory>('trending')
 const categories = [
-  { key: 'new' },
   { key: 'trending' },
+  { key: 'new' },
   { key: 'popular' },
 ] as const
 const filters = reactive(emptyLibraryFilters())
 const searchInput = ref('')
 const advancedOpen = ref(false)
 const view = ref<'grid' | 'list'>('list')
+const showReferenceTimes = ref(true)
 const page = ref(1)
 const pageSize = 24
 const platforms = ['PS5', 'PS4', 'PS3', 'PSVITA', 'PSPC']
@@ -96,12 +97,6 @@ function changePage(value: number) {
 
 <template>
   <div class="space-y-5">
-    <div class="flex items-center gap-2 text-xs text-slate-400">
-      <NuxtLink to="/" class="transition hover:text-slate-900">{{ $t('nav.home') }}</NuxtLink>
-      <LucideIcon :icon="ChevronRight" class="size-3" />
-      <span class="text-slate-500">{{ $t('nav.trophies') }}</span>
-    </div>
-
     <header class="flex items-start gap-3 pb-1 pt-1">
       <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm">
         <LucideIcon :icon="Trophy" class="size-5" stroke-width="1.5" />
@@ -156,8 +151,8 @@ function changePage(value: number) {
           </div>
         </div>
 
-        <div class="flex items-center gap-3 border-t border-slate-100 px-4 py-2.5">
-          <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-2">
+        <div class="flex flex-wrap items-center gap-x-3 gap-y-2 border-t border-slate-100 px-4 py-2.5">
+          <div class="flex min-w-0 basis-full flex-wrap items-center gap-x-4 gap-y-2 sm:basis-auto sm:flex-1">
             <span class="text-[11px] text-slate-400">{{ $t('library.platforms') }}</span>
             <div class="flex flex-wrap gap-1.5">
               <button :aria-pressed="!filters.platforms.length" class="rounded px-2 py-1 text-[11px] font-medium" :class="!filters.platforms.length ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-100'" @click="filters.platforms = []">
@@ -176,18 +171,24 @@ function changePage(value: number) {
             </div>
             <span class="text-[10px] text-slate-400">{{ $t('library.multiSelect') }}</span>
           </div>
-          <div class="flex shrink-0 gap-0.5 border-l border-slate-200 pl-2">
-            <button
-              v-for="item in (['list', 'grid'] as const)"
-              :key="item"
-              :aria-label="$t(`library.${item}`)"
-              :aria-pressed="view === item"
-              class="grid size-7 place-items-center rounded-md transition"
-              :class="view === item ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-700'"
-              @click="view = item"
-            >
-              <LucideIcon :icon="item === 'grid' ? LayoutGrid : List" class="size-3.5" />
-            </button>
+          <div class="flex w-full shrink-0 items-center justify-between gap-2 border-t border-slate-100 pt-2 sm:ml-auto sm:w-auto sm:justify-start sm:border-t-0 sm:pt-0">
+            <label class="flex cursor-pointer select-none items-center gap-1.5 whitespace-nowrap text-[11px] text-slate-500">
+              <input v-model="showReferenceTimes" type="checkbox" class="size-3.5 accent-slate-900" />
+              {{ $t('library.showReferenceTimes') }}
+            </label>
+            <div class="flex gap-0.5 border-l border-slate-200 pl-2">
+              <button
+                v-for="item in (['list', 'grid'] as const)"
+                :key="item"
+                :aria-label="$t(`library.${item}`)"
+                :aria-pressed="view === item"
+                class="grid size-7 place-items-center rounded-md transition"
+                :class="view === item ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-700'"
+                @click="view = item"
+              >
+                <LucideIcon :icon="item === 'grid' ? LayoutGrid : List" class="size-3.5" />
+              </button>
+            </div>
           </div>
         </div>
 
@@ -236,16 +237,16 @@ function changePage(value: number) {
         </div>
 
         <div v-else-if="games.length" class="transition-opacity" :class="pending ? 'opacity-55' : ''">
-          <div v-if="view === 'list'" class="list-head border-b border-slate-100 bg-slate-50/70 text-[10px] text-slate-400" aria-hidden="true">
+          <div v-if="view === 'list'" class="list-head border-b border-slate-100 bg-slate-50/70 text-[10px] text-slate-400" :class="{ 'no-reference-times': !showReferenceTimes }" aria-hidden="true">
             <span class="col-span-2">{{ $t('library.game') }}</span>
             <span>{{ $t('library.trophies') }}</span>
             <span class="text-right">{{ $t('library.players') }}</span>
             <span class="text-center">{{ $t('library.progress') }}</span>
-            <span>{{ $t('library.completionTime') }}</span>
+            <span v-if="showReferenceTimes">{{ $t('library.completionTime') }}</span>
             <span />
           </div>
           <div :class="view === 'list' ? 'divide-y divide-slate-100' : 'grid grid-cols-1 gap-2.5 bg-slate-50/50 p-2 sm:gap-3 sm:p-4 lg:grid-cols-2 2xl:grid-cols-3'">
-            <TrophyLibraryEntry v-for="game in games" :key="game.id" :game="game" :view="view" />
+            <TrophyLibraryEntry v-for="game in games" :key="game.id" :game="game" :view="view" :show-reference-times="showReferenceTimes" />
           </div>
         </div>
 
@@ -273,6 +274,9 @@ function changePage(value: number) {
     grid-template-columns: 96px minmax(160px, 1fr) 148px 100px 120px 166px 12px;
     column-gap: 12px;
     padding: 7px 16px;
+  }
+  .list-head.no-reference-times {
+    grid-template-columns: 96px minmax(160px, 1fr) 148px 100px 120px 12px;
   }
 }
 .filter-field { display: flex; min-width: 0; flex-direction: column; gap: 6px; font-size: 11px; color: var(--color-slate-500); }

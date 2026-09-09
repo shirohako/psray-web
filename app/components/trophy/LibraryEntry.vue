@@ -2,7 +2,7 @@
 import { Award, CheckCircle2, ChevronRight, Clock3, Gauge, History, Languages, Timer, Trophy, Users, Zap } from 'lucide'
 import type { TrophyBrowseItem } from '~/services/trophies'
 
-const props = defineProps<{ game: TrophyBrowseItem; view: 'list' | 'grid' }>()
+const props = defineProps<{ game: TrophyBrowseItem; view: 'list' | 'grid'; showReferenceTimes: boolean }>()
 const { t } = useI18n()
 
 const languageNames = computed(() => formatList(
@@ -27,7 +27,7 @@ function isoDate(value: string) {
   <NuxtLink
     :to="`/trophies/${game.id}`"
     class="library-entry group"
-    :class="{ 'is-card': view === 'grid' }"
+    :class="{ 'is-card': view === 'grid', 'no-reference-times': !showReferenceTimes }"
     :aria-label="$t('library.preview', { name: game.localized_name })"
   >
     <TrophyLibraryArtwork :game="game" class="entry-art" />
@@ -113,7 +113,7 @@ function isoDate(value: string) {
         </div>
       </div>
 
-      <div class="entry-times tabular-nums">
+      <div v-if="showReferenceTimes" class="entry-times tabular-nums">
         <div class="flex items-center gap-1 text-[10px] font-medium text-slate-600">
           <LucideIcon :icon="Clock3" class="size-3 text-slate-400" />
           {{ $t('library.medianShort') }} {{ formatDuration(game.median_completion_time) }}
@@ -155,6 +155,9 @@ function isoDate(value: string) {
     padding: 11px 16px;
     min-height: 102px;
     align-items: center;
+  }
+  .library-entry:not(.is-card).no-reference-times {
+    grid-template-columns: 96px minmax(160px, 1fr) 148px 100px 120px 12px;
   }
   .library-entry:not(.is-card) .entry-art { width: 96px; height: 64px; grid-column: auto; }
   .library-entry:not(.is-card) .entry-name { grid-column: auto; }
@@ -281,6 +284,13 @@ function isoDate(value: string) {
     border-left: 1px dashed var(--color-slate-200);
     padding-top: 0;
     padding-left: 16px;
+  }
+  .is-card.no-reference-times .entry-measures {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'trophies'
+      'players'
+      'rates';
   }
 }
 
