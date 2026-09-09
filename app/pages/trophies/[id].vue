@@ -138,6 +138,8 @@
           :defined-trophies="data.trophy_set.defined_trophies"
         />
 
+        <TrophyStatistics :trophy-set="data.trophy_set" />
+
         <TrophySimilarSets v-if="data.similar_trophy_sets?.length" :sets="data.similar_trophy_sets" :current-set="data.trophy_set" />
 
         <TrophyRecentPlayers :id="data.trophy_set.id" :players="data.recent_players" />
@@ -155,6 +157,7 @@
 
 <script setup lang="ts">
 import { ArrowUpDown, ChevronDown } from 'lucide'
+import TrophyStatistics from '~/components/trophy/Statistics.vue'
 import type { Trophy, TrophyGroup, TrophySetDetail } from '~/services/trophies'
 import { DEFAULT_LOCALE, PSN_LANG, canonicalContentLang, canonicalLang, isUiLocale, type UiLocale } from '#shared/locales'
 

@@ -291,6 +291,18 @@
       "version": "版本号",
       "qrTitle": "奖杯组二维码"
     },
+    "statistics": {
+      "title": "数据统计",
+      "referenceTimes": "参考时间",
+      "subtitle": "基于公开的 100% 完成记录",
+      "medianCompletion": "完成时间中位数",
+      "averageCompletion": "平均",
+      "p10Completion": "第 10 百分位",
+      "fastestCompletion": "最快",
+      "medianPlatinum": "白金时间中位数",
+      "difficult": "高难奖杯",
+      "difficultHint": "PSN 官方获取率低于 5%"
+    },
     "progress": {
       "title": "你的进度",
       "earnedLabel": "已获得",
@@ -365,7 +377,6 @@
       "title": "已关联的奖杯组",
       "subtitle": "同款游戏其他平台/其他地区的奖杯组",
       "currentSet": "当前奖杯组",
-      "unknownRegion": "地区未知",
       "setCount": "{n} 套奖杯",
       "owners": "{count} 玩过"
     },
@@ -712,6 +723,8 @@
     "trophies": "奖杯",
     "platforms": "平台",
     "search": "搜索游戏名称或奖杯组 ID…",
+    "searchSubmit": "搜索",
+    "searchMinLength": "请至少输入 {count} 个字符",
     "clearSearch": "清除搜索",
     "allPlatforms": "全部平台",
     "results": "游戏奖杯库",
@@ -746,7 +759,7 @@
     "difficultHint": "PSN 官方获取率低于 5%",
     "medianShort": "完成时间中位数",
     "averageTimeShort": "平均完成",
-    "p10Short": "前 10% 参考",
+    "p10Short": "第 10 百分位",
     "fastestShort": "最快完成",
     "loadError": "无法加载奖杯列表",
     "loadErrorHint": "请检查网络连接后重试。",

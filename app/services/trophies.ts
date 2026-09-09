@@ -62,7 +62,7 @@ export interface AvailableLanguage {
 }
 
 /** Server-side ordering supported by `GET /trophies`. */
-export type TrophyBrowseSort = 'newest' | 'recent_hot' | 'popular'
+export type TrophyBrowseSort = 'newest' | 'trending' | 'popular'
 
 /** One trophy set returned by the public, paginated trophy browser. */
 export interface TrophyBrowseItem {
@@ -160,6 +160,18 @@ export interface TrophySetDetailInfo {
   review_count: number
   game_id: number | null
   region: string | null
+  /** All duration fields are seconds and are null when no sample exists. */
+  average_completion_time: number | null
+  median_completion_time: number | null
+  /** 10th percentile using nearest-rank, based on public 100% records. */
+  p10_completion_time: number | null
+  fastest_completion_time: number | null
+  /** Median duration among public players who earned the platinum trophy. */
+  median_platinum_time: number | null
+  /** Trophies whose PSN official earn rate is strictly below 5%. */
+  difficult_trophy_count: number
+  /** Official translations excluding the default language. */
+  translation_count: number
   created_at: string
   updated_at: string
 }

@@ -5,7 +5,7 @@ describe('trophy browser API query', () => {
   it('uses the API defaults and category sort values', () => {
     const filters = emptyLibraryFilters()
     expect(trophyBrowseQuery('new', filters, 1)).toEqual({ page: 1, per_page: 24, sort: 'newest' })
-    expect(trophyBrowseQuery('trending', filters, 2).sort).toBe('recent_hot')
+    expect(trophyBrowseQuery('trending', filters, 2).sort).toBe('trending')
     expect(trophyBrowseQuery('popular', filters, 3).sort).toBe('popular')
   })
 
@@ -50,5 +50,13 @@ describe('trophy browser API query', () => {
       search: `  ${'x'.repeat(120)}  `,
     }, 1)
     expect(query.q).toHaveLength(100)
+  })
+
+  it('does not submit a search shorter than two characters', () => {
+    const query = trophyBrowseQuery('new', {
+      ...emptyLibraryFilters(),
+      search: ' x ',
+    }, 1)
+    expect(query.q).toBeUndefined()
   })
 })

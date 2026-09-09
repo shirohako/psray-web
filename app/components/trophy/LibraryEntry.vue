@@ -102,16 +102,27 @@ function isoDate(value: string) {
       </div>
 
       <div class="entry-rates tabular-nums">
-        <div v-if="showPlatinumComparison" class="flex items-center justify-center gap-1.5">
-          <LucideIcon :icon="Award" class="size-3 text-cyan-500" />
-          <span class="text-[10px] text-slate-400">{{ $t('library.platinumRate') }}</span>
-          <span class="text-xs" :class="game.platinum_rate === null ? 'text-slate-400' : 'font-semibold text-cyan-700'">
+        <div
+          v-if="showPlatinumComparison"
+          class="flex items-center justify-center gap-1.5 whitespace-nowrap"
+          :title="t('library.platinumRate')"
+          :aria-label="`${t('library.platinumRate')} ${rate(game.platinum_rate)}`"
+        >
+          <LucideIcon :icon="Award" class="size-3 shrink-0 text-cyan-500" />
+          <span class="shrink-0 text-[10px] text-slate-400">{{ $t('library.platinumLabel') }}</span>
+          <span class="shrink-0 text-xs" :class="game.platinum_rate === null ? 'text-slate-400' : 'font-semibold text-cyan-700'">
             {{ rate(game.platinum_rate) }}
           </span>
         </div>
-        <div class="flex items-center justify-center gap-1.5 text-[10px] text-slate-400" :class="{ 'mt-1': showPlatinumComparison }">
-          <LucideIcon :icon="CheckCircle2" class="size-3 text-emerald-500" />
-          <span>{{ $t('library.completionRate') }}</span><span>{{ rate(game.completion_rate) }}</span>
+        <div
+          class="flex items-center justify-center gap-1.5 whitespace-nowrap text-[10px] text-slate-400"
+          :class="{ 'mt-1': showPlatinumComparison }"
+          :title="t('library.completionRate')"
+          :aria-label="`${t('library.completionRate')} ${rate(game.completion_rate)}`"
+        >
+          <LucideIcon :icon="CheckCircle2" class="size-3 shrink-0 text-emerald-500" />
+          <span class="shrink-0">{{ $t('library.completedLabel') }}</span>
+          <span class="shrink-0">{{ rate(game.completion_rate) }}</span>
         </div>
       </div>
 

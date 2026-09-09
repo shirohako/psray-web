@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Trophy, Users, Gauge, CheckCircle2, Timer, Flag, Globe } from 'lucide'
+import { Timer, Flag, Globe } from 'lucide'
 import type { TrophySetDetailInfo, PlayerRankType } from '~/services/trophies'
 
 const props = defineProps<{ trophySet: TrophySetDetailInfo, displayName?: string }>()
@@ -14,13 +14,6 @@ function openRanking(type: PlayerRankType) {
   dialogType.value = type
   dialogOpen.value = true
 }
-
-const stats = computed(() => [
-  { icon: Users, labelKey: 'trophy.banner.owners', value: fmt(props.trophySet.owners), tint: 'text-slate-900' },
-  { icon: Gauge, labelKey: 'trophy.banner.averageProgress', value: `${props.trophySet.average_progress}%`, tint: 'text-sky-600' },
-  { icon: CheckCircle2, labelKey: 'trophy.banner.completed', value: fmt(props.trophySet.completed_players), tint: 'text-emerald-600' },
-  { icon: Trophy, labelKey: 'trophy.banner.platinums', value: fmt(props.trophySet.platinum_achievers), tint: 'text-cyan-600' },
-])
 
 const qrMeta = computed(() => [
   { label: t('trophy.banner.setId'), value: props.trophySet.id },
@@ -114,17 +107,5 @@ const qrMeta = computed(() => [
 
     <TrophyPlayersDialog :id="trophySet.id" v-model:open="dialogOpen" :initial-type="dialogType" />
 
-    <!-- Aggregate stats strip -->
-    <div class="grid grid-cols-2 divide-x divide-y divide-slate-100 sm:grid-cols-4 sm:divide-y-0">
-      <div v-for="s in stats" :key="s.labelKey" class="flex items-center gap-2.5 px-4 py-3.5">
-        <span class="grid size-9 shrink-0 place-items-center rounded-full bg-slate-50" :class="s.tint">
-          <LucideIcon :icon="s.icon" class="size-4.5" />
-        </span>
-        <div class="leading-tight">
-          <div class="text-lg font-bold text-slate-900">{{ s.value }}</div>
-          <div class="text-xs text-slate-400">{{ $t(s.labelKey) }}</div>
-        </div>
-      </div>
-    </div>
   </section>
 </template>

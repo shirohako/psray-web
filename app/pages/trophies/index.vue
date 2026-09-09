@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { ChevronDown, Gamepad2, LayoutGrid, List, RotateCcw, Search, SlidersHorizontal, Trophy, X } from 'lucide'
 import type { TrophyBrowseItem, TrophyBrowseMeta } from '~/services/trophies'
-import { emptyLibraryFilters, trophyBrowsePath, trophyBrowseQuery, type LibraryCategory } from '~/utils/trophyLibrary'
+import { emptyLibraryFilters, TROPHY_SEARCH_MIN_LENGTH, trophyBrowsePath, trophyBrowseQuery, type LibraryCategory } from '~/utils/trophyLibrary'
 
 const { t } = useI18n()
 const { acceptLanguage } = usePreferences()
+const toast = useToast()
 useSeo({ title: () => t('library.title'), description: () => t('library.description') })
 
 const category = ref<LibraryCategory>('trending')
@@ -27,7 +28,12 @@ const fields = [
   { key: 'rate', options: ['all', 'under5', 'from5', 'from15', 'from30', 'from50'] },
 ] as const
 
-const requestQuery = computed(() => trophyBrowseQuery(category.value, filters, page.value, pageSize))
+const normalizedSearchInput = computed(() => searchInput.value.trim())
+const searchTooShort = computed(() => normalizedSearchInput.value.length > 0 && normalizedSearchInput.value.length < TROPHY_SEARCH_MIN_LENGTH)
+const canSubmitSearch = computed(() => normalizedSearchInput.value.length >= TROPHY_SEARCH_MIN_LENGTH)
+const searching = computed(() => Boolean(filters.search.trim()))
+const activeCategory = computed<LibraryCategory>(() => searching.value ? 'new' : category.value)
+const requestQuery = computed(() => trophyBrowseQuery(activeCategory.value, filters, page.value, pageSize))
 const requestUrl = computed(() => trophyBrowsePath(requestQuery.value))
 const { data: response, status, error, refresh } = await useApiFetchRaw<TrophyBrowseItem[], TrophyBrowseMeta>(() => requestUrl.value)
 
@@ -50,16 +56,6 @@ const chips = computed(() => [
     })),
 ])
 
-let searchTimer: ReturnType<typeof setTimeout> | undefined
-watch(searchInput, (value) => {
-  clearTimeout(searchTimer)
-  searchTimer = setTimeout(() => {
-    filters.search = value
-    page.value = 1
-  }, 300)
-})
-onBeforeUnmount(() => clearTimeout(searchTimer))
-
 watch([
   category,
   () => filters.platforms.join('|'),
@@ -70,9 +66,24 @@ watch([
 watch(acceptLanguage, () => refresh())
 
 function clearSearch() {
-  clearTimeout(searchTimer)
   searchInput.value = ''
   filters.search = ''
+  page.value = 1
+}
+
+function submitSearch() {
+  if (!normalizedSearchInput.value) {
+    clearSearch()
+    return
+  }
+  if (!canSubmitSearch.value) {
+    toast.warning({
+      id: 'trophy-search-min-length',
+      title: t('library.searchMinLength', { count: TROPHY_SEARCH_MIN_LENGTH }),
+    })
+    return
+  }
+  filters.search = normalizedSearchInput.value.slice(0, 100)
   page.value = 1
 }
 
@@ -83,7 +94,6 @@ function togglePlatform(platform: string) {
 }
 
 function reset() {
-  clearTimeout(searchTimer)
   searchInput.value = ''
   Object.assign(filters, emptyLibraryFilters())
   page.value = 1
@@ -114,9 +124,10 @@ function changePage(value: number) {
             <button
               v-for="item in categories"
               :key="item.key"
-              :aria-pressed="category === item.key"
-              class="h-8 whitespace-nowrap rounded px-2.5 text-[11px] font-semibold transition sm:px-3"
-              :class="category === item.key ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/70' : 'text-slate-500 hover:text-slate-900'"
+              :aria-pressed="activeCategory === item.key"
+              :disabled="searching && item.key !== 'new'"
+              class="h-8 whitespace-nowrap rounded px-2.5 text-[11px] font-semibold transition disabled:cursor-default disabled:opacity-40 sm:px-3"
+              :class="activeCategory === item.key ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/70' : 'text-slate-500 hover:text-slate-900'"
               @click="category = item.key"
             >
               {{ $t(`library.categories.${item.key}`) }}
@@ -124,20 +135,31 @@ function changePage(value: number) {
           </nav>
 
           <div class="flex min-w-0 flex-1 items-center gap-2">
-            <div class="relative min-w-0 flex-1">
-              <LucideIcon :icon="Search" class="pointer-events-none absolute left-3 top-2.5 size-4 text-slate-400" />
-              <input
-                v-model="searchInput"
-                type="search"
-                maxlength="100"
-                :aria-label="$t('library.search')"
-                :placeholder="$t('library.search')"
-                class="h-9 w-full rounded-md border border-slate-200 bg-slate-50/60 pl-9 pr-8 text-xs outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
-              />
-              <button v-if="searchInput" class="absolute right-1.5 top-1.5 grid size-6 place-items-center rounded text-slate-400 hover:bg-slate-200" :aria-label="$t('library.clearSearch')" @click="clearSearch">
-                <LucideIcon :icon="X" class="size-3.5" />
-              </button>
-            </div>
+            <form class="min-w-0 flex-1" role="search" novalidate @submit.prevent="submitSearch">
+              <div class="relative">
+                <input
+                  v-model="searchInput"
+                  type="search"
+                  minlength="2"
+                  maxlength="100"
+                  :aria-label="$t('library.search')"
+                  :aria-invalid="searchTooShort"
+                  :placeholder="$t('library.search')"
+                  class="h-9 w-full rounded-md border border-slate-200 bg-slate-50/60 pl-3 pr-16 text-xs outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                />
+                <button v-if="searchInput" type="button" class="absolute right-9 top-1.5 grid size-6 place-items-center rounded text-slate-400 hover:bg-slate-200" :aria-label="$t('library.clearSearch')" @click="clearSearch">
+                  <LucideIcon :icon="X" class="size-3.5" />
+                </button>
+                <button
+                  type="submit"
+                  class="absolute right-1 top-1 grid size-7 place-items-center rounded text-white transition"
+                  :class="canSubmitSearch ? 'bg-slate-900 hover:bg-slate-700' : 'bg-slate-400 hover:bg-slate-500'"
+                  :aria-label="$t('library.searchSubmit')"
+                >
+                  <LucideIcon :icon="Search" class="size-3.5" />
+                </button>
+              </div>
+            </form>
             <button
               :aria-expanded="advancedOpen"
               aria-controls="library-advanced"

@@ -5,6 +5,8 @@ export type PlatinumFilter = 'all' | 'yes' | 'no'
 export type PlatinumRateFilter = 'all' | 'under5' | 'from5' | 'from15' | 'from30' | 'from50'
 export type OwnersFilter = 'all' | 'under100' | 'from100' | 'from1000' | 'from10000'
 
+export const TROPHY_SEARCH_MIN_LENGTH = 2
+
 export interface LibraryFilters {
   search: string
   platforms: string[]
@@ -23,7 +25,7 @@ export const emptyLibraryFilters = (): LibraryFilters => ({
 
 const SORTS: Record<LibraryCategory, TrophyBrowseSort> = {
   new: 'newest',
-  trending: 'recent_hot',
+  trending: 'trending',
   popular: 'popular',
 }
 
@@ -57,7 +59,7 @@ export function trophyBrowseQuery(
     sort: SORTS[category],
   }
   const search = filters.search.trim().slice(0, 100)
-  if (search) query.q = search
+  if (search.length >= TROPHY_SEARCH_MIN_LENGTH) query.q = search
   if (filters.platforms.length) query['platform[]'] = [...filters.platforms]
   if (filters.platinum !== 'all') query.has_platinum = filters.platinum === 'yes' ? 1 : 0
 

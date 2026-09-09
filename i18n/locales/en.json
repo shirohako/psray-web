@@ -291,6 +291,18 @@
       "version": "Version",
       "qrTitle": "Trophy set QR code"
     },
+    "statistics": {
+      "title": "Statistics",
+      "referenceTimes": "Reference times",
+      "subtitle": "Based on public 100% completion records",
+      "medianCompletion": "Median completion time",
+      "averageCompletion": "Average",
+      "p10Completion": "10th percentile",
+      "fastestCompletion": "Fastest",
+      "medianPlatinum": "Median platinum time",
+      "difficult": "Rare trophies",
+      "difficultHint": "PSN official earn rate below 5%"
+    },
     "progress": {
       "title": "Your progress",
       "earnedLabel": "Earned",
@@ -365,7 +377,6 @@
       "title": "Linked trophy sets",
       "subtitle": "The same game on other platforms or in other regions",
       "currentSet": "Current set",
-      "unknownRegion": "Region unknown",
       "setCount": "{n} set | {n} sets",
       "owners": "{count} players"
     },
@@ -712,6 +723,8 @@
     "trophies": "trophies",
     "platforms": "platforms",
     "search": "Search game titles or trophy set IDs…",
+    "searchSubmit": "Search",
+    "searchMinLength": "Enter at least {count} characters",
     "clearSearch": "Clear search",
     "allPlatforms": "All platforms",
     "results": "Trophy library",
@@ -746,7 +759,7 @@
     "difficultHint": "PSN official earn rate below 5%",
     "medianShort": "Median time",
     "averageTimeShort": "Average",
-    "p10Short": "Top 10% mark",
+    "p10Short": "10th percentile",
     "fastestShort": "Fastest",
     "loadError": "Could not load the trophy library",
     "loadErrorHint": "Check your connection and try again.",

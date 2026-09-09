@@ -291,6 +291,18 @@
       "version": "バージョン",
       "qrTitle": "トロフィーセットの QRコード"
     },
+    "statistics": {
+      "title": "統計データ",
+      "referenceTimes": "参考時間",
+      "subtitle": "公開トロコン記録に基づく集計",
+      "medianCompletion": "トロコン時間中央値",
+      "averageCompletion": "平均",
+      "p10Completion": "10パーセンタイル",
+      "fastestCompletion": "最短",
+      "medianPlatinum": "プラチナ時間中央値",
+      "difficult": "高難度トロフィー",
+      "difficultHint": "PSN公式獲得率 5%未満"
+    },
     "progress": {
       "title": "トロフィー進捗",
       "earnedLabel": "獲得",
@@ -365,7 +377,6 @@
       "title": "関連するトロフィーセット",
       "subtitle": "同じゲームの別プラットフォーム・別地域のトロフィーセット",
       "currentSet": "現在のセット",
-      "unknownRegion": "地域不明",
       "setCount": "{n} セット",
       "owners": "{count} 人がプレイ"
     },
@@ -712,6 +723,8 @@
     "trophies": "トロフィー",
     "platforms": "プラットフォーム",
     "search": "ゲーム名・トロフィーセット ID を検索…",
+    "searchSubmit": "検索する",
+    "searchMinLength": "{count}文字以上入力してください",
     "clearSearch": "検索をクリア",
     "allPlatforms": "すべて",
     "results": "トロフィーライブラリ",
@@ -746,7 +759,7 @@
     "difficultHint": "PSN公式獲得率 5%未満",
     "medianShort": "トロコン時間中央値",
     "averageTimeShort": "平均トロコン時間",
-    "p10Short": "上位10%目安",
+    "p10Short": "10パーセンタイル",
     "fastestShort": "最短トロコン時間",
     "loadError": "トロフィー一覧を読み込めませんでした",
     "loadErrorHint": "通信状態を確認して、もう一度お試しください。",

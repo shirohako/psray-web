@@ -291,6 +291,18 @@
       "version": "版本號",
       "qrTitle": "獎盃組 QR 碼"
     },
+    "statistics": {
+      "title": "數據統計",
+      "referenceTimes": "參考時間",
+      "subtitle": "基於公開的 100% 完成記錄",
+      "medianCompletion": "完成時間中位數",
+      "averageCompletion": "平均",
+      "p10Completion": "第 10 百分位",
+      "fastestCompletion": "最快",
+      "medianPlatinum": "白金時間中位數",
+      "difficult": "高難度獎盃",
+      "difficultHint": "PSN 官方獲取率低於 5%"
+    },
     "progress": {
       "title": "你的進度",
       "earnedLabel": "已獲得",
@@ -365,7 +377,6 @@
       "title": "已關聯的獎盃組",
       "subtitle": "同款遊戲其他平台/其他地區的獎盃組",
       "currentSet": "目前獎盃組",
-      "unknownRegion": "地區未知",
       "setCount": "{n} 套獎盃",
       "owners": "{count} 玩過"
     },
@@ -712,6 +723,8 @@
     "trophies": "獎盃",
     "platforms": "平台",
     "search": "搜尋遊戲名稱或獎盃組 ID…",
+    "searchSubmit": "搜尋",
+    "searchMinLength": "請至少輸入 {count} 個字元",
     "clearSearch": "清除搜尋",
     "allPlatforms": "全部平台",
     "results": "遊戲獎盃庫",
@@ -746,7 +759,7 @@
     "difficultHint": "PSN 官方獲取率低於 5%",
     "medianShort": "完成時間中位數",
     "averageTimeShort": "平均完成",
-    "p10Short": "前 10% 參考",
+    "p10Short": "第 10 百分位",
     "fastestShort": "最快完成",
     "loadError": "無法載入獎盃列表",
     "loadErrorHint": "請檢查網路連線後重試。",

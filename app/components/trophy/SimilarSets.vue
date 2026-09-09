@@ -46,9 +46,9 @@ const groups = computed(() => {
     <div class="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-slate-100 bg-slate-50 px-4 py-2.5 text-xs leading-5">
       <span class="text-slate-500">{{ $t('trophy.similar.currentSet') }}</span>
       <span class="font-semibold tabular-nums text-slate-900">#{{ currentSet.id }}</span>
-      <span class="inline-flex items-center gap-1 text-slate-600">
+      <span v-if="currentSet.region" class="inline-flex items-center gap-1 text-slate-600">
         <LucideIcon :icon="Globe" class="size-3 shrink-0" />
-        {{ currentSet.region || $t('trophy.similar.unknownRegion') }}
+        {{ currentSet.region }}
       </span>
     </div>
 
