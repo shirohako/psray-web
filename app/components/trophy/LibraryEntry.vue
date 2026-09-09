@@ -88,14 +88,16 @@ function isoDate(value: string) {
 
       <div class="entry-players tabular-nums">
         <span class="flex items-center gap-1 text-[10px] text-slate-400">
-          <LucideIcon :icon="Users" class="size-2.5 text-sky-500" />{{ $t('library.playedCount', { count: fmt(game.owners) }) }}
+          <LucideIcon :icon="Users" class="size-2.5 shrink-0 text-sky-500" /><span class="shrink-0">{{ $t('library.playedLabel') }}</span><span class="entry-players-value">{{ fmt(game.owners) }}</span>
         </span>
         <span class="mt-1 flex items-center gap-1 text-[10px] text-slate-400">
-          <LucideIcon :icon="History" class="size-2.5 text-amber-500" />{{ $t('library.recentCount', { count: fmt(game.recent_players) }) }}
+          <LucideIcon :icon="History" class="size-2.5 shrink-0 text-amber-500" /><span class="shrink-0">{{ $t('library.recentLabel') }}</span><span class="entry-players-value">{{ fmt(game.recent_players) }}</span>
         </span>
-        <span class="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[10px] text-slate-400">
-          <span class="inline-flex items-center gap-1"><LucideIcon :icon="CheckCircle2" class="size-2.5 text-blue-500" />{{ $t('library.completedCount', { count: fmt(game.completed_players) }) }}</span>
-          <span v-if="showPlatinumComparison" class="inline-flex items-center gap-1"><LucideIcon :icon="Award" class="size-2.5 text-violet-500" />{{ $t('library.platinumCount', { count: fmt(game.platinum_achievers) }) }}</span>
+        <span class="mt-1 flex items-center gap-1 text-[10px] text-slate-400">
+          <LucideIcon :icon="CheckCircle2" class="size-2.5 shrink-0 text-blue-500" /><span class="shrink-0">{{ $t('library.completedLabel') }}</span><span class="entry-players-value">{{ fmt(game.completed_players) }}</span>
+        </span>
+        <span v-if="showPlatinumComparison" class="mt-1 flex items-center gap-1 text-[10px] text-slate-400">
+          <LucideIcon :icon="Award" class="size-2.5 shrink-0 text-violet-500" /><span class="shrink-0">{{ $t('library.platinumLabel') }}</span><span class="entry-players-value">{{ fmt(game.platinum_achievers) }}</span>
         </span>
       </div>
 
@@ -147,6 +149,7 @@ function isoDate(value: string) {
 .entry-trophies, .entry-times { grid-column: 1 / -1; }
 .entry-arrow { display: none; }
 .time-details { display: flex; flex-direction: column; }
+.entry-players-value { margin-left: auto; }
 
 @media (min-width: 768px) {
   .library-entry:not(.is-card) {
@@ -164,7 +167,6 @@ function isoDate(value: string) {
   .library-entry:not(.is-card) .entry-measures { display: contents; }
   .library-entry:not(.is-card) .entry-trophies,
   .library-entry:not(.is-card) .entry-times { grid-column: auto; }
-  .library-entry:not(.is-card) .entry-players > span { justify-content: flex-end; }
   .library-entry:not(.is-card) .entry-arrow { display: block; }
 }
 
