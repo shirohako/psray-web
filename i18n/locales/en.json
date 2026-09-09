@@ -431,7 +431,7 @@
       "milestones": "Milestones"
     },
     "identity": {
-      "registered": "Registered user",
+      "registered": "Verified",
       "unregistered": "Not registered (PSN profile synced only)",
       "noAboutMe": "This player hasn’t written anything yet.",
       "views": "{count} views",
@@ -461,6 +461,7 @@
       "comments": "Comments",
       "views": "Views",
       "globalRank": "Global rank",
+      "rankUpdateHint": "Rankings are updated daily.",
       "regionRank": "Regional rank",
       "points": "Trophy points",
       "unranked": "Unranked"
@@ -516,6 +517,7 @@
     },
     "recent": {
       "empty": "No play history yet.",
+      "completedIn": "Completed in {duration}",
       "expand": "Show all recently played",
       "collapse": "Collapse recently played"
     },

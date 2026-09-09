@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { BadgeCheck, RefreshCw } from 'lucide'
+import { RefreshCw } from 'lucide'
 import type { Profile } from '~/services/profile'
 
 const props = defineProps<{ profile: Profile }>()
@@ -24,12 +24,16 @@ const isRegistered = computed(() => props.profile.registered_at != null)
     <div class="mt-3">
       <div class="flex flex-wrap items-center gap-2">
         <h1 class="text-xl font-bold leading-none tracking-tight text-slate-900">{{ profile.psnid }}</h1>
-        <LucideIcon
-          :icon="BadgeCheck"
-          class="size-4 shrink-0"
-          :class="isRegistered ? 'text-sky-600' : 'text-slate-300'"
-          :title="isRegistered ? $t('profile.identity.registered') : $t('profile.identity.unregistered')"
-        />
+        <span
+          v-if="isRegistered"
+          class="inline-flex items-center gap-1 text-xs leading-none text-green-600"
+        >
+          <span
+            aria-hidden="true"
+            class="verified-user-icon size-4 shrink-0 bg-current"
+          />
+          <span>{{ $t('profile.identity.registered') }}</span>
+        </span>
         <span
           v-if="profile.is_follower"
           class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500"
@@ -49,3 +53,9 @@ const isRegistered = computed(() => props.profile.registered_at != null)
     </div>
   </div>
 </template>
+
+<style scoped>
+.verified-user-icon {
+  mask: url('/icons/material-symbols-check-circle-rounded.svg') center / contain no-repeat;
+}
+</style>

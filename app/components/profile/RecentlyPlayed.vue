@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { animate, type JSAnimation } from 'animejs'
-import { Clock, ChevronDown, ChevronRight, Globe } from 'lucide'
+import { Clock, ChevronDown, ChevronRight, Globe, Hourglass } from 'lucide'
 import type { PlayedTrophySet } from '~/services/profile'
 import type { DisplayDensity } from '~/composables/usePreferences'
 
@@ -27,7 +27,7 @@ const densityStyles: Record<DisplayDensity, {
   art: string
   mobileBadges: string
   title: string
-  meta: string
+  content: string
   progress: string
   tiers: string
   chevron: string
@@ -38,9 +38,9 @@ const densityStyles: Record<DisplayDensity, {
     art: 'h-12 w-16',
     mobileBadges: 'max-w-16 gap-0.5',
     title: 'text-sm',
-    meta: 'mt-0.5',
-    progress: 'mt-1.5 gap-2',
-    tiers: 'mt-1 gap-2 text-[10px]',
+    content: 'gap-1',
+    progress: 'gap-2',
+    tiers: 'gap-2 text-[10px]',
     chevron: 'size-4',
   },
   compact: {
@@ -49,9 +49,9 @@ const densityStyles: Record<DisplayDensity, {
     art: 'h-15 w-20',
     mobileBadges: 'max-w-20 gap-0.5',
     title: 'text-sm',
-    meta: 'mt-1',
-    progress: 'mt-2 gap-2.5',
-    tiers: 'mt-1 gap-2.5 text-[11px]',
+    content: 'gap-1.5',
+    progress: 'gap-2.5',
+    tiers: 'gap-2.5 text-[11px]',
     chevron: 'size-4.5',
   },
   standard: {
@@ -60,9 +60,9 @@ const densityStyles: Record<DisplayDensity, {
     art: 'h-18 w-24',
     mobileBadges: 'max-w-24 gap-1',
     title: '',
-    meta: 'mt-1.5',
-    progress: 'mt-2.5 gap-3',
-    tiers: 'mt-1.5 gap-3 text-xs',
+    content: 'gap-2',
+    progress: 'gap-3',
+    tiers: 'gap-3 text-xs',
     chevron: 'size-5',
   },
 }
@@ -267,12 +267,12 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <div class="min-w-0 flex-1">
+        <div class="flex min-w-0 flex-1 flex-col" :class="density.content">
           <!-- Title -->
           <h3 class="truncate font-semibold text-slate-900" :class="density.title">{{ trophySetName(g) }}</h3>
 
-          <!-- Platform + region + last-earned time -->
-          <div class="flex flex-wrap items-center gap-x-2 gap-y-1" :class="density.meta">
+          <!-- Platform + region + per-tier earned counts -->
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span
               v-for="platform in platformList(g.trophy_set.platform)"
               :key="platform"
@@ -288,13 +288,16 @@ onBeforeUnmount(() => {
               <LucideIcon :icon="Globe" class="size-3 text-slate-400" />
               {{ g.trophy_set.region }}
             </span>
-            <span class="inline-flex items-center gap-1 text-xs tabular-nums text-slate-400">
-              <LucideIcon :icon="Clock" class="size-3.5" />
-              {{ fmtDateTime(g.last_earned_at) }}
+            <span
+              v-for="(t, i) in earnedTiers(g)"
+              :key="i"
+              class="inline-flex items-center gap-1 text-xs tabular-nums text-slate-500"
+            >
+              <span class="size-2 rounded-full" :class="t.dot" />{{ t.count }}
             </span>
           </div>
 
-          <!-- Progress + per-tier earned counts -->
+          <!-- Progress -->
           <div class="flex items-center" :class="density.progress">
             <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
               <div
@@ -305,9 +308,20 @@ onBeforeUnmount(() => {
             </div>
             <span class="w-9 shrink-0 text-right text-xs font-semibold tabular-nums text-slate-600">{{ g.progress }}%</span>
           </div>
-          <div class="flex items-center text-slate-500" :class="density.tiers">
-            <span v-for="(t, i) in earnedTiers(g)" :key="i" class="inline-flex items-center gap-1 tabular-nums">
-              <span class="size-2 rounded-full" :class="t.dot" />{{ t.count }}
+          <div class="flex flex-wrap items-center text-slate-400" :class="density.tiers">
+            <span class="inline-flex items-center gap-1 leading-none tabular-nums">
+              <LucideIcon :icon="Clock" class="size-3 shrink-0" />
+              {{ fmtDateTime(g.last_earned_at) }}
+            </span>
+            <span
+              v-if="g.progress === 100 && g.duration != null"
+              class="inline-flex shrink-0 items-center gap-1 leading-none text-slate-400"
+            >
+              <LucideIcon :icon="Hourglass" class="size-3 shrink-0 text-slate-400" />
+              <span class="hidden tabular-nums text-slate-500 sm:inline">
+                {{ $t('profile.recent.completedIn', { duration: formatDuration(g.duration) }) }}
+              </span>
+              <span class="tabular-nums text-slate-500 sm:hidden">{{ formatDuration(g.duration) }}</span>
             </span>
           </div>
         </div>

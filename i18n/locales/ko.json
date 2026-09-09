@@ -431,7 +431,7 @@
       "milestones": "마일스톤"
     },
     "identity": {
-      "registered": "가입 사용자",
+      "registered": "인증됨",
       "unregistered": "미가입 (PSN 프로필 동기화만)",
       "noAboutMe": "이 플레이어는 아무것도 남기지 않았습니다.",
       "views": "조회 {count}회",
@@ -461,6 +461,7 @@
       "comments": "댓글",
       "views": "조회수",
       "globalRank": "전체 순위",
+      "rankUpdateHint": "순위는 매일 업데이트됩니다.",
       "regionRank": "지역 순위",
       "points": "트로피 포인트",
       "unranked": "순위 없음"
@@ -516,6 +517,7 @@
     },
     "recent": {
       "empty": "아직 플레이 기록이 없습니다.",
+      "completedIn": "완료까지 {duration}",
       "expand": "최근 플레이 모두 보기",
       "collapse": "최근 플레이 접기"
     },

@@ -431,7 +431,7 @@
       "milestones": "里程碑"
     },
     "identity": {
-      "registered": "已注册用户",
+      "registered": "已验证",
       "unregistered": "未注册（仅同步 PSN 资料）",
       "noAboutMe": "这个人很神秘，什么都没留下。",
       "views": "{count} 次浏览",
@@ -461,6 +461,7 @@
       "comments": "留言",
       "views": "浏览次数",
       "globalRank": "全球排名",
+      "rankUpdateHint": "排名每天更新。",
       "regionRank": "地区排名",
       "points": "奖杯点数",
       "unranked": "暂无排名"
@@ -516,6 +517,7 @@
     },
     "recent": {
       "empty": "还没有游玩记录。",
+      "completedIn": "用时：{duration}",
       "expand": "展开最近玩过",
       "collapse": "收起最近玩过"
     },

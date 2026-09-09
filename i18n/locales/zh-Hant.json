@@ -431,7 +431,7 @@
       "milestones": "里程碑"
     },
     "identity": {
-      "registered": "已註冊使用者",
+      "registered": "已驗證",
       "unregistered": "未註冊（僅同步 PSN 資料）",
       "noAboutMe": "這個人很神秘，什麼都沒留下。",
       "views": "{count} 次瀏覽",
@@ -461,6 +461,7 @@
       "comments": "留言",
       "views": "瀏覽次數",
       "globalRank": "全球排名",
+      "rankUpdateHint": "排名每天更新。",
       "regionRank": "地區排名",
       "points": "獎盃點數",
       "unranked": "暫無排名"
@@ -516,6 +517,7 @@
     },
     "recent": {
       "empty": "還沒有遊玩記錄。",
+      "completedIn": "用時：{duration}",
       "expand": "展開最近玩過",
       "collapse": "收合最近玩過"
     },

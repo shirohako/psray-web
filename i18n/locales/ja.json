@@ -431,7 +431,7 @@
       "milestones": "マイルストーン"
     },
     "identity": {
-      "registered": "登録ユーザー",
+      "registered": "認証済み",
       "unregistered": "未登録（PSN プロフィールの同期のみ）",
       "noAboutMe": "自己紹介はまだありません。",
       "views": "{count} 回閲覧",
@@ -461,6 +461,7 @@
       "comments": "コメント",
       "views": "閲覧数",
       "globalRank": "世界ランキング",
+      "rankUpdateHint": "ランキングは毎日更新されます。",
       "regionRank": "地域ランキング",
       "points": "トロフィーポイント",
       "unranked": "ランキング外"
@@ -516,6 +517,7 @@
     },
     "recent": {
       "empty": "プレイ記録がまだありません。",
+      "completedIn": "トロコン時間：{duration}",
       "expand": "最近プレイしたゲームをすべて表示",
       "collapse": "最近プレイしたゲームを折りたたむ"
     },
