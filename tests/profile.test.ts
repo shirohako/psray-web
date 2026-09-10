@@ -1,9 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { formatHourInterval, resolveHourInterval } from '~/utils/profile'
+import { formatHourInterval, platformLabel, resolveHourInterval } from '~/utils/profile'
 
 const compact = (value: string | null) => value?.replace(/\s/g, '')
 
 describe('profile formatting', () => {
+  it('preserves PSPC as a distinct platform label', () => {
+    expect(platformLabel('PSPC')).toBe('PSPC')
+    expect(platformLabel('PSP')).toBe('PSP')
+    expect(platformLabel('PSVITA')).toBe('PSV')
+  })
+
   it('formats hour-based sync intervals without rounding', () => {
     expect(compact(formatHourInterval(1, 'ja-JP'))).toBe('1時間')
     expect(compact(formatHourInterval(24, 'ja-JP'))).toBe('1日')

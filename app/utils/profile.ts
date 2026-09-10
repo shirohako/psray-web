@@ -192,7 +192,6 @@ export function platformList(platform: PlatformValue): string[] {
 /** Compact platform label for badges. */
 export function platformLabel(platform: string): string {
   if (platform === 'PSVITA') return 'PSV'
-  if (platform === 'PSPC') return 'PSP'
   return platform
 }
 

@@ -5,7 +5,7 @@ import type { SimilarTrophySet, TrophySetDetailInfo } from '~/services/trophies'
 const props = defineProps<{ sets: SimilarTrophySet[]; currentSet: TrophySetDetailInfo }>()
 
 // Newest platform first; anything unknown sinks to the bottom.
-const PLATFORM_ORDER = ['PS5', 'PS4', 'PS3', 'PSVITA', 'PSP']
+const PLATFORM_ORDER = ['PS5', 'PS4', 'PS3', 'PSVITA', 'PSPC', 'PSP']
 const platformRank = (p: string) => {
   const i = PLATFORM_ORDER.indexOf(p)
   return i === -1 ? PLATFORM_ORDER.length : i
