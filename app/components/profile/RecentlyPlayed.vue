@@ -1,8 +1,17 @@
 <script setup lang="ts">
 import { animate, type JSAnimation } from 'animejs'
-import { Clock, ChevronDown, ChevronRight, Globe, Hourglass } from 'lucide'
+import { Clock, ChevronDown, ChevronRight, Globe, Hourglass, Search, X } from 'lucide'
 import type { PlayedTrophySet } from '~/services/profile'
 import type { DisplayDensity } from '~/composables/usePreferences'
+import { ApiError } from '~/utils/ApiError'
+import {
+  RECENTLY_PLAYED_SEARCH_MAX_KEYWORDS,
+  RECENTLY_PLAYED_SEARCH_MAX_LENGTH,
+  RECENTLY_PLAYED_SEARCH_MIN_KEYWORD_LENGTH,
+  recentlyPlayedPath,
+  validateRecentlyPlayedSearch,
+  type RecentlyPlayedSearchError,
+} from '~/utils/recentlyPlayedSearch'
 
 const props = defineProps<{ psnid: string }>()
 
@@ -14,6 +23,9 @@ interface PageMeta {
 }
 
 const page = ref(1)
+const searchInput = ref('')
+const searchQuery = ref('')
+const searchError = ref<RecentlyPlayedSearchError | null>(null)
 const expanded = ref(false)
 const animatedReady = ref(false)
 const toggleIconTouched = ref(false)
@@ -73,14 +85,34 @@ const collapsedListHeight = computed(() => ({
   standard: 400,
 })[profileGameDensity.value])
 
-// `page` is read inside the URL getter, so changing it re-fetches.
-const { data: res, pending } = await useApiFetchRaw<PlayedTrophySet[], PageMeta>(
-  () => `/profile/${props.psnid}/recently-played?page=${page.value}`,
+// Page and the submitted query are read by the URL getter, so either change
+// re-fetches while edits in the input remain local until the form is submitted.
+const { data: res, pending, error, refresh } = await useApiFetchRaw<PlayedTrophySet[], PageMeta>(
+  () => recentlyPlayedPath(props.psnid, page.value, searchQuery.value),
 )
 
 const recent = computed(() => res.value?.data ?? [])
 const totalPages = computed(() => res.value?.meta?.total_pages ?? 1)
 const canCollapse = computed(() => recent.value.length > 4)
+const isSearching = computed(() => Boolean(searchQuery.value))
+const apiValidationFailed = computed(() => error.value instanceof ApiError && error.value.status === 422)
+
+function submitSearch() {
+  const result = validateRecentlyPlayedSearch(searchInput.value)
+  searchError.value = result.error
+  if (result.error) return
+
+  searchInput.value = result.query
+  page.value = 1
+  searchQuery.value = result.query
+}
+
+function clearSearch() {
+  searchInput.value = ''
+  searchError.value = null
+  page.value = 1
+  searchQuery.value = ''
+}
 
 function trophySetName(g: PlayedTrophySet) {
   return g.trophy_set.localized_name || g.trophy_set.name
@@ -172,6 +204,11 @@ async function animateListHeight(isExpanded: boolean) {
 
 watch(() => props.psnid, () => {
   expanded.value = false
+  clearSearch()
+})
+
+watch(searchInput, () => {
+  if (searchError.value) searchError.value = null
 })
 
 watch(expanded, animateListHeight)
@@ -194,6 +231,46 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
+  <form class="border-b border-slate-100 px-4 py-3 sm:px-5" role="search" novalidate @submit.prevent="submitSearch">
+    <div class="relative">
+      <LucideIcon :icon="Search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
+      <input
+        v-model="searchInput"
+        type="search"
+        :maxlength="RECENTLY_PLAYED_SEARCH_MAX_LENGTH"
+        :aria-label="$t('profile.recent.search')"
+        :aria-invalid="Boolean(searchError)"
+        :placeholder="$t('profile.recent.searchPlaceholder')"
+        class="profile-recent-search h-9 w-full rounded-md border bg-slate-50/60 pl-9 pr-18 text-xs text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2"
+        :class="searchError ? 'border-red-300 focus:border-red-400 focus:ring-red-100' : 'border-slate-200 focus:border-slate-400 focus:ring-slate-100'"
+      />
+      <button
+        v-if="searchInput"
+        type="button"
+        class="absolute right-9 top-1.5 grid size-6 place-items-center rounded text-slate-400 transition hover:bg-slate-200 hover:text-slate-600"
+        :aria-label="$t('profile.recent.clearSearch')"
+        @click="clearSearch"
+      >
+        <LucideIcon :icon="X" class="size-3.5" />
+      </button>
+      <button
+        type="submit"
+        class="absolute right-1 top-1 grid size-7 place-items-center rounded text-slate-500 transition hover:bg-slate-200 hover:text-slate-800 disabled:cursor-wait disabled:opacity-40"
+        :aria-label="$t('profile.recent.searchSubmit')"
+        :disabled="pending"
+      >
+        <LucideIcon :icon="Search" class="size-3.5" />
+      </button>
+    </div>
+    <p v-if="searchError" class="mt-1.5 text-xs text-red-600" role="alert">
+      {{ $t(`profile.recent.searchErrors.${searchError}`, {
+        min: RECENTLY_PLAYED_SEARCH_MIN_KEYWORD_LENGTH,
+        max: RECENTLY_PLAYED_SEARCH_MAX_KEYWORDS,
+        length: RECENTLY_PLAYED_SEARCH_MAX_LENGTH,
+      }) }}
+    </p>
+  </form>
+
   <!-- Top pager (only when the current page is long enough to be worth it) -->
   <div
     v-if="totalPages > 1 && recent.length > 5"
@@ -214,9 +291,21 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
-  <!-- Empty -->
+  <!-- Error / empty -->
+  <div v-else-if="error && !recent.length" class="px-6 py-16 text-center">
+    <p class="text-sm text-slate-500">
+      {{ apiValidationFailed ? $t('profile.recent.invalidSearch') : $t('profile.recent.loadFailed') }}
+    </p>
+    <button type="button" class="mt-3 text-xs font-semibold text-slate-700 underline underline-offset-4" @click="refresh()">
+      {{ $t('common.retry') }}
+    </button>
+  </div>
+
   <div v-else-if="!recent.length" class="px-6 py-20 text-center text-sm text-slate-500">
-    {{ $t('profile.recent.empty') }}
+    <p>{{ isSearching ? $t('profile.recent.noResults') : $t('profile.recent.empty') }}</p>
+    <button v-if="isSearching" type="button" class="mt-3 text-xs font-semibold text-slate-700 underline underline-offset-4" @click="clearSearch">
+      {{ $t('profile.recent.clearSearch') }}
+    </button>
   </div>
 
   <!-- List -->
@@ -370,6 +459,12 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.profile-recent-search::-webkit-search-cancel-button,
+.profile-recent-search::-webkit-search-decoration {
+  appearance: none;
+  -webkit-appearance: none;
+}
+
 .profile-toggle-chevron {
   transform: rotate(0deg);
   transform-origin: center;

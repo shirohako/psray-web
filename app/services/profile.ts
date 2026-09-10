@@ -212,6 +212,13 @@ export interface FollowResult {
   following: boolean
 }
 
+export interface RecentlyPlayedQuery {
+  page?: number
+  per_page?: number
+  /** Whitespace-delimited title keywords; the API accepts up to three. */
+  q?: string
+}
+
 export function useProfiles() {
   const { get, post, delete: del, raw } = useApi()
 
@@ -225,7 +232,7 @@ export function useProfiles() {
     unfollow: (psnid: string) => del<FollowResult>(`/user/following/${psnid}`),
 
     /** Recently played titles (paginated — returns the `{ data, meta }` envelope). */
-    recentlyPlayed: (psnid: string, query?: Record<string, unknown>) =>
+    recentlyPlayed: (psnid: string, query?: RecentlyPlayedQuery) =>
       raw.get<PlayedTrophySet[]>(`/profile/${psnid}/recently-played`, { query }),
 
     /** Recently earned trophies (paginated — returns the `{ data, meta }` envelope). */

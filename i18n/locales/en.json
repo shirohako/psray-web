@@ -517,6 +517,18 @@
     },
     "recent": {
       "empty": "No play history yet.",
+      "search": "Search recently played games",
+      "searchPlaceholder": "Search game titles",
+      "searchSubmit": "Search",
+      "clearSearch": "Clear search",
+      "searchErrors": {
+        "tooLong": "Search text cannot exceed {length} characters.",
+        "noValidKeywords": "Enter at least one keyword containing {min} or more characters.",
+        "tooManyKeywords": "Use no more than {max} valid keywords."
+      },
+      "noResults": "No recently played games match this search.",
+      "invalidSearch": "The search was rejected. Check the keyword rules and try again.",
+      "loadFailed": "Recently played games could not be loaded.",
       "completedIn": "Completed in {duration}",
       "expand": "Show all recently played",
       "collapse": "Collapse recently played"

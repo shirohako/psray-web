@@ -39,7 +39,7 @@ const isRegistered = computed(() => props.profile.registered_at != null)
           class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500"
         >{{ $t('profile.social.followsYou') }}</span>
       </div>
-      <p class="mt-1 max-w-prose text-sm text-slate-500">
+      <p class="mt-1 max-w-prose text-xs text-slate-400">
         {{ profile.about_me || $t('profile.identity.noAboutMe') }}
       </p>
       <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">

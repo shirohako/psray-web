@@ -517,6 +517,18 @@
     },
     "recent": {
       "empty": "還沒有遊玩記錄。",
+      "search": "搜尋最近玩過的遊戲",
+      "searchPlaceholder": "搜尋遊戲名稱",
+      "searchSubmit": "搜尋",
+      "clearSearch": "清除搜尋",
+      "searchErrors": {
+        "tooLong": "搜尋內容不能超過 {length} 個字元。",
+        "noValidKeywords": "請至少輸入一個不少於 {min} 個字元的關鍵詞。",
+        "tooManyKeywords": "有效關鍵詞不能超過 {max} 個。"
+      },
+      "noResults": "找不到符合條件的最近遊玩遊戲。",
+      "invalidSearch": "搜尋條件不符合要求，請檢查關鍵詞後重試。",
+      "loadFailed": "最近玩過的遊戲載入失敗。",
       "completedIn": "用時：{duration}",
       "expand": "展開最近玩過",
       "collapse": "收合最近玩過"

@@ -517,6 +517,18 @@
     },
     "recent": {
       "empty": "还没有游玩记录。",
+      "search": "搜索最近玩过的游戏",
+      "searchPlaceholder": "搜索游戏名称",
+      "searchSubmit": "搜索",
+      "clearSearch": "清除搜索",
+      "searchErrors": {
+        "tooLong": "搜索内容不能超过 {length} 个字符。",
+        "noValidKeywords": "请至少输入一个不少于 {min} 个字符的关键词。",
+        "tooManyKeywords": "有效关键词不能超过 {max} 个。"
+      },
+      "noResults": "没有找到匹配的最近游玩游戏。",
+      "invalidSearch": "搜索条件不符合要求，请检查关键词后重试。",
+      "loadFailed": "最近玩过的游戏加载失败。",
       "completedIn": "用时：{duration}",
       "expand": "展开最近玩过",
       "collapse": "收起最近玩过"
