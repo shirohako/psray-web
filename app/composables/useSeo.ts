@@ -6,6 +6,8 @@ import {
   canonicalLang,
   contentHreflang,
   isUiLocale,
+  trophyLanguageEditions,
+  trophyDefaultLanguage,
   type UiLocale,
 } from '#shared/locales'
 import { resolveSeoImage, type SeoImageType } from '~/utils/seoImage'
@@ -39,6 +41,8 @@ import { resolveSeoLocalePolicy } from '~/utils/seoLocale'
  * Any other param (`psnid`, `page`, …) is dropped from the canonical unless
  * named in `keepQuery`, so personalised permutations collapse onto the shared
  * public page.
+ * Trophy pages override canonicalLang to the default UI and always supply the
+ * served contentLang: their canonical and alternate URLs use only `?tlang=`.
  */
 
 /** A value, or a getter for one — so callers can hang SEO off pending async data. */
@@ -89,6 +93,7 @@ export interface SeoInput {
    * skipped: those are advertised as `?lang=` instead.
    */
   altContentLangs?: Source<string[]>
+  trophyDefaultLang?: Source<string | null | undefined>
   /** Query params to preserve in the canonical besides `lang`. Default: none. */
   keepQuery?: string[]
   noindex?: Source<boolean>
@@ -152,6 +157,21 @@ export function useSeo(input: SeoInput) {
 
   const alternates = computed(() => {
     if (input.staticLocale) return []
+
+    if (input.trophyDefaultLang !== undefined) {
+      const languages = [...(read(input.altContentLangs) ?? [])]
+      const defaultLanguage = read(input.trophyDefaultLang)
+      if (!languages.length && defaultLanguage) languages.push(defaultLanguage)
+      const served = trophyDefaultLanguage(languages, defaultLanguage)
+      return [
+        { rel: 'alternate' as const, hreflang: 'x-default', href: urlFor(DEFAULT_LOCALE, served) },
+        ...trophyLanguageEditions(languages).map(edition => ({
+          rel: 'alternate' as const,
+          hreflang: edition.hreflang,
+          href: urlFor(edition.lang, edition.contentLang),
+        })),
+      ]
+    }
 
     const links = [
       { rel: 'alternate' as const, hreflang: 'x-default', href: urlFor(DEFAULT_LOCALE) },

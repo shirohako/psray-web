@@ -147,3 +147,23 @@ export function isUiLocale(value: unknown): value is UiLocale {
 export function resolveUiLocale(langParam: LangParam, cookieValue: LangParam): UiLocale {
   return uiLocaleFor(langParam) || uiLocaleFor(cookieValue) || DEFAULT_LOCALE
 }
+
+/** One canonical edition per available trophy language, without a UI/content matrix. */
+export function trophyLanguageEditions(languages: string[]) {
+  const editions = new Map<string, { hreflang: string, lang: UiLocale, contentLang: string }>()
+  for (const code of languages) {
+    if (!canonicalContentLang(code)) continue
+    const lang = DEFAULT_LOCALE
+    const hreflang = contentHreflang(code)
+    editions.set(hreflang, { hreflang, lang, contentLang: code })
+  }
+  return [...editions.values()]
+}
+
+/** Mirrors TranslationResolver.pick for the default Japanese interface. */
+export function trophyDefaultLanguage(languages: string[], defaultLanguage?: string | null): string {
+  return languages.find(code => code === 'ja-JP')
+    || languages.find(code => code.split('-')[0] === 'ja')
+    || (defaultLanguage && (!languages.length || languages.includes(defaultLanguage)) ? defaultLanguage : '')
+    || languages[0] || ''
+}

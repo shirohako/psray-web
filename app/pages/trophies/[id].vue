@@ -159,7 +159,7 @@
 import { ArrowUpDown, ChevronDown } from 'lucide'
 import TrophyStatistics from '~/components/trophy/Statistics.vue'
 import type { Trophy, TrophyGroup, TrophySetDetail } from '~/services/trophies'
-import { DEFAULT_LOCALE, PSN_LANG, canonicalContentLang, canonicalLang, isUiLocale, type UiLocale } from '#shared/locales'
+import { DEFAULT_LOCALE, PSN_LANG, canonicalContentLang, isUiLocale, type UiLocale } from '#shared/locales'
 
 definePageMeta({ path: '/trophies/:id(\\d+)' })
 
@@ -250,7 +250,7 @@ function switchLanguage(code: string) {
   const query = { ...route.query }
   // Back to what the interface language already implies: drop the param rather
   // than spell it out, so each variant keeps a single canonical URL.
-  if (canonicalLang(code) === canonicalLang(uiContentLang.value)) delete query.tlang
+  if (code === uiContentLang.value) delete query.tlang
   else query.tlang = code
   return navigateTo({ path: route.path, query, hash: route.hash })
 }
@@ -431,17 +431,12 @@ useSeo({
   imageWidth: 1200,
   imageHeight: 630,
   imageType: 'image/png',
-  // Spell the body language out only when it isn't what the interface language
-  // already implies, and go by what the server actually served rather than what
-  // we asked for — a `?tlang=` the API fell back on must not claim to be its
-  // own variant.
-  contentLang: () => {
-    const served = canonicalContentLang(data.value?.display_language)
-    return served && canonicalLang(served) !== canonicalLang(uiContentLang.value) ? served : ''
-  },
-  // Every PSN language this set exists in is a genuinely different page and
-  // worth advertising, on top of the five UI locales `useSeo` always emits.
+  // Canonical editions depend on served trophy text, regardless of UI language.
+  canonicalLang: DEFAULT_LOCALE,
+  contentLang: () => canonicalContentLang(data.value?.display_language),
+  // Advertise one canonical edition per available trophy language.
   altContentLangs: () => availableLanguages.value.map(l => l.language_code),
+  trophyDefaultLang: () => data.value?.trophy_set.default_language,
   // `?psnid=` renders one visitor's progress: same set, personalised. Keep it
   // out of the index rather than spending crawl budget on id × psnid.
   noindex: () => hasViewer.value,
