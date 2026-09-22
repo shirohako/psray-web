@@ -1,7 +1,7 @@
 import type { AuthRequirement } from '~/services/auth'
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  const requirement = to.meta.auth as boolean | AuthRequirement | undefined
+  const requirement = (to.path === '/admin' || to.path.startsWith('/admin/')) ? { roles: 'admin' } : to.meta.auth as boolean | AuthRequirement | undefined
   const guestOnly = to.meta.guestOnly === true
 
   if (!requirement && !guestOnly) return

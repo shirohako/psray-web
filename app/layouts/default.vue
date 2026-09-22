@@ -3,7 +3,7 @@ import { House, Menu, Gamepad2, Trophy, LogOut, LogIn, UserPlus, User, RefreshCw
 
 const route = useRoute()
 const appConfig = useAppConfig()
-const { user, loggedIn, logout } = useAuth()
+const { user, loggedIn, logout, hasRole } = useAuth()
 
 // Desktop (lg+) sidebar collapse state: full width <-> icon rail.
 // Default expanded; restored from localStorage on mount (read in onMounted to
@@ -132,6 +132,7 @@ async function onLogout() {
           <span class="hidden max-w-32 truncate sm:block">{{ user.psnid }}</span>
 
           <template #menu="{ close }">
+            <NuxtLink v-if="hasRole('admin')" to="/admin" class="block px-3 py-2 text-sm font-medium text-indigo-600" @click="close">管理后台</NuxtLink>
             <NuxtLink
               :to="profilePath"
               class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
@@ -180,6 +181,7 @@ async function onLogout() {
             </button>
 
             <template #menu="{ close }">
+            <NuxtLink v-if="hasRole('admin')" to="/admin" class="block px-3 py-2 text-sm font-medium text-indigo-600" @click="close">管理后台</NuxtLink>
               <NuxtLink
                 to="/auth/login"
                 class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"

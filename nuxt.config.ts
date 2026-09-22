@@ -9,6 +9,8 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
   },
   routeRules: {
+    '/admin': { ssr: false, headers: { 'cache-control': 'no-store, private', 'x-robots-tag': 'noindex, nofollow' } },
+    '/admin/**': { ssr: false, headers: { 'cache-control': 'no-store, private', 'x-robots-tag': 'noindex, nofollow' } },
     '/help/markdown': { redirect: { to: '/docs/markdown', statusCode: 301 } },
     '/flags/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
   },

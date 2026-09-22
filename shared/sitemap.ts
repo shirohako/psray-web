@@ -7,5 +7,5 @@ export function sitemapUrl(value: string): string {
 }
 
 export function robotsText(value: string): string {
-  return `User-agent: *\nDisallow: /settings\nDisallow: /sync\nDisallow: /auth\nSitemap: ${sitemapUrl(value)}\n`
+  return `User-agent: *\nDisallow: /admin\nDisallow: /settings\nDisallow: /sync\nDisallow: /auth\nSitemap: ${sitemapUrl(value)}\n`
 }

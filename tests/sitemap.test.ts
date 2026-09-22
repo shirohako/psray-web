@@ -4,7 +4,7 @@ import { robotsText, sitemapUrl } from '../shared/sitemap'
 
 describe('sitemap discovery', () => {
   it('keeps private routes excluded and advertises the configured API index', () => {
-    expect(robotsText('https://api.example.com/sitemap.xml')).toBe('User-agent: *\nDisallow: /settings\nDisallow: /sync\nDisallow: /auth\nSitemap: https://api.example.com/sitemap.xml\n')
+    expect(robotsText('https://api.example.com/sitemap.xml')).toBe('User-agent: *\nDisallow: /admin\nDisallow: /settings\nDisallow: /sync\nDisallow: /auth\nSitemap: https://api.example.com/sitemap.xml\n')
     expect(() => sitemapUrl('javascript:alert(1)')).toThrow()
   })
 })
