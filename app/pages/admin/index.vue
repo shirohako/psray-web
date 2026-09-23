@@ -3,7 +3,6 @@ import type { QueueSummary, ScheduleSummary } from '~/utils/admin'
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
 const api = useAdminApi()
 const data = ref<{
-  counts: Record<string, number>
   queue_results: { status: string; count: number }[]
   queues: QueueSummary
   scheduler: ScheduleSummary['scheduler']
@@ -26,11 +25,6 @@ async function refresh() {
 }
 onMounted(refresh)
 useAdminPoll(refresh)
-const cards = [
-  { key: 'users', label: '用户总数', to: '/admin/users' },
-  { key: 'trophy_sets', label: '奖杯组', to: '/admin/trophy-sets' },
-  { key: 'tips', label: '攻略', to: '/admin/tips' },
-]
 </script>
 <template>
   <div class="flex items-start justify-between">
@@ -50,20 +44,7 @@ const cards = [
   <AdminError :error="error" />
   <p v-if="busy && !data" class="admin-card text-slate-500">正在加载…</p>
   <template v-if="data"
-    ><div class="grid gap-4 sm:grid-cols-3">
-      <NuxtLink
-        v-for="card in cards"
-        :key="card.key"
-        :to="card.to"
-        class="admin-card transition hover:border-indigo-300"
-        ><p class="text-sm text-slate-500">{{ card.label }}</p>
-        <p class="mt-3 text-3xl font-semibold tabular-nums">
-          {{ data.counts[card.key]?.toLocaleString() }}
-        </p>
-        <p class="mt-4 text-xs text-indigo-600">查看详情 →</p></NuxtLink
-      >
-    </div>
-    <div class="grid gap-5 xl:grid-cols-2">
+    ><div class="grid gap-5 xl:grid-cols-2">
       <section class="admin-card">
         <div class="flex justify-between">
           <h2 class="font-semibold">队列运行</h2>

@@ -34,7 +34,7 @@ cp .env.example .env
 ```ini
 # .env
 # Point to local Laravel in dev; to the production domain in prod
-NUXT_PUBLIC_API_BASE=http://localhost:8000/api
+NUXT_PUBLIC_API_BASE=http://localhost:8000
 ```
 
 The auth token is read from the `auth_token` cookie by default and injected as

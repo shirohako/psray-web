@@ -35,7 +35,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       // Override with NUXT_PUBLIC_API_BASE in .env
-      apiBase: 'http://localhost:8000/api',
+      apiBase: 'http://localhost:8000',
       // Absolute production origin, no trailing slash. Used to build
       // canonical/hreflang/OG URLs. Keep this production-safe so a missing
       // deployment variable can never leak localhost URLs into social cards.

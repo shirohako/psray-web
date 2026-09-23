@@ -142,7 +142,7 @@ function afterRetry(uuid: string, reload: () => Promise<unknown>, close: () => v
     v-else-if="tab === 'failed'"
     key="failed"
     title="失败任务"
-    description="仅 failed_jobs 中受支持的任务可以重试。处罚清理请从处罚详情操作。"
+    description="仅 failed_jobs 中受支持的任务可以重试。"
     endpoint="/failed-jobs"
     detail-base="/failed-jobs"
     id-key="uuid"

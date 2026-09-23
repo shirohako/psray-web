@@ -1,36 +1,20 @@
 <script setup lang="ts">
 import {
   LayoutDashboard,
-  Users,
-  ShieldBan,
   ListTodo,
   Clock,
   TriangleAlert,
   FileText,
-  Trophy,
-  MessageSquare,
-  Settings,
-  History,
   Menu,
   ArrowLeft,
-  LogOut,
 } from 'lucide'
 const route = useRoute()
-const { user, logout } = useAuth()
+const { user } = useAuth()
 const open = ref(false)
 const groups = [
   {
     label: '工作台',
     items: [{ name: '总览', to: '/admin', icon: LayoutDashboard }],
-  },
-  {
-    label: '用户与内容',
-    items: [
-      { name: '用户', to: '/admin/users', icon: Users },
-      { name: '处罚', to: '/admin/penalties', icon: ShieldBan },
-      { name: '奖杯数据', to: '/admin/trophy-sets', icon: Trophy },
-      { name: '攻略管理', to: '/admin/tips', icon: MessageSquare },
-    ],
   },
   {
     label: '运行维护',
@@ -39,13 +23,6 @@ const groups = [
       { name: '定时任务', to: '/admin/schedules', icon: Clock },
       { name: '同步异常', to: '/admin/sync-failures', icon: TriangleAlert },
       { name: '错误日志', to: '/admin/logs', icon: FileText },
-    ],
-  },
-  {
-    label: '系统',
-    items: [
-      { name: '系统设置', to: '/admin/settings', icon: Settings },
-      { name: '操作审计', to: '/admin/audit-logs', icon: History },
     ],
   },
 ]
@@ -64,10 +41,6 @@ useHead({
   title: 'PSRay 管理后台',
   meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 })
-async function leave() {
-  await logout()
-  await navigateTo('/auth/login')
-}
 </script>
 <template>
   <div
@@ -132,12 +105,7 @@ async function leave() {
             >管理后台 / <span class="text-slate-900">{{ current }}</span></span
           >
         </div>
-        <div class="flex items-center gap-3 text-sm">
-          <span>{{ user?.psnid }}</span
-          ><button aria-label="退出登录" @click="leave">
-            <LucideIcon :icon="LogOut" class="size-4 text-slate-500" />
-          </button>
-        </div>
+        <span class="text-sm">{{ user?.psnid }}</span>
       </header>
       <main class="mx-auto max-w-[1600px] space-y-6 p-4 sm:p-8"><slot /></main>
     </div>

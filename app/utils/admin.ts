@@ -8,18 +8,6 @@ export interface AdminFilter {
   options?: { value: string; label: string }[]
   type?: string
 }
-export interface AdminOperation {
-  id: string
-  status: string
-  error: string | null
-  result: { penalty_id?: number; data_purged?: boolean } | null
-}
-export interface AdminPreview {
-  identity: { psnid: string; account_id: string; user_id: number | null }
-  preview_token: string
-  penalties: Record<string, unknown>[]
-  impact: { termination: string; ranking_ban: string }
-}
 export interface QueueSummary {
   available: boolean
   worker_status: string
@@ -28,17 +16,62 @@ export interface QueueSummary {
   queues: { name: string; waiting: number; delayed: number; reserved: number }[]
   supervisors: unknown[]
 }
+export type ScheduleRunStatus =
+  | 'running'
+  | 'success'
+  | 'failed'
+  | 'skipped'
+  | 'suspected_interrupted'
+
+export interface ScheduleRunSummary {
+  id: number
+  status: ScheduleRunStatus
+  started_at: string
+  finished_at: string | null
+  duration_ms: number | null
+  exit_code: number | null
+  error: string | null
+}
+
+export interface ScheduleRunDetail extends ScheduleRunSummary {
+  task: string
+  output: string | null
+}
+
+export interface ScheduleRunCounts {
+  total: ScheduleRunResultCounts
+  last_24_hours: ScheduleRunResultCounts
+  last_7_days: ScheduleRunResultCounts
+  last_30_days: ScheduleRunResultCounts
+}
+
+export interface ScheduleRunResultCounts {
+  success: number
+  failed: number
+}
+
 export interface ScheduleTask {
   key: string
   command: string
+  description: string
   expression: string
+  frequency: string
   timezone: string
-  next_run_at: string
-  last_run: Record<string, unknown> | null
-  history_enabled: boolean
+  next_run_at: string | null
+  last_run: ScheduleRunSummary | null
+  run_counts: ScheduleRunCounts
+  skipped: number
+  running: number
+  history_available: boolean
 }
 export interface ScheduleSummary {
-  scheduler: { available: boolean; status: string; last_seen_at: string | null }
+  scheduler: {
+    available: boolean
+    history_available: boolean
+    last_seen_at: string | null
+    status: 'healthy' | 'stale' | 'unknown' | 'unavailable'
+    task_count: number
+  }
   tasks: ScheduleTask[]
 }
 export interface LogWindow {
@@ -122,14 +155,17 @@ export const fieldLabels: Record<string, string> = {
   finished_at: '结束时间',
   failed_at: '失败时间',
   exit_code: '退出码',
-  output: '错误输出',
+  output: '输出',
   task: '任务',
   command: '任务命令',
+  description: '任务说明',
   expression: '调度规则',
+  frequency: '执行频率',
   timezone: '时区',
   next_run_at: '下次计划执行',
   last_run: '最近执行',
-  history_enabled: '保存执行历史',
+  history_available: '执行历史可用',
+  run_counts: '执行统计',
   platform: '平台',
   version: '版本',
   detail: '说明',
@@ -205,7 +241,7 @@ export function adminValue(value: unknown): string {
   return statusLabels[String(value)] ?? String(value)
 }
 export function adminApiPrefix(base: string): string {
-  return /\/api\/?$/.test(base) ? '/admin' : '/api/admin'
+  return `${base.replace(/\/+$/, '')}/admin`
 }
 export function adminQuery(query: Record<string, unknown>) {
   return Object.fromEntries(

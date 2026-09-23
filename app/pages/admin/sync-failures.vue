@@ -29,9 +29,9 @@ const filters = [
       ><div class="flex gap-2">
         <NuxtLink
           v-if="row.psnid"
-          :to="{ path: '/admin/users', query: { q: row.psnid } }"
+          :to="'/p/' + encodeURIComponent(row.psnid)"
           class="admin-button"
-          >用户资料</NuxtLink
+          >公开资料</NuxtLink
         ><NuxtLink
           :to="{
             path: '/admin/queues',

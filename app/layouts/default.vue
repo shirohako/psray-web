@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { House, Menu, Gamepad2, Trophy, LogOut, LogIn, UserPlus, User, RefreshCw, Settings, Compass, type IconNode } from 'lucide'
+import { House, Menu, Gamepad2, Trophy, LogOut, LogIn, UserPlus, User, RefreshCw, Settings, Compass, LayoutDashboard, type IconNode } from 'lucide'
 
 const route = useRoute()
 const appConfig = useAppConfig()
@@ -132,7 +132,18 @@ async function onLogout() {
           <span class="hidden max-w-32 truncate sm:block">{{ user.psnid }}</span>
 
           <template #menu="{ close }">
-            <NuxtLink v-if="hasRole('admin')" to="/admin" class="block px-3 py-2 text-sm font-medium text-indigo-600" @click="close">管理后台</NuxtLink>
+            <NuxtLink
+              v-if="hasRole('admin')"
+              to="/admin"
+              class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+              @click="close"
+            >
+              <LucideIcon
+                :icon="LayoutDashboard"
+                class="size-4 text-slate-400"
+              />
+              管理后台
+            </NuxtLink>
             <NuxtLink
               :to="profilePath"
               class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
@@ -181,7 +192,6 @@ async function onLogout() {
             </button>
 
             <template #menu="{ close }">
-            <NuxtLink v-if="hasRole('admin')" to="/admin" class="block px-3 py-2 text-sm font-medium text-indigo-600" @click="close">管理后台</NuxtLink>
               <NuxtLink
                 to="/auth/login"
                 class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"

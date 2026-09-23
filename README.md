@@ -34,9 +34,9 @@ pnpm dev               # http://localhost:3630 (or NUXT_PORT)
 
 | Variable | Meaning |
 | --- | --- |
-| `NUXT_PUBLIC_API_BASE` | Base URL of the PSRay API. Defaults to `http://localhost:8000/api`; production is `https://api.psray.net` |
+| `NUXT_PUBLIC_API_BASE` | Origin of the PSRay API, without a path prefix. Defaults to `http://localhost:8000`; production is `https://api.psray.net` |
 | `NUXT_PUBLIC_SITE_URL` | Absolute origin, no trailing slash. Canonical / hreflang / OG URLs are built from it. Defaults to `https://psray.net`; set it to your local origin when testing local metadata |
-| `NUXT_PUBLIC_CARD_BASE` | Origin serving backend-generated OG images, without `/api` or `/card`. Defaults to `https://api.psray.net` |
+| `NUXT_PUBLIC_CARD_BASE` | Origin serving backend-generated OG images, without a path prefix. Defaults to `https://api.psray.net` |
 | `NUXT_PORT` | Dev/preview port |
 
 ## Deployment
