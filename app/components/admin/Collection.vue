@@ -1,7 +1,19 @@
 <script setup lang="ts">
 import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsRight,
+  Search,
+  Inbox,
+  Info,
+  X,
+  type IconNode,
+} from 'lucide'
+import {
+  adminDate,
+  adminField,
+  adminLocalToUtc,
   adminQuery,
-  adminValue,
   type AdminColumn,
   type AdminFilter,
 } from '~/utils/admin'
@@ -16,6 +28,11 @@ const props = withDefaults(
     idKey?: string
     poll?: boolean
     cursorMode?: boolean
+    /** Page icon shown in the header. */
+    icon?: IconNode
+    /** Nested under a page's own header and tab strip: no page header, and
+        the panel joins the strip above it. */
+    embedded?: boolean
   }>(),
   { idKey: 'id' },
 )
@@ -39,11 +56,16 @@ async function refresh() {
   loading.value = true
   error.value = null
   try {
-    const response = await api.list(props.endpoint, adminQuery(route.query))
+    const query = adminQuery(route.query)
+    // Date filters are entered in local time; the API filters in UTC.
+    for (const filter of props.filters || [])
+      if (filter.type === 'datetime-local' && typeof query[filter.key] === 'string')
+        query[filter.key] = adminLocalToUtc(query[filter.key] as string)
+    const response = await api.list(props.endpoint, query)
     if (current !== generation) return
     rows.value = response.data
     meta.value = response.meta || {}
-    updated.value = new Date().toLocaleTimeString('zh-CN', { timeZone: 'UTC' })
+    updated.value = adminDate(new Date()).slice(11)
   } catch (e) {
     if (current === generation) error.value = e
   } finally {
@@ -94,101 +116,168 @@ watch(
   },
   { immediate: true },
 )
+const activeFilters = computed(
+  () =>
+    Object.entries(route.query).filter(
+      ([key, value]) => !['page', 'cursor', 'tab'].includes(key) && value,
+    ).length,
+)
+function clear() {
+  router.replace({ query: route.query.tab ? { tab: route.query.tab } : {} })
+}
+const textFilters = computed(() =>
+  (props.filters || []).filter((f) => !f.options && !f.type),
+)
+const otherFilters = computed(() =>
+  (props.filters || []).filter((f) => f.options || f.type),
+)
 if (props.poll) useAdminPoll(refresh)
 defineExpose({ refresh, changed })
 </script>
 <template>
   <section class="space-y-5">
-    <div class="flex flex-wrap items-start justify-between gap-3">
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight">{{ title }}</h1>
-        <p v-if="description" class="mt-2 text-sm text-slate-500">
-          {{ description }}
-        </p>
-      </div>
-      <div class="flex items-center gap-2">
-        <slot name="toolbar" /><button
-          class="admin-button"
-          :disabled="loading"
-          @click="refresh"
-        >
-          刷新
-        </button>
-      </div>
-    </div>
-    <form
-      v-if="filters?.length"
-      class="admin-card flex flex-wrap items-end gap-3"
-      @submit.prevent="apply"
+    <AdminPageHeader
+      v-if="!embedded"
+      :icon="icon"
+      :title="title"
+      :description="description"
     >
-      <label
-        v-for="filter in filters"
-        :key="filter.key"
-        class="min-w-36 flex-1 text-xs font-medium text-slate-500"
-        >{{ filter.label
-        }}<select
-          v-if="filter.options"
-          v-model="form[filter.key]"
-          class="admin-input mt-2"
-        >
-          <option value="">全部</option>
-          <option
-            v-for="option in filter.options"
-            :key="option.value"
-            :value="option.value"
-          >
-            {{ option.label }}
-          </option></select
-        ><input
-          v-else
-          v-model="form[filter.key]"
-          :type="filter.type || 'text'"
-          class="admin-input mt-2"
-          :placeholder="filter.label" /></label
-      ><button class="admin-button admin-primary">查询</button
-      ><button
-        type="button"
-        class="admin-button"
-        @click="
-          router.replace({
-            query: route.query.tab ? { tab: route.query.tab } : {},
-          })
-        "
-      >
-        重置
-      </button>
-    </form>
-    <AdminError :error="error" />
+      <slot name="toolbar" /><AdminRefresh
+        :busy="loading"
+        :live="poll"
+        @click="refresh"
+      />
+    </AdminPageHeader>
+    <h2 v-else class="sr-only">{{ title }}</h2>
     <div
-      class="overflow-hidden rounded-xl border border-slate-200 bg-white"
+      class="admin-panel relative overflow-hidden"
+      :class="embedded ? '!mt-0 rounded-t-none border-t-0' : ''"
       :aria-busy="loading"
     >
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm">
-          <thead
-            class="border-b border-slate-200 bg-slate-50 text-xs text-slate-500"
+      <div
+        v-if="loading"
+        class="absolute inset-x-0 top-0 z-10 h-0.5 overflow-hidden"
+      >
+        <div class="animate-admin-progress h-full w-1/3 bg-slate-900" />
+      </div>
+      <form
+        v-if="filters?.length || embedded"
+        class="flex flex-wrap items-center gap-2 border-b border-slate-200 bg-slate-50/70 px-3 py-2.5"
+        @submit.prevent="apply"
+      >
+        <label
+          v-for="filter in textFilters"
+          :key="filter.key"
+          class="relative w-full sm:w-44"
+        >
+          <span class="sr-only">{{ filter.label }}</span>
+          <LucideIcon
+            v-if="filter.key === 'q'"
+            :icon="Search"
+            class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            v-model="form[filter.key]"
+            class="admin-input"
+            :class="filter.key === 'q' ? 'pl-8' : ''"
+            :placeholder="filter.label"
+          />
+        </label>
+        <template v-for="filter in otherFilters" :key="filter.key">
+          <label v-if="filter.options" class="w-full sm:w-auto">
+            <span class="sr-only">{{ filter.label }}</span>
+            <select
+              v-model="form[filter.key]"
+              class="admin-input sm:w-auto sm:min-w-36"
+              :class="form[filter.key] ? 'border-slate-900' : 'text-slate-500'"
+            >
+              <option value="">{{ filter.label }}：全部</option>
+              <option
+                v-for="option in filter.options"
+                :key="option.value"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </label>
+          <label
+            v-else
+            class="flex h-8 w-full items-center gap-2 rounded-md border border-slate-200 bg-white pl-2.5 text-[13px] focus-within:border-slate-900 focus-within:ring-2 focus-within:ring-slate-900/10 sm:w-auto"
           >
-            <tr>
+            <span class="whitespace-nowrap text-xs text-slate-400">{{
+              filter.label
+            }}</span>
+            <input
+              v-model="form[filter.key]"
+              :type="filter.type"
+              class="h-full min-w-0 flex-1 bg-transparent pr-2 text-slate-900 outline-none"
+            />
+          </label>
+        </template>
+        <template v-if="filters?.length">
+          <button class="admin-button admin-primary">筛选</button>
+          <button
+            v-if="activeFilters"
+            type="button"
+            class="admin-button border-transparent bg-transparent text-slate-500"
+            @click="clear"
+          >
+            <LucideIcon :icon="X" class="size-3.5" />清除
+            <span class="admin-count">{{ activeFilters }}</span>
+          </button>
+        </template>
+        <div v-if="embedded" class="ml-auto flex items-center gap-2">
+          <slot name="toolbar" /><AdminRefresh
+            :busy="loading"
+            :live="poll"
+            @click="refresh"
+          />
+        </div>
+      </form>
+      <p
+        v-if="embedded && description"
+        class="flex items-start gap-2 border-b border-slate-200 px-4 py-2 text-xs text-slate-500"
+      >
+        <LucideIcon :icon="Info" class="mt-px size-3.5 shrink-0 text-slate-400" />
+        {{ description }}
+      </p>
+      <div v-if="error" class="border-b border-slate-200 p-3">
+        <AdminError :error="error" />
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-[13px]">
+          <thead>
+            <tr class="border-b border-slate-200">
               <th
                 v-for="column in columns"
                 :key="column.key"
-                class="whitespace-nowrap px-4 py-3 font-medium"
+                class="whitespace-nowrap px-4 py-2 text-xs font-medium text-slate-500"
               >
                 {{ column.label }}
               </th>
-              <th class="px-4 py-3">操作</th>
+              <th class="w-10 px-2"><span class="sr-only">操作</span></th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-100">
+          <tbody
+            class="divide-y divide-slate-100 transition-opacity"
+            :class="loading && rows.length ? 'opacity-50' : ''"
+          >
             <tr
               v-for="(row, index) in rows"
               :key="row[idKey] || index"
-              class="hover:bg-slate-50/70"
+              class="group cursor-pointer transition-colors hover:bg-slate-50"
+              :class="
+                detailOpen && selected === row
+                  ? 'bg-slate-50 shadow-[inset_2px_0_0_var(--color-slate-900)]'
+                  : ''
+              "
+              @click="show(row)"
             >
               <td
-                v-for="column in columns"
+                v-for="(column, ci) in columns"
                 :key="column.key"
-                class="max-w-xs px-4 py-3"
+                class="max-w-xs px-4 py-2.5 align-middle"
               >
                 <AdminStatus
                   v-if="
@@ -198,48 +287,79 @@ defineExpose({ refresh, changed })
                 /><span
                   v-else
                   class="line-clamp-2 break-words"
-                  :title="adminValue(row[column.key])"
-                  >{{ adminValue(row[column.key]) }}</span
+                  :class="[
+                    column.mono
+                      ? 'font-mono text-xs text-slate-600'
+                      : 'text-slate-700',
+                    ci === 0 && !column.mono ? 'font-medium text-slate-900' : '',
+                  ]"
+                  :title="adminField(column.key, row[column.key])"
+                  >{{ adminField(column.key, row[column.key]) }}</span
                 >
               </td>
-              <td class="whitespace-nowrap px-4 py-3">
+              <td class="px-2 py-2.5 text-right">
                 <button
-                  class="text-indigo-600 hover:underline"
-                  @click="show(row)"
+                  class="grid size-6 place-items-center rounded text-slate-300 transition group-hover:text-slate-900"
+                  aria-label="查看详情"
+                  @click.stop="show(row)"
                 >
-                  详情
+                  <LucideIcon :icon="ChevronRight" class="size-4" />
                 </button>
               </td>
             </tr>
-            <tr v-if="!rows.length">
-              <td
-                :colspan="columns.length + 1"
-                class="px-4 py-14 text-center text-slate-400"
-              >
-                {{
-                  loading
-                    ? '正在加载…'
-                    : error
-                      ? '暂时无法获取数据'
-                      : '暂无符合条件的记录'
-                }}
+            <template v-if="!rows.length && loading">
+              <tr v-for="i in 6" :key="'s' + i">
+                <td
+                  v-for="column in columns"
+                  :key="column.key"
+                  class="px-4 py-3.5"
+                >
+                  <div
+                    class="h-2.5 animate-pulse rounded-full bg-slate-100"
+                    :style="{ width: 40 + ((i * 7 + column.key.length * 13) % 50) + '%' }"
+                  />
+                </td>
+                <td />
+              </tr>
+            </template>
+            <tr v-else-if="!rows.length">
+              <td :colspan="columns.length + 1" class="px-4 py-20">
+                <div class="flex flex-col items-center text-center">
+                  <span
+                    class="grid size-11 place-items-center rounded-xl border border-dashed border-slate-300 text-slate-400"
+                  >
+                    <LucideIcon :icon="Inbox" class="size-5" />
+                  </span>
+                  <p class="mt-3 text-[13px] font-medium text-slate-900">
+                    {{ error ? '暂时无法获取数据' : '没有符合条件的记录' }}
+                  </p>
+                  <button
+                    v-if="activeFilters && !error"
+                    class="mt-1 text-xs text-slate-500 underline-offset-2 hover:text-slate-900 hover:underline"
+                    @click="clear"
+                  >
+                    清除筛选条件
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <footer
-        class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-4 py-3 text-xs text-slate-500"
+        class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-4 py-2 text-xs text-slate-500"
       >
-        <span
-          >最后更新 {{ updated || '—' }} UTC
-          <span v-if="meta.total !== undefined"
-            >· 共 {{ meta.total }} 条</span
-          ></span
+        <span class="tabular-nums"
+          ><template v-if="meta.total !== undefined"
+            ><b class="font-semibold text-slate-900">{{
+              Number(meta.total).toLocaleString()
+            }}</b>
+            条记录 · </template
+          >更新于 {{ updated || '—' }}</span
         >
-        <div v-if="cursorMode" class="flex gap-2">
+        <div v-if="cursorMode" class="flex gap-1.5">
           <button
-            class="admin-button"
+            class="admin-button h-7"
             :disabled="!route.query.cursor"
             @click="
               router.replace({ query: { ...route.query, cursor: undefined } })
@@ -247,7 +367,7 @@ defineExpose({ refresh, changed })
           >
             返回最新</button
           ><button
-            class="admin-button"
+            class="admin-button h-7"
             :disabled="meta.next_cursor == null || loading"
             @click="
               router.replace({
@@ -255,31 +375,48 @@ defineExpose({ refresh, changed })
               })
             "
           >
-            下一批
+            下一批<LucideIcon :icon="ChevronsRight" class="size-3.5" />
           </button>
         </div>
-        <div v-else class="flex items-center gap-3">
+        <div v-else class="flex items-center gap-1">
+          <span class="mr-2 tabular-nums"
+            >第 {{ meta.page || 1 }} / {{ meta.last_page || 1 }} 页</span
+          >
           <button
-            class="admin-button"
+            class="admin-button size-7 px-0"
+            aria-label="上一页"
             :disabled="!meta.page || meta.page <= 1 || loading"
             @click="page(meta.page - 1)"
           >
-            上一页</button
-          ><span>{{ meta.page || 1 }} / {{ meta.last_page || 1 }}</span
+            <LucideIcon :icon="ChevronLeft" class="size-4" /></button
           ><button
-            class="admin-button"
+            class="admin-button size-7 px-0"
+            aria-label="下一页"
             :disabled="!meta.page || meta.page >= meta.last_page || loading"
             @click="page(meta.page + 1)"
           >
-            下一页
+            <LucideIcon :icon="ChevronRight" class="size-4" />
           </button>
         </div>
       </footer>
     </div>
-    <Dialog v-model:open="detailOpen" title="记录详情" size="4xl"
-      ><div class="space-y-4 p-5">
+    <Drawer v-model:open="detailOpen" side="right" size="wide"
+      ><template #title
+        >{{ title }}
+        <span
+          v-if="selected?.[idKey] !== undefined"
+          class="ml-1 font-mono text-xs font-normal text-slate-400"
+          >#{{ selected[idKey] }}</span
+        ></template
+      ><!-- Drawer keeps its body mounted while closed; slots assume a row. -->
+      <div v-if="selected" class="space-y-5 p-5">
         <AdminError :error="detailError" />
-        <p v-if="detailLoading" class="text-sm text-slate-500">正在加载详情…</p>
+        <div
+          v-if="detailLoading"
+          class="h-0.5 overflow-hidden rounded-full bg-slate-100"
+        >
+          <div class="animate-admin-progress h-full w-1/3 bg-slate-900" />
+        </div>
         <slot
           name="detail-actions"
           :row="selected"
@@ -292,6 +429,6 @@ defineExpose({ refresh, changed })
             }
           "
         /><AdminDataView :value="detail" /></div
-    ></Dialog>
+    ></Drawer>
   </section>
 </template>

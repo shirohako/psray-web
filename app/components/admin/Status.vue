@@ -1,28 +1,22 @@
 <script setup lang="ts">
 import { adminValue } from '~/utils/admin'
 const props = defineProps<{ value: unknown }>()
-const color = computed(() =>
-  ['success', 'healthy', 'online', 'completed'].includes(String(props.value))
-    ? 'bg-emerald-50 text-emerald-700 ring-emerald-200'
-    : ['failed', 'offline', 'stale', 'termination'].includes(
-          String(props.value),
-        )
-      ? 'bg-red-50 text-red-700 ring-red-200'
-      : [
-            'partial',
-            'running',
-            'queued',
-            'ranking_ban',
-            'suspected_interrupted',
-          ].includes(String(props.value))
-        ? 'bg-amber-50 text-amber-800 ring-amber-200'
-        : 'bg-slate-100 text-slate-600 ring-slate-200',
-)
+const GOOD = ['success', 'healthy', 'online', 'completed']
+const BAD = ['failed', 'offline', 'stale', 'termination']
+const WARN = ['partial', 'running', 'queued', 'pending', 'ranking_ban', 'suspected_interrupted']
+const tone = computed(() => {
+  const value = String(props.value)
+  if (GOOD.includes(value)) return 'bg-emerald-500 ring-emerald-500/20'
+  if (BAD.includes(value)) return 'bg-red-500 ring-red-500/20'
+  if (WARN.includes(value)) return 'bg-amber-500 ring-amber-500/25'
+  return 'bg-slate-400 ring-slate-400/20'
+})
 </script>
 <template>
   <span
-    class="inline-flex whitespace-nowrap rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset"
-    :class="color"
-    >{{ adminValue(value) }}</span
+    class="inline-flex items-center gap-2 whitespace-nowrap text-xs font-medium text-slate-700"
+    ><span class="size-1.5 shrink-0 rounded-full ring-[3px]" :class="tone" />{{
+      adminValue(value)
+    }}</span
   >
 </template>

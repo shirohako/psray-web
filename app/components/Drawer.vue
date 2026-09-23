@@ -19,7 +19,9 @@ const props = withDefaults(defineProps<{
   open: boolean
   title?: string
   side?: Side
-}>(), { side: 'left' })
+  /** Panel width; `wide` suits record inspectors. */
+  size?: 'sm' | 'wide'
+}>(), { side: 'left', size: 'sm' })
 
 const emit = defineEmits<{ 'update:open': [v: boolean] }>()
 
@@ -61,8 +63,9 @@ onUnmounted(() => {
           role="dialog"
           aria-modal="true"
           :inert="!open"
-          class="absolute inset-y-0 flex w-full max-w-sm flex-col bg-white shadow-2xl ring-1 ring-slate-900/5 transition-transform duration-300 will-change-transform motion-reduce:transition-none"
+          class="absolute inset-y-0 flex w-full flex-col bg-white shadow-2xl ring-1 ring-slate-900/5 transition-transform duration-300 will-change-transform motion-reduce:transition-none"
           :class="[
+            size === 'wide' ? 'max-w-2xl' : 'max-w-sm',
             side === 'left' ? 'left-0' : 'right-0',
             open
               ? 'translate-x-0 ease-out'

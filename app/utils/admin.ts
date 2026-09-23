@@ -1,6 +1,8 @@
 export interface AdminColumn {
   key: string
   label: string
+  /** Render identifiers (IDs, UUIDs, queue names) in monospace. */
+  mono?: boolean
 }
 export interface AdminFilter {
   key: string
@@ -140,7 +142,7 @@ export const fieldLabels: Record<string, string> = {
   subject: '业务对象',
   attempt: '尝试次数',
   attempts: '尝试次数',
-  duration_ms: '耗时（毫秒）',
+  duration_ms: '耗时',
   items_total: '分项总数',
   items_failed: '分项失败',
   items_skipped: '分项跳过',
@@ -239,6 +241,77 @@ export function adminValue(value: unknown): string {
   if (typeof value === 'object')
     return Array.isArray(value) ? value.map(adminValue).join('、') : '详情'
   return statusLabels[String(value)] ?? String(value)
+}
+const pad = (n: number) => String(n).padStart(2, '0')
+/**
+ * Parse an admin API timestamp. The API speaks UTC: zone-less strings
+ * ("2026-09-24 01:10:02") are read as UTC, numbers as Unix seconds.
+ */
+export function adminParseDate(value: unknown): Date | null {
+  if (value === null || value === undefined || value === '') return null
+  if (typeof value === 'number') return new Date(value * 1000)
+  const text = String(value).trim()
+  const zoneless = /^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2}(\.\d+)?)?$/.test(text)
+  const date = new Date(zoneless ? text.replace(' ', 'T') + 'Z' : text)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+/** Format a timestamp in the browser's time zone as "YYYY-MM-DD HH:mm:ss". */
+export function adminDate(value: unknown): string {
+  if (value === null || value === undefined || value === '') return '—'
+  const date = value instanceof Date ? value : adminParseDate(value)
+  if (!date) return String(value)
+  return (
+    `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ` +
+    `${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+  )
+}
+/**
+ * Humanize a duration in milliseconds: "842 毫秒", "1.8 秒", "3 分 12 秒",
+ * "2 小时 5 分", "1 天 3 小时". Non-numeric values pass through.
+ */
+export function adminDuration(value: unknown): string {
+  if (value === null || value === undefined || value === '') return '—'
+  const ms = Number(value)
+  if (!Number.isFinite(ms) || ms < 0) return String(value)
+  if (ms < 1000) return `${Math.round(ms)} 毫秒`
+  const seconds = ms / 1000
+  if (seconds < 60)
+    return `${seconds < 10 ? Number(seconds.toFixed(1)) : Math.round(seconds)} 秒`
+  const total = Math.round(seconds)
+  const [d, h, m, s] = [
+    Math.floor(total / 86400),
+    Math.floor((total % 86400) / 3600),
+    Math.floor((total % 3600) / 60),
+    total % 60,
+  ]
+  const parts = d
+    ? [[d, '天'], [h, '小时']]
+    : h
+      ? [[h, '小时'], [m, '分']]
+      : [[m, '分'], [s, '秒']]
+  return parts
+    .filter(([n], i) => i === 0 || n)
+    .map(([n, unit]) => `${n} ${unit}`)
+    .join(' ')
+}
+/**
+ * Display a record field: timestamps (`*_at`) in local time, durations
+ * (`*_ms`) humanized, the rest as-is.
+ */
+export function adminField(key: string, value: unknown): string {
+  if (typeof value === 'boolean') return adminValue(value)
+  if (key.endsWith('_at')) return adminDate(value)
+  if (key.endsWith('_ms')) return adminDuration(value)
+  return adminValue(value)
+}
+/**
+ * Convert a local `datetime-local` value ("YYYY-MM-DDTHH:mm") to the UTC
+ * "YYYY-MM-DDTHH:mm" the API filters on. Other values pass through.
+ */
+export function adminLocalToUtc(value: string): string {
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(value)) return value
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? value : date.toISOString().slice(0, 16)
 }
 export function adminApiPrefix(base: string): string {
   return `${base.replace(/\/+$/, '')}/admin`
