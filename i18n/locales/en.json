@@ -51,7 +51,7 @@
     "lookup": {
       "heading": "Look up a profile",
       "hint": "Enter a PSN ID to open that player's profile.",
-      "view": "Go to my page",
+      "view": "View profile",
       "sync": "Sync",
       "placeholder": "Enter a PSN ID"
     },
@@ -113,7 +113,7 @@
       "psnid": {
         "placeholder": "Your PlayStation Network ID",
         "requirementsTitle": "Requirements for new accounts",
-        "requirementsHint": "These keep out spam accounts and keep this a place for players.",
+        "requirementsHint": "These requirements help prevent spam and keep the community welcoming for players.",
         "requirement1": "Synced on this site at least once.",
         "requirement2": "PSN trophy level above 100.",
         "requirement3": "PSN game details set to public."
@@ -166,7 +166,7 @@
       "PSN_PROFILE_FAILED": "Couldn’t fetch your PSN profile. Please try again later.",
       "VERIFICATION_CODE_INVALID": "We couldn’t find the right code in your PSN “About Me”. Check it’s saved and not deleted.",
       "VERIFICATION_CODE_EXPIRED": "That code has expired. Send a new one and try again.",
-      "INVALID_CREDENTIALS": "Incorrect account or password.",
+      "INVALID_CREDENTIALS": "Incorrect email or password.",
       "ACCOUNT_TERMINATED": "This account has been suspended."
     }
   },
@@ -242,7 +242,7 @@
     "sort": {
       "label": "Sort",
       "default": "Default",
-      "earned": "Earned time",
+      "earned": "Date earned",
       "rarity": "PSN rarity"
     },
     "lang": {
@@ -257,9 +257,9 @@
       "reveal": "Reveal this hidden trophy",
       "mask": "Hide this trophy",
       "earnedAt": "Earned at",
-      "earnedOrder": "Earned order",
+      "earnedOrder": "Order earned",
       "firstEarned": "First earned",
-      "sincePrevious": "Since previous trophy",
+      "sincePrevious": "Since last trophy",
       "psnRate": "PSN earn rate",
       "psrayRate": "PSRay earn rate",
       "tips": "Tips",
@@ -297,9 +297,9 @@
       "referenceTimes": "Reference times",
       "subtitle": "Based on public 100% completion records",
       "medianCompletion": "Median completion time",
-      "averageCompletion": "Average completion",
-      "p10Completion": "10th-percentile completion",
-      "fastestCompletion": "Fastest completion",
+      "averageCompletion": "Average completion time",
+      "p10Completion": "10th percentile completion time",
+      "fastestCompletion": "Fastest completion time",
       "medianPlatinum": "Median platinum time",
       "difficult": "Rare trophies",
       "difficultHint": "PSN official earn rate below 5%"
@@ -314,7 +314,7 @@
     },
     "players": {
       "title": "Player rankings",
-      "recent": "Recently playing",
+      "recent": "Recently active",
       "progress": "Finish order",
       "progressHint": "Ranked by when players first reached 100%",
       "speedrun": "Speedrun ranking",
@@ -337,7 +337,7 @@
       "missable": "Missable",
       "helpful": "Helpful",
       "notHelpful": "Not helpful",
-      "voteFailed": "Could not update your rating",
+      "voteFailed": "Could not save your vote",
       "loadFailed": "Tips could not be loaded.",
       "form": {
         "open": "Write a comment",
@@ -390,10 +390,10 @@
     }
   },
   "leaderboard": {
-    "boards": "Boards",
+    "boards": "Rankings",
     "registeredOnly": "Registered users only",
     "totalPlayers": "{count} players",
-    "pickBoard": "Choose a board",
+    "pickBoard": "Choose a ranking",
     "empty": "No ranking data yet.",
     "column": {
       "rank": "Rank",
@@ -455,7 +455,7 @@
       "title": "Stats overview",
       "games": "Games",
       "trophies": "Total trophies",
-      "perfect": "Perfect",
+      "perfect": "100% complete",
       "lowCompletion": "Low completion",
       "favorites": "Favorites",
       "comments": "Comments",
@@ -559,7 +559,7 @@
     },
     "status": {
       "queued": "Queued",
-      "calculating": "Calculating",
+      "calculating": "Checking games",
       "syncing": "Syncing",
       "completed": "Completed",
       "failed": "Failed"
@@ -569,8 +569,8 @@
       "countdown": "Refreshing in {seconds}s"
     },
     "gamesUnit": "games",
-    "waitingWorker": "Waiting for a worker to pick this up…",
-    "calculating": "Working out which games need syncing…",
+    "waitingWorker": "Waiting for sync to start…",
+    "calculating": "Checking which games need syncing…",
     "queueAhead": "{badge} job ahead | {badge} jobs ahead",
     "currentGame": "Syncing",
     "failedCount": "{count} failed",
@@ -736,7 +736,7 @@
   },
   "library": {
     "title": "Browse all trophies",
-    "description": "Explore trophy lists, player counts and platinum completion rates.",
+    "description": "Explore trophy lists, player counts and platinum earn rates.",
     "trophies": "trophies",
     "platforms": "platforms",
     "search": "Search game titles or trophy set IDs…",
@@ -767,15 +767,15 @@
     },
     "multiSelect": "Select multiple",
     "removeFilter": "Remove filter: {name}",
-    "recentLabel": "Active 7d",
+    "recentLabel": "Last 7 days",
     "playedLabel": "Played",
-    "completedLabel": "Complete",
+    "completedLabel": "100% complete",
     "platinumLabel": "Platinum",
     "completionRate": "Completion rate",
-    "difficultCount": "{count} rare",
+    "difficultCount": "Rare: {count}",
     "difficultHint": "PSN official earn rate below 5%",
     "medianShort": "Median time",
-    "averageTimeShort": "Average",
+    "averageTimeShort": "Avg. time",
     "p10Short": "10th percentile",
     "fastestShort": "Fastest",
     "loadError": "Could not load the trophy library",

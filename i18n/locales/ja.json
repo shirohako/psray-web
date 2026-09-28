@@ -13,8 +13,8 @@
     "save": "保存",
     "saving": "保存中…",
     "showMore": "もっと見る",
-    "sortAsc": "昇順",
-    "sortDesc": "降順",
+    "sortAsc": "古い順",
+    "sortDesc": "新しい順",
     "updated": "更新日時",
     "updatedAt": "{time} に更新",
     "view": "見る"
@@ -50,9 +50,9 @@
   "home": {
     "lookup": {
       "heading": "プロフィールを検索",
-      "hint": "PSRay を初めてご利用の方は、まず PSN からデータを読み込んでください。",
-      "view": "マイページへ",
-      "sync": "PSNから読み込む",
+      "hint": "PSN ID を入力すると、そのプレイヤーのプロフィールを表示できます。",
+      "view": "プロフィールを見る",
+      "sync": "PSN と同期",
       "placeholder": "PSN ID を入力"
     },
     "hero": {
@@ -286,23 +286,23 @@
       "owners": "プレイ人数",
       "averageProgress": "平均進捗",
       "completed": "コンプ人数",
-      "platinums": "プラチナ人数",
+      "platinums": "プラチナ獲得者",
       "setId": "トロフィーセット ID",
       "version": "バージョン",
       "qrTitle": "トロフィーセットの QRコード"
     },
     "statistics": {
       "title": "統計データ",
-      "updateHint": "統計データは8時間ごとに更新されます。",
+      "updateHint": "統計データは 8 時間ごとに更新されます。",
       "referenceTimes": "参考時間",
       "subtitle": "公開トロコン記録に基づく集計",
-      "medianCompletion": "トロフィーコンプリート時間中央値",
+      "medianCompletion": "トロコン時間の中央値",
       "averageCompletion": "平均コンプ時間",
-      "p10Completion": "コンプ時間の10パーセンタイル",
+      "p10Completion": "上位 10% のトロコン時間",
       "fastestCompletion": "最短コンプ時間",
-      "medianPlatinum": "プラチナ時間中央値",
-      "difficult": "高難度トロフィー",
-      "difficultHint": "PSN公式獲得率 5%未満"
+      "medianPlatinum": "プラチナ獲得時間の中央値",
+      "difficult": "レアトロフィー",
+      "difficultHint": "PSN 公式獲得率 5% 未満"
     },
     "progress": {
       "title": "トロフィー進捗",
@@ -337,7 +337,7 @@
       "missable": "取り逃し注意",
       "helpful": "役に立つ",
       "notHelpful": "役に立たない",
-      "voteFailed": "選択を更新できませんでした",
+      "voteFailed": "評価を更新できませんでした",
       "loadFailed": "コメントを読み込めませんでした。",
       "form": {
         "open": "コメントを書く",
@@ -559,7 +559,7 @@
     },
     "status": {
       "queued": "順番待ち",
-      "calculating": "計算中",
+      "calculating": "確認中",
       "syncing": "同期中",
       "completed": "完了",
       "failed": "失敗"
@@ -749,11 +749,11 @@
     "grid": "カード表示",
     "list": "リスト表示",
     "preview": "{name} のトロフィー一覧を見る",
-    "trophyCount": "{count} トロフィー",
+    "trophyCount": "トロフィー {count} 個",
     "platinumRate": "プラチナ率",
     "empty": "該当するゲームがありません",
     "emptyHint": "別のキーワードを試すか、絞り込み条件を減らしてください。",
-    "range": "{total} ゲーム中 {start}–{end} 件を表示",
+    "range": "全 {total} 件中 {start}～{end} 件を表示",
     "players": "プレイヤー",
     "game": "ゲーム",
     "progress": "達成率",
@@ -762,7 +762,7 @@
     "browseBy": "表示カテゴリ",
     "categories": {
       "new": "新着",
-      "trending": "最近の人気",
+      "trending": "トレンド",
       "popular": "人気ゲーム"
     },
     "multiSelect": "複数選択可",
@@ -772,11 +772,11 @@
     "completedLabel": "トロコン",
     "platinumLabel": "プラチナ",
     "completionRate": "トロコン率",
-    "difficultCount": "レア {count}",
-    "difficultHint": "PSN公式獲得率 5%未満",
-    "medianShort": "トロコン時間中央値",
+    "difficultCount": "レア {count} 個",
+    "difficultHint": "PSN 公式獲得率 5% 未満",
+    "medianShort": "トロコン時間の中央値",
     "averageTimeShort": "平均トロコン時間",
-    "p10Short": "10パーセンタイル",
+    "p10Short": "上位 10%",
     "fastestShort": "最短トロコン時間",
     "loadError": "トロフィー一覧を読み込めませんでした",
     "loadErrorHint": "通信状態を確認して、もう一度お試しください。",
