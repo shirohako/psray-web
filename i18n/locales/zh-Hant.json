@@ -15,6 +15,9 @@
     "showMore": "顯示更多",
     "sortAsc": "正序",
     "sortDesc": "倒序",
+    "timestampMissing": "時間戳遺失",
+    "timestampMissingHint": "PSN 未記錄這枚獎盃的獲得時間",
+    "timestampsIncompleteHint": "部分獎盃缺少獲得時間，這裡僅依據有時間紀錄的獎盃",
     "updated": "更新時間",
     "updatedAt": "更新於 {time}",
     "view": "查看"

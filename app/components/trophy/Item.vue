@@ -9,6 +9,8 @@ const props = defineProps<{
   earned: boolean
   /** When the viewed user earned this trophy, if returned by the API. */
   earnedAt?: number | string | null
+  /** Earned, but PSN never recorded when; shows a notice in place of the time. */
+  timestampMissing?: boolean
   /** 1-based order in which the viewer earned this trophy. */
   earnedOrder?: number | null
   /** Seconds since the viewer's previous earned trophy (`null` for the first). */
@@ -212,7 +214,14 @@ const displayedTipCount = computed(() => props.tipCount ?? props.trophy.tip_coun
       </div>
       <p v-if="displayDetail" class="text-slate-500" :class="density.detail">{{ displayDetail }}</p>
       <div
-        v-if="showEarned && earnedAt"
+        v-if="showEarned && timestampMissing"
+        class="flex max-w-full flex-wrap items-center font-medium leading-normal text-slate-400"
+        :class="density.earnedMeta"
+      >
+        <TimestampMissing />
+      </div>
+      <div
+        v-else-if="showEarned && earnedAt"
         class="flex max-w-full flex-wrap items-center font-medium leading-normal text-slate-400"
         :class="density.earnedMeta"
       >

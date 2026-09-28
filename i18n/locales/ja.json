@@ -15,6 +15,9 @@
     "showMore": "もっと見る",
     "sortAsc": "古い順",
     "sortDesc": "新しい順",
+    "timestampMissing": "タイムスタンプ欠落",
+    "timestampMissingHint": "PSN にこのトロフィーの獲得日時が記録されていません",
+    "timestampsIncompleteHint": "一部のトロフィーに獲得日時がないため、日時のあるトロフィーのみで算出しています",
     "updated": "更新日時",
     "updatedAt": "{time} に更新",
     "view": "見る"

@@ -222,13 +222,33 @@ export interface ViewerProgress {
   earned_silver: number
   earned_gold: number
   earned_platinum: number
-  first_earned_at: ApiDate
-  last_earned_at: ApiDate
+  /** `null` when no earned trophy has a timestamp. */
+  first_earned_at: ApiDate | null
+  last_earned_at: ApiDate | null
   duration?: number | null
+  /**
+   * True when at least one earned trophy has no timestamp (early PSN titles).
+   * `duration` is then meaningless and first/last only cover the timed trophies.
+   */
+  timestamps_incomplete?: boolean
   /** Database ids of earned trophies, in earned order (compare against `Trophy.id`). */
   earned_trophies: number[]
-  /** Map of earned trophy db id → the timestamp the viewer earned it. */
-  earned_trophies_at?: Record<string, ApiDate>
+  /**
+   * Map of earned trophy db id → the timestamp the viewer earned it; `null` when
+   * the trophy is earned but PSN never recorded when.
+   */
+  earned_trophies_at?: Record<string, ApiDate | null>
+}
+
+/** Per-trophy view of `ViewerProgress`, keyed by trophy db id on the set page. */
+export interface EarnedInfo {
+  /** 0-based position in the viewer's chronological earned order. */
+  rank: number
+  earnedAt: ApiDate | null
+  /** Seconds since the previously earned trophy (`null` for the first). */
+  sincePrev: number | null
+  /** Earned, but PSN never recorded when (`earned_trophies_at[id] === null`). */
+  timestampMissing: boolean
 }
 
 /** Full payload of `GET /trophies/:id`. */

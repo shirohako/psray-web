@@ -170,6 +170,11 @@ export interface PlayedTrophySet {
   earned_gold: number
   earned_platinum: number
   duration: number | null
+  /**
+   * True when at least one earned trophy has no timestamp (early PSN titles).
+   * `duration` is then meaningless and first/last only cover the timed trophies.
+   */
+  timestamps_incomplete?: boolean
   is_hidden: boolean
   first_earned_at: ApiDate | null
   last_earned_at: ApiDate | null
@@ -185,7 +190,8 @@ export interface RecentTrophy {
   user_id: number
   trophy_set_id: number
   trophy_id: number
-  earned_at: ApiDate
+  /** `null` when PSN never recorded when it was earned; these sort to the last pages. */
+  earned_at: ApiDate | null
   trophy: {
     id: number
     trophy_group_id: number

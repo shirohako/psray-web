@@ -15,6 +15,9 @@
     "showMore": "Show more",
     "sortAsc": "Oldest first",
     "sortDesc": "Newest first",
+    "timestampMissing": "Timestamp missing",
+    "timestampMissingHint": "PSN has no record of when this trophy was earned",
+    "timestampsIncompleteHint": "Some trophies have no earned time, so this is based only on the ones that do",
     "updated": "Updated",
     "updatedAt": "Updated {time}",
     "view": "View"

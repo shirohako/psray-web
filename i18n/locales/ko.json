@@ -15,6 +15,9 @@
     "showMore": "더 보기",
     "sortAsc": "오래된 순",
     "sortDesc": "최신순",
+    "timestampMissing": "타임스탬프 누락",
+    "timestampMissingHint": "PSN에 이 트로피의 획득 시간이 기록되어 있지 않습니다",
+    "timestampsIncompleteHint": "일부 트로피에 획득 시간이 없어, 시간이 기록된 트로피만을 기준으로 합니다",
     "updated": "업데이트",
     "updatedAt": "{time} 업데이트",
     "view": "보기"

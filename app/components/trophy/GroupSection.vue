@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import type { Trophy, TrophyGroup } from '~/services/trophies'
+import type { EarnedInfo, Trophy, TrophyGroup } from '~/services/trophies'
 
 const props = defineProps<{
   group: TrophyGroup
   /** id → earned order, timestamp, and gap since the previous earned trophy. */
-  earnedInfo: Map<number, { rank: number, earnedAt: number | string | null, sincePrev: number | null }>
+  earnedInfo: Map<number, EarnedInfo>
   hasViewer: boolean
   filter: 'all' | 'earned' | 'unearned'
   sort: 'default' | 'earned' | 'rarity'
@@ -108,6 +108,7 @@ const displayTrophies = computed(() => {
         :has-viewer="hasViewer"
         :earned="isEarned(trophy)"
         :earned-at="earnedAt(trophy)"
+        :timestamp-missing="earnedInfo.get(trophy.id)?.timestampMissing"
         :earned-order="earnedOrder(trophy)"
         :earned-gap="earnedGap(trophy)"
         :show-spoilers="showSpoilers"

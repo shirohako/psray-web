@@ -158,7 +158,7 @@
 <script setup lang="ts">
 import { ArrowUpDown, ChevronDown } from 'lucide'
 import TrophyStatistics from '~/components/trophy/Statistics.vue'
-import type { Trophy, TrophyGroup, TrophySetDetail } from '~/services/trophies'
+import type { EarnedInfo, Trophy, TrophyGroup, TrophySetDetail } from '~/services/trophies'
 import { DEFAULT_LOCALE, PSN_LANG, canonicalContentLang, isUiLocale, type UiLocale } from '#shared/locales'
 
 definePageMeta({ path: '/trophies/:id(\\d+)' })
@@ -268,9 +268,10 @@ function toMs(value: number | string | null): number | null {
 // previously earned trophy (`null` for the first). The raw `earned_trophies`
 // list isn't guaranteed to be time-sorted, so we order by `earned_trophies_at`
 // to get the true "this is the Nth trophy earned" sequence and gaps (trophies
-// missing a timestamp sort last).
+// missing a timestamp sort last). `timestampMissing` marks trophies the API
+// explicitly reports as earned with a `null` time (early PSN titles).
 const earnedInfo = computed(() => {
-  const m = new Map<number, { rank: number, earnedAt: number | string | null, sincePrev: number | null }>()
+  const m = new Map<number, EarnedInfo>()
   const progress = data.value?.viewer_progress
   if (!progress) return m
 
@@ -286,7 +287,7 @@ const earnedInfo = computed(() => {
 
   const times = progress.earned_trophies_at ?? {}
   const ordered = progress.earned_trophies
-    .map(id => ({ id, earnedAt: times[id] ?? null, ms: toMs(times[id] ?? null) }))
+    .map(id => ({ id, earnedAt: times[id] ?? null, missing: times[id] === null, ms: toMs(times[id] ?? null) }))
     .sort((a, b) => {
       if (a.ms == null) return b.ms == null ? 0 : 1
       if (b.ms == null) return -1
@@ -296,11 +297,11 @@ const earnedInfo = computed(() => {
     })
 
   let prevMs: number | null = null
-  ordered.forEach(({ id, earnedAt, ms }, i) => {
+  ordered.forEach(({ id, earnedAt, missing, ms }, i) => {
     const sincePrev = i > 0 && ms != null && prevMs != null
       ? Math.round((ms - prevMs) / 1000)
       : null
-    m.set(id, { rank: i, earnedAt, sincePrev })
+    m.set(id, { rank: i, earnedAt, sincePrev, timestampMissing: missing })
     if (ms != null) prevMs = ms
   })
 

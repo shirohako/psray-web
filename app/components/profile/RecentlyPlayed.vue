@@ -398,12 +398,22 @@ onBeforeUnmount(() => {
             <span class="w-9 shrink-0 text-right text-xs font-semibold tabular-nums text-slate-600">{{ g.progress }}%</span>
           </div>
           <div class="flex flex-wrap items-center text-slate-400" :class="density.tiers">
-            <span class="inline-flex items-center gap-1 leading-none tabular-nums">
+            <TimestampMissing
+              v-if="g.timestamps_incomplete && g.last_earned_at == null"
+              :hint="$t('common.timestampsIncompleteHint')"
+            />
+            <span v-else class="inline-flex items-center gap-1 leading-none tabular-nums">
               <LucideIcon :icon="Clock" class="size-3 shrink-0" />
               {{ fmtDateTime(g.last_earned_at) }}
             </span>
+            <!-- Some earned trophies lack a time: `duration` is always 0 then, so it's never
+                 shown (the notice above already covers a set with no times at all). -->
+            <TimestampMissing
+              v-if="g.progress === 100 && g.timestamps_incomplete && g.last_earned_at != null"
+              :hint="$t('common.timestampsIncompleteHint')"
+            />
             <span
-              v-if="g.progress === 100 && g.duration != null"
+              v-else-if="g.progress === 100 && !g.timestamps_incomplete && g.duration != null"
               class="inline-flex shrink-0 items-center gap-1 leading-none text-slate-400"
             >
               <LucideIcon :icon="Hourglass" class="size-3 shrink-0 text-slate-400" />

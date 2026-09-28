@@ -32,19 +32,25 @@ function earnedOrder(index: number): number {
   return total.value - (page.value - 1) * perPage.value - index
 }
 
+function earnedMs(value: RecentTrophy['earned_at']): number | null {
+  if (value == null) return null
+  const ms = typeof value === 'number' ? value * 1000 : new Date(value).getTime()
+  return Number.isNaN(ms) ? null : ms
+}
+
 /**
  * Seconds elapsed between this trophy and the one earned just before it. The
  * list is newest-first, so the previous trophy is the next row down. Returns
  * `null` for the last row on the page — there's no earlier trophy to measure
- * against, so we just omit it.
+ * against, so we just omit it — and when either side has no timestamp.
  */
 function elapsedSincePrev(index: number): number | null {
   const cur = trophies.value[index]
   const prev = trophies.value[index + 1]
   if (!cur || !prev) return null
-  const curTime = typeof cur.earned_at === 'number' ? cur.earned_at * 1000 : new Date(cur.earned_at).getTime()
-  const prevTime = typeof prev.earned_at === 'number' ? prev.earned_at * 1000 : new Date(prev.earned_at).getTime()
-  if (Number.isNaN(curTime) || Number.isNaN(prevTime)) return null
+  const curTime = earnedMs(cur.earned_at)
+  const prevTime = earnedMs(prev.earned_at)
+  if (curTime == null || prevTime == null) return null
   return Math.max(0, Math.floor((curTime - prevTime) / 1000))
 }
 
@@ -137,7 +143,8 @@ function psnEarnedRate(item: RecentTrophy) {
             {{ item.trophy.detail }}
           </p>
           <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-400">
-            <span class="inline-flex items-center gap-1 tabular-nums">
+            <TimestampMissing v-if="item.earned_at == null" />
+            <span v-else class="inline-flex items-center gap-1 tabular-nums">
               <LucideIcon :icon="Clock" class="size-3 text-slate-400" />
               {{ fmtDateTime(item.earned_at) }}
             </span>
