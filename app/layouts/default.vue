@@ -142,7 +142,7 @@ async function onLogout() {
                 :icon="LayoutDashboard"
                 class="size-4 text-slate-400"
               />
-              管理后台
+              {{ $t('nav.user.admin') }}
             </NuxtLink>
             <NuxtLink
               :to="profilePath"

@@ -44,6 +44,7 @@
       "settings": "Settings"
     },
     "user": {
+      "admin": "Admin console",
       "logout": "Sign out",
       "profile": "Profile",
       "settings": "Settings",

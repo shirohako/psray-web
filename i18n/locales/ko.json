@@ -44,6 +44,7 @@
       "settings": "설정"
     },
     "user": {
+      "admin": "관리자 콘솔",
       "logout": "로그아웃",
       "profile": "프로필",
       "settings": "계정 설정",

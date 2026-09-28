@@ -44,6 +44,7 @@
       "settings": "设置"
     },
     "user": {
+      "admin": "管理后台",
       "logout": "退出登录",
       "profile": "个人资料",
       "settings": "用户设置",
