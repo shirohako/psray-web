@@ -84,6 +84,135 @@ export interface LogWindow {
   file_size?: number
   rotated?: boolean
 }
+export type PurgeCategory = 'sync' | 'account'
+export interface PurgeItem {
+  key: string
+  label: string
+  category: PurgeCategory
+  impact: string | null
+  count: number
+}
+export interface PurgeReport {
+  items: PurgeItem[]
+  totals: Record<PurgeCategory, number>
+}
+export interface BanEvidenceItem {
+  type: string
+  trophy_set_id: number
+  np_communication_id?: string
+  trophy_set_name: string
+  platform?: string
+  summary: {
+    progress: number
+    earned: Record<'platinum' | 'gold' | 'silver' | 'bronze', number>
+    first_earned_at: string | null
+    last_earned_at: string | null
+    duration_seconds: number
+  } | null
+  trophies: unknown[]
+}
+export interface BanEvidence {
+  items: BanEvidenceItem[]
+  skipped: (number | string)[]
+}
+/**
+ * The ban target. `synced=false` is an account never synced here: it is
+ * resolved through PSN (`psnid` is PSN's canonical spelling) and has no
+ * local user or data.
+ */
+export interface BanTarget {
+  id: number | null
+  psnid: string
+  account_id: string
+  registered_at: string | null
+  synced: boolean
+}
+export type PenaltyLevel = 'ranking_ban' | 'termination'
+/** Penalty levels, mildest first. The API has no default: picking the wrong
+    one can delete an account, so the admin always chooses. */
+export const PENALTY_LEVELS: {
+  value: PenaltyLevel
+  label: string
+  effect: string
+}[] = [
+  {
+    value: 'ranking_ban',
+    label: '禁止排名',
+    effect: '清空现有名次，不再参与任何排行榜；仍可同步与登录，数据全部保留。',
+  },
+  {
+    value: 'termination',
+    label: '永久停用',
+    effect: '禁止同步与登录，删除该用户的全部数据连同用户行，资料页随之消失。',
+  },
+]
+/** `POST /bans` with `dry_run: true`. */
+export interface BanPreview {
+  dry_run: true
+  user: BanTarget
+  level: PenaltyLevel
+  /** What submitting will do, worded by the API. */
+  effect: string
+  /** The account already has an active penalty of this level; submitting
+      reuses it (and a termination purges again). */
+  already_applied: boolean
+  requires_account_confirmation: boolean
+  purge: PurgeReport | null
+  evidence: BanEvidence
+}
+export interface BanResult {
+  penalty_id: number
+  level: PenaltyLevel
+  user: BanTarget
+  purged: PurgeReport | null
+  evidence: BanEvidence
+}
+/** A row of `GET /bans`: an active penalty. An account with several
+    penalties has one row each. */
+export interface BanRecord {
+  id: number
+  account_id: string
+  /** The name recorded at ban time; later renames do not update it. */
+  psnid: string
+  level: PenaltyLevel
+  source: string
+  reason_code: string | null
+  reason: string | null
+  moderator: { id: number; psnid: string } | null
+  banned_at: string
+  /** Terminations only: null while the purge is unfinished, and
+      resubmitting the termination retries it. Always null for ranking bans. */
+  data_purged_at: string | null
+  evidence_count: number
+  is_psnprofiles_banned: boolean
+}
+/** The API saves evidence for at most this many trophy sets per ban. */
+export const BAN_EVIDENCE_MAX = 20
+/**
+ * Read evidence trophy-set IDs from free text: plain IDs or pasted trophy
+ * page links (`/trophies/123`), separated by spaces, commas or new lines.
+ * Duplicates collapse; anything else is returned as invalid.
+ */
+export function adminParseTrophySetIds(text: string): {
+  ids: number[]
+  invalid: string[]
+} {
+  const ids: number[] = []
+  const invalid: string[] = []
+  for (const token of text.split(/[\s,，、;；]+/).filter(Boolean)) {
+    const match = /^\d+$/.test(token)
+      ? token
+      : /\/trophies\/(\d+)(?:[/?#]|$)/.exec(token)?.[1]
+    const id = match ? Number(match) : 0
+    if (!Number.isSafeInteger(id) || id < 1) invalid.push(token)
+    else if (!ids.includes(id)) ids.push(id)
+  }
+  return { ids, invalid }
+}
+/** UTF-8 length, which is how the API limits penalty reasons. */
+export function adminUtf8Bytes(text: string): number {
+  return new TextEncoder().encode(text).length
+}
 export const statusLabels: Record<string, string> = {
   success: '成功',
   failed: '失败',
@@ -101,8 +230,8 @@ export const statusLabels: Record<string, string> = {
   online: '在线',
   offline: '离线',
   paused: '已暂停',
-  termination: '永久封禁',
-  ranking_ban: '排名处罚',
+  termination: '永久停用',
+  ranking_ban: '禁止排名',
   user: '普通用户',
   moderator: '版主',
   admin: '管理员',
@@ -137,6 +266,12 @@ export const fieldLabels: Record<string, string> = {
   revoked_by_user_id: '撤销人 ID',
   revocation_reason: '撤销理由',
   data_purged_at: '清理完成时间',
+  level: '处罚等级',
+  banned_at: '封禁时间',
+  reason_code: '理由代码',
+  moderator: '执行人',
+  evidence_count: '证据条数',
+  is_psnprofiles_banned: 'PSNProfiles 已封禁',
   queue: '队列',
   job: '任务类型',
   subject: '业务对象',

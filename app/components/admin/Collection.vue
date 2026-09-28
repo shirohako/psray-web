@@ -279,9 +279,13 @@ defineExpose({ refresh, changed })
                 :key="column.key"
                 class="max-w-xs px-4 py-2.5 align-middle"
               >
-                <AdminStatus
-                  v-if="
-                    ['status', 'role', 'penalty_level'].includes(column.key)
+                <slot
+                  v-if="$slots['cell-' + column.key]"
+                  :name="'cell-' + column.key"
+                  :row="row"
+                /><AdminStatus
+                  v-else-if="
+                    ['status', 'role', 'penalty_level', 'level'].includes(column.key)
                   "
                   :value="row[column.key]"
                 /><span

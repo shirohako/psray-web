@@ -5,7 +5,9 @@ import {
   adminDuration,
   adminField,
   adminLocalToUtc,
+  adminParseTrophySetIds,
   adminQuery,
+  adminUtf8Bytes,
   adminValue,
 } from '../app/utils/admin'
 describe('admin contract helpers', () => {
@@ -70,5 +72,21 @@ describe('admin contract helpers', () => {
     const utc = new Date('2026-09-24T09:30').toISOString().slice(0, 16)
     expect(adminLocalToUtc('2026-09-24T09:30')).toBe(utc)
     expect(adminLocalToUtc('')).toBe('')
+  })
+  it('reads ban evidence trophy sets from IDs and trophy page links', () => {
+    expect(
+      adminParseTrophySetIds(
+        '7, 8，7\nhttps://psray.net/trophies/12?lang=ja /zh-Hans/trophies/13',
+      ),
+    ).toEqual({ ids: [7, 8, 12, 13], invalid: [] })
+    expect(adminParseTrophySetIds('0 NPWR12345_00 7a')).toEqual({
+      ids: [],
+      invalid: ['0', 'NPWR12345_00', '7a'],
+    })
+    expect(adminParseTrophySetIds('  ')).toEqual({ ids: [], invalid: [] })
+  })
+  it('measures penalty reasons in UTF-8 bytes', () => {
+    expect(adminUtf8Bytes('cheat')).toBe(5)
+    expect(adminUtf8Bytes('作弊')).toBe(6)
   })
 })

@@ -7,6 +7,7 @@ import {
   FileText,
   Menu,
   ArrowLeft,
+  Ban,
   PanelLeftClose,
   PanelLeftOpen,
   ShieldCheck,
@@ -36,6 +37,10 @@ const groups = [
   {
     label: '工作台',
     items: [{ name: '运行总览', to: '/admin', icon: LayoutDashboard }],
+  },
+  {
+    label: '用户管理',
+    items: [{ name: '反作弊', to: '/admin/bans', icon: Ban }],
   },
   {
     label: '运行维护',

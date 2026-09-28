@@ -71,11 +71,15 @@ const errorCount = computed(
   () => lines.value.filter((l) => l.level === 'error').length,
 )
 onMounted(async () => {
+  // Busy from the start, so the viewer shows the skeleton while the source
+  // list loads rather than the empty prompt.
+  busy.value = true
   try {
     sources.value = await api.get('/log-sources')
     await load()
   } catch (e) {
     error.value = e
+    busy.value = false
   }
 })
 </script>
@@ -105,7 +109,20 @@ onMounted(async () => {
         <p class="mb-1.5 px-2 text-[11px] font-semibold tracking-wider text-slate-400">
           日志源
         </p>
-        <ul class="space-y-0.5">
+        <ul class="space-y-0.5" :aria-busy="busy && !sources.length">
+          <template v-if="busy && !sources.length">
+            <li
+              v-for="i in 4"
+              :key="'s' + i"
+              class="flex items-center gap-2.5 px-2 py-2.5"
+            >
+              <span class="size-1.5 shrink-0 rounded-full bg-slate-200" />
+              <span
+                class="h-2.5 animate-pulse rounded-full bg-slate-100"
+                :style="{ width: 40 + ((i * 23) % 45) + '%' }"
+              />
+            </li>
+          </template>
           <li v-for="item in sources" :key="item.id">
             <button
               class="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-[13px] transition"
@@ -160,8 +177,14 @@ onMounted(async () => {
     </aside>
 
     <section
-      class="flex min-h-[28rem] flex-col overflow-hidden rounded-xl bg-[#0b0f17] ring-1 ring-slate-900/10 lg:h-[calc(100vh-13rem)]"
+      class="relative flex min-h-[28rem] flex-col overflow-hidden rounded-xl bg-[#0b0f17] ring-1 ring-slate-900/10 lg:h-[calc(100vh-13rem)]"
     >
+      <div
+        v-if="busy"
+        class="absolute inset-x-0 top-0 z-10 h-0.5 overflow-hidden"
+      >
+        <div class="animate-admin-progress h-full w-1/3 bg-emerald-400/80" />
+      </div>
       <header
         class="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 px-3 py-2"
       >
@@ -210,9 +233,27 @@ onMounted(async () => {
       >
         日志已轮转或截断，已返回新文件的最近内容。
       </p>
-      <div class="min-h-0 flex-1 overflow-auto py-2 font-mono text-xs leading-5">
+      <div
+        class="min-h-0 flex-1 overflow-auto py-2 font-mono text-xs leading-5 transition-opacity"
+        :class="busy && data ? 'opacity-40' : ''"
+        :aria-busy="busy"
+      >
+        <div v-if="busy && !data" class="space-y-2.5 py-1.5">
+          <div v-for="i in 14" :key="i" class="flex items-center gap-4 pr-4">
+            <span class="w-12 shrink-0 pl-3 text-right text-slate-700">{{
+              i
+            }}</span>
+            <span
+              class="h-2 animate-pulse rounded-full bg-white/[0.06]"
+              :style="{
+                width: 25 + ((i * 37) % 60) + '%',
+                animationDelay: i * 60 + 'ms',
+              }"
+            />
+          </div>
+        </div>
         <p
-          v-if="!data && !busy"
+          v-else-if="!data && !busy"
           class="px-4 py-10 text-center text-slate-500"
         >
           选择日志源开始读取。
