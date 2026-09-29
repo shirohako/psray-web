@@ -773,7 +773,7 @@
     "removeFilter": "Remove filter: {name}",
     "recentLabel": "Last 7 days",
     "playedLabel": "Played",
-    "completedLabel": "100% complete",
+    "completedLabel": "Completed",
     "platinumLabel": "Platinum",
     "completionRate": "Completion rate",
     "difficultCount": "Rare: {count}",
