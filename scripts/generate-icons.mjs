@@ -10,6 +10,7 @@ import { Resvg } from '@resvg/resvg-js'
  * Run with `pnpm generate:icons` after the brand art changes. Outputs:
  *
  *   public/logo.svg             the mark itself, for the header and in-page use
+ *   public/logo.png             transparent 256px mark for email clients
  *   public/favicon.svg          the tab cut — modern browsers scale this one
  *   public/favicon.ico          16/32/48, for browsers that ask for /favicon.ico
  *   public/apple-touch-icon.png 180×180 on an opaque ground, for iOS
@@ -126,6 +127,7 @@ const write = async (name, data) => {
 }
 
 await write('logo.svg', `${banner('PSRay brand mark.')}${artwork}\n`)
+await write('logo.png', rasterize(artwork, 256))
 await write('favicon.svg', tab)
 await write('favicon.ico', ico([16, 32, 48].map(size => ({ size, data: rasterize(tab, size) }))))
 await write('apple-touch-icon.png', rasterize(appleTouch(), 180))
