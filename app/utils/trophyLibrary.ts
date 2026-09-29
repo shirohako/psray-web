@@ -90,3 +90,53 @@ export function trophyBrowsePath(query: TrophyBrowseQuery): string {
   }
   return `/trophies?${params.toString()}`
 }
+
+export interface LibraryState {
+  category: LibraryCategory
+  filters: LibraryFilters
+  page: number
+}
+
+type RouteQueryValue = string | null | (string | null)[] | undefined
+
+const CATEGORIES: readonly LibraryCategory[] = ['trending', 'new', 'popular']
+const PLATINUM_FILTERS: readonly PlatinumFilter[] = ['all', 'yes', 'no']
+const OWNERS_FILTERS: readonly OwnersFilter[] = ['all', 'under100', 'from100', 'from1000', 'from10000']
+const RATE_FILTERS: readonly PlatinumRateFilter[] = ['all', 'under5', 'from5', 'from15', 'from30', 'from50']
+export const LIBRARY_PLATFORMS = ['PS5', 'PS4', 'PS3', 'PSVITA', 'PSPC'] as const
+
+const values = (value: RouteQueryValue) =>
+  (Array.isArray(value) ? value : [value]).filter((item): item is string => typeof item === 'string')
+const first = (value: RouteQueryValue) => values(value)[0] ?? ''
+const oneOf = <T extends string>(value: RouteQueryValue, allowed: readonly T[], fallback: T): T =>
+  allowed.includes(first(value) as T) ? first(value) as T : fallback
+
+/** Read the page state from the route query, ignoring anything unrecognised. */
+export function parseLibraryQuery(query: Record<string, RouteQueryValue>): LibraryState {
+  const page = Number.parseInt(first(query.page), 10)
+  const platforms = values(query.platform)
+  return {
+    category: oneOf(query.category, CATEGORIES, 'trending'),
+    filters: {
+      search: first(query.q).trim().slice(0, 100),
+      platforms: LIBRARY_PLATFORMS.filter(platform => platforms.includes(platform)),
+      platinum: oneOf(query.platinum, PLATINUM_FILTERS, 'all'),
+      owners: oneOf(query.owners, OWNERS_FILTERS, 'all'),
+      rate: oneOf(query.rate, RATE_FILTERS, 'all'),
+    },
+    page: Number.isFinite(page) && page > 1 ? page : 1,
+  }
+}
+
+/** Inverse of `parseLibraryQuery`; default values are left out to keep URLs short. */
+export function libraryRouteQuery({ category, filters, page }: LibraryState): Record<string, string | string[]> {
+  const query: Record<string, string | string[]> = {}
+  if (category !== 'trending') query.category = category
+  if (filters.search) query.q = filters.search
+  if (filters.platforms.length) query.platform = [...filters.platforms]
+  if (filters.platinum !== 'all') query.platinum = filters.platinum
+  if (filters.owners !== 'all') query.owners = filters.owners
+  if (filters.rate !== 'all') query.rate = filters.rate
+  if (page > 1) query.page = String(page)
+  return query
+}

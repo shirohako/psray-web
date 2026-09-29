@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { emptyLibraryFilters, trophyBrowsePath, trophyBrowseQuery } from '~/utils/trophyLibrary'
+import { emptyLibraryFilters, libraryRouteQuery, parseLibraryQuery, trophyBrowsePath, trophyBrowseQuery } from '~/utils/trophyLibrary'
 
 describe('trophy browser API query', () => {
   it('uses the API defaults and category sort values', () => {
@@ -58,5 +58,40 @@ describe('trophy browser API query', () => {
       search: ' x ',
     }, 1)
     expect(query.q).toBeUndefined()
+  })
+})
+
+describe('trophy browser route query', () => {
+  it('omits defaults so the plain listing keeps a clean URL', () => {
+    expect(libraryRouteQuery({ category: 'trending', filters: emptyLibraryFilters(), page: 1 })).toEqual({})
+    expect(parseLibraryQuery({})).toEqual({ category: 'trending', filters: emptyLibraryFilters(), page: 1 })
+  })
+
+  it('round-trips category, filters and page', () => {
+    const state = {
+      category: 'popular',
+      filters: { search: 'zelda', platforms: ['PS5', 'PSVITA'], platinum: 'yes', owners: 'from1000', rate: 'under5' },
+      page: 7,
+    } as const
+    const query = libraryRouteQuery({ ...state, filters: { ...state.filters, platforms: [...state.filters.platforms] } })
+    expect(query).toEqual({ category: 'popular', q: 'zelda', platform: ['PS5', 'PSVITA'], platinum: 'yes', owners: 'from1000', rate: 'under5', page: '7' })
+    expect(parseLibraryQuery(query)).toEqual(state)
+  })
+
+  it('falls back to defaults for unknown or malformed values', () => {
+    expect(parseLibraryQuery({
+      category: 'bogus',
+      platform: ['PS9', 'PS4', null],
+      platinum: 'maybe',
+      owners: ['from100', 'from1000'],
+      rate: null,
+      page: '-3',
+    })).toEqual({
+      category: 'trending',
+      filters: { ...emptyLibraryFilters(), platforms: ['PS4'], owners: 'from100' },
+      page: 1,
+    })
+    expect(parseLibraryQuery({ page: 'abc' }).page).toBe(1)
+    expect(parseLibraryQuery({ platform: 'PS3' }).filters.platforms).toEqual(['PS3'])
   })
 })

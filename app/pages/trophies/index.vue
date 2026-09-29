@@ -1,27 +1,43 @@
 <script setup lang="ts">
 import { ChevronDown, Gamepad2, LayoutGrid, List, RotateCcw, Search, SlidersHorizontal, Trophy, X } from 'lucide'
 import type { TrophyBrowseItem, TrophyBrowseMeta } from '~/services/trophies'
-import { emptyLibraryFilters, TROPHY_SEARCH_MIN_LENGTH, trophyBrowsePath, trophyBrowseQuery, type LibraryCategory } from '~/utils/trophyLibrary'
+import {
+  emptyLibraryFilters,
+  LIBRARY_PLATFORMS,
+  libraryRouteQuery,
+  parseLibraryQuery,
+  TROPHY_SEARCH_MIN_LENGTH,
+  trophyBrowsePath,
+  trophyBrowseQuery,
+  type LibraryCategory,
+  type LibraryFilters,
+} from '~/utils/trophyLibrary'
 
 const { t } = useI18n()
 const { acceptLanguage } = usePreferences()
 const toast = useToast()
 useSeo({ title: () => t('library.title'), description: () => t('library.description') })
 
-const category = ref<LibraryCategory>('trending')
+const route = useRoute()
+const router = useRouter()
+// Category, filters and page live in the URL so Back/Forward and shared links
+// restore the same listing.
+const state = computed(() => parseLibraryQuery(route.query))
+const category = computed(() => state.value.category)
+const filters = computed(() => state.value.filters)
+const page = computed(() => state.value.page)
+
 const categories = [
   { key: 'trending' },
   { key: 'new' },
   { key: 'popular' },
 ] as const
-const filters = reactive(emptyLibraryFilters())
-const searchInput = ref('')
+const searchInput = ref(filters.value.search)
 const advancedOpen = ref(false)
 const view = ref<'grid' | 'list'>('list')
 const showReferenceTimes = ref(true)
-const page = ref(1)
 const pageSize = 24
-const platforms = ['PS5', 'PS4', 'PS3', 'PSVITA', 'PSPC']
+const platforms = LIBRARY_PLATFORMS
 const fields = [
   { key: 'platinum', options: ['all', 'yes', 'no'] },
   { key: 'owners', options: ['all', 'under100', 'from100', 'from1000', 'from10000'] },
@@ -31,9 +47,9 @@ const fields = [
 const normalizedSearchInput = computed(() => searchInput.value.trim())
 const searchTooShort = computed(() => normalizedSearchInput.value.length > 0 && normalizedSearchInput.value.length < TROPHY_SEARCH_MIN_LENGTH)
 const canSubmitSearch = computed(() => normalizedSearchInput.value.length >= TROPHY_SEARCH_MIN_LENGTH)
-const searching = computed(() => Boolean(filters.search.trim()))
+const searching = computed(() => Boolean(filters.value.search))
 const activeCategory = computed<LibraryCategory>(() => searching.value ? 'new' : category.value)
-const requestQuery = computed(() => trophyBrowseQuery(activeCategory.value, filters, page.value, pageSize))
+const requestQuery = computed(() => trophyBrowseQuery(activeCategory.value, filters.value, page.value, pageSize))
 const requestUrl = computed(() => trophyBrowsePath(requestQuery.value))
 const { data: response, status, error, refresh } = await useApiFetchRaw<TrophyBrowseItem[], TrophyBrowseMeta>(() => requestUrl.value)
 
@@ -45,30 +61,42 @@ const rangeStart = computed(() => games.value.length ? ((meta.value?.page ?? pag
 const rangeEnd = computed(() => games.value.length ? rangeStart.value + games.value.length - 1 : 0)
 
 const chips = computed(() => [
-  ...(filters.search ? [{ id: 'search', label: filters.search, clear: clearSearch }] : []),
-  ...filters.platforms.map(platform => ({ id: platform, label: platformLabel(platform), clear: () => togglePlatform(platform) })),
+  ...(filters.value.search ? [{ id: 'search', label: filters.value.search, clear: clearSearch }] : []),
+  ...filters.value.platforms.map(platform => ({ id: platform, label: platformLabel(platform), clear: () => togglePlatform(platform) })),
   ...fields
-    .filter(field => filters[field.key] !== 'all')
+    .filter(field => filters.value[field.key] !== 'all')
     .map(field => ({
       id: field.key,
-      label: `${t(`library.advanced.${field.key}`)}: ${t(`library.options.${field.key}.${filters[field.key]}`)}`,
-      clear: () => { filters[field.key] = 'all' },
+      label: `${t(`library.advanced.${field.key}`)}: ${t(`library.options.${field.key}.${filters.value[field.key]}`)}`,
+      clear: () => setFilters({ [field.key]: 'all' }),
     })),
 ])
 
-watch([
-  category,
-  () => filters.platforms.join('|'),
-  () => filters.platinum,
-  () => filters.owners,
-  () => filters.rate,
-], () => { page.value = 1 })
+watch(() => filters.value.search, (search) => { searchInput.value = search })
 watch(acceptLanguage, () => refresh())
+
+/**
+ * Filter changes replace the history entry and go back to page 1; page changes
+ * push a new entry so Back returns to the previous page.
+ */
+function navigate(next: { category?: LibraryCategory; filters?: Partial<LibraryFilters>; page?: number }) {
+  const location = {
+    query: libraryRouteQuery({
+      category: next.category ?? category.value,
+      filters: { ...filters.value, ...next.filters },
+      page: next.page ?? 1,
+    }),
+  }
+  return next.page === undefined ? router.replace(location) : router.push(location)
+}
+
+function setFilters(value: Partial<LibraryFilters>) {
+  navigate({ filters: value })
+}
 
 function clearSearch() {
   searchInput.value = ''
-  filters.search = ''
-  page.value = 1
+  setFilters({ search: '' })
 }
 
 function submitSearch() {
@@ -83,24 +111,25 @@ function submitSearch() {
     })
     return
   }
-  filters.search = normalizedSearchInput.value.slice(0, 100)
-  page.value = 1
+  setFilters({ search: normalizedSearchInput.value.slice(0, 100) })
 }
 
 function togglePlatform(platform: string) {
-  filters.platforms = filters.platforms.includes(platform)
-    ? filters.platforms.filter(value => value !== platform)
-    : [...filters.platforms, platform]
+  const selected = filters.value.platforms
+  setFilters({
+    platforms: selected.includes(platform)
+      ? selected.filter(value => value !== platform)
+      : [...selected, platform],
+  })
 }
 
 function reset() {
   searchInput.value = ''
-  Object.assign(filters, emptyLibraryFilters())
-  page.value = 1
+  setFilters(emptyLibraryFilters())
 }
 
 function changePage(value: number) {
-  page.value = value
+  navigate({ page: value })
   document.getElementById('library-results')?.scrollIntoView({ block: 'start' })
 }
 </script>
@@ -128,7 +157,7 @@ function changePage(value: number) {
               :disabled="searching && item.key !== 'new'"
               class="h-8 whitespace-nowrap rounded px-2.5 text-[11px] font-semibold transition disabled:cursor-default disabled:opacity-40 sm:px-3"
               :class="activeCategory === item.key ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/70' : 'text-slate-500 hover:text-slate-900'"
-              @click="category = item.key"
+              @click="navigate({ category: item.key })"
             >
               {{ $t(`library.categories.${item.key}`) }}
             </button>
@@ -177,7 +206,7 @@ function changePage(value: number) {
           <div class="flex min-w-0 basis-full flex-wrap items-center gap-x-4 gap-y-2 sm:basis-auto sm:flex-1">
             <span class="text-[11px] text-slate-400">{{ $t('library.platforms') }}</span>
             <div class="flex flex-wrap gap-1.5">
-              <button :aria-pressed="!filters.platforms.length" class="rounded px-2 py-1 text-[11px] font-medium" :class="!filters.platforms.length ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-100'" @click="filters.platforms = []">
+              <button :aria-pressed="!filters.platforms.length" class="rounded px-2 py-1 text-[11px] font-medium" :class="!filters.platforms.length ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-100'" @click="setFilters({ platforms: [] })">
                 {{ $t('library.allPlatforms') }}
               </button>
               <button
@@ -217,7 +246,7 @@ function changePage(value: number) {
         <div v-show="advancedOpen" id="library-advanced" class="grid grid-cols-1 gap-3 border-t border-slate-100 bg-slate-50/40 p-3 sm:grid-cols-3 sm:px-4">
           <label v-for="field in fields" :key="field.key" class="filter-field">
             <span>{{ $t(`library.advanced.${field.key}`) }}</span>
-            <select v-model="filters[field.key]">
+            <select :value="filters[field.key]" @change="setFilters({ [field.key]: ($event.target as HTMLSelectElement).value })">
               <option v-for="option in field.options" :key="option" :value="option">{{ $t(`library.options.${field.key}.${option}`) }}</option>
             </select>
           </label>
@@ -240,6 +269,11 @@ function changePage(value: number) {
       </section>
 
       <section id="library-results" class="scroll-mt-20 border-t border-slate-200" :aria-label="$t('library.results')" :aria-busy="pending">
+        <div v-if="meta && !error && totalPages > 1" class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5">
+          <p class="text-[11px] text-slate-400">{{ $t('library.range', { start: rangeStart, end: rangeEnd, total: meta.total }) }}</p>
+          <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
+        </div>
+
         <div v-if="pending && !games.length" class="divide-y divide-slate-100">
           <div v-for="index in 6" :key="index" class="flex items-center gap-4 px-4 py-4">
             <div class="h-16 w-20 shrink-0 animate-pulse rounded-lg bg-slate-200 sm:w-24" />
@@ -281,7 +315,7 @@ function changePage(value: number) {
 
         <div v-if="meta && !error" class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-4 py-4">
           <p role="status" class="text-[11px] text-slate-400">{{ $t('library.range', { start: rangeStart, end: rangeEnd, total: meta.total }) }}</p>
-          <Pagination v-if="totalPages > 1" :page="page" :total-pages="totalPages" @update:page="changePage" />
+          <Pagination v-if="totalPages > 1" :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
         </div>
       </section>
     </div>

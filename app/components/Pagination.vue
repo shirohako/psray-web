@@ -1,21 +1,20 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight } from 'lucide'
 
-const props = defineProps<{ page: number; totalPages: number }>()
+const props = withDefaults(defineProps<{ page: number; totalPages: number; siblings?: number }>(), { siblings: 1 })
 const emit = defineEmits<{ 'update:page': [n: number] }>()
 
 /**
- * Items to render: always the first and last page, a window of 3 consecutive
- * pages around the current one, and `'…'` markers wherever there's a gap. The
- * window shifts inward near the edges so it stays 3 wide — e.g. on page 1 you
- * get「1 2 3 … last」rather than just「1 2 … last」.
+ * Items to render: always the first and last page, a window of consecutive
+ * pages around the current one (`siblings` on each side), and `'…'` markers
+ * wherever there's a gap. The window shifts inward near the edges so it keeps
+ * its width — e.g. on page 1 you get「1 2 3 … last」rather than「1 2 … last」.
  */
-const items = computed<(number | '…')[]>(() => {
-  const { page, totalPages } = props
+function buildItems(page: number, totalPages: number, siblings: number): (number | '…')[] {
   if (totalPages <= 1) return [1]
 
-  let lo = page - 1
-  let hi = page + 1
+  let lo = page - siblings
+  let hi = page + siblings
   if (lo < 1) hi += 1 - lo
   if (hi > totalPages) lo -= hi - totalPages
   lo = Math.max(lo, 1)
@@ -34,6 +33,19 @@ const items = computed<(number | '…')[]>(() => {
     prev = p
   }
   return out
+}
+
+/**
+ * A wider window only fits from `sm` up, so phones keep the one-sibling list;
+ * both are rendered and CSS picks one, which keeps SSR markup stable.
+ */
+const lists = computed(() => {
+  const compact = buildItems(props.page, props.totalPages, 1)
+  if (props.siblings <= 1) return [{ items: compact, class: '' }]
+  return [
+    { items: compact, class: 'sm:hidden' },
+    { items: buildItems(props.page, props.totalPages, props.siblings), class: 'max-sm:hidden' },
+  ]
 })
 
 function goto(p: number) {
@@ -54,20 +66,23 @@ function goto(p: number) {
       <LucideIcon :icon="ChevronLeft" class="size-3.5" />
     </button>
 
-    <template v-for="(item, i) in items" :key="i">
-      <span v-if="item === '…'" class="px-1 text-xs text-slate-400">…</span>
-      <button
-        v-else
-        type="button"
-        @click="goto(item)"
-        class="min-w-7 rounded-md px-1.5 py-1 text-xs font-medium transition"
-        :class="item === page
-          ? 'bg-slate-900 text-white'
-          : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'"
-      >
-        {{ item }}
-      </button>
-    </template>
+    <div v-for="(list, l) in lists" :key="l" class="flex items-center gap-1" :class="list.class">
+      <template v-for="(item, i) in list.items" :key="i">
+        <span v-if="item === '…'" class="px-1 text-xs text-slate-400">…</span>
+        <button
+          v-else
+          type="button"
+          @click="goto(item)"
+          class="min-w-7 rounded-md px-1.5 py-1 text-xs font-medium transition"
+          :class="item === page
+            ? 'bg-slate-900 text-white'
+            : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'"
+          :aria-current="item === page ? 'page' : undefined"
+        >
+          {{ item }}
+        </button>
+      </template>
+    </div>
 
     <button
       type="button"
