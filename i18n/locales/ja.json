@@ -323,6 +323,8 @@
       "progressHint": "100%達成日時が早い順にランキング",
       "speedrun": "最速ランキング",
       "speedrunHint": "最初から最後のトロフィーまでの所要時間が短い順にランキング",
+      "viewProgress": "ゲームの進捗を見る",
+      "viewProfile": "プロフィールを見る",
       "empty": "プレイヤー記録がまだありません。"
     },
     "earners": {

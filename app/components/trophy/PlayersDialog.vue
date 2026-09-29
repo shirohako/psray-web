@@ -125,10 +125,11 @@ function rankClass(rank: number) {
     <!-- List -->
     <ul v-else class="divide-y divide-slate-100 transition-opacity" :class="{ 'opacity-50': pending }">
       <li v-for="p in players" :key="p.psnid">
-        <NuxtLink
-          :to="`/p/${p.psnid}`"
-          class="group flex items-center gap-3 px-4 py-2.5 transition hover:bg-slate-50 sm:px-5"
-          @click="emit('update:open', false)"
+        <TrophyPlayerMenu
+          :id="id"
+          :psnid="p.psnid"
+          class="group flex cursor-pointer select-none items-center gap-3 px-4 py-2.5 transition hover:bg-slate-50 sm:px-5"
+          @select="emit('update:open', false)"
         >
           <span class="grid size-7 shrink-0 place-items-center rounded-md text-xs font-bold tabular-nums" :class="rankClass(p.rank)">
             {{ p.rank }}
@@ -158,7 +159,7 @@ function rankClass(rank: number) {
           </div>
 
           <div class="w-12 shrink-0 text-right text-sm font-bold text-slate-900 tabular-nums">{{ p.progress }}%</div>
-        </NuxtLink>
+        </TrophyPlayerMenu>
       </li>
     </ul>
 

@@ -323,6 +323,8 @@
       "progressHint": "100%를 먼저 달성한 시간순으로 집계",
       "speedrun": "최단 완료 시간 순위",
       "speedrunHint": "첫 트로피부터 마지막 트로피까지 걸린 시간이 짧은 순서",
+      "viewProgress": "게임 진행 상황 보기",
+      "viewProfile": "프로필 보기",
       "empty": "아직 플레이어 기록이 없습니다."
     },
     "earners": {

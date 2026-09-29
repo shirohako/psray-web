@@ -323,6 +323,8 @@
       "progressHint": "Ranked by when players first reached 100%",
       "speedrun": "Speedrun ranking",
       "speedrunHint": "Ranked by each player's elapsed time from first to last trophy",
+      "viewProgress": "View game progress",
+      "viewProfile": "View profile",
       "empty": "No player records yet."
     },
     "earners": {

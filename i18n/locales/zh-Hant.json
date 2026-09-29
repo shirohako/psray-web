@@ -323,6 +323,8 @@
       "progressHint": "按玩家達到 100% 的時間從早到晚排名",
       "speedrun": "最快完成排行",
       "speedrunHint": "按首個至最後一個獎盃的耗時從短到長排名",
+      "viewProgress": "查看遊戲進度",
+      "viewProfile": "查看個人資料",
       "empty": "暫無玩家記錄。"
     },
     "earners": {

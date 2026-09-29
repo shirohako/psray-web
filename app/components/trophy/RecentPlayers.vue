@@ -17,7 +17,7 @@ const dialogOpen = ref(false)
 
     <ul v-else class="divide-y divide-slate-100">
       <li v-for="p in players" :key="p.psnid">
-        <NuxtLink :to="`/p/${p.psnid}`" class="group flex items-center gap-2.5 px-4 py-2.5 transition hover:bg-slate-50">
+        <TrophyPlayerMenu :id="id" :psnid="p.psnid" class="group flex cursor-pointer select-none items-center gap-2.5 px-4 py-2.5 transition hover:bg-slate-50">
           <img :src="p.avatar_url" :alt="p.psnid" class="size-8 shrink-0 rounded-full bg-slate-100 object-cover" />
           <div class="min-w-0 flex-1">
             <div class="flex items-center gap-1.5">
@@ -39,7 +39,7 @@ const dialogOpen = ref(false)
             </div>
             <span class="w-9 text-right text-xs font-semibold text-slate-600 tabular-nums">{{ p.progress }}%</span>
           </div>
-        </NuxtLink>
+        </TrophyPlayerMenu>
       </li>
     </ul>
 

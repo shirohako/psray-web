@@ -189,6 +189,12 @@ const psnid = computed(() =>
 )
 const hasViewer = computed(() => Boolean(psnid.value))
 
+// Picking a player further down the page (recent players, rankings) only changes
+// the query, which keeps the scroll position; jump up so their progress is seen.
+watch(psnid, (value) => {
+  if (value) window.scrollTo({ top: 0, behavior: 'smooth' })
+})
+
 // Trophy body text has its own param, `?tlang=`, deliberately separate from the
 // interface language in `?lang=`: a set ships in up to 25 PSN languages, most of
 // which we have no interface for, and reading French trophy names shouldn't drag
