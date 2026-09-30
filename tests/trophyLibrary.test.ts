@@ -74,7 +74,7 @@ describe('trophy browser route query', () => {
       page: 7,
     } as const
     const query = libraryRouteQuery({ ...state, filters: { ...state.filters, platforms: [...state.filters.platforms] } })
-    expect(query).toEqual({ category: 'popular', q: 'zelda', platform: ['PS5', 'PSVITA'], platinum: 'yes', owners: 'from1000', rate: 'under5', page: '7' })
+    expect(query).toEqual({ category: 'popular', q: 'zelda', platform: 'PS5,PSVITA', platinum: 'yes', owners: 'from1000', rate: 'under5', page: '7' })
     expect(parseLibraryQuery(query)).toEqual(state)
   })
 
@@ -93,5 +93,12 @@ describe('trophy browser route query', () => {
     })
     expect(parseLibraryQuery({ page: 'abc' }).page).toBe(1)
     expect(parseLibraryQuery({ platform: 'PS3' }).filters.platforms).toEqual(['PS3'])
+  })
+
+  it('writes platforms as one comma-separated value in canonical order', () => {
+    const filters = { ...emptyLibraryFilters(), platforms: ['PS4', 'PSVITA', 'PS5'] }
+    expect(libraryRouteQuery({ category: 'trending', filters, page: 1 })).toEqual({ platform: 'PS5,PS4,PSVITA' })
+    expect(parseLibraryQuery({ platform: 'PS4,PSVITA,PS5' }).filters.platforms).toEqual(['PS5', 'PS4', 'PSVITA'])
+    expect(parseLibraryQuery({ platform: ['PS4', 'PSVITA'] }).filters.platforms).toEqual(['PS4', 'PSVITA'])
   })
 })

@@ -77,15 +77,18 @@ watch(acceptLanguage, () => refresh())
 
 /**
  * Filter changes replace the history entry and go back to page 1; page changes
- * push a new entry so Back returns to the previous page.
+ * push a new entry so Back returns to the previous page. `lang` is kept.
  */
 function navigate(next: { category?: LibraryCategory; filters?: Partial<LibraryFilters>; page?: number }) {
   const location = {
-    query: libraryRouteQuery({
-      category: next.category ?? category.value,
-      filters: { ...filters.value, ...next.filters },
-      page: next.page ?? 1,
-    }),
+    query: {
+      ...(route.query.lang ? { lang: route.query.lang } : {}),
+      ...libraryRouteQuery({
+        category: next.category ?? category.value,
+        filters: { ...filters.value, ...next.filters },
+        page: next.page ?? 1,
+      }),
+    },
   }
   return next.page === undefined ? router.replace(location) : router.push(location)
 }

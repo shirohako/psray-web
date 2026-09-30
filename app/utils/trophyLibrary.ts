@@ -114,7 +114,8 @@ const oneOf = <T extends string>(value: RouteQueryValue, allowed: readonly T[], 
 /** Read the page state from the route query, ignoring anything unrecognised. */
 export function parseLibraryQuery(query: Record<string, RouteQueryValue>): LibraryState {
   const page = Number.parseInt(first(query.page), 10)
-  const platforms = values(query.platform)
+  // `platform=PS5,PS4`, with repeated `platform=` keys still accepted.
+  const platforms = values(query.platform).flatMap(value => value.split(','))
   return {
     category: oneOf(query.category, CATEGORIES, 'trending'),
     filters: {
@@ -129,11 +130,11 @@ export function parseLibraryQuery(query: Record<string, RouteQueryValue>): Libra
 }
 
 /** Inverse of `parseLibraryQuery`; default values are left out to keep URLs short. */
-export function libraryRouteQuery({ category, filters, page }: LibraryState): Record<string, string | string[]> {
-  const query: Record<string, string | string[]> = {}
+export function libraryRouteQuery({ category, filters, page }: LibraryState): Record<string, string> {
+  const query: Record<string, string> = {}
   if (category !== 'trending') query.category = category
   if (filters.search) query.q = filters.search
-  if (filters.platforms.length) query.platform = [...filters.platforms]
+  if (filters.platforms.length) query.platform = LIBRARY_PLATFORMS.filter(platform => filters.platforms.includes(platform)).join(',')
   if (filters.platinum !== 'all') query.platinum = filters.platinum
   if (filters.owners !== 'all') query.owners = filters.owners
   if (filters.rate !== 'all') query.rate = filters.rate
