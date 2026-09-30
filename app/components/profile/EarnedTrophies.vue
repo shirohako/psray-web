@@ -2,7 +2,8 @@
 import { Trophy, Clock, Hourglass, ChevronRight } from 'lucide'
 import type { RecentTrophy } from '~/services/profile'
 
-const props = defineProps<{ psnid: string }>()
+const props = defineProps<{ psnid: string; page: number }>()
+const emit = defineEmits<{ 'update:page': [page: number] }>()
 
 interface PageMeta {
   page: number
@@ -11,11 +12,9 @@ interface PageMeta {
   total_pages: number
 }
 
-const page = ref(1)
-
 // `page` is read inside the URL getter, so changing it re-fetches.
 const { data: res, pending } = await useApiFetchRaw<RecentTrophy[], PageMeta>(
-  () => `/profile/${props.psnid}/recent-trophies?page=${page.value}`,
+  () => `/profile/${props.psnid}/recent-trophies?page=${props.page}`,
 )
 
 const trophies = computed(() => res.value?.data ?? [])
@@ -29,7 +28,7 @@ const perPage = computed(() => res.value?.meta?.per_page ?? trophies.value.lengt
  * recent trophy — i.e. order `total - (page-1)*per_page`, decreasing per row.
  */
 function earnedOrder(index: number): number {
-  return total.value - (page.value - 1) * perPage.value - index
+  return total.value - (props.page - 1) * perPage.value - index
 }
 
 function earnedMs(value: RecentTrophy['earned_at']): number | null {
@@ -81,7 +80,7 @@ function psnEarnedRate(item: RecentTrophy) {
       v-if="totalPages > 1 && trophies.length > 5"
       class="border-b border-slate-100 px-4 py-2.5"
     >
-      <Pagination v-model:page="page" :total-pages="totalPages" />
+      <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="emit('update:page', $event)" />
     </div>
 
     <!-- Loading (initial only — on page change we keep the list visible) -->
@@ -176,7 +175,7 @@ function psnEarnedRate(item: RecentTrophy) {
 
     <!-- Bottom pager -->
     <div v-if="totalPages > 1" class="border-t border-slate-100 px-4 py-3">
-      <Pagination v-model:page="page" :total-pages="totalPages" />
+      <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="emit('update:page', $event)" />
     </div>
   </div>
 </template>

@@ -13,7 +13,8 @@ import {
   type RecentlyPlayedSearchError,
 } from '~/utils/recentlyPlayedSearch'
 
-const props = defineProps<{ psnid: string }>()
+const props = defineProps<{ psnid: string; page: number; query: string }>()
+const emit = defineEmits<{ 'update:page': [page: number]; 'search': [query: string] }>()
 
 interface PageMeta {
   page: number
@@ -22,9 +23,7 @@ interface PageMeta {
   total_pages: number
 }
 
-const page = ref(1)
-const searchInput = ref('')
-const searchQuery = ref('')
+const searchInput = ref(props.query)
 const searchError = ref<RecentlyPlayedSearchError | null>(null)
 const expanded = ref(false)
 const animatedReady = ref(false)
@@ -88,13 +87,13 @@ const collapsedListHeight = computed(() => ({
 // Page and the submitted query are read by the URL getter, so either change
 // re-fetches while edits in the input remain local until the form is submitted.
 const { data: res, pending, error, refresh } = await useApiFetchRaw<PlayedTrophySet[], PageMeta>(
-  () => recentlyPlayedPath(props.psnid, page.value, searchQuery.value),
+  () => recentlyPlayedPath(props.psnid, props.page, props.query),
 )
 
 const recent = computed(() => res.value?.data ?? [])
 const totalPages = computed(() => res.value?.meta?.total_pages ?? 1)
 const canCollapse = computed(() => recent.value.length > 4)
-const isSearching = computed(() => Boolean(searchQuery.value))
+const isSearching = computed(() => Boolean(props.query))
 const apiValidationFailed = computed(() => error.value instanceof ApiError && error.value.status === 422)
 
 function submitSearch() {
@@ -103,15 +102,13 @@ function submitSearch() {
   if (result.error) return
 
   searchInput.value = result.query
-  page.value = 1
-  searchQuery.value = result.query
+  emit('search', result.query)
 }
 
 function clearSearch() {
   searchInput.value = ''
   searchError.value = null
-  page.value = 1
-  searchQuery.value = ''
+  if (props.query) emit('search', '')
 }
 
 function trophySetName(g: PlayedTrophySet) {
@@ -204,7 +201,12 @@ async function animateListHeight(isExpanded: boolean) {
 
 watch(() => props.psnid, () => {
   expanded.value = false
-  clearSearch()
+})
+
+// Back/Forward can change the submitted search; mirror it in the input.
+watch(() => props.query, (query) => {
+  searchInput.value = query
+  searchError.value = null
 })
 
 watch(searchInput, () => {
@@ -276,7 +278,7 @@ onBeforeUnmount(() => {
     v-if="totalPages > 1 && recent.length > 5"
     class="border-b border-slate-100 px-4 py-2.5"
   >
-    <Pagination v-model:page="page" :total-pages="totalPages" />
+    <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="emit('update:page', $event)" />
   </div>
 
   <!-- Loading (initial only — on page change we keep the list visible) -->
@@ -463,7 +465,7 @@ onBeforeUnmount(() => {
     class="border-t border-slate-100 px-4 py-3"
     :class="canCollapse && !expanded ? 'max-sm:hidden' : ''"
   >
-    <Pagination v-model:page="page" :total-pages="totalPages" />
+    <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="emit('update:page', $event)" />
   </div>
   </div>
 </template>
