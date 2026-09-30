@@ -6,6 +6,8 @@
     "close": "關閉",
     "copy": "複製",
     "edit": "修改",
+    "go": "跳轉",
+    "goToPage": "跳至頁",
     "next": "下一步",
     "nextPage": "下一頁",
     "previousPage": "上一頁",
@@ -397,15 +399,27 @@
   },
   "leaderboard": {
     "boards": "榜單",
-    "registeredOnly": "僅註冊使用者",
+    "regionLabel": "地區",
+    "regionSearch": "搜尋地區（名稱或代碼）",
+    "regionEmpty": "沒有符合的地區",
+    "mixTotal": "合計",
     "totalPlayers": "共 {count} 名玩家",
-    "pickBoard": "選擇榜單",
+    "range": "第 {start}–{end} 名 / 共 {total} 名玩家",
+    "you": "我",
+    "self": {
+      "title": "我的排名",
+      "top": "排名前",
+      "toNext": "距上一名",
+      "jump": "定位到我（第 {page} 頁）",
+      "unranked": "此排行榜中無法顯示你的排名"
+    },
     "empty": "暫無排名資料。",
     "column": {
       "rank": "排名",
       "user": "玩家",
       "level": "等級",
       "points": "點數",
+      "mix": "構成",
       "tipCount": "心得數",
       "voteUp": "有幫助",
       "contribution": "貢獻點數"

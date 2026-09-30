@@ -6,6 +6,8 @@
     "close": "閉じる",
     "copy": "コピー",
     "edit": "編集",
+    "go": "移動",
+    "goToPage": "ページへ移動",
     "next": "次へ",
     "nextPage": "次のページ",
     "previousPage": "前のページ",
@@ -397,15 +399,27 @@
   },
   "leaderboard": {
     "boards": "ランキング",
-    "registeredOnly": "登録ユーザーのみ",
+    "regionLabel": "地域",
+    "regionSearch": "地域を検索（名前またはコード）",
+    "regionEmpty": "該当する地域がありません",
+    "mixTotal": "合計",
     "totalPlayers": "全 {count} 人",
-    "pickBoard": "ランキングを選択",
+    "range": "{start}–{end} 位 / 全 {total} 人",
+    "you": "あなた",
+    "self": {
+      "title": "あなたの順位",
+      "top": "上位",
+      "toNext": "1 つ上の順位まで",
+      "jump": "自分の位置へ（{page} ページ目）",
+      "unranked": "このランキングでは順位を表示できません"
+    },
     "empty": "ランキングデータがありません。",
     "column": {
       "rank": "順位",
       "user": "プレイヤー",
       "level": "レベル",
       "points": "ポイント",
+      "mix": "構成",
       "tipCount": "コメント数",
       "voteUp": "役に立った数",
       "contribution": "貢献ポイント"

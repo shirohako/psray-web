@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight } from 'lucide'
 
-const props = withDefaults(defineProps<{ page: number; totalPages: number; siblings?: number }>(), { siblings: 1 })
+const props = withDefaults(
+  defineProps<{ page: number; totalPages: number; siblings?: number; jump?: boolean }>(),
+  { siblings: 1, jump: false },
+)
 const emit = defineEmits<{ 'update:page': [n: number] }>()
 
 /**
@@ -52,10 +55,42 @@ function goto(p: number) {
   if (p < 1 || p > props.totalPages || p === props.page) return
   emit('update:page', p)
 }
+
+// Optional "go to page" box for long lists; out-of-range input is clamped.
+const jumpInput = ref('')
+const jumpId = useId()
+
+function submitJump() {
+  const value = Number.parseInt(jumpInput.value, 10)
+  if (!Number.isFinite(value)) return
+  jumpInput.value = ''
+  goto(Math.min(Math.max(value, 1), props.totalPages))
+}
 </script>
 
 <template>
-  <nav class="flex items-center justify-center gap-1">
+  <!-- With `jump`, render the plain pager (this component, recursively) beside the box. -->
+  <div v-if="jump" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+    <Pagination :page="page" :total-pages="totalPages" :siblings="siblings" @update:page="goto" />
+    <form class="flex items-center gap-2 sm:border-l sm:border-slate-200 sm:pl-4" @submit.prevent="submitJump">
+      <label :for="jumpId" class="text-xs text-slate-500">{{ $t('common.goToPage') }}</label>
+      <input
+        :id="jumpId"
+        v-model="jumpInput"
+        type="number"
+        inputmode="numeric"
+        min="1"
+        :max="totalPages"
+        :placeholder="`1–${totalPages}`"
+        class="h-7 w-18 rounded-md border border-slate-300 px-2 text-xs tabular-nums text-slate-900 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-100"
+      >
+      <button type="submit" class="h-7 rounded-md border border-slate-300 px-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50">
+        {{ $t('common.go') }}
+      </button>
+    </form>
+  </div>
+
+  <nav v-else class="flex items-center justify-center gap-1">
     <button
       type="button"
       :disabled="page <= 1"

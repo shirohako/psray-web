@@ -6,6 +6,8 @@
     "close": "Close",
     "copy": "Copy",
     "edit": "Edit",
+    "go": "Go",
+    "goToPage": "Go to page",
     "next": "Next",
     "nextPage": "Next page",
     "previousPage": "Previous page",
@@ -397,15 +399,27 @@
   },
   "leaderboard": {
     "boards": "Rankings",
-    "registeredOnly": "Registered users only",
+    "regionLabel": "Region",
+    "regionSearch": "Search regions (name or code)",
+    "regionEmpty": "No matching regions",
+    "mixTotal": "Total",
     "totalPlayers": "{count} players",
-    "pickBoard": "Choose a ranking",
+    "range": "{start}–{end} of {total}",
+    "you": "You",
+    "self": {
+      "title": "Your rank",
+      "top": "Top",
+      "toNext": "To the next rank",
+      "jump": "Go to my position (page {page})",
+      "unranked": "No rank to show on this board"
+    },
     "empty": "No ranking data yet.",
     "column": {
       "rank": "Rank",
       "user": "Player",
       "level": "Level",
       "points": "Points",
+      "mix": "Mix",
       "tipCount": "Tips",
       "voteUp": "Helpful",
       "contribution": "Contribution"

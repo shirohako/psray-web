@@ -6,6 +6,8 @@
     "close": "닫기",
     "copy": "복사",
     "edit": "수정",
+    "go": "이동",
+    "goToPage": "페이지 이동",
     "next": "다음",
     "nextPage": "다음 페이지",
     "previousPage": "이전 페이지",
@@ -397,15 +399,27 @@
   },
   "leaderboard": {
     "boards": "랭킹",
-    "registeredOnly": "가입 사용자만",
+    "regionLabel": "지역",
+    "regionSearch": "지역 검색 (이름 또는 코드)",
+    "regionEmpty": "일치하는 지역이 없습니다",
+    "mixTotal": "합계",
     "totalPlayers": "총 {count}명",
-    "pickBoard": "랭킹 선택",
+    "range": "{start}–{end}위 / 총 {total}명",
+    "you": "나",
+    "self": {
+      "title": "내 순위",
+      "top": "상위",
+      "toNext": "한 단계 위까지",
+      "jump": "내 위치로 ({page}페이지)",
+      "unranked": "이 랭킹에서는 순위를 표시할 수 없습니다"
+    },
     "empty": "랭킹 데이터가 없습니다.",
     "column": {
       "rank": "순위",
       "user": "플레이어",
       "level": "레벨",
       "points": "포인트",
+      "mix": "구성",
       "tipCount": "댓글 수",
       "voteUp": "도움이 됨",
       "contribution": "기여 점수"
