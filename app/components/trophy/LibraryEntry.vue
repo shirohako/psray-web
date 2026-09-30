@@ -127,7 +127,7 @@ function isoDate(value: string) {
       </div>
 
       <div v-if="showReferenceTimes" class="entry-times tabular-nums">
-        <div class="flex items-center gap-1 text-[10px] font-medium text-slate-600">
+        <div class="flex items-center gap-1 whitespace-nowrap text-[10px] font-medium text-slate-600">
           <LucideIcon :icon="Clock3" class="size-3 text-slate-400" />
           {{ $t('library.medianShort') }} {{ formatDuration(game.median_completion_time) }}
         </div>

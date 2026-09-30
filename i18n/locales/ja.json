@@ -780,7 +780,7 @@
     "completionRate": "トロコン率",
     "difficultCount": "レア {count} 個",
     "difficultHint": "PSN 公式獲得率 5% 未満",
-    "medianShort": "トロコン時間の中央値",
+    "medianShort": "トロコン中央値",
     "averageTimeShort": "平均トロコン時間",
     "p10Short": "上位 10%",
     "fastestShort": "最短トロコン時間",
