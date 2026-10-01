@@ -109,7 +109,7 @@ function psnEarnedRate(item: RecentTrophy) {
         v-for="(item, index) in trophies"
         :key="`${item.trophy_set_id}-${item.trophy_id}-${item.earned_at}`"
         :href="`/trophies/${item.trophy_set_id}`"
-        class="group flex items-center gap-3 px-4 py-3.5 transition hover:bg-slate-50 sm:gap-4 sm:px-5"
+        class="group flex items-center gap-3 px-4 py-3.5 transition even:bg-slate-50 hover:bg-slate-200/50 sm:gap-4 sm:px-5"
         @click="openTrophyWithProgress($event, item.trophy_set_id, psnid)"
       >
         <!-- Acquisition order (newest = highest) -->

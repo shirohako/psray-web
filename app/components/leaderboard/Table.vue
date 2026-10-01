@@ -78,6 +78,9 @@ const has = (c: LeaderboardColumn) => props.columns.includes(c)
 const SELF_ROW = 'bg-sky-50/80'
 const SELF_AVATAR = 'ring-2 ring-sky-300 ring-offset-2 ring-offset-sky-50'
 const SELF_TAG = 'shrink-0 rounded bg-sky-100 px-1.5 py-px text-[10px] font-semibold text-sky-800 ring-1 ring-inset ring-sky-300/70'
+// Every other row gets a faint wash; hover goes one step darker so it still
+// shows on the striped rows. The self row keeps its own colour instead.
+const STRIPE_ROW = 'even:bg-slate-50 hover:bg-slate-200/50'
 
 function isSelf(row: LeaderboardRow) {
   return !!props.selfPsnid && row.psnid.toLowerCase() === props.selfPsnid.toLowerCase()
@@ -132,7 +135,7 @@ function rankClass(rank: number) {
     <template v-if="rows.length">
       <!-- Phones: two-line rows instead of a sideways-scrolling table -->
       <ul class="divide-y divide-slate-100 transition-opacity md:hidden" :class="{ 'opacity-50': pending }">
-        <li v-for="r in rows" :key="r.user_id" :data-self-row="isSelf(r) || undefined" :class="{ [SELF_ROW]: isSelf(r) }">
+        <li v-for="r in rows" :key="r.user_id" :data-self-row="isSelf(r) || undefined" :class="isSelf(r) ? SELF_ROW : STRIPE_ROW">
           <NuxtLink :to="`/p/${r.psnid}`" class="flex items-center gap-2.5 px-3 py-2.5">
             <span
               class="grid h-7 min-w-7 shrink-0 place-items-center rounded-md px-1 text-xs font-bold tabular-nums"
@@ -186,7 +189,7 @@ function rankClass(rank: number) {
               :key="r.user_id"
               :data-self-row="isSelf(r) || undefined"
               class="transition"
-              :class="isSelf(r) ? SELF_ROW : 'hover:bg-slate-50'"
+              :class="isSelf(r) ? SELF_ROW : STRIPE_ROW"
             >
               <td
                 v-for="c in columns"
