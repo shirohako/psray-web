@@ -1,6 +1,5 @@
 import { Coins, Globe2, HeartHandshake, Share2, type IconNode } from 'lucide'
 import type { ApiSuccess } from '~/types/api'
-import type { AuthUser } from '~/services/auth'
 import type { LeaderboardColumn } from '~/components/leaderboard/Table.vue'
 import { useLeaderboard, type LeaderboardRow, type LeaderboardMeta } from '~/services/leaderboard'
 
@@ -32,11 +31,6 @@ export interface LeaderboardBoard {
   /** Show the registered-only toggle and pass `registeredOnly` to `fetch`. */
   registered?: boolean
   fetch: (ctx: LeaderboardCtx) => Promise<ApiSuccess<LeaderboardRow[], LeaderboardMeta>>
-  /**
-   * The signed-in user's rank on this board, or `null` when it isn't known
-   * (e.g. registered-only, whose basis the profile ranks don't cover).
-   */
-  selfRank?: (user: AuthUser, ctx: LeaderboardCtx) => number | null
 }
 
 /**
@@ -56,7 +50,6 @@ export function useRankingBoards(): LeaderboardBoard[] {
       columns: ['rank', 'user', 'level', 'platinum', 'gold', 'silver', 'bronze', 'mix', 'points'],
       registered: true,
       fetch: ({ page, registeredOnly }) => api.points({ page, registered_only: registeredOnly }),
-      selfRank: (user, { registeredOnly }) => (registeredOnly ? null : user.rank),
     },
     {
       key: 'points-region',
@@ -69,9 +62,6 @@ export function useRankingBoards(): LeaderboardBoard[] {
       registered: true,
       fetch: ({ page, registeredOnly, region }) =>
         api.pointsByRegion(region, { page, registered_only: registeredOnly }),
-      // `server_rank` is the rank within the user's own region only.
-      selfRank: (user, { registeredOnly, region }) =>
-        (registeredOnly || user.country?.toUpperCase() !== region ? null : user.server_rank),
     },
     {
       key: 'tips',

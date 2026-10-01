@@ -40,13 +40,36 @@ export interface LeaderboardRow extends LeaderboardRowBase {
   contribution_points?: number
 }
 
+/**
+ * The signed-in user's standing on a board, computed server-side for the same
+ * filters (region, `registered_only`) and independent of `page`. It is cached
+ * until the next nightly ranking run, so it can lag behind the live rows.
+ * `rank`, `top_percent`, `gap_to_next` and `on_page` are `null` when the user isn't on the
+ * board (private profile, excluded from ranking, another region, …).
+ */
+export interface LeaderboardMe {
+  rank: number | null
+  score: number
+  total: number
+  /** `rank / total × 100`, rounded up to one decimal; integers arrive without `.0`. */
+  top_percent: number | null
+  /** Points behind the rank just above; `0` on a tie, `null` at rank 1. */
+  gap_to_next: number | null
+  /** The board page holding the user's row; `null` when they aren't on the board. */
+  on_page: number | null
+}
+
 /** Pagination plus an echo of the request flags. */
 export interface LeaderboardMeta {
   registered_only?: boolean
+  /** Region boards only: the upper-cased region code. */
+  region?: string
   page: number
   per_page: number
   total: number
   total_pages: number
+  /** Points boards: `null` when anonymous; absent on boards that don't report it. */
+  me?: LeaderboardMe | null
 }
 
 /** Query shared by boards that support these filters. */

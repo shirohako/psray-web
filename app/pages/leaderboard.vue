@@ -59,53 +59,26 @@ const pending = computed(() => status.value === 'pending')
 const rangeStart = computed(() => rows.value.length ? (page.value - 1) * (meta.value?.per_page ?? rows.value.length) + 1 : 0)
 const rangeEnd = computed(() => rows.value.length ? rangeStart.value + rows.value.length - 1 : 0)
 
-// The signed-in user's standing. Their row, when it is on screen, is the board's
-// own answer; otherwise fall back to the ranks on their profile, which the
-// board maps to its own basis where it can (see `selfRank`).
+// The signed-in user's standing, as the board reports it in `meta.me` (same
+// filters, any page). Boards that don't report it fall back to the user's row
+// when it happens to be on screen.
 const user = computed(() => auth.user.value)
-const isSelfRow = (row: LeaderboardRow) => row.psnid.toLowerCase() === user.value?.psnid.toLowerCase()
+const me = computed(() => meta.value?.me ?? null)
 const selfRank = computed(() => {
   if (!user.value) return null
-  const onScreen = rows.value.find(isSelfRow)
-  if (onScreen) return onScreen.rank
-  if (!board.value.selfRank) return null
-  const rank = board.value.selfRank(user.value, { page: page.value, registeredOnly: registeredOnly.value, region: region.value })
-  return rank && rank > 0 ? rank : null
+  if (meta.value?.me !== undefined) return me.value?.rank ?? null
+  const psnid = user.value.psnid.toLowerCase()
+  return rows.value.find(row => row.psnid.toLowerCase() === psnid)?.rank ?? null
 })
+const selfPoints = computed(() => me.value?.score ?? user.value?.points)
+// Without `meta.me` the rank only comes from a row on screen, so that's the page.
 const selfPage = computed(() => {
-  const perPage = meta.value?.per_page
-  return selfRank.value && perPage ? Math.ceil(selfRank.value / perPage) : null
+  if (meta.value?.me !== undefined) return me.value?.on_page ?? null
+  return selfRank.value ? page.value : null
 })
-const selfTopPercent = computed(() => {
-  const total = meta.value?.total
-  if (!selfRank.value || !total) return null
-  return Math.max(selfRank.value / total * 100, 0.1).toFixed(1)
-})
-// Points to the next rank up need the row above the user's, which usually
-// sits on another page than the one on screen: fetch that page on the client.
-const abovePage = computed(() => {
-  const perPage = meta.value?.per_page
-  return selfRank.value && selfRank.value > 1 && perPage ? Math.ceil((selfRank.value - 1) / perPage) : null
-})
-const needsAbovePage = computed(() => abovePage.value !== null && abovePage.value !== page.value)
-const { data: aboveData } = useAsyncData(
-  () => needsAbovePage.value
-    ? `leaderboard-above:${activeKey.value}:${region.value}:${registeredOnly.value}:${abovePage.value}`
-    : 'leaderboard-above:none',
-  () => needsAbovePage.value
-    ? board.value.fetch({ page: abovePage.value!, registeredOnly: registeredOnly.value, region: region.value })
-    : Promise.resolve(null),
-  { server: false, lazy: true },
-)
-const selfToNext = computed(() => {
-  const rank = selfRank.value
-  if (!rank || rank <= 1 || abovePage.value === null) return null
-  const list = needsAbovePage.value ? aboveData.value?.data ?? [] : rows.value
-  const index = list.findIndex(isSelfRow)
-  const above = index > 0 ? list[index - 1] : list.filter(r => r.rank < rank).at(-1)
-  const own = index >= 0 ? list[index]!.points : user.value?.points
-  return above?.points != null && own != null ? Math.max(above.points - own, 0) : null
-})
+// Whole percentages come back without the `.0`, so pad to one decimal here.
+const selfTopPercent = computed(() => me.value?.top_percent?.toFixed(1) ?? null)
+const selfToNext = computed(() => me.value?.gap_to_next ?? null)
 
 /**
  * Board and page changes push a history entry so Back returns to them; filter
@@ -252,7 +225,7 @@ watch(rows, () => {
           </div>
           <div>
             <dt class="text-[11px] text-slate-500">{{ $t('leaderboard.column.points') }}</dt>
-            <dd class="text-sm font-semibold tabular-nums text-slate-900">{{ fmt(user.points) }}</dd>
+            <dd class="text-sm font-semibold tabular-nums text-slate-900">{{ fmt(selfPoints) }}</dd>
           </div>
           <div v-if="selfTopPercent">
             <dt class="text-[11px] text-slate-500">{{ $t('leaderboard.self.top') }}</dt>
