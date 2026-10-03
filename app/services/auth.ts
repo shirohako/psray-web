@@ -36,7 +36,8 @@ export interface AuthUser
 }
 
 export interface AuthTokenMeta {
-  expires_at: string
+  /** `null` when the token never expires. */
+  expires_at: string | null
   last_used_at?: string | null
 }
 

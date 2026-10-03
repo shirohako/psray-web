@@ -7,15 +7,29 @@ function toList(value?: string | string[]) {
   return Array.isArray(value) ? value : [value]
 }
 
+// Cookie lifetime when the API issues a token with no `expires_at` (it never
+// expires). 400 days is the longest expiry browsers will honour.
+const NEVER_EXPIRES_MAX_AGE = 60 * 60 * 24 * 400
+
+/**
+ * The one writable `auth_token` ref. Every write goes through here so the cookie
+ * always carries the token's expiry: a `useCookie` ref without `expires` writes
+ * a browser-session cookie, which is dropped when the browser closes and logs
+ * the user out long before the token itself expires. `refresh` re-writes the
+ * cookie even when the value is unchanged, so re-stamping the expiry works.
+ */
 function authTokenCookie(expiresAt?: string | null) {
   return useCookie<string | null>('auth_token', {
     sameSite: 'lax',
-    expires: expiresAt ? new Date(expiresAt) : undefined,
+    refresh: true,
+    ...(expiresAt ? { expires: new Date(expiresAt) } : { maxAge: NEVER_EXPIRES_MAX_AGE }),
   })
 }
 
 export function useAuth() {
-  const token = useCookie<string | null>('auth_token', { sameSite: 'lax' })
+  // Read-only so this ref never writes the cookie itself (it has no expiry to
+  // write it with); writes go through `authTokenCookie`, see `setToken`.
+  const token = useCookie<string | null>('auth_token', { readonly: true }) as Ref<string | null>
   const user = useState<AuthUser | null>('auth:user', () => null)
   const roles = useState<string[]>('auth:roles', () => [])
   const permissions = useState<string[]>('auth:permissions', () => [])
@@ -44,6 +58,7 @@ export function useAuth() {
 
   function setToken(value: string, expiresAt?: string | null) {
     authTokenCookie(expiresAt).value = value
+    // Mirror into the read-only ref so `token` reads the new value right away.
     token.value = value
   }
 
@@ -53,7 +68,8 @@ export function useAuth() {
   }
 
   async function fetchMe() {
-    if (!token.value) {
+    const current = token.value
+    if (!current) {
       clearState()
       return null
     }
@@ -62,6 +78,10 @@ export function useAuth() {
     try {
       const session = await useAuthApi().me()
       applySession(session)
+      // Re-stamp the cookie with the token's expiry on every session load. This
+      // usually runs during SSR, so it arrives as a server `Set-Cookie`, which
+      // Safari doesn't cap at 7 days the way it caps `document.cookie` writes.
+      setToken(current, session.token?.expires_at)
       return session
     }
     catch (error) {

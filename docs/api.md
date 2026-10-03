@@ -38,8 +38,10 @@ NUXT_PUBLIC_API_BASE=http://localhost:8000
 ```
 
 The auth token is read from the `auth_token` cookie by default and injected as
-`Authorization: Bearer` (see `plugins/api.ts`). After login, write it:
-`useCookie('auth_token').value = token`.
+`Authorization: Bearer` (see `plugins/api.ts`). Log in through `useAuth().login()`,
+which writes the cookie with the token's expiry. Don't assign
+`useCookie('auth_token').value` directly: a ref without `expires` writes a
+browser-session cookie, which logs the user out when the browser closes.
 
 ## Usage
 
@@ -66,10 +68,9 @@ const { data: page } = useApiFetchRaw<User[]>('/users', { query: { page: 1 } })
 ```ts
 const { get, post } = useApi()
 
-async function login() {
+async function save() {
   try {
-    const token = await post<string>('/auth/login', { email, password })
-    useCookie('auth_token').value = token
+    await post('/user/setting/password', form)
   } catch (e) {
     if (e instanceof ApiError) {
       if (e.isValidation) formErrors.value = e.fieldErrors()  // { field: message }
