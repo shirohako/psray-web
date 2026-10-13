@@ -213,6 +213,28 @@ export interface RecentTrophy {
   }
 }
 
+/** One row of a profile's following / followers list. */
+export interface ProfileFollowEntry {
+  profile_id: number
+  psnid: string
+  avatar_url: string
+  country: string
+  trophy_level: number
+  /** When the follow was made: `YYYY-MM-DD HH:MM:SS` in UTC, with no zone marker. */
+  followed_at: string
+}
+
+/** Pagination of a follow list. */
+export interface FollowPageMeta {
+  page: number
+  per_page: number
+  total: number
+  total_pages: number
+}
+
+/** Which way a profile's follow list points. */
+export type FollowDirection = 'following' | 'followers'
+
 /** Response of the follow/unfollow endpoints. */
 export interface FollowResult {
   following: boolean
@@ -247,5 +269,13 @@ export function useProfiles() {
 
     milestones: (psnid: string) =>
       get<ProfileMilestone[]>(`/profile/${psnid}/milestones`),
+
+    /**
+     * Who the profile follows, or who follows it, newest first, 30 a page
+     * (returns the `{ data, meta }` envelope). Public: the same with or
+     * without a session, and still served for a private profile.
+     */
+    follows: (psnid: string, direction: FollowDirection, page = 1) =>
+      raw.get<ProfileFollowEntry[], FollowPageMeta>(`/profile/${encodeURIComponent(psnid)}/${direction}`, { query: { page } }),
   }
 }

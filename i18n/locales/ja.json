@@ -469,7 +469,13 @@
       "followers": "フォロワー",
       "following": "フォロー",
       "followsYou": "あなたをフォロー中",
-      "mutual": "相互フォロー"
+      "mutual": "相互フォロー",
+      "followedAt": "{date} にフォロー",
+      "followersEmpty": "まだフォロワーがいません",
+      "followingEmpty": "まだ誰もフォローしていません",
+      "followersTotal": "フォロワー {count} 人",
+      "followingTotal": "フォロー中 {count} 人",
+      "loadFailed": "一覧を読み込めませんでした。しばらくしてからもう一度お試しください。"
     },
     "stats": {
       "title": "プレイ統計",

@@ -1,8 +1,22 @@
 <script setup lang="ts">
-import { Users, Heart, UserPlus, UserCheck } from 'lucide'
-import type { Profile } from '~/services/profile'
+import { ChevronRight, Users, Heart, UserPlus, UserCheck } from 'lucide'
+import type { FollowDirection, Profile } from '~/services/profile'
 
 const props = defineProps<{ profile: Profile }>()
+
+// Each count opens the follow dialog on its own list.
+const dialogOpen = ref(false)
+const direction = ref<FollowDirection>('followers')
+
+function openList(value: FollowDirection) {
+  direction.value = value
+  dialogOpen.value = true
+}
+
+const counts = computed(() => [
+  { key: 'followers' as const, icon: Users, iconClass: 'text-slate-900', count: props.profile.follower_count, labelKey: 'profile.social.followers' },
+  { key: 'following' as const, icon: Heart, iconClass: 'text-rose-500', count: props.profile.following_count, labelKey: 'profile.social.following' },
+])
 
 /** Follow relationship between the viewer and this profile, for a status chip. */
 const relationship = computed(() => {
@@ -31,16 +45,27 @@ const relationship = computed(() => {
     </div>
 
     <div class="grid grid-cols-2 gap-3">
-      <div class="flex items-center gap-2.5 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2.5">
-        <LucideIcon :icon="Users" class="size-4 shrink-0 text-slate-900" />
-        <span class="text-lg font-bold text-slate-900">{{ fmt(profile.follower_count) }}</span>
-        <span class="text-xs text-slate-400">{{ $t('profile.social.followers') }}</span>
-      </div>
-      <div class="flex items-center gap-2.5 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2.5">
-        <LucideIcon :icon="Heart" class="size-4 shrink-0 text-rose-500" />
-        <span class="text-lg font-bold text-slate-900">{{ fmt(profile.following_count) }}</span>
-        <span class="text-xs text-slate-400">{{ $t('profile.social.following') }}</span>
-      </div>
+      <button
+        v-for="item in counts"
+        :key="item.key"
+        type="button"
+        aria-haspopup="dialog"
+        class="group flex min-w-0 items-center gap-2.5 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-2.5 text-left transition hover:border-slate-200 hover:bg-white hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+        @click="openList(item.key)"
+      >
+        <LucideIcon :icon="item.icon" class="size-4 shrink-0" :class="item.iconClass" />
+        <span class="text-lg font-bold text-slate-900">{{ fmt(item.count) }}</span>
+        <span class="min-w-0 truncate text-xs text-slate-400">{{ $t(item.labelKey) }}</span>
+        <LucideIcon :icon="ChevronRight" class="ml-auto size-3.5 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-500" />
+      </button>
     </div>
+
+    <ProfileFollowDialog
+      v-model:open="dialogOpen"
+      v-model:direction="direction"
+      :psnid="profile.psnid"
+      :follower-count="profile.follower_count"
+      :following-count="profile.following_count"
+    />
   </div>
 </template>

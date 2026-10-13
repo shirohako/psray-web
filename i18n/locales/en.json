@@ -469,7 +469,13 @@
       "followers": "Followers",
       "following": "Following",
       "followsYou": "Follows you",
-      "mutual": "Mutual"
+      "mutual": "Mutual",
+      "followedAt": "Followed {date}",
+      "followersEmpty": "No followers yet",
+      "followingEmpty": "Not following anyone yet",
+      "followersTotal": "{count} followers",
+      "followingTotal": "Following {count}",
+      "loadFailed": "Couldn't load the list. Please try again later."
     },
     "stats": {
       "title": "Stats overview",

@@ -469,7 +469,13 @@
       "followers": "팔로워",
       "following": "팔로잉",
       "followsYou": "나를 팔로우함",
-      "mutual": "맞팔로우"
+      "mutual": "맞팔로우",
+      "followedAt": "{date} 팔로우",
+      "followersEmpty": "아직 팔로워가 없습니다",
+      "followingEmpty": "아직 아무도 팔로우하지 않았습니다",
+      "followersTotal": "팔로워 {count}명",
+      "followingTotal": "팔로잉 {count}명",
+      "loadFailed": "목록을 불러오지 못했습니다. 잠시 후 다시 시도해 주세요."
     },
     "stats": {
       "title": "통계 요약",

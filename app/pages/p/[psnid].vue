@@ -136,6 +136,21 @@ function redirectToLogin() {
 }
 
 /**
+ * Set whether the viewer follows this profile, moving the follower count with
+ * it. `useFetch` data is a shallow ref, so the profile is replaced rather than
+ * edited in place: mutating its fields would change nothing on screen.
+ */
+function setFollowing(following: boolean) {
+  const p = profile.value
+  if (!p || p.is_following === following) return
+  profile.value = {
+    ...p,
+    is_following: following,
+    follower_count: Math.max(0, p.follower_count + (following ? 1 : -1)),
+  }
+}
+
+/**
  * Toggle the follow relationship. Optimistically flips `is_following` and the
  * follower count (so the header button and the social card update instantly),
  * then reconciles with the server response and rolls back on failure.
@@ -149,17 +164,13 @@ async function toggleFollow() {
   }
 
   const next = !p.is_following
-  p.is_following = next
-  p.follower_count += next ? 1 : -1
+  setFollowing(next)
 
   followPending.value = true
   try {
     const res = next ? await follow(p.psnid) : await unfollow(p.psnid)
-    if (res.following !== next) {
-      p.is_following = res.following
-      p.follower_count += res.following ? 1 : -1
-    }
-    if (next && p.is_following) {
+    setFollowing(res.following)
+    if (next && res.following) {
       toast.add({
         title: t('toast.followed.title'),
         description: t('toast.followed.description', { psnid: p.psnid }),
@@ -168,8 +179,7 @@ async function toggleFollow() {
     }
   }
   catch (err) {
-    p.is_following = !next
-    p.follower_count += next ? -1 : 1
+    setFollowing(!next)
     if (err instanceof ApiError && err.code === 'UNAUTHENTICATED') {
       await redirectToLogin()
       return

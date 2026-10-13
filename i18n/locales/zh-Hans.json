@@ -469,7 +469,13 @@
       "followers": "粉丝",
       "following": "关注",
       "followsYou": "关注了你",
-      "mutual": "互相关注"
+      "mutual": "互相关注",
+      "followedAt": "{date} 关注",
+      "followersEmpty": "还没有人关注 TA",
+      "followingEmpty": "TA 还没有关注任何人",
+      "followersTotal": "共 {count} 位粉丝",
+      "followingTotal": "共关注 {count} 人",
+      "loadFailed": "列表加载失败，请稍后重试。"
     },
     "stats": {
       "title": "统计概览",

@@ -469,7 +469,13 @@
       "followers": "粉絲",
       "following": "追蹤",
       "followsYou": "追蹤了你",
-      "mutual": "互相追蹤"
+      "mutual": "互相追蹤",
+      "followedAt": "{date} 關注",
+      "followersEmpty": "還沒有人關注 TA",
+      "followingEmpty": "TA 還沒有關注任何人",
+      "followersTotal": "共 {count} 位粉絲",
+      "followingTotal": "共關注 {count} 人",
+      "loadFailed": "清單載入失敗，請稍後再試。"
     },
     "stats": {
       "title": "統計概覽",
