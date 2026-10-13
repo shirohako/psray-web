@@ -1,0 +1,40 @@
+# PSRay Web (Nuxt SSR) — one instance per port, used blue/green by scripts/deploy.sh.
+#
+# The instance name is the port: psray-web@3630 / psray-web@3631. Each runs the
+# release that /var/www/psray-web-releases/slot-<port> points to. nginx sends
+# traffic to whichever port /etc/nginx/psray-web-active.inc names; the other
+# instance is stopped and keeps pointing at the previous release for rollback.
+#
+# Installed by scripts/deploy.sh (copied to /etc/systemd/system/ when it changes).
+# Edit it here, not in /etc.
+
+[Unit]
+Description=PSRay Web (Nuxt SSR, 127.0.0.1:%i)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=psray
+Group=psray
+WorkingDirectory=/var/www/psray-web-releases/slot-%i
+Environment=NODE_ENV=production
+Environment=HOST=127.0.0.1
+Environment=PORT=%i
+Environment=NUXT_PUBLIC_API_BASE=https://api.psray.net
+Environment=NUXT_PUBLIC_SITE_URL=https://psray.net
+Environment=NUXT_PUBLIC_CARD_BASE=https://api.psray.net
+ExecStart=/usr/bin/node /var/www/psray-web-releases/slot-%i/server/index.mjs
+Restart=always
+RestartSec=3
+# Nitro finishes in-flight requests on SIGTERM before exiting.
+TimeoutStopSec=60
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=psray-web-%i
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

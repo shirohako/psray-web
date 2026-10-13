@@ -56,3 +56,12 @@ against publishing localhost canonical or social-card URLs if deployment
 configuration is accidentally omitted. `nitro.compressPublicAssets`
 precompresses the flag SVGs, so serve `public/` assets with content negotiation
 enabled.
+
+Production updates go through `sudo scripts/deploy.sh` (`--force` rebuilds without new
+commits, `--rollback` switches back to the previous release). Don't run production from
+`.output` directly: `pnpm build` empties it first, which used to take the site down for
+the length of the build. The script copies each build to `/var/www/psray-web-releases/`
+and switches blue/green between `psray-web@3630` and `psray-web@3631`
+([`deploy/psray-web@.service`](deploy/psray-web@.service)) by rewriting the nginx
+upstream include, so the switch is seamless. One-time nginx setup and details:
+psray-api `docs/deploy.md`, "psray-web 无缝更新".
