@@ -12,10 +12,26 @@ interface PageMeta {
   total_pages: number
 }
 
-// `page` is read inside the URL getter, so changing it re-fetches.
-const { data: res, pending } = await useApiFetchRaw<RecentTrophy[], PageMeta>(
+// `page` is read inside the URL getter, so changing it re-fetches. Lazy and not
+// awaited: the tab renders at once with placeholder rows and fills in when the
+// list lands. The server still fetches it before rendering.
+const { data: res, status } = useApiFetchRaw<RecentTrophy[], PageMeta>(
   () => `/profile/${props.psnid}/recent-trophies?page=${props.page}`,
+  { lazy: true },
 )
+// A lazy fetch sits at `idle` until it starts, so count that as loading too.
+const pending = computed(() => status.value === 'pending' || status.value === 'idle')
+useLoadingBar(pending, () => status.value === 'error')
+
+// Placeholder rows: varied widths so they read like real trophy names.
+const SKELETON_ROWS = [
+  { name: '46%', detail: '72%' },
+  { name: '34%', detail: '58%' },
+  { name: '52%', detail: '80%' },
+  { name: '40%', detail: '64%' },
+  { name: '30%', detail: '52%' },
+  { name: '44%', detail: '70%' },
+]
 
 const trophies = computed(() => res.value?.data ?? [])
 const total = computed(() => res.value?.meta?.total ?? 0)
@@ -70,7 +86,8 @@ function psnEarnedRate(item: RecentTrophy) {
         </h2>
         <p class="mt-0.5 text-xs text-slate-400">{{ $t('profile.earned.subtitle') }}</p>
       </div>
-      <span v-if="total" class="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold tabular-nums text-slate-600">
+      <span v-if="pending && !total" class="skeleton skeleton-soft h-6 w-20 shrink-0 rounded-full" />
+      <span v-else-if="total" class="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold tabular-nums text-slate-600">
         {{ $t('profile.earned.total', { count: fmt(total) }) }}
       </span>
     </div>
@@ -84,14 +101,34 @@ function psnEarnedRate(item: RecentTrophy) {
     </div>
 
     <!-- Loading (initial only — on page change we keep the list visible) -->
-    <div v-if="pending && !trophies.length" class="divide-y divide-slate-100">
-      <div v-for="i in 6" :key="i" class="flex items-center gap-4 px-4 py-3.5 sm:px-5">
-        <div class="size-14 shrink-0 animate-pulse rounded-lg bg-slate-200" />
-        <div class="flex-1 space-y-2">
-          <div class="h-4 w-2/5 animate-pulse rounded bg-slate-200" />
-          <div class="h-3 w-3/5 animate-pulse rounded bg-slate-100" />
+    <div v-if="pending && !trophies.length" class="divide-y divide-slate-100" aria-hidden="true">
+      <div
+        v-for="(row, i) in SKELETON_ROWS"
+        :key="i"
+        class="animate-skeleton-in flex items-center gap-3 px-4 py-3.5 even:bg-slate-50 sm:gap-4 sm:px-5"
+        :style="{ animationDelay: `${120 + i * 45}ms` }"
+      >
+        <div class="skeleton skeleton-soft h-4 w-7 shrink-0 rounded" />
+        <!-- Icon with its tier badge, as on the loaded row -->
+        <div class="relative shrink-0">
+          <div class="skeleton size-14 rounded-lg" />
+          <span class="absolute -bottom-1.5 -right-1.5 grid size-6 place-items-center rounded-full border-2 border-white bg-white shadow-sm">
+            <span class="skeleton skeleton-soft size-3 rounded-full" />
+          </span>
         </div>
-        <div class="h-5 w-16 shrink-0 animate-pulse rounded-full bg-slate-100" />
+        <div class="min-w-0 flex-1">
+          <div class="flex h-6 items-center"><div class="skeleton h-4 rounded" :style="{ width: row.name }" /></div>
+          <div class="skeleton skeleton-soft mt-1 h-3 rounded" :style="{ width: row.detail }" />
+          <div class="mt-2 flex items-center gap-3">
+            <div class="skeleton skeleton-soft h-2.5 w-28 rounded" />
+            <div class="skeleton skeleton-soft h-2.5 w-16 rounded" />
+          </div>
+        </div>
+        <div class="hidden shrink-0 flex-col items-end gap-1.5 sm:flex">
+          <div class="skeleton skeleton-soft h-2.5 w-6 rounded" />
+          <div class="skeleton h-3.5 w-10 rounded" />
+        </div>
+        <span class="size-5 shrink-0" />
       </div>
     </div>
 

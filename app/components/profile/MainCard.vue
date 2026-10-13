@@ -14,9 +14,8 @@ const tabs: { key: TabKey; labelKey: string; icon: IconNode }[] = [
 ]
 type TabItem = (typeof tabs)[number]
 
-// Each tab's content component fetches its data with a top-level `await`, so
-// switching tabs suspends until that data lands. The <Suspense> below (see
-// template) surfaces a skeleton during the wait.
+// Each tab's content component fetches its own data lazily, so a tab opens at
+// once and shows its own placeholder rows until that data lands.
 // Tab, page and search live in the URL so Back/Forward and shared links
 // restore the same view. They reach the tab components as props, so a tab that
 // is fading out keeps its old values instead of refetching.
@@ -112,46 +111,24 @@ function selectTab(tab: TabKey) {
       </button>
     </div>
 
-    <!-- Tab content. <Suspense timeout="0"> shows the skeleton fallback the
-         moment a tab starts loading its data (timeout 0 = fall back at once
-         rather than keeping the previous tab visible). Pagination within a tab
-         doesn't re-suspend, so it keeps its list and dims it (per component).
-         The surrounding <Transition> fades between skeleton and content. -->
+    <!-- Tab content, faded between tabs. Each tab draws its own placeholders on
+         first load; pagination within a tab keeps its list and dims it. -->
     <Transition name="tab-fade" mode="out-in">
-      <Suspense timeout="0">
-        <ProfileRecentlyPlayed
-          v-if="activeTab === 'recent'"
-          :psnid="props.psnid"
-          :page="state.page"
-          :query="state.q"
-          @update:page="navigate({ page: $event })"
-          @search="navigate({ q: $event }, 'replace')"
-        />
-        <ProfileEarnedTrophies
-          v-else-if="activeTab === 'trophies'"
-          :psnid="props.psnid"
-          :page="state.page"
-          @update:page="navigate({ page: $event })"
-        />
-        <ProfileMilestones v-else :psnid="props.psnid" />
-
-        <template #fallback>
-          <div class="divide-y divide-slate-100">
-            <div
-              v-for="i in 6"
-              :key="i"
-              class="flex items-center gap-4 px-4 py-4 sm:px-5"
-            >
-              <div class="size-14 shrink-0 animate-pulse rounded-lg bg-slate-200" />
-              <div class="flex-1 space-y-2.5">
-                <div class="h-4 w-1/2 animate-pulse rounded bg-slate-200" />
-                <div class="h-3 w-1/3 animate-pulse rounded bg-slate-100" />
-                <div class="h-1.5 w-full animate-pulse rounded-full bg-slate-100" />
-              </div>
-            </div>
-          </div>
-        </template>
-      </Suspense>
+      <ProfileRecentlyPlayed
+        v-if="activeTab === 'recent'"
+        :psnid="props.psnid"
+        :page="state.page"
+        :query="state.q"
+        @update:page="navigate({ page: $event })"
+        @search="navigate({ q: $event }, 'replace')"
+      />
+      <ProfileEarnedTrophies
+        v-else-if="activeTab === 'trophies'"
+        :psnid="props.psnid"
+        :page="state.page"
+        @update:page="navigate({ page: $event })"
+      />
+      <ProfileMilestones v-else :psnid="props.psnid" />
     </Transition>
   </div>
 </template>

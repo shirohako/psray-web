@@ -2,7 +2,6 @@
 import { animate, type JSAnimation } from 'animejs'
 import { Clock, ChevronDown, ChevronRight, Globe, Hourglass, Search, X } from 'lucide'
 import type { PlayedTrophySet } from '~/services/profile'
-import type { DisplayDensity } from '~/composables/usePreferences'
 import { ApiError } from '~/utils/ApiError'
 import {
   RECENTLY_PLAYED_SEARCH_MAX_KEYWORDS,
@@ -32,52 +31,7 @@ const listEl = ref<HTMLElement | null>(null)
 const listAnimation = shallowRef<JSAnimation | null>(null)
 const { profileGameDensity } = usePreferences()
 
-const densityStyles: Record<DisplayDensity, {
-  row: string
-  artColumn: string
-  art: string
-  mobileBadges: string
-  title: string
-  content: string
-  progress: string
-  tiers: string
-  chevron: string
-}> = {
-  dense: {
-    row: 'gap-2.5 px-3 py-2 sm:items-center sm:px-4',
-    artColumn: 'w-16 gap-1',
-    art: 'h-12 w-16',
-    mobileBadges: 'max-w-16 gap-0.5',
-    title: 'text-sm',
-    content: 'gap-1',
-    progress: 'gap-2',
-    tiers: 'gap-2 text-[10px]',
-    chevron: 'size-4',
-  },
-  compact: {
-    row: 'gap-3 px-3 py-3 sm:items-center sm:px-4',
-    artColumn: 'w-20 gap-1',
-    art: 'h-15 w-20',
-    mobileBadges: 'max-w-20 gap-0.5',
-    title: 'text-sm',
-    content: 'gap-1.5',
-    progress: 'gap-2.5',
-    tiers: 'gap-2.5 text-[11px]',
-    chevron: 'size-4.5',
-  },
-  standard: {
-    row: 'gap-4 px-4 py-4 sm:items-center sm:px-5',
-    artColumn: 'w-24 gap-1.5',
-    art: 'h-18 w-24',
-    mobileBadges: 'max-w-24 gap-1',
-    title: '',
-    content: 'gap-2',
-    progress: 'gap-3',
-    tiers: 'gap-3 text-xs',
-    chevron: 'size-5',
-  },
-}
-const density = computed(() => densityStyles[profileGameDensity.value])
+const density = computed(() => recentlyPlayedDensity[profileGameDensity.value])
 const collapsedListHeight = computed(() => ({
   dense: 280,
   compact: 340,
@@ -86,9 +40,15 @@ const collapsedListHeight = computed(() => ({
 
 // Page and the submitted query are read by the URL getter, so either change
 // re-fetches while edits in the input remain local until the form is submitted.
-const { data: res, pending, error, refresh } = await useApiFetchRaw<PlayedTrophySet[], PageMeta>(
+// Lazy and not awaited: the tab renders at once with placeholder rows and fills
+// in when the list lands. The server still fetches it before rendering.
+const { data: res, status, error, refresh } = useApiFetchRaw<PlayedTrophySet[], PageMeta>(
   () => recentlyPlayedPath(props.psnid, props.page, props.query),
+  { lazy: true },
 )
+// A lazy fetch sits at `idle` until it starts, so count that as loading too.
+const pending = computed(() => status.value === 'pending' || status.value === 'idle')
+useLoadingBar(pending, () => status.value === 'error')
 
 const recent = computed(() => res.value?.data ?? [])
 const totalPages = computed(() => res.value?.meta?.total_pages ?? 1)
@@ -282,16 +242,7 @@ onBeforeUnmount(() => {
   </div>
 
   <!-- Loading (initial only — on page change we keep the list visible) -->
-  <div v-if="pending && !recent.length" class="divide-y divide-slate-100">
-    <div v-for="i in 5" :key="i" class="flex items-center" :class="density.row">
-      <div class="shrink-0 animate-pulse rounded-lg bg-slate-200" :class="density.art" />
-      <div class="flex-1 space-y-2">
-        <div class="h-4 w-1/2 animate-pulse rounded bg-slate-200" />
-        <div class="h-3 w-1/3 animate-pulse rounded bg-slate-200" />
-        <div class="h-1.5 w-full animate-pulse rounded-full bg-slate-200" />
-      </div>
-    </div>
-  </div>
+  <ProfileRecentlyPlayedSkeleton v-if="pending && !recent.length" />
 
   <!-- Error / empty -->
   <div v-else-if="error && !recent.length" class="px-6 py-16 text-center">

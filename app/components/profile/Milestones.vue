@@ -12,9 +12,23 @@ const LIMIT = 30
 const ascending = ref(false)
 const expanded = ref(false)
 
-const { data: milestones, pending, error } = await useApiFetch<ProfileMilestone[]>(
+// Lazy and not awaited: the tab renders at once with a placeholder timeline
+// and fills in when the list lands. The server still fetches it before rendering.
+const { data: milestones, status, error } = useApiFetch<ProfileMilestone[]>(
   () => `/profile/${props.psnid}/milestones`,
+  { lazy: true },
 )
+// A lazy fetch sits at `idle` until it starts, so count that as loading too.
+const pending = computed(() => status.value === 'pending' || status.value === 'idle')
+useLoadingBar(pending, () => status.value === 'error')
+
+// Placeholder cards: varied widths so they read like real trophy names.
+const SKELETON_ROWS = [
+  { name: '48%', set: '34%', badge: 'w-16' },
+  { name: '36%', set: '44%', badge: 'w-20' },
+  { name: '56%', set: '30%', badge: 'w-16' },
+  { name: '42%', set: '38%', badge: 'w-24' },
+]
 
 // `earned_at` may arrive as a number (epoch seconds) or an ISO string; coerce
 // to milliseconds so the comparison is numeric (raw string subtraction yields
@@ -72,12 +86,32 @@ function milestoneMeta(item: ProfileMilestone) {
       </button>
     </div>
 
-    <div v-if="pending" class="space-y-4 px-4 py-5 sm:px-5">
-      <div v-for="i in 5" :key="i" class="flex gap-3">
-        <div class="size-10 shrink-0 animate-pulse rounded-full bg-slate-200" />
-        <div class="flex-1 space-y-2 py-1">
-          <div class="h-3.5 w-1/3 animate-pulse rounded bg-slate-200" />
-          <div class="h-3 w-2/3 animate-pulse rounded bg-slate-100" />
+    <!-- Placeholder timeline: the rail, its nodes, and a card per milestone -->
+    <div v-if="pending && !milestones" class="relative px-4 py-2 sm:px-5" aria-hidden="true">
+      <span class="absolute bottom-14 left-9 top-14 w-px bg-slate-200 sm:left-10" />
+      <div
+        v-for="(row, i) in SKELETON_ROWS"
+        :key="i"
+        class="animate-skeleton-in relative flex gap-3 py-3"
+        :style="{ animationDelay: `${120 + i * 60}ms` }"
+      >
+        <div class="relative flex w-10 shrink-0 items-center justify-center">
+          <span class="relative z-10 grid size-10 place-items-center rounded-full bg-white ring-1 ring-inset ring-slate-200">
+            <span class="skeleton skeleton-soft size-4.5 rounded-full" />
+          </span>
+        </div>
+        <div class="min-w-0 flex-1 overflow-hidden rounded-lg border border-slate-100 bg-slate-50/60">
+          <div class="flex items-center border-b border-slate-100 px-3 py-2">
+            <div class="skeleton skeleton-soft h-3 rounded" :class="row.badge" />
+          </div>
+          <div class="flex items-center gap-3 px-3 py-2.5">
+            <div class="skeleton size-12 shrink-0 rounded-lg" />
+            <div class="min-w-0 flex-1">
+              <div class="flex h-5 items-center"><div class="skeleton h-3.5 rounded" :style="{ width: row.name }" /></div>
+              <div class="skeleton skeleton-soft mt-1.5 h-3 rounded" :style="{ width: row.set }" />
+            </div>
+            <div class="skeleton skeleton-soft hidden h-3 w-28 shrink-0 rounded sm:block" />
+          </div>
         </div>
       </div>
     </div>

@@ -1,12 +1,6 @@
 <template>
-  <!-- Loading -->
-  <div v-if="pending && !data" class="space-y-6">
-    <div class="h-56 animate-pulse rounded-lg bg-slate-200" />
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      <div class="h-96 animate-pulse rounded-lg bg-slate-200 lg:col-span-2" />
-      <div class="h-96 animate-pulse rounded-lg bg-slate-200" />
-    </div>
-  </div>
+  <!-- Loading: the page's own frame in placeholders -->
+  <TrophyDetailSkeleton v-if="pending && !data" />
 
   <!-- Content. Failures never reach here: `raiseFetchError` shows `error.vue`
        with a real HTTP status instead. -->
@@ -208,6 +202,9 @@ const uiContentLang = computed(() =>
 const contentLangParam = computed(() => canonicalContentLang(route.query.tlang))
 const requestedLang = computed(() => contentLangParam.value || uiContentLang.value)
 
+// `lazy` lets client-side navigation open the page at once and show
+// placeholders while the set loads; the server still waits for it, so a
+// missing set still answers 404 on first load.
 const { data, status, error } = await useApiFetch<TrophySetDetail>(
   () => `/trophies/${id.value}`,
   {
@@ -215,10 +212,14 @@ const { data, status, error } = await useApiFetch<TrophySetDetail>(
       psnid: psnid.value || undefined,
       lang: requestedLang.value,
     })),
+    lazy: true,
   },
 )
 
-const pending = computed(() => status.value === 'pending')
+// A lazy fetch sits at `idle` until it starts, so count that as loading too.
+// The bar also runs while a language switch or `?psnid=` lookup refetches.
+const pending = computed(() => status.value === 'pending' || status.value === 'idle')
+useLoadingBar(pending, () => status.value === 'error')
 
 const viewerCountry = computed(() => {
   const progress = data.value?.viewer_progress

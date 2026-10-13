@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Trophy, Check, Eye, EyeOff, MessageSquare, Copy, FileText, Users, Info, Clock3, Medal, Timer } from 'lucide'
 import type { Trophy as TrophyData } from '~/services/trophies'
-import type { DisplayDensity } from '~/composables/usePreferences'
 
 const props = defineProps<{
   trophy: TrophyData
@@ -40,72 +39,7 @@ const showEarned = computed(() => props.hasViewer && props.earned)
 // Headline earn rate follows the site-wide earn-rate-basis preference; the
 // tooltip still lists both PSN and PSRay rates regardless.
 const { rateBasis, trophyDensity } = usePreferences()
-const densityStyles: Record<DisplayDensity, {
-  row: string
-  number: string
-  icon: string
-  tierBadge: string
-  tierIcon: string
-  earnedBadge: string
-  earnedIcon: string
-  title: string
-  detail: string
-  earnedMeta: string
-  actions: string
-  rate: string
-  commentButton: string
-  commentIcon: string
-}> = {
-  dense: {
-    row: 'gap-2 px-2 py-1.5 sm:gap-2.5 sm:px-3 sm:py-2',
-    number: 'w-5 text-xs',
-    icon: 'size-10 sm:size-12',
-    tierBadge: '-bottom-1 -right-1 size-4 border',
-    tierIcon: 'size-2.5',
-    earnedBadge: '-right-1 -top-1 size-4 border',
-    earnedIcon: 'size-2.5',
-    title: 'text-sm',
-    detail: 'mt-0 line-clamp-1 text-xs',
-    earnedMeta: 'mt-0.5 gap-x-2 gap-y-0.5 text-[10px]',
-    actions: 'gap-1',
-    rate: 'text-[11px]',
-    commentButton: 'size-5.5',
-    commentIcon: 'size-2.5',
-  },
-  compact: {
-    row: 'gap-2.5 px-2.5 py-2 sm:gap-3 sm:px-4 sm:py-2.5',
-    number: 'w-5 text-xs',
-    icon: 'size-11 sm:size-13',
-    tierBadge: '-bottom-1 -right-1 size-4.5 border',
-    tierIcon: 'size-2.5',
-    earnedBadge: '-right-1 -top-1 size-4 border',
-    earnedIcon: 'size-2.5',
-    title: 'text-sm',
-    detail: 'mt-0.5 line-clamp-1 text-xs',
-    earnedMeta: 'mt-1 gap-x-2 gap-y-0.5 text-[10px]',
-    actions: 'gap-1 sm:gap-2',
-    rate: 'text-xs',
-    commentButton: 'size-6',
-    commentIcon: 'size-3',
-  },
-  standard: {
-    row: 'gap-3 px-3 py-3 sm:gap-4 sm:px-5 sm:py-3.5',
-    number: 'w-6 text-sm',
-    icon: 'size-14 sm:size-16',
-    tierBadge: '-bottom-1.5 -right-1.5 size-6 border-2',
-    tierIcon: 'size-3.5',
-    earnedBadge: '-right-1.5 -top-1.5 size-5 border-2',
-    earnedIcon: 'size-3',
-    title: '',
-    detail: 'mt-0.5 line-clamp-2 text-[13px] font-medium',
-    earnedMeta: 'mt-1.5 gap-x-2.5 gap-y-1 text-[11px]',
-    actions: 'gap-1.5 sm:gap-3',
-    rate: 'text-xs sm:text-sm',
-    commentButton: 'size-6 sm:size-7',
-    commentIcon: 'size-3 sm:size-3.5',
-  },
-}
-const density = computed(() => densityStyles[trophyDensity.value])
+const density = computed(() => trophyItemDensity[trophyDensity.value])
 const primaryRateLabel = computed(() => (rateBasis.value === 'psray' ? 'PSRay' : 'PSN'))
 const primaryRate = computed(() =>
   rateBasis.value === 'psray' ? props.trophy.psray_rate : props.trophy.psn_earned_rate,
