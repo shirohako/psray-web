@@ -51,12 +51,16 @@ const searching = computed(() => Boolean(filters.value.search))
 const activeCategory = computed<LibraryCategory>(() => searching.value ? 'new' : category.value)
 const requestQuery = computed(() => trophyBrowseQuery(activeCategory.value, filters.value, page.value, pageSize))
 const requestUrl = computed(() => trophyBrowsePath(requestQuery.value))
-const { data: response, status, error, refresh } = await useApiFetchRaw<TrophyBrowseItem[], TrophyBrowseMeta>(() => requestUrl.value)
+// `lazy` lets client-side navigation open the page at once and show
+// placeholders while the list loads; the server still waits for it.
+const { data: response, status, error, refresh } = await useApiFetchRaw<TrophyBrowseItem[], TrophyBrowseMeta>(() => requestUrl.value, { lazy: true })
 
 const games = computed(() => response.value?.data ?? [])
 const meta = computed(() => response.value?.meta)
 const totalPages = computed(() => meta.value?.total_pages ?? 1)
-const pending = computed(() => status.value === 'pending')
+// A lazy fetch sits at `idle` until it starts, so count that as loading too.
+const pending = computed(() => status.value === 'pending' || status.value === 'idle')
+useLoadingBar(pending, () => status.value === 'error')
 const rangeStart = computed(() => games.value.length ? ((meta.value?.page ?? page.value) - 1) * (meta.value?.per_page ?? pageSize) + 1 : 0)
 const rangeEnd = computed(() => games.value.length ? rangeStart.value + games.value.length - 1 : 0)
 
@@ -276,26 +280,23 @@ function changePage(value: number) {
           <p class="text-[11px] text-slate-400">{{ $t('library.range', { start: rangeStart, end: rangeEnd, total: meta.total }) }}</p>
           <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
         </div>
-
-        <div v-if="pending && !games.length" class="divide-y divide-slate-100">
-          <div v-for="index in 6" :key="index" class="flex items-center gap-4 px-4 py-4">
-            <div class="h-16 w-20 shrink-0 animate-pulse rounded-lg bg-slate-200 sm:w-24" />
-            <div class="min-w-0 flex-1 space-y-2">
-              <div class="h-3.5 w-2/5 animate-pulse rounded bg-slate-200" />
-              <div class="h-3 w-1/4 animate-pulse rounded bg-slate-100" />
-              <div class="h-3 w-3/5 animate-pulse rounded bg-slate-100" />
-            </div>
+        <!-- The listing almost always spans pages, so hold the bar's place on first load -->
+        <div v-else-if="pending && !meta" class="animate-skeleton-in flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5" aria-hidden="true">
+          <div class="skeleton skeleton-soft h-3 w-36 rounded" />
+          <div class="flex items-center gap-1.5">
+            <div v-for="i in 3" :key="i" class="skeleton skeleton-soft size-7 rounded-md" />
           </div>
         </div>
 
-        <div v-else-if="error" class="px-6 py-16 text-center">
+        <div v-if="error && !pending" class="px-6 py-16 text-center">
           <span class="mx-auto grid size-12 place-items-center rounded-full bg-rose-50 text-rose-400"><LucideIcon :icon="Gamepad2" class="size-5" /></span>
           <h3 class="mt-4 text-sm font-semibold text-slate-900">{{ $t('library.loadError') }}</h3>
           <p class="mt-2 text-xs text-slate-500">{{ $t('library.loadErrorHint') }}</p>
           <button class="mt-5 rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-700" @click="refresh()">{{ $t('library.retry') }}</button>
         </div>
 
-        <div v-else-if="games.length" class="transition-opacity" :class="pending ? 'opacity-55' : ''">
+        <!-- Loaded entries, or (first load) placeholders laid out on the same grid -->
+        <div v-else-if="games.length || pending" class="transition-opacity" :class="pending && games.length ? 'opacity-55' : ''">
           <div v-if="view === 'list'" class="list-head border-b border-slate-100 bg-slate-50/70 text-[10px] text-slate-400" :class="{ 'no-reference-times': !showReferenceTimes }" aria-hidden="true">
             <span class="col-span-2">{{ $t('library.game') }}</span>
             <span>{{ $t('library.trophies') }}</span>
@@ -305,7 +306,18 @@ function changePage(value: number) {
             <span />
           </div>
           <div :class="view === 'list' ? 'divide-y divide-slate-100' : 'grid grid-cols-1 gap-2.5 bg-slate-50/50 p-2 sm:gap-3 sm:p-4 lg:grid-cols-2 2xl:grid-cols-3'">
-            <TrophyLibraryEntry v-for="game in games" :key="game.id" :game="game" :view="view" :show-reference-times="showReferenceTimes" />
+            <template v-if="games.length">
+              <TrophyLibraryEntry v-for="game in games" :key="game.id" :game="game" :view="view" :show-reference-times="showReferenceTimes" />
+            </template>
+            <template v-else>
+              <TrophyLibraryEntrySkeleton
+                v-for="index in (view === 'list' ? 8 : 6)"
+                :key="index"
+                :index="index - 1"
+                :view="view"
+                :show-reference-times="showReferenceTimes"
+              />
+            </template>
           </div>
         </div>
 

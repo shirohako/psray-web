@@ -123,6 +123,25 @@ function rankClass(rank: number) {
   if (rank === 3) return 'bg-orange-100 text-orange-700'
   return 'text-slate-500'
 }
+
+// First-load placeholders. Name widths vary so the column reads like real
+// PSN IDs rather than a grid of identical bars; there's one row per entry.
+const SKELETON_NAME_WIDTHS = ['7.5rem', '5.5rem', '9rem', '6.5rem', '8rem', '5rem', '7rem', '9.5rem', '6rem', '8.5rem', '5.5rem', '7rem']
+const SKELETON_PHONE_TIERS = ['platinum', 'gold', 'silver'] as const
+const SKELETON_PRIMARY = new Set<LeaderboardColumn>(['points', 'tipCount', 'contribution'])
+
+/** The top three keep a faint medal tint, as the loaded ranks will. */
+function skeletonRankClass(index: number) {
+  if (index === 0) return 'bg-amber-100/70'
+  if (index === 1) return 'bg-slate-200/70'
+  if (index === 2) return 'bg-orange-100/70'
+  return 'skeleton skeleton-soft'
+}
+
+/** Rows cascade in after the shared fade-in delay. */
+function skeletonDelay(index: number) {
+  return { animationDelay: `${120 + index * 35}ms` }
+}
 </script>
 
 <template>
@@ -132,9 +151,9 @@ function rankClass(rank: number) {
       <slot name="header" />
     </div>
 
-    <template v-if="rows.length">
+    <template v-if="rows.length || pending">
       <!-- Phones: two-line rows instead of a sideways-scrolling table -->
-      <ul class="divide-y divide-slate-100 transition-opacity md:hidden" :class="{ 'opacity-50': pending }">
+      <ul v-if="rows.length" class="divide-y divide-slate-100 transition-opacity md:hidden" :class="{ 'opacity-50': pending }">
         <li v-for="r in rows" :key="r.user_id" :data-self-row="isSelf(r) || undefined" :class="isSelf(r) ? SELF_ROW : STRIPE_ROW">
           <NuxtLink :to="`/p/${r.psnid}`" class="flex items-center gap-2.5 px-3 py-2.5">
             <span
@@ -165,6 +184,33 @@ function rankClass(rank: number) {
         </li>
       </ul>
 
+      <!-- Phone placeholders: the same two-line row, drawn in skeleton blocks -->
+      <ul v-else class="divide-y divide-slate-100 md:hidden" aria-hidden="true">
+        <li
+          v-for="(width, i) in SKELETON_NAME_WIDTHS"
+          :key="i"
+          class="animate-skeleton-in flex items-center gap-2.5 px-3 py-2.5 even:bg-slate-50"
+          :style="skeletonDelay(i)"
+        >
+          <span class="h-7 w-7 shrink-0 rounded-md" :class="skeletonRankClass(i)" />
+          <span class="skeleton size-9 shrink-0 rounded-full" />
+          <span class="min-w-0 flex-1 space-y-2">
+            <span class="flex items-center gap-1.5">
+              <span class="skeleton skeleton-soft h-3 w-4 shrink-0 rounded-sm" />
+              <span class="skeleton h-3.5 rounded" :style="{ width }" />
+              <span v-if="primary" class="skeleton ml-auto h-3.5 w-14 shrink-0 rounded" />
+            </span>
+            <span class="flex items-center gap-2.5">
+              <span class="skeleton skeleton-soft h-2.5 w-8 rounded" />
+              <span v-for="tier in SKELETON_PHONE_TIERS" :key="tier" class="flex items-center gap-1">
+                <span class="size-1.5 rounded-full opacity-40" :class="TIER_DOT[tier]" />
+                <span class="skeleton skeleton-soft h-2.5 w-6 rounded" />
+              </span>
+            </span>
+          </span>
+        </li>
+      </ul>
+
       <div class="hidden overflow-x-auto md:block">
         <table class="w-full text-sm">
           <thead>
@@ -183,7 +229,7 @@ function rankClass(rank: number) {
               </th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-100 transition-opacity" :class="{ 'opacity-50': pending }">
+          <tbody v-if="rows.length" class="divide-y divide-slate-100 transition-opacity" :class="{ 'opacity-50': pending }">
             <tr
               v-for="r in rows"
               :key="r.user_id"
@@ -278,19 +324,43 @@ function rankClass(rank: number) {
               </td>
             </tr>
           </tbody>
+
+          <!-- Table placeholders: one block per real cell, so the swap to data doesn't shift a pixel -->
+          <tbody v-else class="divide-y divide-slate-100" aria-hidden="true">
+            <tr
+              v-for="(width, i) in SKELETON_NAME_WIDTHS"
+              :key="i"
+              class="animate-skeleton-in even:bg-slate-50"
+              :style="skeletonDelay(i)"
+            >
+              <td
+                v-for="c in columns"
+                :key="c"
+                class="px-3 py-3 align-middle"
+                :class="META[c].class"
+              >
+                <span v-if="c === 'rank'" class="mx-auto block h-7 w-7 rounded-md" :class="skeletonRankClass(i)" />
+                <span v-else-if="c === 'user'" class="flex items-center gap-3">
+                  <span class="skeleton size-9 shrink-0 rounded-full" />
+                  <span class="skeleton skeleton-soft h-3 w-4 shrink-0 rounded-sm" />
+                  <span class="skeleton h-3.5 rounded" :style="{ width }" />
+                </span>
+                <span v-else-if="c === 'level'" class="skeleton skeleton-soft mx-auto block h-5 w-8 rounded-md" />
+                <!-- A ring, like the composition chart it stands in for -->
+                <span v-else-if="c === 'mix'" class="skeleton skeleton-soft mx-auto grid size-6 place-items-center rounded-full">
+                  <span class="size-3 rounded-full bg-white" />
+                </span>
+                <span
+                  v-else
+                  class="skeleton ml-auto block rounded"
+                  :class="SKELETON_PRIMARY.has(c) ? 'h-4 w-20' : 'skeleton-soft h-3 w-9'"
+                />
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </template>
-
-    <!-- First-load skeleton -->
-    <div v-else-if="pending" class="divide-y divide-slate-100">
-      <div v-for="i in 10" :key="i" class="flex items-center gap-3 px-4 py-3.5">
-        <div class="size-7 shrink-0 animate-pulse rounded-md bg-slate-200" />
-        <div class="size-9 shrink-0 animate-pulse rounded-full bg-slate-200" />
-        <div class="h-3.5 flex-1 animate-pulse rounded bg-slate-200" />
-        <div class="h-3.5 w-16 animate-pulse rounded bg-slate-200" />
-      </div>
-    </div>
 
     <!-- Empty -->
     <p v-else class="px-5 py-16 text-center text-sm text-slate-400">{{ $t('leaderboard.empty') }}</p>

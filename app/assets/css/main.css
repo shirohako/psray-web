@@ -65,7 +65,53 @@
   }
 }
 
+/* Loading placeholders. The highlight is pinned to the viewport
+   (`background-attachment: fixed`), so every `.skeleton` block on screen is lit
+   by one band sweeping left to right rather than each shimmering on its own.
+   Browsers that ignore fixed backgrounds (iOS Safari) fall back to a per-block
+   sweep, which still reads fine. */
+@keyframes skeleton-shimmer {
+  from {
+    background-position: -120vw 0;
+  }
+  to {
+    background-position: 20vw 0;
+  }
+}
+
+/* Placeholders fade in after a beat, so a response that lands quickly swaps
+   straight to content instead of flashing grey bars first. Rows stagger with
+   their own `animation-delay` on top of this. */
+@keyframes skeleton-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@layer components {
+  .skeleton {
+    background-color: color-mix(in oklab, var(--color-slate-200) 75%, transparent);
+    background-image: linear-gradient(100deg, transparent 44%, rgb(255 255 255 / 0.7) 50%, transparent 56%);
+    background-size: 200vw 100%;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    animation: skeleton-shimmer 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  /* Secondary lines: same sweep on a lighter ground. */
+  .skeleton-soft {
+    background-color: color-mix(in oklab, var(--color-slate-200) 45%, transparent);
+  }
+}
+
 @layer utilities {
+  .animate-skeleton-in {
+    animation: skeleton-in 280ms cubic-bezier(0.22, 1, 0.36, 1) 120ms both;
+  }
   .animate-admin-progress {
     animation: admin-progress 1.1s ease-in-out infinite;
   }
@@ -88,7 +134,9 @@
   .animate-rise,
   .animate-kenburns,
   .animate-admin-progress,
-  .animate-filter-in {
+  .animate-filter-in,
+  .animate-skeleton-in,
+  .skeleton {
     animation: none;
   }
 }

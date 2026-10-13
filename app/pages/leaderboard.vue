@@ -44,18 +44,21 @@ const registeredOnly = computed(() => state.value.registeredOnly)
 const page = computed(() => state.value.page)
 
 // One fetcher driven by the active board; SSR-rendered, re-run whenever the URL
-// state changes. The key is static and carries no locale: leaderboard rows are
-// PSN IDs and numbers, with no localized body text to refetch on a language
-// switch. Add the locale to the key if the backend ever starts translating
-// anything here.
+// state changes. `lazy` lets client-side navigation open the page at once and
+// show placeholders while the rows load; the server still waits for them. The
+// key is static and carries no locale: leaderboard rows are PSN IDs and
+// numbers, with no localized body text to refetch on a language switch. Add the
+// locale to the key if the backend ever starts translating anything here.
 const { data, status } = await useAsyncData('leaderboard', () =>
   board.value.fetch({ page: page.value, registeredOnly: registeredOnly.value, region: region.value }),
-{ watch: [state] })
+{ watch: [state], lazy: true })
 
 const rows = computed<LeaderboardRow[]>(() => data.value?.data ?? [])
 const meta = computed<LeaderboardMeta | undefined>(() => data.value?.meta)
 const totalPages = computed(() => meta.value?.total_pages ?? 1)
-const pending = computed(() => status.value === 'pending')
+// A lazy fetch sits at `idle` until it starts, so count that as loading too.
+const pending = computed(() => status.value === 'pending' || status.value === 'idle')
+useLoadingBar(pending, () => status.value === 'error')
 const rangeStart = computed(() => rows.value.length ? (page.value - 1) * (meta.value?.per_page ?? rows.value.length) + 1 : 0)
 const rangeEnd = computed(() => rows.value.length ? rangeStart.value + rows.value.length - 1 : 0)
 
@@ -76,6 +79,8 @@ const selfPage = computed(() => {
   if (meta.value?.me !== undefined) return me.value?.on_page ?? null
   return selfRank.value ? page.value : null
 })
+// Nothing to show for the standing until the first response lands.
+const standingLoading = computed(() => pending.value && !meta.value)
 // Whole percentages come back without the `.0`, so pad to one decimal here.
 const selfTopPercent = computed(() => me.value?.top_percent?.toFixed(1) ?? null)
 const selfToNext = computed(() => me.value?.gap_to_next ?? null)
@@ -221,11 +226,13 @@ watch(rows, () => {
         <dl class="flex flex-wrap items-start gap-x-6 gap-y-2">
           <div>
             <dt class="text-[11px] text-slate-500">{{ $t('leaderboard.column.rank') }}</dt>
-            <dd class="text-sm font-semibold tabular-nums text-slate-900">{{ selfRank ? `#${fmt(selfRank)}` : '—' }}</dd>
+            <dd v-if="standingLoading" class="skeleton mt-1 h-4 w-12 rounded" />
+            <dd v-else class="text-sm font-semibold tabular-nums text-slate-900">{{ selfRank ? `#${fmt(selfRank)}` : '—' }}</dd>
           </div>
           <div>
             <dt class="text-[11px] text-slate-500">{{ $t('leaderboard.column.points') }}</dt>
-            <dd class="text-sm font-semibold tabular-nums text-slate-900">{{ fmt(selfPoints) }}</dd>
+            <dd v-if="standingLoading" class="skeleton mt-1 h-4 w-16 rounded" />
+            <dd v-else class="text-sm font-semibold tabular-nums text-slate-900">{{ fmt(selfPoints) }}</dd>
           </div>
           <div v-if="selfTopPercent">
             <dt class="text-[11px] text-slate-500">{{ $t('leaderboard.self.top') }}</dt>
@@ -236,7 +243,7 @@ watch(rows, () => {
             <dd class="text-sm font-semibold tabular-nums text-slate-900">{{ fmt(selfToNext) }}</dd>
           </div>
         </dl>
-        <p v-if="!selfRank" class="text-xs text-slate-500">{{ $t('leaderboard.self.unranked') }}</p>
+        <p v-if="!selfRank && !standingLoading" class="text-xs text-slate-500">{{ $t('leaderboard.self.unranked') }}</p>
       </div>
     </section>
 
@@ -251,7 +258,8 @@ watch(rows, () => {
         </template>
         <template #footer>
           <div class="flex flex-wrap items-center justify-between gap-3">
-            <span class="text-xs text-slate-500">
+            <span v-if="standingLoading" class="skeleton h-3 w-32 rounded" />
+            <span v-else class="text-xs text-slate-500">
               {{ rows.length
                 ? $t('leaderboard.range', { start: fmt(rangeStart), end: fmt(rangeEnd), total: fmt(meta?.total) })
                 : $t('leaderboard.totalPlayers', { count: fmt(meta?.total) }) }}
