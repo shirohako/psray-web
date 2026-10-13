@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Crown } from 'lucide'
+import { Crown, LockKeyhole } from 'lucide'
 import type { Profile } from '~/services/profile'
 
 const props = defineProps<{ profile: Profile, followPending?: boolean }>()
@@ -12,12 +12,25 @@ const bannerImage = computed(() => props.profile.banner_url || appConfig.profile
 
 <template>
   <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-    <!-- Banner -->
-    <div
-      class="relative h-48 bg-slate-300 bg-cover bg-center sm:h-64"
-      :style="{ backgroundImage: `url(${bannerImage})` }"
-    >
+    <!-- Banner. The image sits on its own layer so a private profile can mute
+         it (desaturated, a little darker) without touching the badges. -->
+    <div class="relative h-48 overflow-hidden bg-slate-300 sm:h-64">
+      <div
+        class="absolute inset-0 bg-cover bg-center transition duration-500"
+        :class="{ 'scale-105 saturate-[.35] brightness-90': !profile.is_profile_public }"
+        :style="{ backgroundImage: `url(${bannerImage})` }"
+      />
       <div class="absolute inset-0 bg-linear-to-t from-black/55 via-black/10 to-black/5" />
+      <div v-if="!profile.is_profile_public" class="absolute inset-0 bg-linear-to-br from-slate-900/30 via-transparent to-slate-900/20" />
+
+      <!-- Top-left: private marker, frosted to sit on any banner -->
+      <span
+        v-if="!profile.is_profile_public"
+        class="absolute left-4 top-4 z-10 inline-flex h-8 items-center gap-1.5 rounded-lg bg-white/15 px-3 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-white/25 backdrop-blur-md"
+      >
+        <LucideIcon :icon="LockKeyhole" class="size-4" />
+        {{ $t('profile.private.badge') }}
+      </span>
 
       <!-- Top-right badges -->
       <div class="absolute right-4 top-4 z-10 flex items-center gap-2">
@@ -45,11 +58,13 @@ const bannerImage = computed(() => props.profile.banner_url || appConfig.profile
     <!-- Body -->
     <div class="px-4 pb-5 sm:px-6">
       <ProfileHeaderIdentity :profile="profile" />
-      <ProfileHeaderStats :profile="profile" class="mt-4" />
-      <ProfileHeaderTrophySummary :profile="profile" class="mt-3" />
-
-      <!-- Private profile notice (replaces the hidden trophy columns below) -->
-      <PrivateProfileNotice v-if="!profile.is_profile_public" class="mt-5" />
+      <template v-if="profile.is_profile_public">
+        <ProfileHeaderStats :profile="profile" class="mt-4" />
+        <ProfileHeaderTrophySummary :profile="profile" class="mt-3" />
+      </template>
+      <!-- Private: the ranks and trophy totals come back zeroed, so the row
+           keeps its shape with the figures redacted and says why. -->
+      <ProfileHeaderPrivateSummary v-else class="mt-4" />
     </div>
   </section>
 </template>

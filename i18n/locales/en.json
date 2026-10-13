@@ -567,7 +567,42 @@
     "private": {
       "title": "This profile is private",
       "line1": "This player’s trophy data is private, so no details can be shown.",
-      "line2": "It can be changed in the PlayStation privacy settings."
+      "line2": "It can be changed in the PlayStation privacy settings.",
+      "headerNote": "Trophies hidden",
+      "badge": "Private profile",
+      "panelTitle": "Trophies are private",
+      "panelDescription": "This player hasn't made their trophies public on PSN, so trophy stats, play history and milestones are hidden. Their comments are still shown.",
+      "howTo": "How to make them public",
+      "steps": {
+        "settings": "Open the privacy settings on a PlayStation console or in the PlayStation App",
+        "trophies": "Set who can see “Trophies” to “Anyone”",
+        "sync": "Come back here and sync once more to restore the profile"
+      },
+      "resync": "Sync again"
+    },
+    "missing": {
+      "badge": "Not tracked yet",
+      "title": "We don't have {psnid} yet",
+      "description": "There's no data for this PSN ID on the site. It may never have been synced, or its owner deleted their account.",
+      "steps": {
+        "submit": "Request a sync",
+        "fetch": "Read trophies from PSN",
+        "ready": "Profile is ready"
+      },
+      "cta": "Sync this PSN ID",
+      "submitting": "Submitting…",
+      "hint": "Syncing only reads trophy data that is public on PSN.",
+      "browse": "Browse the leaderboard",
+      "errors": {
+        "notOnPsn": "This ID can't be found on PSN either. Check the spelling.",
+        "private": "This PSN profile is private and can't be synced. Make trophies public in the PlayStation privacy settings first.",
+        "banned": "This account has been banned and can't be synced."
+      }
+    },
+    "banned": {
+      "badge": "Banned",
+      "title": "This player has been banned",
+      "description": "This account has been permanently suspended and its data has been deleted."
     }
   },
   "sync": {
@@ -731,6 +766,8 @@
     "profile": {
       "title": "{psnid} Profile",
       "titleFallback": "Profile",
+      "titleMissing": "{psnid} · Not tracked yet",
+      "titleBanned": "Banned player",
       "description": "PSN trophy stats for {psnid} — earned trophies, milestones, and recent play history."
     },
     "trophy": {

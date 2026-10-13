@@ -14,6 +14,9 @@ export type ErrorCode =
   | 'FORBIDDEN'
   | 'NOT_FOUND'
   | 'USER_NOT_FOUND'
+  // Profile pages: a terminated account (410), trophies not public (403).
+  | 'USER_BANNED'
+  | 'PROFILE_NOT_PUBLIC'
   | 'PSN_LEVEL_TOO_LOW'
   | 'RATE_LIMITED'
   | 'INTERNAL_ERROR'

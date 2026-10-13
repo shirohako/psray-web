@@ -164,11 +164,20 @@ onBeforeUnmount(stopPolling)
 
 // Prefill from links like `/sync?psnid=foo`, but never auto-submit. Syncing is
 // intentionally user-triggered so opening a link cannot enqueue work by itself.
-onMounted(() => {
+// A job that is already running for that ID (e.g. just requested from its
+// profile page) is picked up and followed, though: reading status starts nothing.
+onMounted(async () => {
   const q = useRoute().query.psnid
   const id = (Array.isArray(q) ? q[0] : q)?.trim()
   if (!id) return
   psnid.value = id
+  try {
+    const s = await sync.status(id)
+    if (s && s.status !== 'completed' && s.status !== 'failed' && !activePsnid.value) await startPollingFor(id)
+  }
+  catch {
+    // No job to follow; the prefilled form is enough.
+  }
 })
 </script>
 

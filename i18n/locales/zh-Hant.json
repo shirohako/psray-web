@@ -567,7 +567,42 @@
     "private": {
       "title": "這是一個非公開的帳號",
       "line1": "該使用者的獎盃資料為私密，無法展示詳細資訊。",
-      "line2": "可在 PlayStation 隱私設定中變更此設定。"
+      "line2": "可在 PlayStation 隱私設定中變更此設定。",
+      "headerNote": "獎盃資料未公開",
+      "badge": "私密資料",
+      "panelTitle": "獎盃資料未公開",
+      "panelDescription": "該使用者在 PSN 上沒有公開獎盃，獎盃統計、遊玩紀錄與里程碑皆已隱藏。發表的留言不受影響。",
+      "howTo": "如何公開",
+      "steps": {
+        "settings": "在 PlayStation 主機或 PlayStation App 中開啟隱私設定",
+        "trophies": "將「獎盃」的公開範圍設為「所有人」",
+        "sync": "回到這裡重新同步一次，資料即可恢復"
+      },
+      "resync": "重新同步"
+    },
+    "missing": {
+      "badge": "尚未收錄",
+      "title": "尚未收錄 {psnid}",
+      "description": "站內還沒有這個 PSN ID 的資料。它可能從未同步過，或本人已註銷帳號。",
+      "steps": {
+        "submit": "發起同步",
+        "fetch": "讀取 PSN 獎盃",
+        "ready": "產生資料頁"
+      },
+      "cta": "同步這個 PSN ID",
+      "submitting": "提交中…",
+      "hint": "同步只會讀取 PSN 上公開的獎盃資料。",
+      "browse": "瀏覽排行榜",
+      "errors": {
+        "notOnPsn": "PSN 上也找不到這個 ID，請檢查拼寫是否正確。",
+        "private": "該 PSN 資料為私密，無法同步。請先在 PlayStation 隱私設定中公開獎盃。",
+        "banned": "該帳號已被封禁，無法同步。"
+      }
+    },
+    "banned": {
+      "badge": "已封禁",
+      "title": "該使用者已被封禁",
+      "description": "此帳號已被永久停用，相關資料已刪除。"
     }
   },
   "sync": {
@@ -731,6 +766,8 @@
     "profile": {
       "title": "{psnid} 的個人資料",
       "titleFallback": "個人資料",
+      "titleMissing": "{psnid} · 尚未收錄",
+      "titleBanned": "該使用者已被封禁",
       "description": "{psnid} 的 PSN 獎盃戰績：已獲獎盃、里程碑與最近遊玩記錄。"
     },
     "trophy": {

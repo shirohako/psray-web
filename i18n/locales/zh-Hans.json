@@ -567,7 +567,42 @@
     "private": {
       "title": "这是一个非公开的账户",
       "line1": "该用户的奖杯资料为私密，无法展示详细信息。",
-      "line2": "可在 PlayStation 隐私设置中更改此设定。"
+      "line2": "可在 PlayStation 隐私设置中更改此设定。",
+      "headerNote": "奖杯资料未公开",
+      "badge": "私密资料",
+      "panelTitle": "奖杯资料未公开",
+      "panelDescription": "该用户在 PSN 上没有公开奖杯，奖杯统计、游玩记录和里程碑都已隐藏。发表的留言不受影响。",
+      "howTo": "如何公开",
+      "steps": {
+        "settings": "在 PlayStation 主机或 PlayStation App 中打开隐私设置",
+        "trophies": "把「奖杯」的公开范围设为「所有人」",
+        "sync": "回到这里重新同步一次，资料即可恢复"
+      },
+      "resync": "重新同步"
+    },
+    "missing": {
+      "badge": "尚未收录",
+      "title": "还没有收录 {psnid}",
+      "description": "站内还没有这个 PSN ID 的资料。它可能从未同步过，或者本人已注销账户。",
+      "steps": {
+        "submit": "发起同步",
+        "fetch": "读取 PSN 奖杯",
+        "ready": "生成资料页"
+      },
+      "cta": "同步这个 PSN ID",
+      "submitting": "提交中…",
+      "hint": "同步只会读取 PSN 上公开的奖杯资料。",
+      "browse": "浏览排行榜",
+      "errors": {
+        "notOnPsn": "PSN 上也找不到这个 ID，请检查拼写是否正确。",
+        "private": "该 PSN 资料为私密，无法同步。请先在 PlayStation 隐私设置中公开奖杯。",
+        "banned": "该账号已被封禁，无法同步。"
+      }
+    },
+    "banned": {
+      "badge": "已封禁",
+      "title": "该用户已被封禁",
+      "description": "此账号已被永久停用，相关资料已删除。"
     }
   },
   "sync": {
@@ -731,6 +766,8 @@
     "profile": {
       "title": "{psnid} 的个人资料",
       "titleFallback": "个人资料",
+      "titleMissing": "{psnid} · 尚未收录",
+      "titleBanned": "该用户已被封禁",
       "description": "{psnid} 的 PSN 奖杯战绩：已获奖杯、里程碑与最近游玩记录。"
     },
     "trophy": {

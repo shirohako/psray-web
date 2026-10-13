@@ -1,18 +1,13 @@
 <template>
-  <!-- Loading -->
-  <div v-if="pending" class="space-y-6">
-    <div class="h-48 animate-pulse rounded-lg bg-slate-200" />
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      <div class="h-96 animate-pulse rounded-lg bg-slate-200 lg:col-span-2" />
-      <div class="h-96 animate-pulse rounded-lg bg-slate-200" />
-    </div>
-  </div>
+  <!-- Loading: the page's own frame in placeholders -->
+  <ProfileSkeleton v-if="view === 'loading'" />
 
-  <!-- Profile. A missing PSN ID raises a real 404 via `error.vue`. -->
+  <!-- Never synced / deleted (served as a 404) or banned -->
+  <ProfileUnavailable v-else-if="view === 'missing' || view === 'banned'" :kind="view" :psnid="psnid" />
+
   <div v-else-if="profile" class="space-y-6">
     <ProfileHeader :profile="profile" :follow-pending="followPending" @toggle-follow="toggleFollow" />
 
-    <!-- Private profiles expose no trophy data: hide the calendar and the two columns below. -->
     <template v-if="profile.is_profile_public">
       <ProfileTrophyCalendar v-if="profile.calendar?.length" :calendar="profile.calendar" />
 
@@ -36,6 +31,24 @@
         </aside>
       </div>
     </template>
+
+    <!-- Private: no trophy data (the stats come back zeroed), but the basic
+         profile and the player's comments are still public. -->
+    <div v-else class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div class="lg:col-span-2">
+        <ProfilePrivatePanel :psnid="profile.psnid" />
+      </div>
+      <aside class="space-y-6">
+        <ProfileRecentTips
+          v-if="profile.recent_tips !== null"
+          :psnid="psnid"
+          :tip-count="profile.tip_count"
+          :tips="profile.recent_tips"
+        />
+        <ProfileSocialCard :profile="profile" />
+        <ProfileAccountCard :profile="profile" />
+      </aside>
+    </div>
   </div>
 </template>
 
@@ -52,19 +65,59 @@ const psnid = computed(() => String(route.params.psnid))
 const auth = useAuth()
 const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
 const cardBase = useRuntimeConfig().public.cardBase.replace(/\/+$/, '')
+// Server-only: both write to the response of the page render.
+const requestEvent = import.meta.server ? useRequestEvent() : undefined
+const cacheControl = import.meta.server ? useResponseHeader('cache-control') : undefined
 
-const { data: profile, pending, error } = await useApiFetch<Profile>(
+// `lazy` lets client-side navigation open the page at once and show
+// placeholders while the profile loads; the server still waits for it, so an
+// unknown PSN ID still answers 404 on first load.
+const { data: profile, status, error } = await useApiFetch<Profile>(
   () => `/profile/${psnid.value}`,
+  { lazy: true },
 )
+// A lazy fetch sits at `idle` until it starts, so count that as loading too.
+const pending = computed(() => status.value === 'pending' || status.value === 'idle')
 
-// An unknown PSN ID must answer 404 rather than a 200 page that says so.
-// Watched, not checked once: moving between two profiles reuses this component.
+/**
+ * What the page shows. Besides a profile (public or private, both 200), the
+ * API answers 404 `USER_NOT_FOUND` for a PSN ID it has never synced (or whose
+ * owner deleted their account) and 410 `USER_BANNED` for a terminated one.
+ * Read off the HTTP status: unlike the error code, it survives the trip from
+ * the server render to the client.
+ */
+type ProfileView = 'loading' | 'missing' | 'banned' | 'profile'
+const errorStatus = computed(() => (error.value as { statusCode?: number } | undefined)?.statusCode)
+const view = computed<ProfileView>(() => {
+  if (profile.value) return 'profile'
+  if (errorStatus.value === 404) return 'missing'
+  if (errorStatus.value === 410) return 'banned'
+  return 'loading'
+})
+
+// Missing and banned are answers, not failures: fill the bar normally.
+useLoadingBar(pending, () => status.value === 'error' && view.value === 'loading')
+
+// Missing and banned profiles render their own state in the page. A missing
+// one answers a real 404 rather than a 200, so crawlers don't index an endless
+// supply of empty `/p/<anything>` pages, and it is never cached: once someone
+// syncs the ID, the same URL has to serve the new profile straight away. A
+// banned one stays a 200 for now, kept out of the index by `noindex` (see
+// `useSeo` below). Anything else is a service failure and gets the full error
+// page. Watched, not checked once: moving between two profiles reuses this
+// component.
 function raiseFetchError(err: typeof error.value) {
   if (!err) return
-  const notFound = (err as { statusCode?: number }).statusCode === 404
+  const statusCode = (err as { statusCode?: number }).statusCode
+  if (statusCode === 404) {
+    if (requestEvent) setResponseStatus(requestEvent, 404)
+    if (cacheControl) cacheControl.value = 'no-store'
+    return
+  }
+  if (statusCode === 410) return
   showError(createError({
-    statusCode: notFound ? 404 : 502,
-    statusMessage: notFound ? 'Profile not found' : 'Profile service unavailable',
+    statusCode: 502,
+    statusMessage: 'Profile service unavailable',
     fatal: true,
   }))
 }
@@ -133,9 +186,12 @@ const canonicalProfilePath = computed(() => profile.value
   : route.path)
 
 useSeo({
-  title: () => (profile.value
-    ? t('seo.profile.title', { psnid: profile.value.psnid })
-    : t('seo.profile.titleFallback')),
+  title: () => {
+    if (profile.value) return t('seo.profile.title', { psnid: profile.value.psnid })
+    if (view.value === 'missing') return t('seo.profile.titleMissing', { psnid: psnid.value })
+    if (view.value === 'banned') return t('seo.profile.titleBanned')
+    return t('seo.profile.titleFallback')
+  },
   description: () => (profile.value
     ? t('seo.profile.description', { psnid: profile.value.psnid })
     : ''),

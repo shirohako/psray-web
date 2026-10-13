@@ -3,9 +3,10 @@ import { House, XCircle } from 'lucide'
 import type { NuxtError } from '#app'
 
 /**
- * Full-page error boundary. Pages that can legitimately 404 (`/p/:psnid`,
- * `/trophies/:id`) `throw createError(...)` so crawlers see a real status code
- * instead of a "not found" card served at HTTP 200.
+ * Full-page error boundary. Pages that can legitimately 404 (`/trophies/:id`)
+ * `throw createError(...)` so crawlers see a real status code instead of a
+ * "not found" card served at HTTP 200. Profiles (`/p/:psnid`) render their
+ * missing and banned states in the page instead (a missing one still as a 404).
  *
  * `<html lang>` comes from `app.vue`, which wraps this too, so the copy below
  * renders in the visitor's locale.
