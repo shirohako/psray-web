@@ -11,7 +11,7 @@ recipe plus the service-layer split common in production apps):
 
 | Layer | File | Purpose |
 | --- | --- | --- |
-| **HTTP client** | `app/plugins/api.ts` | The single ofetch instance `$api`: injects baseURL, `X-Request-Id`, Bearer auth, and normalizes every non-2xx response into an `ApiError` |
+| **HTTP client** | `app/plugins/api.ts` | The single ofetch instance `$api`: injects baseURL, `X-Request-Id`, Bearer auth, forwards the visitor's IP (`X-Real-IP` → `X-Forwarded-For`) and User-Agent during SSR, and normalizes every non-2xx response into an `ApiError` |
 | **Imperative calls** | `app/composables/useApi.ts` | `get/post/put/patch/delete` — **for event handlers / submits / mutations**. Unwraps `data` by default; `raw.*` returns the full envelope |
 | **Declarative fetching (SSR)** | `app/composables/useApiFetch.ts` | Wraps `useFetch` — **for page render data**. SSR hydration dedup, payload transfer, `refresh()`, reactive `data/pending/error` |
 | **Type contracts** | `app/types/api.ts` | Envelope types, `ErrorCode`, pagination `meta` |
