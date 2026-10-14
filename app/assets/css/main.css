@@ -81,15 +81,15 @@
 
 /* Placeholders fade in after a beat, so a response that lands quickly swaps
    straight to content instead of flashing grey bars first. Rows stagger with
-   their own `animation-delay` on top of this. */
+   their own `animation-delay` on top of this. Opacity only: any downward
+   offset would push the last rows past their scroll container (a table's
+   `overflow-x-auto`, a dialog body) and flash a scrollbar while they settle. */
 @keyframes skeleton-in {
   from {
     opacity: 0;
-    transform: translateY(4px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
