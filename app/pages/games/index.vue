@@ -3,7 +3,6 @@ import { Gamepad2, LibraryBig, RotateCcw, Search, X } from 'lucide'
 import type { GameBrowseItem, GameBrowseMeta } from '~/services/games'
 import {
   emptyGameLibraryFilters,
-  GAME_FILTER_PLATFORMS,
   GAME_PAGE_SIZE,
   gameBrowsePath,
   gameBrowseQuery,
@@ -44,10 +43,7 @@ useLoadingBar(pending, () => status.value === 'error')
 const rangeStart = computed(() => games.value.length ? ((meta.value?.page ?? page.value) - 1) * (meta.value?.per_page ?? GAME_PAGE_SIZE) + 1 : 0)
 const rangeEnd = computed(() => games.value.length ? rangeStart.value + games.value.length - 1 : 0)
 
-const chips = computed(() => [
-  ...(filters.value.search ? [{ id: 'search', label: filters.value.search, clear: clearSearch }] : []),
-  ...filters.value.platforms.map(platform => ({ id: platform, label: platformLabel(platform), clear: () => togglePlatform(platform) })),
-])
+const chips = computed(() => filters.value.search ? [{ id: 'search', label: filters.value.search, clear: clearSearch }] : [])
 
 watch(() => filters.value.search, (search) => { searchInput.value = search })
 watch(acceptLanguage, () => refresh())
@@ -81,15 +77,6 @@ function submitSearch() {
     return
   }
   navigate({ filters: { search: normalizedSearchInput.value.slice(0, 100) } })
-}
-
-function togglePlatform(platform: string) {
-  const selected = filters.value.platforms
-  navigate({
-    filters: {
-      platforms: selected.includes(platform) ? selected.filter(value => value !== platform) : [...selected, platform],
-    },
-  })
 }
 
 function reset() {
@@ -143,31 +130,6 @@ function changePage(value: number) {
               </button>
             </div>
           </form>
-        </div>
-
-        <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-slate-100 px-4 py-2.5">
-          <span class="text-[11px] text-slate-400">{{ $t('games.platforms') }}</span>
-          <div class="flex flex-wrap gap-1.5">
-            <button
-              :aria-pressed="!filters.platforms.length"
-              class="rounded px-2 py-1 text-[11px] font-medium"
-              :class="!filters.platforms.length ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-100'"
-              @click="navigate({ filters: { platforms: [] } })"
-            >
-              {{ $t('games.allPlatforms') }}
-            </button>
-            <button
-              v-for="platform in GAME_FILTER_PLATFORMS"
-              :key="platform"
-              :aria-pressed="filters.platforms.includes(platform)"
-              class="rounded px-2 py-1 text-[11px] font-medium"
-              :class="filters.platforms.includes(platform) ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'"
-              @click="togglePlatform(platform)"
-            >
-              {{ platformLabel(platform) }}
-            </button>
-          </div>
-          <span class="text-[10px] text-slate-400">{{ $t('games.multiSelect') }}</span>
         </div>
 
         <div v-if="chips.length" class="flex flex-wrap items-center gap-2 border-t border-slate-100 px-4 py-2.5">

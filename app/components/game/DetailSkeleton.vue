@@ -12,9 +12,12 @@ const RELEASE_ROWS = ['w-20', 'w-24', 'w-16', 'w-24', 'w-20']
     <div class="skeleton skeleton-soft h-3 w-40 rounded" />
 
     <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div class="flex flex-col gap-5 p-5 sm:flex-row sm:p-6">
-        <div class="skeleton aspect-3/4 w-32 shrink-0 self-center rounded-md sm:w-40 sm:self-start" />
-        <div class="min-w-0 flex-1">
+      <div class="skeleton skeleton-soft h-24 sm:h-32" />
+      <div class="flex flex-col gap-5 px-5 pb-5 sm:flex-row sm:px-6 sm:pb-6">
+        <div class="-mt-16 w-32 shrink-0 self-center rounded-lg bg-white p-1 shadow-lg shadow-slate-900/15 sm:-mt-20 sm:w-40 sm:self-start">
+          <div class="skeleton aspect-3/4 rounded-md" />
+        </div>
+        <div class="min-w-0 flex-1 sm:pt-4">
           <div class="skeleton h-6 w-3/5 rounded sm:h-7" />
           <div class="skeleton skeleton-soft mt-2.5 h-3.5 w-2/5 rounded" />
           <div class="mt-4 flex items-center gap-4">

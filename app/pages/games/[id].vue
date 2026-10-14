@@ -12,10 +12,21 @@
     </nav>
 
     <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div class="flex flex-col gap-5 p-5 sm:flex-row sm:p-6">
-        <GameCover :src="data.cover_url" :alt="data.localized_name" class="w-32 shrink-0 self-center sm:w-40 sm:self-start" />
+      <!-- Banner art when the API has it, otherwise one drawn in the cover's colours -->
+      <GameBanner
+        :src="data.banner_url ?? null"
+        :seed="data.id"
+        :cover="data.cover_url"
+        :cover-color="data.cover_color"
+        class="h-24 sm:h-32"
+      />
 
-        <div class="min-w-0 flex-1">
+      <div class="flex flex-col gap-5 px-5 pb-5 sm:flex-row sm:px-6 sm:pb-6">
+        <div class="-mt-16 w-32 shrink-0 self-center rounded-lg bg-white p-1 shadow-lg shadow-slate-900/15 sm:-mt-20 sm:w-40 sm:self-start">
+          <GameCover :src="data.cover_url" :alt="data.localized_name" :seed="data.id" :lang="data.display_language ?? undefined" />
+        </div>
+
+        <div class="min-w-0 flex-1 sm:pt-4">
           <h1 class="text-xl font-bold leading-tight tracking-tight text-slate-900 sm:text-2xl" :lang="data.display_language ?? undefined">
             {{ data.localized_name }}
           </h1>

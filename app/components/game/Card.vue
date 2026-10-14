@@ -2,10 +2,11 @@
 import { CalendarDays, Trophy } from 'lucide'
 import type { GameBrowseItem } from '~/services/games'
 
-const props = defineProps<{ game: GameBrowseItem }>()
-
-/** The common name under the localized one, when they differ. */
-const originalName = computed(() => props.game.localized_name !== props.game.name ? props.game.name : '')
+/**
+ * One game in the cover grid. Every text row is a single line (long names are
+ * cut, with the full name on hover), so all cards in a row are the same height.
+ */
+defineProps<{ game: GameBrowseItem }>()
 </script>
 
 <template>
@@ -16,19 +17,19 @@ const originalName = computed(() => props.game.localized_name !== props.game.nam
     <GameCover
       :src="game.cover_url"
       :alt="game.localized_name"
-      class="transition-shadow duration-200 group-hover:shadow-md group-hover:ring-slate-900/15"
+      :seed="game.id"
+      :lang="game.display_language ?? undefined"
+      class="transition duration-200 group-hover:-translate-y-0.5 group-hover:shadow-lg group-hover:shadow-slate-900/10"
     />
 
     <div class="mt-2 min-w-0">
       <h3
-        class="line-clamp-2 text-[13px] font-semibold leading-5 text-slate-800 transition-colors group-hover:text-sky-700"
+        class="truncate text-[13px] font-semibold leading-5 text-slate-800 transition-colors group-hover:text-sky-700"
         :lang="game.display_language ?? undefined"
+        :title="game.localized_name"
       >
         {{ game.localized_name }}
       </h3>
-      <p v-if="originalName" class="truncate text-[11px] leading-4 text-slate-400" :title="originalName">
-        {{ originalName }}
-      </p>
 
       <div class="mt-1.5 flex items-center justify-between gap-2 text-[11px] leading-4 text-slate-500">
         <time
@@ -50,7 +51,10 @@ const originalName = computed(() => props.game.localized_name !== props.game.nam
         </span>
       </div>
 
-      <GamePlatformBadges v-if="game.platforms.length" :platforms="game.platforms" :max="4" class="mt-1.5" />
+      <!-- Held at one badge's height, even when empty or a long name would wrap -->
+      <div class="mt-1.5 h-4 overflow-hidden">
+        <GamePlatformBadges v-if="game.platforms.length" :platforms="game.platforms" :max="3" />
+      </div>
     </div>
   </NuxtLink>
 </template>

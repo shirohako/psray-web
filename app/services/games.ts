@@ -70,6 +70,16 @@ export interface GameRelease {
 
 /** Payload of `GET /games/:id`. */
 export interface GameDetail extends GameBrowseItem {
+  /**
+   * Landscape banner art for the top of the game page. Not sent by the API
+   * yet; until it is (and for games without one) the page draws a banner.
+   */
+  banner_url?: string | null
+  /**
+   * The cover's dominant colour (`#rrggbb`), for tinting the drawn banner. Not
+   * sent by the API yet; until it is, the page reads it from the cover image.
+   */
+  cover_color?: string | null
   summary: string | null
   /** Summary in `display_language`, falling back to `summary`. */
   localized_summary: string | null
