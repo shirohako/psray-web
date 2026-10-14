@@ -122,7 +122,7 @@
         </div>
       </div>
 
-      <!-- Side: viewer progress (when ?psnid= resolves) + recent players -->
+      <!-- Side: viewer progress (when ?psnid= resolves), the set's game, stats, recent players -->
       <aside class="space-y-6">
         <TrophyViewerProgress
           v-if="data.viewer_progress"
@@ -131,6 +131,8 @@
           :total="totalDefined(data.trophy_set.defined_trophies)"
           :defined-trophies="data.trophy_set.defined_trophies"
         />
+
+        <TrophyGameCard v-if="data.game" :game="data.game" />
 
         <TrophyStatistics :trophy-set="data.trophy_set" />
 

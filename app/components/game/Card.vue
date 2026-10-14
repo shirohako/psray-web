@@ -1,0 +1,56 @@
+<script setup lang="ts">
+import { CalendarDays, Trophy } from 'lucide'
+import type { GameBrowseItem } from '~/services/games'
+
+const props = defineProps<{ game: GameBrowseItem }>()
+
+/** The common name under the localized one, when they differ. */
+const originalName = computed(() => props.game.localized_name !== props.game.name ? props.game.name : '')
+</script>
+
+<template>
+  <NuxtLink
+    :to="`/games/${game.id}`"
+    class="group flex min-w-0 flex-col rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-600"
+  >
+    <GameCover
+      :src="game.cover_url"
+      :alt="game.localized_name"
+      class="transition-shadow duration-200 group-hover:shadow-md group-hover:ring-slate-900/15"
+    />
+
+    <div class="mt-2 min-w-0">
+      <h3
+        class="line-clamp-2 text-[13px] font-semibold leading-5 text-slate-800 transition-colors group-hover:text-sky-700"
+        :lang="game.display_language ?? undefined"
+      >
+        {{ game.localized_name }}
+      </h3>
+      <p v-if="originalName" class="truncate text-[11px] leading-4 text-slate-400" :title="originalName">
+        {{ originalName }}
+      </p>
+
+      <div class="mt-1.5 flex items-center justify-between gap-2 text-[11px] leading-4 text-slate-500">
+        <time
+          :datetime="game.first_release_date ?? undefined"
+          class="inline-flex min-w-0 items-center gap-1 tabular-nums"
+          :class="{ 'text-slate-400': !game.first_release_date }"
+        >
+          <LucideIcon :icon="CalendarDays" class="size-3 shrink-0 text-slate-400" />
+          <span class="truncate">{{ formatReleaseDate(game.first_release_date, game.first_release_precision) }}</span>
+        </time>
+        <span
+          v-if="game.trophy_set_count"
+          class="inline-flex shrink-0 items-center gap-0.5 text-slate-400 tabular-nums"
+          :title="$t('games.trophySetCount', game.trophy_set_count)"
+        >
+          <LucideIcon :icon="Trophy" class="size-3" />
+          <span aria-hidden="true">{{ game.trophy_set_count }}</span>
+          <span class="sr-only">{{ $t('games.trophySetCount', game.trophy_set_count) }}</span>
+        </span>
+      </div>
+
+      <GamePlatformBadges v-if="game.platforms.length" :platforms="game.platforms" :max="4" class="mt-1.5" />
+    </div>
+  </NuxtLink>
+</template>

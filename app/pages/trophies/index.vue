@@ -297,14 +297,7 @@ function changePage(value: number) {
 
         <!-- Loaded entries, or (first load) placeholders laid out on the same grid -->
         <div v-else-if="games.length || pending" class="transition-opacity" :class="pending && games.length ? 'opacity-55' : ''">
-          <div v-if="view === 'list'" class="list-head border-b border-slate-100 bg-slate-50/70 text-[10px] text-slate-400" :class="{ 'no-reference-times': !showReferenceTimes }" aria-hidden="true">
-            <span class="col-span-2">{{ $t('library.game') }}</span>
-            <span>{{ $t('library.trophies') }}</span>
-            <span class="text-right">{{ $t('library.players') }}</span>
-            <span class="text-center">{{ $t('library.progress') }}</span>
-            <span v-if="showReferenceTimes">{{ $t('library.completionTime') }}</span>
-            <span />
-          </div>
+          <TrophyLibraryListHead v-if="view === 'list'" :show-reference-times="showReferenceTimes" />
           <div :class="view === 'list' ? 'divide-y divide-slate-100' : 'grid grid-cols-1 gap-2.5 bg-slate-50/50 p-2 sm:gap-3 sm:p-4 lg:grid-cols-2 2xl:grid-cols-3'">
             <template v-if="games.length">
               <TrophyLibraryEntry v-for="game in games" :key="game.id" :game="game" :view="view" :show-reference-times="showReferenceTimes" />
@@ -338,18 +331,6 @@ function changePage(value: number) {
 </template>
 
 <style scoped>
-.list-head { display: none; }
-@media (min-width: 768px) {
-  .list-head {
-    display: grid;
-    grid-template-columns: 96px minmax(160px, 1fr) 148px 100px 120px 166px 12px;
-    column-gap: 12px;
-    padding: 7px 16px;
-  }
-  .list-head.no-reference-times {
-    grid-template-columns: 96px minmax(160px, 1fr) 148px 100px 120px 12px;
-  }
-}
 .filter-field { display: flex; min-width: 0; flex-direction: column; gap: 6px; font-size: 11px; color: var(--color-slate-500); }
 .filter-field select { width: 100%; height: 32px; padding: 0 8px; border: 1px solid var(--color-slate-200); border-radius: 5px; background: white; color: var(--color-slate-700); outline: none; }
 .filter-field select:focus-visible { outline: 2px solid var(--color-slate-400); outline-offset: 1px; }

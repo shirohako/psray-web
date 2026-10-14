@@ -32,6 +32,7 @@
   },
   "nav": {
     "trophies": "トロフィー",
+    "games": "ゲーム",
     "about": "PSRay について",
     "home": "ホーム",
     "leaderboard": "ランキング",
@@ -214,6 +215,9 @@
     "second": "{s}秒"
   },
   "trophy": {
+    "game": {
+      "title": "ゲーム"
+    },
     "tier": {
       "platinum": "プラチナ",
       "gold": "ゴールド",
@@ -761,6 +765,15 @@
     }
   },
   "seo": {
+    "games": {
+      "title": "すべてのゲーム",
+      "description": "PSRay に収録されたゲームの一覧。プラットフォームごとの発売日、各言語のタイトル、対応する PSN トロフィーセットをまとめて確認できます。"
+    },
+    "game": {
+      "title": "{name}",
+      "titleFallback": "ゲーム",
+      "description": "{name}（{platforms}）の発売情報とトロフィーセット。"
+    },
     "home": {
       "title": "あなたの PSN アシスタント",
       "description": "PSRay は、PSN のトロフィー獲得状況を見やすくまとめるサービスです。自分のゲームプロフィールを作成し、獲得したトロフィーや最近遊んだゲームを確認できます。"
@@ -795,6 +808,72 @@
     },
     "settings": {
       "title": "アカウント設定"
+    }
+  },
+  "games": {
+    "title": "すべてのゲーム",
+    "description": "PSRay に収録されたゲームの一覧です。プラットフォームごとの発売日と、対応するトロフィーセットを確認できます。",
+    "search": "ゲーム名・別名・#ID で検索…",
+    "searchSubmit": "検索する",
+    "searchMinLength": "{count}文字以上入力してください",
+    "clearSearch": "検索をクリア",
+    "platforms": "プラットフォーム",
+    "allPlatforms": "すべて",
+    "multiSelect": "複数選択可",
+    "removeFilter": "絞り込みを解除：{name}",
+    "reset": "絞り込みをリセット",
+    "results": "ゲーム一覧",
+    "range": "全 {total} 件中 {start}～{end} 件を表示",
+    "empty": "該当するゲームがありません",
+    "emptyHint": "別の名前や別名で検索するか、絞り込み条件を減らしてください。",
+    "loadError": "ゲーム一覧を読み込めませんでした",
+    "loadErrorHint": "通信状態を確認して、もう一度お試しください。",
+    "retry": "再読み込み",
+    "trophySetCount": "トロフィーセット {n} 個",
+    "morePlatforms": "ほか {n} プラットフォーム",
+    "noCover": "カバー画像なし",
+    "tba": "発売日未定",
+    "quarter": "{year}年 第{quarter}四半期",
+    "regions": {
+      "WW": "全世界",
+      "NA": "北米",
+      "EU": "欧州",
+      "JP": "日本",
+      "ASIA": "アジア",
+      "CN": "中国",
+      "KR": "韓国",
+      "AU": "オーストラリア",
+      "NZ": "ニュージーランド",
+      "BR": "ブラジル"
+    },
+    "status": {
+      "early_access": "早期アクセス",
+      "advanced_release": "先行リリース",
+      "alpha": "アルファ版",
+      "beta": "ベータ版",
+      "cancelled": "発売中止",
+      "offline": "サービス終了",
+      "full_release": "正式リリース"
+    },
+    "detail": {
+      "breadcrumb": "すべてのゲーム",
+      "firstRelease": "初回発売日",
+      "trophySets": "トロフィーセット",
+      "trophySetsEmpty": "関連付けられたトロフィーセットはまだありません",
+      "trophySetsEmptyHint": "トロフィーセットは登録時に自動でゲームと照合されます。照合できなかったものはここに表示されません。",
+      "releases": "発売情報",
+      "releasesEmpty": "発売情報はまだありません",
+      "platform": "プラットフォーム",
+      "region": "地域",
+      "date": "発売日",
+      "showAllReleases": "すべて表示（{n} 件）",
+      "showFewerReleases": "閉じる",
+      "names": "名称",
+      "commonName": "共通名",
+      "aliases": "別名",
+      "links": "外部リンク",
+      "showMore": "続きを読む",
+      "showLess": "閉じる"
     }
   },
   "library": {

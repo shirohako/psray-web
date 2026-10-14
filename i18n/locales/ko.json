@@ -32,6 +32,7 @@
   },
   "nav": {
     "trophies": "트로피",
+    "games": "게임",
     "about": "PSRay 소개",
     "home": "홈",
     "leaderboard": "랭킹",
@@ -214,6 +215,9 @@
     "second": "{s}초"
   },
   "trophy": {
+    "game": {
+      "title": "게임"
+    },
     "tier": {
       "platinum": "플래티넘",
       "gold": "골드",
@@ -761,6 +765,15 @@
     }
   },
   "seo": {
+    "games": {
+      "title": "모든 게임",
+      "description": "PSRay에 수록된 모든 게임: 플랫폼별 발매일, 언어별 제목, 해당 PSN 트로피 세트."
+    },
+    "game": {
+      "title": "{name}",
+      "titleFallback": "게임",
+      "description": "{name}({platforms})의 발매 정보와 트로피 세트."
+    },
     "home": {
       "title": "나만의 PSN 도우미",
       "description": "PSRay는 PSN 트로피 획득 현황을 한눈에 보기 쉽게 정리해 줍니다. 나만의 게임 프로필을 만들고, 획득한 트로피와 최근 플레이한 게임을 확인해 보세요."
@@ -795,6 +808,72 @@
     },
     "settings": {
       "title": "계정 설정"
+    }
+  },
+  "games": {
+    "title": "모든 게임",
+    "description": "PSRay에 수록된 게임을 둘러보고, 플랫폼별 발매일과 해당 트로피 세트를 확인하세요.",
+    "search": "게임 이름, 별칭 또는 #ID 검색…",
+    "searchSubmit": "검색",
+    "searchMinLength": "{count}자 이상 입력해 주세요",
+    "clearSearch": "검색 지우기",
+    "platforms": "플랫폼",
+    "allPlatforms": "모든 플랫폼",
+    "multiSelect": "다중 선택 가능",
+    "removeFilter": "필터 제거: {name}",
+    "reset": "필터 초기화",
+    "results": "게임 목록",
+    "range": "총 {total}개 게임 중 {start}–{end} 표시",
+    "empty": "검색 결과가 없습니다",
+    "emptyHint": "다른 이름이나 별칭으로 검색하거나 필터를 줄여 보세요.",
+    "loadError": "게임 목록을 불러올 수 없습니다",
+    "loadErrorHint": "네트워크 연결을 확인한 뒤 다시 시도하세요.",
+    "retry": "다시 불러오기",
+    "trophySetCount": "트로피 세트 {n}개",
+    "morePlatforms": "외 {n}개 플랫폼",
+    "noCover": "커버 이미지 없음",
+    "tba": "발매일 미정",
+    "quarter": "{year}년 {quarter}분기",
+    "regions": {
+      "WW": "전 세계",
+      "NA": "북미",
+      "EU": "유럽",
+      "JP": "일본",
+      "ASIA": "아시아",
+      "CN": "중국",
+      "KR": "한국",
+      "AU": "호주",
+      "NZ": "뉴질랜드",
+      "BR": "브라질"
+    },
+    "status": {
+      "early_access": "얼리 액세스",
+      "advanced_release": "선행 출시",
+      "alpha": "알파",
+      "beta": "베타",
+      "cancelled": "발매 취소",
+      "offline": "서비스 종료",
+      "full_release": "정식 출시"
+    },
+    "detail": {
+      "breadcrumb": "모든 게임",
+      "firstRelease": "최초 발매일",
+      "trophySets": "트로피 세트",
+      "trophySetsEmpty": "연결된 트로피 세트가 아직 없습니다",
+      "trophySetsEmptyHint": "트로피 세트는 등록될 때 자동으로 게임과 연결됩니다. 연결되지 않은 세트는 여기에 표시되지 않습니다.",
+      "releases": "발매 정보",
+      "releasesEmpty": "발매 정보가 아직 없습니다",
+      "platform": "플랫폼",
+      "region": "지역",
+      "date": "발매일",
+      "showAllReleases": "전체 {n}개 보기",
+      "showFewerReleases": "접기",
+      "names": "이름",
+      "commonName": "공통 이름",
+      "aliases": "별칭",
+      "links": "외부 링크",
+      "showMore": "더 보기",
+      "showLess": "접기"
     }
   },
   "library": {

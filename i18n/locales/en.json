@@ -32,6 +32,7 @@
   },
   "nav": {
     "trophies": "Trophy library",
+    "games": "Games",
     "about": "About PSRay",
     "home": "Home",
     "leaderboard": "Leaderboard",
@@ -214,6 +215,9 @@
     "second": "{s}s"
   },
   "trophy": {
+    "game": {
+      "title": "Game"
+    },
     "tier": {
       "platinum": "Platinum",
       "gold": "Gold",
@@ -761,6 +765,15 @@
     }
   },
   "seo": {
+    "games": {
+      "title": "All games",
+      "description": "Every game on PSRay: release dates by platform, titles in each language, and the PSN trophy sets for each."
+    },
+    "game": {
+      "title": "{name}",
+      "titleFallback": "Game",
+      "description": "Release dates and trophy sets for {name} ({platforms})."
+    },
     "home": {
       "title": "Your PSN assistant",
       "description": "PSRay brings your PSN trophy progress together in one clear profile. Create your own gaming profile and see your earned trophies and recently played games at a glance."
@@ -795,6 +808,72 @@
     },
     "settings": {
       "title": "Settings"
+    }
+  },
+  "games": {
+    "title": "All games",
+    "description": "Browse every game on PSRay, with release dates for each platform and the trophy sets that belong to it.",
+    "search": "Search names, aliases or #ID…",
+    "searchSubmit": "Search",
+    "searchMinLength": "Enter at least {count} characters",
+    "clearSearch": "Clear search",
+    "platforms": "Platforms",
+    "allPlatforms": "All platforms",
+    "multiSelect": "Select multiple",
+    "removeFilter": "Remove filter: {name}",
+    "reset": "Reset filters",
+    "results": "Games",
+    "range": "Showing {start}–{end} of {total} games",
+    "empty": "No matching games",
+    "emptyHint": "Try another name or alias, or remove some filters.",
+    "loadError": "Could not load the games",
+    "loadErrorHint": "Check your connection and try again.",
+    "retry": "Reload",
+    "trophySetCount": "no trophy sets | {n} trophy set | {n} trophy sets",
+    "morePlatforms": "{n} more platform | {n} more platforms",
+    "noCover": "No cover art",
+    "tba": "TBA",
+    "quarter": "Q{quarter} {year}",
+    "regions": {
+      "WW": "Worldwide",
+      "NA": "North America",
+      "EU": "Europe",
+      "JP": "Japan",
+      "ASIA": "Asia",
+      "CN": "China",
+      "KR": "Korea",
+      "AU": "Australia",
+      "NZ": "New Zealand",
+      "BR": "Brazil"
+    },
+    "status": {
+      "early_access": "Early access",
+      "advanced_release": "Advanced release",
+      "alpha": "Alpha",
+      "beta": "Beta",
+      "cancelled": "Cancelled",
+      "offline": "Offline",
+      "full_release": "Full release"
+    },
+    "detail": {
+      "breadcrumb": "All games",
+      "firstRelease": "First release",
+      "trophySets": "Trophy sets",
+      "trophySetsEmpty": "No trophy sets linked yet",
+      "trophySetsEmptyHint": "Trophy sets are matched to games automatically when they're added; ones that couldn't be matched don't show up here.",
+      "releases": "Releases",
+      "releasesEmpty": "No release information yet",
+      "platform": "Platform",
+      "region": "Region",
+      "date": "Release date",
+      "showAllReleases": "Show all {n}",
+      "showFewerReleases": "Show less",
+      "names": "Names",
+      "commonName": "Common name",
+      "aliases": "Also known as",
+      "links": "Links",
+      "showMore": "Read more",
+      "showLess": "Show less"
     }
   },
   "library": {

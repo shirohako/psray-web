@@ -32,6 +32,7 @@
   },
   "nav": {
     "trophies": "獎盃庫",
+    "games": "遊戲",
     "about": "關於 PSRay",
     "home": "首頁",
     "leaderboard": "排行榜",
@@ -214,6 +215,9 @@
     "second": "{s}秒"
   },
   "trophy": {
+    "game": {
+      "title": "所屬遊戲"
+    },
     "tier": {
       "platinum": "白金",
       "gold": "黃金",
@@ -761,6 +765,15 @@
     }
   },
   "seo": {
+    "games": {
+      "title": "全部遊戲",
+      "description": "瀏覽 PSRay 收錄的遊戲：各平台的發售日期、多語言名稱與對應的 PSN 獎盃組。"
+    },
+    "game": {
+      "title": "{name}",
+      "titleFallback": "遊戲",
+      "description": "{name}（{platforms}）的發售資訊與獎盃組。"
+    },
     "home": {
       "title": "你的 PSN 助手",
       "description": "PSRay 清晰整理你的 PSN 獎盃進度。建立專屬遊戲資料頁，一目了然地查看已獲得的獎盃和最近玩過的遊戲。"
@@ -795,6 +808,72 @@
     },
     "settings": {
       "title": "使用者設定"
+    }
+  },
+  "games": {
+    "title": "全部遊戲",
+    "description": "瀏覽 PSRay 收錄的遊戲，查看各平台的發售日期與對應的獎盃組。",
+    "search": "搜尋遊戲名稱、別名或 #ID…",
+    "searchSubmit": "搜尋",
+    "searchMinLength": "請至少輸入 {count} 個字元",
+    "clearSearch": "清除搜尋",
+    "platforms": "平台",
+    "allPlatforms": "全部平台",
+    "multiSelect": "可複選",
+    "removeFilter": "移除篩選：{name}",
+    "reset": "重設篩選",
+    "results": "遊戲列表",
+    "range": "顯示 {start}–{end} 項，共 {total} 款遊戲",
+    "empty": "找不到符合條件的遊戲",
+    "emptyHint": "試試其他名稱或別名，或減少篩選條件。",
+    "loadError": "無法載入遊戲列表",
+    "loadErrorHint": "請檢查網路連線後重試。",
+    "retry": "重新載入",
+    "trophySetCount": "{n} 個獎盃組",
+    "morePlatforms": "另有 {n} 個平台",
+    "noCover": "暫無封面",
+    "tba": "發售日未定",
+    "quarter": "{year} 年第 {quarter} 季",
+    "regions": {
+      "WW": "全球",
+      "NA": "北美",
+      "EU": "歐洲",
+      "JP": "日本",
+      "ASIA": "亞洲",
+      "CN": "中國",
+      "KR": "韓國",
+      "AU": "澳洲",
+      "NZ": "紐西蘭",
+      "BR": "巴西"
+    },
+    "status": {
+      "early_access": "搶先體驗",
+      "advanced_release": "提前發售",
+      "alpha": "Alpha 測試",
+      "beta": "Beta 測試",
+      "cancelled": "已取消",
+      "offline": "已停止營運",
+      "full_release": "正式發售"
+    },
+    "detail": {
+      "breadcrumb": "全部遊戲",
+      "firstRelease": "首發日期",
+      "trophySets": "獎盃組",
+      "trophySetsEmpty": "還沒有關聯的獎盃組",
+      "trophySetsEmptyHint": "獎盃組收錄時會自動比對遊戲，比對不到的暫時不會出現在這裡。",
+      "releases": "發售資訊",
+      "releasesEmpty": "暫無發售資訊",
+      "platform": "平台",
+      "region": "地區",
+      "date": "發售日",
+      "showAllReleases": "顯示全部 {n} 筆",
+      "showFewerReleases": "收合",
+      "names": "名稱",
+      "commonName": "通用名稱",
+      "aliases": "別名",
+      "links": "外部連結",
+      "showMore": "展開全文",
+      "showLess": "收合"
     }
   },
   "library": {

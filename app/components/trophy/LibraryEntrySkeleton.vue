@@ -3,7 +3,7 @@
  * Loading placeholder for one {@link TrophyLibraryEntry}. It keeps that
  * component's grid (list columns, phone stack and grid card), so swapping in
  * the loaded entries moves nothing. Keep the layout below in sync with
- * `LibraryEntry.vue` and the list head in `pages/trophies/index.vue`.
+ * `LibraryEntry.vue` and `LibraryListHead.vue`.
  */
 const props = defineProps<{ view: 'list' | 'grid'; showReferenceTimes: boolean; index: number }>()
 

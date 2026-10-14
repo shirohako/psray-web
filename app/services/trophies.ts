@@ -6,6 +6,8 @@
  * so its setup calls `useApiFetch<TrophySetDetail>('/trophies/:id')` directly.
  */
 
+import type { GameBrowseItem } from '~/services/games'
+
 export type TrophyType = 'platinum' | 'gold' | 'silver' | 'bronze'
 
 export type Rarity = 'COMMON' | 'UNCOMMON' | 'RARE' | 'VERY RARE' | 'ULTRA RARE'
@@ -261,6 +263,8 @@ export interface TrophySetDetail {
   groups: TrophyGroup[]
   recent_players: RecentPlayer[]
   similar_trophy_sets?: SimilarTrophySet[]
+  /** The game this set belongs to; `null` when it isn't linked to one. */
+  game?: GameBrowseItem | null
   viewer_progress: ViewerProgress | null
 }
 
