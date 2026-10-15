@@ -340,7 +340,10 @@
       "speedrunHint": "按首个至最后一个奖杯的耗时从短到长排名",
       "viewProgress": "查看游戏进度",
       "viewProfile": "查看个人资料",
-      "empty": "暂无玩家记录。"
+      "empty": "暂无玩家记录。",
+      "dayUnit": "天",
+      "completedOn": "完成日期",
+      "timeTaken": "用时"
     },
     "earners": {
       "title": "近期获得的玩家",

@@ -127,6 +127,20 @@ export function formatDuration(sec: number | null | undefined) {
 }
 
 /**
+ * A duration as a stopwatch reading: `8:57:12`, or `05:10:10` plus whole days,
+ * which come back separately so the caller can label them (`<TrophyStopwatch>`). Seconds stay, so two
+ * close runs never read the same.
+ */
+export function stopwatch(sec: number): { days: number; time: string } {
+  const total = Math.max(0, Math.floor(sec))
+  const days = Math.floor(total / 86_400)
+  const h = Math.floor((total % 86_400) / 3600)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return { days, time: `${days ? pad(h) : h}:${pad(Math.floor((total % 3600) / 60))}:${pad(total % 60)}` }
+}
+
+
+/**
  * Gap between two consecutively earned trophies, in English units spaced for
  * readability, e.g.「18 h 12 m 15 s」「1 d 3 h」「5 s」. Lists every non-zero
  * unit (d/h/m/s).「< 1 s」for sub-second gaps;「null」when there's no previous

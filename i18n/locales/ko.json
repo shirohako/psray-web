@@ -340,7 +340,10 @@
       "speedrunHint": "첫 트로피부터 마지막 트로피까지 걸린 시간이 짧은 순서",
       "viewProgress": "게임 진행 상황 보기",
       "viewProfile": "프로필 보기",
-      "empty": "아직 플레이어 기록이 없습니다."
+      "empty": "아직 플레이어 기록이 없습니다.",
+      "dayUnit": "일",
+      "completedOn": "완료일",
+      "timeTaken": "소요 시간"
     },
     "earners": {
       "title": "최근 획득한 플레이어",

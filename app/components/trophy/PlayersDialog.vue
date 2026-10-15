@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Trophy, Timer, History, Flag } from 'lucide'
+import { CalendarCheck, Clock, Trophy, Timer, History, Flag } from 'lucide'
 import type { IconNode } from 'lucide'
 import { useTrophies, type PlayerRanking, type PlayersMeta, type PlayerRankType } from '~/services/trophies'
 
@@ -18,6 +18,9 @@ const tabs: { value: PlayerRankType; labelKey: string; hintKey?: string; icon: I
 ]
 
 const type = ref<PlayerRankType>('recent')
+// The tab the listed rows were fetched for: rows keep that tab's layout while
+// the next tab loads.
+const shownType = ref<PlayerRankType>('recent')
 const page = ref(1)
 const players = ref<PlayerRanking[]>([])
 const meta = ref<PlayersMeta>()
@@ -26,14 +29,18 @@ const pending = ref(false)
 const { players: fetchPlayers } = useTrophies()
 const totalPages = computed(() => meta.value?.total_pages ?? 1)
 
+let request = 0
 async function load() {
+  const current = ++request
   pending.value = true
   try {
     const res = await fetchPlayers(props.id, { type: type.value, page: page.value })
+    if (current !== request) return
     players.value = res.data
     meta.value = res.meta
+    shownType.value = type.value
   } finally {
-    pending.value = false
+    if (current === request) pending.value = false
   }
 }
 
@@ -65,6 +72,11 @@ function tiers(p: PlayerRanking) {
     { dot: 'bg-slate-400', count: p.earned_silver },
     { dot: 'bg-orange-400', count: p.earned_bronze },
   ]
+}
+
+/** Rows decided by a finish: every speedrun row, and finish-order rows at 100%. */
+function finished(p: PlayerRanking) {
+  return shownType.value === 'speedrun' || (shownType.value === 'progress' && p.progress >= 100)
 }
 
 function rankClass(rank: number) {
@@ -141,24 +153,57 @@ function rankClass(rank: number) {
               <span class="truncate text-sm font-semibold text-slate-900 group-hover:text-slate-700">{{ p.psnid }}</span>
               <LucideIcon v-if="p.earned_platinum > 0" :icon="Trophy" class="size-3.5 shrink-0 text-cyan-500" />
             </div>
-            <div class="mt-0.5 flex items-center gap-2 text-xs text-slate-400">
-              <span class="inline-flex items-center gap-1"><RegionFlag :country="p.country" />{{ regionName(p.country) }}</span>
-              <span>·</span>
-              <span v-if="type === 'speedrun'" class="inline-flex items-center gap-1 font-medium text-slate-500">
+            <div class="mt-0.5 flex min-w-0 items-center gap-2 text-xs text-slate-400">
+              <span class="inline-flex min-w-0 items-center gap-1">
+                <RegionFlag :country="p.country" class="shrink-0" />
+                <span class="truncate" :class="{ 'hidden sm:inline': finished(p) }">{{ regionName(p.country) }}</span>
+              </span>
+              <span class="shrink-0" :class="{ 'hidden sm:inline': finished(p) }">·</span>
+              <span v-if="shownType === 'speedrun'" class="inline-flex shrink-0 items-center gap-1" :title="$t('trophy.players.completedOn')">
+                <LucideIcon :icon="CalendarCheck" class="size-3" /><LocalTime :value="p.last_earned_at" format="day" />
+              </span>
+              <span v-else-if="finished(p)" class="inline-flex shrink-0 items-center gap-1" :title="$t('trophy.players.timeTaken')">
                 <LucideIcon :icon="Timer" class="size-3" />{{ formatDuration(p.duration) }}
               </span>
-              <LocalTime v-else :value="p.last_earned_at" />
+              <LocalTime v-else class="shrink-0" :value="p.last_earned_at" />
             </div>
           </div>
 
-          <!-- Trophy breakdown -->
-          <div class="hidden shrink-0 items-center gap-2.5 text-xs text-slate-500 sm:flex">
-            <span v-for="(t, i) in tiers(p)" :key="i" class="inline-flex items-center gap-0.5">
-              <span class="size-2 rounded-full" :class="t.dot" />{{ t.count }}
-            </span>
-          </div>
+          <!-- Finished rows: the old breakdown + percent, then the figure the ranking is decided by -->
+          <template v-if="finished(p)">
+            <div class="hidden shrink-0 items-center gap-2.5 text-xs text-slate-500 sm:flex">
+              <span v-for="(t, i) in tiers(p)" :key="i" class="inline-flex items-center gap-0.5">
+                <span class="size-2 rounded-full" :class="t.dot" />{{ t.count }}
+              </span>
+            </div>
+            <div class="hidden w-10 shrink-0 text-right text-xs font-semibold tabular-nums text-slate-400 sm:block">{{ p.progress }}%</div>
+            <div class="hidden h-8 w-px shrink-0 bg-slate-100 sm:block" />
+            <!-- Speedrun: the time taken, to the second -->
+            <div
+              v-if="shownType === 'speedrun'"
+              class="min-w-24 shrink-0 text-right text-sm sm:min-w-28 sm:text-[15px]"
+              :title="formatDuration(p.duration)"
+            >
+              <TrophyStopwatch :seconds="p.duration" />
+            </div>
+            <!-- Finish order: when 100% was reached -->
+            <div v-else class="min-w-24 shrink-0 text-right tabular-nums leading-tight">
+              <div class="text-sm font-semibold text-slate-800 sm:text-[15px]"><LocalTime :value="p.last_earned_at" format="day" /></div>
+              <div class="mt-1 inline-flex items-center gap-1 text-[11px] text-slate-400">
+                <LucideIcon :icon="Clock" class="size-3" /><LocalTime :value="p.last_earned_at" format="time" />
+              </div>
+            </div>
+          </template>
 
-          <div class="w-12 shrink-0 text-right text-sm font-bold text-slate-900 tabular-nums">{{ p.progress }}%</div>
+          <!-- Still playing: trophy breakdown and progress -->
+          <template v-else>
+            <div class="hidden shrink-0 items-center gap-2.5 text-xs text-slate-500 sm:flex">
+              <span v-for="(t, i) in tiers(p)" :key="i" class="inline-flex items-center gap-0.5">
+                <span class="size-2 rounded-full" :class="t.dot" />{{ t.count }}
+              </span>
+            </div>
+            <div class="w-12 shrink-0 text-right text-sm font-bold text-slate-900 tabular-nums">{{ p.progress }}%</div>
+          </template>
         </TrophyPlayerMenu>
       </li>
     </ul>

@@ -340,7 +340,10 @@
       "speedrunHint": "Ranked by each player's elapsed time from first to last trophy",
       "viewProgress": "View game progress",
       "viewProfile": "View profile",
-      "empty": "No player records yet."
+      "empty": "No player records yet.",
+      "dayUnit": "d",
+      "completedOn": "Completed on",
+      "timeTaken": "Time taken"
     },
     "earners": {
       "title": "Recent earners",

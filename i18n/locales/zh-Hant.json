@@ -340,7 +340,10 @@
       "speedrunHint": "按首個至最後一個獎盃的耗時從短到長排名",
       "viewProgress": "查看遊戲進度",
       "viewProfile": "查看個人資料",
-      "empty": "暫無玩家記錄。"
+      "empty": "暫無玩家記錄。",
+      "dayUnit": "天",
+      "completedOn": "完成日期",
+      "timeTaken": "用時"
     },
     "earners": {
       "title": "近期獲得的玩家",

@@ -340,7 +340,10 @@
       "speedrunHint": "最初から最後のトロフィーまでの所要時間が短い順にランキング",
       "viewProgress": "ゲームの進捗を見る",
       "viewProfile": "プロフィールを見る",
-      "empty": "プレイヤー記録がまだありません。"
+      "empty": "プレイヤー記録がまだありません。",
+      "dayUnit": "日",
+      "completedOn": "達成日",
+      "timeTaken": "所要時間"
     },
     "earners": {
       "title": "最近獲得したプレイヤー",

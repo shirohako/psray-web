@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatHourInterval, platformLabel, resolveHourInterval, toIsoDate } from '~/utils/profile'
+import { formatHourInterval, platformLabel, resolveHourInterval, stopwatch, toIsoDate } from '~/utils/profile'
 
 const compact = (value: string | null) => value?.replace(/\s/g, '')
 
@@ -37,5 +37,13 @@ describe('profile formatting', () => {
     expect(toIsoDate(null)).toBeNull()
     expect(toIsoDate('')).toBeNull()
     expect(toIsoDate('not a date')).toBeNull()
+  })
+
+  it('reads durations like a stopwatch, keeping seconds', () => {
+    expect(stopwatch(32_232)).toEqual({ days: 0, time: '8:57:12' })
+    expect(stopwatch(59)).toEqual({ days: 0, time: '0:00:59' })
+    expect(stopwatch(86_400 + 5 * 3600 + 610)).toEqual({ days: 1, time: '05:10:10' })
+    expect(stopwatch(400 * 86_400 + 0.9)).toEqual({ days: 400, time: '00:00:00' })
+    expect(stopwatch(-5)).toEqual({ days: 0, time: '0:00:00' })
   })
 })
