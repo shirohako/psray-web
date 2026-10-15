@@ -167,6 +167,15 @@ export interface BanResult {
   purged: PurgeReport | null
   evidence: BanEvidence
 }
+/** The five UI languages, which are also the languages mails are sent in. */
+export const MAIL_LOCALES = [
+  { value: 'zh-Hans', label: '简体中文' },
+  { value: 'zh-Hant', label: '繁體中文' },
+  { value: 'ja', label: '日本語' },
+  { value: 'en', label: 'English' },
+  { value: 'ko', label: '한국어' },
+] as const
+export type MailLocale = (typeof MAIL_LOCALES)[number]['value']
 /** One editable setting from `GET /settings`. Database values win over env. */
 export interface SystemSettingItem {
   key: string
@@ -178,10 +187,15 @@ export interface SystemSettingItem {
   /** The env var it falls back to, for display. */
   env: string | null
   is_set: boolean
-  source: 'database' | 'env' | null
+  /** Where the effective value comes from; `default` is the definition's own default. */
+  source: 'database' | 'env' | 'default' | null
   value: string | number | boolean | null
+  /** Allowed values for a select; empty for free input. */
+  options: { value: string; label: string }[]
   /** Whether clearing the database value still leaves an env value. */
   env_is_set: boolean
+  /** The definition's default, used when neither database nor env has a value. */
+  default: string | number | boolean | null
   updated_at: string | null
 }
 export interface SystemSettingGroup {

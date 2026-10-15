@@ -37,6 +37,10 @@ onMounted(refresh)
       :key="group.key"
       :group="group"
       @saved="(result) => (groups = result.groups)"
-    />
+    >
+      <template v-if="group.key === 'mail'" #actions="{ dirty }">
+        <AdminMailTestButton :unsaved="dirty" />
+      </template>
+    </AdminSettingsGroup>
   </div>
 </template>
