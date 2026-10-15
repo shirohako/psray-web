@@ -29,6 +29,8 @@ export type ErrorCode =
   // Registration (send-code + PSN-profile verification).
   | 'ALREADY_REGISTERED'
   | 'PSN_PROFILE_FAILED'
+  // Feedback: missing, or pending / hidden and the viewer isn't its author.
+  | 'FEEDBACK_NOT_FOUND'
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {})
 

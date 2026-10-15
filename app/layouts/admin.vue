@@ -15,12 +15,14 @@ import {
   Mail,
   FileStack,
   Megaphone,
+  MessagesSquare,
   ShieldCheck,
   X,
 } from 'lucide'
 import { adminDate } from '~/utils/admin'
 const route = useRoute()
 const { user } = useAuth()
+const { summary: feedbackSummary, refresh: refreshFeedbackSummary } = useAdminFeedbackSummary()
 const open = ref(false)
 // Desktop rail state, restored on mount so the first client render matches.
 const collapsed = ref(false)
@@ -31,6 +33,7 @@ onMounted(() => {
     collapsed.value = localStorage.getItem('admin:sidebar') === 'rail'
   } catch {}
   clock = setInterval(() => (now.value = new Date()), 1000)
+  refreshFeedbackSummary()
 })
 onBeforeUnmount(() => clearInterval(clock))
 watch(collapsed, (v) => {
@@ -48,6 +51,7 @@ const groups = [
     items: [
       { name: '反作弊', to: '/admin/bans', icon: Ban },
       { name: '用户数据', to: '/admin/user-data', icon: Database },
+      { name: '用户反馈', to: '/admin/feedback', icon: MessagesSquare },
     ],
   },
   {
@@ -72,6 +76,10 @@ const groups = [
     items: [{ name: '系统设置', to: '/admin/settings', icon: Settings }],
   },
 ]
+// Work waiting in a section, shown next to its nav item: feedback to review or answer.
+const badges = computed<Record<string, number>>(() => ({
+  '/admin/feedback': (feedbackSummary.value?.pending ?? 0) + (feedbackSummary.value?.awaiting ?? 0),
+}))
 // Child pages (e.g. a template's editor) count as their section; /admin itself only matches exactly.
 function isCurrent(to: string) {
   return route.path === to || (to !== '/admin' && route.path.startsWith(`${to}/`))
@@ -94,6 +102,7 @@ watch(
     open.value = false
     // On desktop the sheet, not the window, scrolls.
     document.getElementById('admin-sheet')?.scrollTo({ top: 0 })
+    refreshFeedbackSummary()
   },
 )
 useHead({
@@ -177,10 +186,21 @@ useHead({
                   : 'hover:bg-white/5 hover:text-white',
                 collapsed ? 'lg:justify-center lg:px-0' : '',
               ]"
-              class="flex h-9 items-center gap-3 rounded-full px-3.5 text-sm font-medium transition"
+              class="relative flex h-9 items-center gap-3 rounded-full px-3.5 text-sm font-medium transition"
             >
               <LucideIcon :icon="item.icon" class="size-4.5 shrink-0" />
               <span :class="collapsed ? 'lg:hidden' : ''">{{ item.name }}</span>
+              <template v-if="badges[item.to]">
+                <span
+                  :class="collapsed ? 'lg:hidden' : ''"
+                  class="ml-auto rounded-full bg-amber-400 px-1.5 text-[11px] font-semibold tabular-nums text-slate-950"
+                  >{{ badges[item.to] }}</span
+                ><span
+                  v-if="collapsed"
+                  class="absolute right-2.5 top-1.5 hidden size-2 rounded-full bg-amber-400 lg:block"
+                  aria-hidden="true"
+                />
+              </template>
             </NuxtLink>
           </div>
         </div>

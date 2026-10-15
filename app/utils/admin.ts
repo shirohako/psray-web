@@ -169,7 +169,7 @@ export interface BanResult {
 }
 /** Mail categories: whether a mail honours the subscription switches and can be unsubscribed from. */
 export const MAIL_CATEGORIES = [
-  { value: 'transactional', label: '账户与安全', note: '验证码等，总是发送、不能退订' },
+  { value: 'transactional', label: '账户与安全', note: '验证码、反馈回复等，总是发送、不能退订' },
   { value: 'important', label: '重要通知', note: '故障、维护等' },
   { value: 'features', label: '新功能通知', note: '' },
   { value: 'other', label: '其他推送', note: '' },
@@ -279,6 +279,68 @@ export const MAIL_LOCALES = [
   { value: 'ko', label: '한국어' },
 ] as const
 export type MailLocale = (typeof MAIL_LOCALES)[number]['value']
+/** Feedback type / visibility labels and filter options (statuses go through `statusLabels`). */
+export const FEEDBACK_TYPE_OPTIONS = [
+  { value: 'bug', label: 'Bug' },
+  { value: 'suggestion', label: '建议' },
+  { value: 'other', label: '其他' },
+]
+export const FEEDBACK_STATUS_OPTIONS = [
+  { value: 'open', label: '待处理' },
+  { value: 'in_progress', label: '处理中' },
+  { value: 'done', label: '已完成' },
+  { value: 'declined', label: '不处理' },
+]
+export const FEEDBACK_VISIBILITY_OPTIONS = [
+  { value: 'pending', label: '待审核' },
+  { value: 'public', label: '公开' },
+  { value: 'hidden', label: '已隐藏' },
+]
+export const FEEDBACK_TYPE_LABELS: Record<string, string> = Object.fromEntries(FEEDBACK_TYPE_OPTIONS.map((o) => [o.value, o.label]))
+export const FEEDBACK_VISIBILITY_LABELS: Record<string, string> = Object.fromEntries(FEEDBACK_VISIBILITY_OPTIONS.map((o) => [o.value, o.label]))
+/** `GET /feedback/summary`: what the sidebar badge and the page's tabs count. */
+export interface AdminFeedbackSummary {
+  pending: number
+  awaiting: number
+}
+/** One reply in `GET /feedback/{id}`. */
+export interface AdminFeedbackReply {
+  id: number
+  is_staff: boolean
+  user_id: number | null
+  psnid: string | null
+  avatar_url: string | null
+  content: string
+  image_urls: string[]
+  ip_address: string | null
+  created_at: string
+}
+/** `GET /feedback/{id}`; list rows carry the fields up to `last_activity_at`. */
+export interface AdminFeedbackDetail {
+  id: number
+  type: string
+  status: string
+  visibility: 'pending' | 'public' | 'hidden'
+  author: 'user' | 'guest'
+  user_id: number | null
+  psnid: string | null
+  guest_name: string | null
+  content: string
+  image_urls: string[]
+  reply_count: number
+  has_staff_reply: boolean
+  awaiting_reply: boolean
+  ip_address: string | null
+  created_at: string
+  last_activity_at: string
+  user?: { id: number, psnid: string, avatar_url: string | null, country: string | null, trophy_level: number | null } | null
+  notifies_author?: boolean
+  user_agent?: string | null
+  context?: Partial<Record<'page_url' | 'screen' | 'viewport' | 'locale' | 'timezone', string>> | null
+  reviewed_by?: string | null
+  reviewed_at?: string | null
+  replies?: AdminFeedbackReply[]
+}
 /** One editable setting from `GET /settings`. Database values win over env. */
 export interface SystemSettingItem {
   key: string
@@ -414,12 +476,27 @@ export const statusLabels: Record<string, string> = {
   sent: '已发送',
   sending: '发送中',
   cancelled: '已取消',
+  open: '待处理',
+  in_progress: '处理中',
+  done: '已完成',
+  declined: '不处理',
 }
 export const fieldLabels: Record<string, string> = {
   id: 'ID',
   psnid: 'PSN ID',
   account_id: 'Account ID',
   user_id: '用户 ID',
+  guest_name: '访客昵称',
+  ip_address: 'IP',
+  user_agent: 'User-Agent',
+  visibility: '可见性',
+  reply_count: '回复数',
+  has_staff_reply: '有官方回复',
+  awaiting_reply: '待回复',
+  notifies_author: '回复会发邮件',
+  last_activity_at: '最后活动',
+  reviewed_by: '审核人',
+  reviewed_at: '审核时间',
   actor_id: '管理员 ID',
   moderator_user_id: '执行人 ID',
   name: '名称',

@@ -174,7 +174,8 @@
       "VERIFICATION_CODE_INVALID": "未在 PSN 簡介中找到正確的驗證碼，請確認已填入且未刪除。",
       "VERIFICATION_CODE_EXPIRED": "驗證碼已過期，請重新發送後再試。",
       "INVALID_CREDENTIALS": "帳號或密碼錯誤。",
-      "ACCOUNT_TERMINATED": "帳號已被封禁。"
+      "ACCOUNT_TERMINATED": "帳號已被封禁。",
+      "FEEDBACK_NOT_FOUND": "找不到這則回饋，它可能已被刪除，或尚未公開。"
     }
   },
   "toast": {
@@ -922,6 +923,11 @@
     },
     "unsubscribe": {
       "title": "退訂郵件"
+    },
+    "feedback": {
+      "title": "意見回饋",
+      "description": "PSRay 的問題回報、功能建議，以及管理員的回覆。",
+      "detailTitle": "回饋 #{id}"
     }
   },
   "games": {
@@ -1060,6 +1066,110 @@
         "from15": "15%–未滿 30%",
         "from30": "30%–未滿 50%",
         "from50": "50% 及以上"
+      }
+    }
+  },
+  "feedback": {
+    "button": "意見回饋",
+    "title": "意見回饋",
+    "description": "回報問題、提出建議都可以在這裡。所有回饋與管理員的回覆都會公開。",
+    "write": "提交回饋",
+    "guest": "訪客",
+    "guestTag": "訪客",
+    "staffTag": "官方",
+    "staffFallback": "PSRay 管理員",
+    "deletedUser": "已註銷的使用者",
+    "staffReplied": "官方已回覆",
+    "images": "圖片",
+    "replies": "回覆",
+    "types": {
+      "bug": "Bug",
+      "suggestion": "建議",
+      "other": "其他"
+    },
+    "statuses": {
+      "open": "待處理",
+      "in_progress": "處理中",
+      "done": "已完成",
+      "declined": "不處理"
+    },
+    "visibility": {
+      "pending": "待審核",
+      "hidden": "已隱藏"
+    },
+    "list": {
+      "all": "全部",
+      "mine": "我的回饋",
+      "type": "類型",
+      "status": "狀態",
+      "allTypes": "所有類型",
+      "allStatuses": "所有狀態",
+      "range": "第 {start}–{end} 筆，共 {total} 筆",
+      "empty": "還沒有回饋。",
+      "emptyFiltered": "沒有符合條件的回饋。",
+      "emptyMine": "你還沒有提交過回饋。",
+      "guestMineHint": "這裡是你在這個瀏覽器中提交的回饋。清除瀏覽器資料後將不再顯示。",
+      "loadError": "回饋載入失敗",
+      "reset": "清除篩選"
+    },
+    "form": {
+      "title": "提交回饋",
+      "type": "類型",
+      "content": "內容",
+      "contentPlaceholder": "在哪個頁面、做了什麼、發生了什麼——寫得越具體，越容易找出問題。",
+      "images": "截圖",
+      "imagesHint": "先上傳到圖床，再貼上以 https 開頭的圖片連結（最多 {count} 張）。",
+      "addImage": "新增連結",
+      "removeImage": "刪除這個連結",
+      "imagePlaceholder": "https://…",
+      "guestName": "暱稱（選填）",
+      "guestNamePlaceholder": "未填寫時顯示為「訪客」",
+      "guestNotice": "你尚未登入。訪客的回饋需經管理員審核後才會公開，也收不到回覆的郵件通知。",
+      "login": "登入後提交",
+      "publicNotice": "回饋與回覆對所有人公開，請勿填寫信箱、密碼等個人資料。",
+      "contextNotice": "為了方便排查問題，提交時會附帶目前頁面、螢幕尺寸、語言與瀏覽器資訊（僅管理員可見）。",
+      "submit": "提交",
+      "submitting": "提交中…",
+      "submitFailed": "回饋提交失敗",
+      "viewAll": "查看所有回饋",
+      "sentTitle": "已提交",
+      "sentPublic": "感謝你的回饋！它已經公開，管理員回覆後會寄信通知你。",
+      "sentPending": "感謝你的回饋！經管理員審核後才會公開，在此之前可以在這個瀏覽器中查看。",
+      "view": "查看回饋",
+      "another": "再提交一則",
+      "errors": {
+        "type": "請選擇類型。",
+        "contentRequired": "請填寫內容。",
+        "contentShort": "至少填寫 {min} 個字。",
+        "contentLong": "不能超過 {max} 個字。",
+        "imageUrl": "請填寫以 https 開頭的連結。",
+        "guestName": "暱稱不能超過 {max} 個字。"
+      }
+    },
+    "detail": {
+      "back": "所有回饋",
+      "loading": "載入中…",
+      "notFound": "找不到這則回饋",
+      "notFoundHint": "它可能已被刪除，或尚未公開。",
+      "loadError": "回饋載入失敗",
+      "pendingNotice": "等待管理員審核。公開之前只有你和管理員看得到。",
+      "hiddenNotice": "已被管理員隱藏，只有你和管理員看得到。",
+      "noReplies": "還沒有回覆。管理員回覆後會顯示在這裡。",
+      "followUpTag": "作者補充",
+      "delete": "刪除",
+      "deleteConfirm": "將刪除這則回饋及其所有回覆，無法復原。",
+      "deleteConfirmAction": "確認刪除",
+      "deleting": "刪除中…",
+      "deleted": "回饋已刪除",
+      "deleteFailed": "回饋刪除失敗",
+      "followUp": {
+        "title": "補充資訊",
+        "hint": "可以在這裡補充更多資訊或後續狀況，方便管理員排查。",
+        "placeholder": "補充資訊或後續狀況…",
+        "send": "送出",
+        "sending": "送出中…",
+        "sent": "已補充",
+        "failed": "補充失敗"
       }
     }
   }

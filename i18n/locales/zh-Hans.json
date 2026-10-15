@@ -174,7 +174,8 @@
       "VERIFICATION_CODE_INVALID": "未在 PSN 简介中找到正确的验证码，请确认已填入且未删除。",
       "VERIFICATION_CODE_EXPIRED": "验证码已过期，请重新发送后再试。",
       "INVALID_CREDENTIALS": "账号或密码错误。",
-      "ACCOUNT_TERMINATED": "账号已被封禁。"
+      "ACCOUNT_TERMINATED": "账号已被封禁。",
+      "FEEDBACK_NOT_FOUND": "找不到这条反馈，它可能已被删除，或者还没有公开。"
     }
   },
   "toast": {
@@ -922,6 +923,11 @@
     },
     "unsubscribe": {
       "title": "退订邮件"
+    },
+    "feedback": {
+      "title": "用户反馈",
+      "description": "PSRay 的问题报告、功能建议，以及管理员的回复。",
+      "detailTitle": "反馈 #{id}"
     }
   },
   "games": {
@@ -1060,6 +1066,110 @@
         "from15": "15%–不足 30%",
         "from30": "30%–不足 50%",
         "from50": "50% 及以上"
+      }
+    }
+  },
+  "feedback": {
+    "button": "反馈",
+    "title": "用户反馈",
+    "description": "报告问题、提出建议都可以在这里。所有反馈和管理员的回复对所有人公开。",
+    "write": "提交反馈",
+    "guest": "访客",
+    "guestTag": "访客",
+    "staffTag": "官方",
+    "staffFallback": "PSRay 管理员",
+    "deletedUser": "已注销的用户",
+    "staffReplied": "官方已回复",
+    "images": "图片",
+    "replies": "回复",
+    "types": {
+      "bug": "Bug",
+      "suggestion": "建议",
+      "other": "其他"
+    },
+    "statuses": {
+      "open": "待处理",
+      "in_progress": "处理中",
+      "done": "已完成",
+      "declined": "不处理"
+    },
+    "visibility": {
+      "pending": "待审核",
+      "hidden": "已隐藏"
+    },
+    "list": {
+      "all": "全部",
+      "mine": "我的反馈",
+      "type": "类型",
+      "status": "状态",
+      "allTypes": "全部类型",
+      "allStatuses": "全部状态",
+      "range": "第 {start}–{end} 条，共 {total} 条",
+      "empty": "还没有反馈。",
+      "emptyFiltered": "没有符合条件的反馈。",
+      "emptyMine": "你还没有提交过反馈。",
+      "guestMineHint": "这里是你在这个浏览器里提交的反馈。清除浏览器数据后将不再显示。",
+      "loadError": "反馈加载失败",
+      "reset": "清除筛选"
+    },
+    "form": {
+      "title": "提交反馈",
+      "type": "类型",
+      "content": "内容",
+      "contentPlaceholder": "在哪个页面、做了什么、发生了什么——写得越具体，越容易定位问题。",
+      "images": "截图",
+      "imagesHint": "先上传到图床，再粘贴以 https 开头的图片链接（最多 {count} 张）。",
+      "addImage": "添加链接",
+      "removeImage": "删除这条链接",
+      "imagePlaceholder": "https://…",
+      "guestName": "昵称（选填）",
+      "guestNamePlaceholder": "不填则显示为「访客」",
+      "guestNotice": "你还没有登录。访客的反馈需要管理员审核后才会公开，也收不到回复的邮件通知。",
+      "login": "登录后提交",
+      "publicNotice": "反馈和回复对所有人公开，请不要填写邮箱、密码等个人信息。",
+      "contextNotice": "为了方便排查问题，提交时会附带当前页面、屏幕尺寸、语言和浏览器信息（仅管理员可见）。",
+      "submit": "提交",
+      "submitting": "提交中…",
+      "submitFailed": "反馈提交失败",
+      "viewAll": "查看所有反馈",
+      "sentTitle": "已提交",
+      "sentPublic": "感谢你的反馈！它已经公开，管理员回复后会发邮件通知你。",
+      "sentPending": "感谢你的反馈！管理员审核通过后才会公开，在此之前可以在这个浏览器里查看。",
+      "view": "查看反馈",
+      "another": "再提交一条",
+      "errors": {
+        "type": "请选择类型。",
+        "contentRequired": "请填写内容。",
+        "contentShort": "至少填写 {min} 个字。",
+        "contentLong": "不能超过 {max} 个字。",
+        "imageUrl": "请填写以 https 开头的链接。",
+        "guestName": "昵称不能超过 {max} 个字。"
+      }
+    },
+    "detail": {
+      "back": "所有反馈",
+      "loading": "加载中…",
+      "notFound": "找不到这条反馈",
+      "notFoundHint": "它可能已被删除，或者还没有公开。",
+      "loadError": "反馈加载失败",
+      "pendingNotice": "等待管理员审核。公开之前只有你和管理员能看到。",
+      "hiddenNotice": "已被管理员隐藏，只有你和管理员能看到。",
+      "noReplies": "还没有回复。管理员回复后会显示在这里。",
+      "followUpTag": "作者补充",
+      "delete": "删除",
+      "deleteConfirm": "将删除这条反馈及其所有回复，无法恢复。",
+      "deleteConfirmAction": "确认删除",
+      "deleting": "删除中…",
+      "deleted": "反馈已删除",
+      "deleteFailed": "反馈删除失败",
+      "followUp": {
+        "title": "补充信息",
+        "hint": "可以在这里补充更多信息或后续情况，方便管理员排查。",
+        "placeholder": "补充信息或后续情况…",
+        "send": "发送",
+        "sending": "发送中…",
+        "sent": "已补充",
+        "failed": "补充失败"
       }
     }
   }

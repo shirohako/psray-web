@@ -296,12 +296,16 @@ async function onLogout() {
       class="pt-16 transition-[padding] duration-300 ease-in-out"
       :class="collapsed ? 'lg:pl-17' : 'lg:pl-56'"
     >
-      <div class="mx-auto max-w-6xl p-4 sm:p-6 lg:p-8">
+      <!-- Extra bottom room so the feedback button never covers a page's last row (e.g. its pager) -->
+      <div class="mx-auto max-w-6xl p-4 pb-16 sm:p-6 sm:pb-16 lg:p-8 lg:pb-16">
         <slot />
       </div>
     </main>
 
     <!-- Site-wide preferences -->
     <SettingsDrawer v-model:open="settingsOpen" />
+
+    <!-- Feedback entry point, bottom-right on every public page -->
+    <FeedbackFloatingButton />
   </div>
 </template>

@@ -174,7 +174,8 @@
       "VERIFICATION_CODE_INVALID": "PSN の自己紹介に正しい認証コードが見つかりませんでした。入力済みで、削除されていないかご確認ください。",
       "VERIFICATION_CODE_EXPIRED": "認証コードの有効期限が切れています。再送信してからもう一度お試しください。",
       "INVALID_CREDENTIALS": "メールアドレスまたはパスワードが正しくありません。",
-      "ACCOUNT_TERMINATED": "このアカウントは停止されています。"
+      "ACCOUNT_TERMINATED": "このアカウントは停止されています。",
+      "FEEDBACK_NOT_FOUND": "フィードバックが見つかりません。削除されたか、まだ公開されていない可能性があります。"
     }
   },
   "toast": {
@@ -922,6 +923,11 @@
     },
     "unsubscribe": {
       "title": "メール配信停止"
+    },
+    "feedback": {
+      "title": "フィードバック",
+      "description": "PSRay への不具合報告や改善の提案と、運営からの返信の一覧です。",
+      "detailTitle": "フィードバック #{id}"
     }
   },
   "games": {
@@ -1060,6 +1066,110 @@
         "from15": "15% 以上 30% 未満",
         "from30": "30% 以上 50% 未満",
         "from50": "50% 以上"
+      }
+    }
+  },
+  "feedback": {
+    "button": "フィードバック",
+    "title": "フィードバック",
+    "description": "不具合の報告や改善の提案をお寄せください。送られた内容と運営からの返信は、誰でも閲覧できます。",
+    "write": "フィードバックを送る",
+    "guest": "ゲスト",
+    "guestTag": "ゲスト",
+    "staffTag": "公式",
+    "staffFallback": "PSRay 運営",
+    "deletedUser": "退会したユーザー",
+    "staffReplied": "公式返信あり",
+    "images": "画像",
+    "replies": "返信",
+    "types": {
+      "bug": "不具合",
+      "suggestion": "提案",
+      "other": "その他"
+    },
+    "statuses": {
+      "open": "未対応",
+      "in_progress": "対応中",
+      "done": "対応済み",
+      "declined": "対応しない"
+    },
+    "visibility": {
+      "pending": "確認待ち",
+      "hidden": "非表示"
+    },
+    "list": {
+      "all": "すべて",
+      "mine": "自分の投稿",
+      "type": "種類",
+      "status": "状態",
+      "allTypes": "すべての種類",
+      "allStatuses": "すべての状態",
+      "range": "{start}–{end} 件目 / 全 {total} 件",
+      "empty": "まだフィードバックはありません。",
+      "emptyFiltered": "条件に合うフィードバックはありません。",
+      "emptyMine": "まだフィードバックを送っていません。",
+      "guestMineHint": "このブラウザーから送ったフィードバックです。ブラウザーのデータを消去すると、ここには表示されなくなります。",
+      "loadError": "フィードバックを読み込めませんでした",
+      "reset": "条件をクリア"
+    },
+    "form": {
+      "title": "フィードバックを送る",
+      "type": "種類",
+      "content": "内容",
+      "contentPlaceholder": "どのページで何をしたときに、どうなったかを書いていただけると助かります。",
+      "images": "スクリーンショット",
+      "imagesHint": "画像共有サービスにアップロードし、https から始まるリンクを貼ってください（最大 {count} 枚）。",
+      "addImage": "リンクを追加",
+      "removeImage": "このリンクを削除",
+      "imagePlaceholder": "https://…",
+      "guestName": "ニックネーム（任意）",
+      "guestNamePlaceholder": "未入力の場合は「ゲスト」と表示されます",
+      "guestNotice": "ログインしていません。ゲストのフィードバックは運営の確認後に公開され、返信のメール通知も届きません。",
+      "login": "ログインして送る",
+      "publicNotice": "フィードバックと返信は誰でも閲覧できます。メールアドレスやパスワードなどの個人情報は書かないでください。",
+      "contextNotice": "不具合の調査のため、表示中のページ、画面サイズ、言語、ブラウザーの情報も送信されます（運営のみ閲覧）。",
+      "submit": "送信",
+      "submitting": "送信中…",
+      "submitFailed": "フィードバックを送信できませんでした",
+      "viewAll": "みんなのフィードバックを見る",
+      "sentTitle": "送信しました",
+      "sentPublic": "フィードバックありがとうございます。すでに公開されています。運営から返信があるとメールでお知らせします。",
+      "sentPending": "フィードバックありがとうございます。運営が確認したあとに公開されます。それまではこのブラウザーから確認できます。",
+      "view": "フィードバックを見る",
+      "another": "別のフィードバックを送る",
+      "errors": {
+        "type": "種類を選んでください。",
+        "contentRequired": "内容を入力してください。",
+        "contentShort": "{min} 文字以上で入力してください。",
+        "contentLong": "{max} 文字以内で入力してください。",
+        "imageUrl": "https から始まるリンクを入力してください。",
+        "guestName": "ニックネームは {max} 文字以内で入力してください。"
+      }
+    },
+    "detail": {
+      "back": "フィードバック一覧",
+      "loading": "読み込み中…",
+      "notFound": "フィードバックが見つかりません",
+      "notFoundHint": "削除されたか、まだ公開されていない可能性があります。",
+      "loadError": "フィードバックを読み込めませんでした",
+      "pendingNotice": "運営の確認待ちです。公開されるまで、あなたと運営だけが見られます。",
+      "hiddenNotice": "運営によって非表示にされています。あなたと運営だけが見られます。",
+      "noReplies": "まだ返信はありません。運営が返信するとここに表示されます。",
+      "followUpTag": "投稿者の追記",
+      "delete": "削除",
+      "deleteConfirm": "このフィードバックを返信ごと削除します。元に戻せません。",
+      "deleteConfirmAction": "削除する",
+      "deleting": "削除中…",
+      "deleted": "フィードバックを削除しました",
+      "deleteFailed": "フィードバックを削除できませんでした",
+      "followUp": {
+        "title": "追記する",
+        "hint": "補足の情報や、その後の状況をここに書けます。運営が確認しやすくなります。",
+        "placeholder": "補足や、その後の状況を書いてください…",
+        "send": "追記",
+        "sending": "送信中…",
+        "sent": "追記しました",
+        "failed": "追記できませんでした"
       }
     }
   }

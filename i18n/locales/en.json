@@ -174,7 +174,8 @@
       "VERIFICATION_CODE_INVALID": "We couldn’t find the right code in your PSN “About Me”. Check it’s saved and not deleted.",
       "VERIFICATION_CODE_EXPIRED": "That code has expired. Send a new one and try again.",
       "INVALID_CREDENTIALS": "Incorrect email or password.",
-      "ACCOUNT_TERMINATED": "This account has been suspended."
+      "ACCOUNT_TERMINATED": "This account has been suspended.",
+      "FEEDBACK_NOT_FOUND": "Feedback not found. It may have been deleted, or it isn't public yet."
     }
   },
   "toast": {
@@ -922,6 +923,11 @@
     },
     "unsubscribe": {
       "title": "Unsubscribe"
+    },
+    "feedback": {
+      "title": "Feedback",
+      "description": "Bug reports and suggestions for PSRay, with replies from the team.",
+      "detailTitle": "Feedback #{id}"
     }
   },
   "games": {
@@ -1060,6 +1066,110 @@
         "from15": "15% to under 30%",
         "from30": "30% to under 50%",
         "from50": "50% or more"
+      }
+    }
+  },
+  "feedback": {
+    "button": "Feedback",
+    "title": "Feedback",
+    "description": "Report a problem or suggest an improvement. All feedback and our replies are public.",
+    "write": "Send feedback",
+    "guest": "Guest",
+    "guestTag": "Guest",
+    "staffTag": "Official",
+    "staffFallback": "PSRay team",
+    "deletedUser": "Deleted user",
+    "staffReplied": "Official reply",
+    "images": "Images",
+    "replies": "Replies",
+    "types": {
+      "bug": "Bug",
+      "suggestion": "Suggestion",
+      "other": "Other"
+    },
+    "statuses": {
+      "open": "Open",
+      "in_progress": "In progress",
+      "done": "Done",
+      "declined": "Declined"
+    },
+    "visibility": {
+      "pending": "Awaiting review",
+      "hidden": "Hidden"
+    },
+    "list": {
+      "all": "All",
+      "mine": "Mine",
+      "type": "Type",
+      "status": "Status",
+      "allTypes": "All types",
+      "allStatuses": "All statuses",
+      "range": "{start}–{end} of {total}",
+      "empty": "No feedback yet.",
+      "emptyFiltered": "No feedback matches these filters.",
+      "emptyMine": "You haven't sent any feedback yet.",
+      "guestMineHint": "Feedback you sent from this browser. It stops showing here if you clear your browser data.",
+      "loadError": "Couldn't load feedback",
+      "reset": "Clear filters"
+    },
+    "form": {
+      "title": "Send feedback",
+      "type": "Type",
+      "content": "Details",
+      "contentPlaceholder": "Which page were you on, what did you do, and what happened? The more specific, the easier it is to fix.",
+      "images": "Screenshots",
+      "imagesHint": "Upload them to an image host and paste links that start with https (up to {count}).",
+      "addImage": "Add link",
+      "removeImage": "Remove this link",
+      "imagePlaceholder": "https://…",
+      "guestName": "Nickname (optional)",
+      "guestNamePlaceholder": "Shown as “Guest” if left empty",
+      "guestNotice": "You're not signed in. Feedback from guests is published after a review, and you won't get an email when we reply.",
+      "login": "Sign in to send",
+      "publicNotice": "Feedback and replies are public. Don't include personal details such as your email address or password.",
+      "contextNotice": "To help track down bugs, the current page, screen size, language and browser are sent along (only staff can see them).",
+      "submit": "Send",
+      "submitting": "Sending…",
+      "submitFailed": "Couldn't send your feedback",
+      "viewAll": "See all feedback",
+      "sentTitle": "Sent",
+      "sentPublic": "Thanks for your feedback! It's public now, and we'll email you when we reply.",
+      "sentPending": "Thanks for your feedback! It'll be published once we've reviewed it. Until then you can view it from this browser.",
+      "view": "View feedback",
+      "another": "Send more feedback",
+      "errors": {
+        "type": "Choose a type.",
+        "contentRequired": "Enter the details.",
+        "contentShort": "Write at least {min} characters.",
+        "contentLong": "Use at most {max} characters.",
+        "imageUrl": "Enter a link that starts with https.",
+        "guestName": "Use at most {max} characters for the nickname."
+      }
+    },
+    "detail": {
+      "back": "All feedback",
+      "loading": "Loading…",
+      "notFound": "Feedback not found",
+      "notFoundHint": "It may have been deleted, or it isn't public yet.",
+      "loadError": "Couldn't load this feedback",
+      "pendingNotice": "Awaiting review. Until it's published, only you and our staff can see it.",
+      "hiddenNotice": "Hidden by our staff. Only you and our staff can see it.",
+      "noReplies": "No replies yet. Our replies will appear here.",
+      "followUpTag": "Author's follow-up",
+      "delete": "Delete",
+      "deleteConfirm": "This deletes the feedback and all its replies. It can't be undone.",
+      "deleteConfirmAction": "Delete",
+      "deleting": "Deleting…",
+      "deleted": "Feedback deleted",
+      "deleteFailed": "Couldn't delete the feedback",
+      "followUp": {
+        "title": "Add a follow-up",
+        "hint": "Add more details or tell us what happened since. It helps us look into it.",
+        "placeholder": "More details, or what happened since…",
+        "send": "Send",
+        "sending": "Sending…",
+        "sent": "Follow-up added",
+        "failed": "Couldn't add your follow-up"
       }
     }
   }
