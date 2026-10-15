@@ -660,7 +660,8 @@
     "subheading": "Manage your account details and security.",
     "nav": {
       "profile": "Profile",
-      "security": "Security"
+      "security": "Security",
+      "data": "Data"
     },
     "profile": {
       "heading": "Profile",
@@ -727,6 +728,33 @@
         "good": "Good",
         "strong": "Strong",
         "tip": "Use at least 8 characters, mixing upper and lower case, digits and symbols."
+      }
+    },
+    "data": {
+      "heading": "Data",
+      "subheading": "Manage your PSRay account and its data.",
+      "danger": {
+        "heading": "Danger zone"
+      },
+      "delete": {
+        "label": "Delete account",
+        "hint": "Permanently delete your account and all of its data. This cannot be undone.",
+        "staffHint": "Admins and moderators can’t delete their account. Remove the role first.",
+        "open": "Delete account",
+        "dialogTitle": "Delete account",
+        "irreversible": "This can’t be undone. The following will be permanently deleted:",
+        "effects": {
+          "sync": "Synced data such as trophy history, game progress and milestones — your profile page will disappear",
+          "account": "Your login password, account settings and linked email",
+          "content": "Your follows, the trophy tips you posted and the votes they received",
+          "sessions": "Every device, including this one, is signed out immediately"
+        },
+        "rejoin": "Deleting is not a ban: you can sync this PSN account and register again later, but deleted data won’t come back.",
+        "codeTo": "The code will be sent to {email}",
+        "confirm": "Delete permanently",
+        "deleting": "Deleting…",
+        "done": "Account deleted",
+        "doneDetail": "Your account and all of its data have been deleted."
       }
     },
     "prefs": {

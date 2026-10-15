@@ -31,35 +31,14 @@ const emailCode = ref('')
 const emailPassword = ref('')
 const emailSaving = ref(false)
 const codeSending = ref(false)
-const codeCooldown = ref(0)
+const { remaining: codeCooldown, start: startCooldown, stop: stopCooldown } = useCooldown()
 const emailErrors = ref<Record<string, string>>({})
-
-let cooldownTimer: ReturnType<typeof setInterval> | undefined
 
 const currentEmail = computed(() => user.value?.email || t('settings.security.email.unbound'))
 const canSendCode = computed(() => newEmail.value.trim() !== '' && codeCooldown.value === 0 && !codeSending.value)
 const canSaveEmail = computed(() =>
   newEmail.value.trim() !== '' && emailCode.value.trim() !== '' && emailPassword.value !== '',
 )
-
-function startCooldown(seconds = 60) {
-  codeCooldown.value = seconds
-  cooldownTimer = setInterval(() => {
-    codeCooldown.value -= 1
-    if (codeCooldown.value <= 0 && cooldownTimer) {
-      clearInterval(cooldownTimer)
-      cooldownTimer = undefined
-    }
-  }, 1000)
-}
-
-function stopCooldown() {
-  if (cooldownTimer) {
-    clearInterval(cooldownTimer)
-    cooldownTimer = undefined
-  }
-  codeCooldown.value = 0
-}
 
 function cancelEmail() {
   editingEmail.value = false
@@ -113,8 +92,6 @@ async function saveEmail() {
     emailSaving.value = false
   }
 }
-
-onBeforeUnmount(stopCooldown)
 
 // --- Change password ------------------------------------------------------
 const editingPassword = ref(false)
