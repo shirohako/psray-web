@@ -74,6 +74,8 @@ export function useAuth() {
       return null
     }
 
+    // `useCookie` needs the Nuxt instance, which SSR loses after an `await`.
+    const nuxtApp = useNuxtApp()
     loading.value = true
     try {
       const session = await useAuthApi().me()
@@ -81,7 +83,7 @@ export function useAuth() {
       // Re-stamp the cookie with the token's expiry on every session load. This
       // usually runs during SSR, so it arrives as a server `Set-Cookie`, which
       // Safari doesn't cap at 7 days the way it caps `document.cookie` writes.
-      setToken(current, session.token?.expires_at)
+      nuxtApp.runWithContext(() => setToken(current, session.token?.expires_at))
       return session
     }
     catch (error) {
