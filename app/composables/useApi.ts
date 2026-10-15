@@ -28,7 +28,9 @@ export function useApi() {
   }
 
   function unwrap<T>(method: Method, url: string, body?: RequestBody, opts?: Options) {
-    return raw<T>(method, url, body, opts).then(r => r.data)
+    // A 204 has no body, so ofetch resolves to undefined: pass that on instead
+    // of failing with a TypeError after the request has already succeeded.
+    return raw<T>(method, url, body, opts).then(r => r?.data as T)
   }
 
   return {
