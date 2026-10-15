@@ -139,17 +139,17 @@ useHead({
         </button>
       </div>
       <nav
-        class="flex-1 space-y-6 overflow-y-auto px-3 py-3"
+        class="admin-nav-scroll min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-3 py-3"
         aria-label="后台导航"
       >
         <div v-for="group in groups" :key="group.label">
           <p
             :class="collapsed ? 'lg:invisible' : ''"
-            class="mb-2 px-3 text-[11px] font-semibold tracking-wider text-slate-600"
+            class="mb-1.5 px-3 text-[11px] font-semibold tracking-wider text-slate-600"
           >
             {{ group.label }}
           </p>
-          <div class="space-y-1">
+          <div class="space-y-0.5">
             <NuxtLink
               v-for="item in group.items"
               :key="item.to"
@@ -162,7 +162,7 @@ useHead({
                   : 'hover:bg-white/5 hover:text-white',
                 collapsed ? 'lg:justify-center lg:px-0' : '',
               ]"
-              class="flex h-10 items-center gap-3 rounded-full px-3.5 text-sm font-medium transition"
+              class="flex h-9 items-center gap-3 rounded-full px-3.5 text-sm font-medium transition"
             >
               <LucideIcon :icon="item.icon" class="size-4.5 shrink-0" />
               <span :class="collapsed ? 'lg:hidden' : ''">{{ item.name }}</span>
@@ -170,18 +170,18 @@ useHead({
           </div>
         </div>
       </nav>
-      <div class="space-y-1 p-3">
+      <div class="space-y-0.5 border-t border-white/5 p-3">
         <NuxtLink
           to="/"
           :title="collapsed ? '返回前台' : undefined"
           :class="collapsed ? 'lg:justify-center lg:px-0' : ''"
-          class="flex h-10 items-center gap-3 rounded-full px-3.5 text-sm font-medium transition hover:bg-white/5 hover:text-white"
+          class="flex h-9 items-center gap-3 rounded-full px-3.5 text-sm font-medium transition hover:bg-white/5 hover:text-white"
         >
           <LucideIcon :icon="ArrowLeft" class="size-4.5 shrink-0" />
           <span :class="collapsed ? 'lg:hidden' : ''">返回前台</span>
         </NuxtLink>
         <button
-          class="hidden h-10 w-full items-center gap-3 rounded-full px-3.5 text-sm font-medium transition hover:bg-white/5 hover:text-white lg:flex"
+          class="hidden h-9 w-full items-center gap-3 rounded-full px-3.5 text-sm font-medium transition hover:bg-white/5 hover:text-white lg:flex"
           :class="collapsed ? 'justify-center px-0' : ''"
           :aria-label="collapsed ? '展开侧栏' : '收起侧栏'"
           :title="collapsed ? '展开侧栏' : undefined"

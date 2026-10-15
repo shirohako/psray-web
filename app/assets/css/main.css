@@ -174,4 +174,24 @@
   .admin-utab[aria-selected="true"] { @apply border-slate-900 text-slate-900; }
   .admin-count { @apply rounded-full bg-slate-100 px-1.5 py-px text-[11px] font-semibold text-slate-600 tabular-nums; }
   .admin-kbd { @apply rounded border border-slate-200 bg-slate-50 px-1.5 py-px font-mono text-[11px] text-slate-600; }
+
+  /* Sidebar nav on the dark card: a thin, dark-themed scrollbar that only shows
+     while the pointer (or focus) is in the nav, and a short fade at both edges
+     so items slide under it instead of being cut off. The fade sits in the
+     nav's own py-3 padding, so it hides nothing when there is no overflow. */
+  .admin-nav-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    mask-image: linear-gradient(to bottom, transparent, #000 0.75rem, #000 calc(100% - 0.75rem), transparent);
+  }
+  .admin-nav-scroll:hover,
+  .admin-nav-scroll:focus-within {
+    scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+  }
+  /* Safari has no scrollbar-color; Chromium and Firefox ignore these once it is set. */
+  .admin-nav-scroll::-webkit-scrollbar { width: 6px; }
+  .admin-nav-scroll::-webkit-scrollbar-track { background: transparent; }
+  .admin-nav-scroll::-webkit-scrollbar-thumb { border-radius: 9999px; background: transparent; }
+  .admin-nav-scroll:hover::-webkit-scrollbar-thumb,
+  .admin-nav-scroll:focus-within::-webkit-scrollbar-thumb { background: rgb(255 255 255 / 0.18); }
 }
