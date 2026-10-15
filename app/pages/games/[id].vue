@@ -22,7 +22,8 @@
       />
 
       <div class="flex flex-col gap-5 px-5 pb-5 sm:flex-row sm:px-6 sm:pb-6">
-        <div class="-mt-16 w-32 shrink-0 self-center rounded-lg bg-white p-1 shadow-lg shadow-slate-900/15 sm:-mt-20 sm:w-40 sm:self-start">
+        <!-- relative: the banner above is positioned, so without its own stacking the overlapping cover would paint underneath it -->
+        <div class="relative z-10 -mt-16 w-32 shrink-0 self-center rounded-lg bg-white p-1 shadow-lg shadow-slate-900/15 sm:-mt-20 sm:w-40 sm:self-start">
           <GameCover :src="data.cover_url" :alt="data.localized_name" :seed="data.id" :lang="data.display_language ?? undefined" />
         </div>
 
