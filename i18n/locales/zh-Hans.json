@@ -661,6 +661,7 @@
     "nav": {
       "profile": "个人资料",
       "security": "账号安全",
+      "notifications": "通知",
       "data": "数据"
     },
     "profile": {
@@ -728,6 +729,37 @@
         "good": "良好",
         "strong": "很强",
         "tip": "推荐使用至少 8 位，并混合大小写字母、数字和符号。"
+      }
+    },
+    "notifications": {
+      "heading": "邮件通知",
+      "subheading": "选择接收哪些邮件，以及邮件使用的语言。",
+      "loadFailed": "设置加载失败，请重试。",
+      "saved": "通知设置已更新",
+      "saveFailed": "保存失败",
+      "language": {
+        "label": "邮件语言",
+        "hint": "PSRay 发给你的邮件使用这种语言。"
+      },
+      "mail": {
+        "heading": "接收的邮件",
+        "important": {
+          "label": "重要通知",
+          "hint": "服务故障、维护等需要你知道的通知。"
+        },
+        "features": {
+          "label": "新功能通知",
+          "hint": "PSRay 上线新功能时通知你。"
+        },
+        "other": {
+          "label": "其他推送",
+          "hint": "活动和其他消息。"
+        },
+        "transactional": {
+          "label": "账户与安全",
+          "hint": "注册、换绑邮箱、注销账户的验证码等，与账户安全相关，总会发送。",
+          "always": "总是发送"
+        }
       }
     },
     "data": {
@@ -823,6 +855,26 @@
       }
     }
   },
+  "unsubscribe": {
+    "invalid": {
+      "title": "退订链接无效",
+      "body": "这个链接可能不完整，或账户已被删除。登录后可以在通知设置里管理邮件。"
+    },
+    "confirm": {
+      "title": "不再接收「{category}」？",
+      "body": "退订后，{email} 将不再收到这类邮件。",
+      "action": "退订"
+    },
+    "transactional": "账户与安全类邮件（如验证码）不受影响。",
+    "done": {
+      "title": "已退订「{category}」",
+      "body": "{email} 不会再收到这类邮件。",
+      "undo": "撤销，继续接收"
+    },
+    "manage": "管理全部邮件设置",
+    "resubscribed": "已恢复订阅",
+    "failed": "操作失败，请稍后再试。"
+  },
   "seo": {
     "games": {
       "title": "全部游戏",
@@ -867,6 +919,9 @@
     },
     "settings": {
       "title": "用户设置"
+    },
+    "unsubscribe": {
+      "title": "退订邮件"
     }
   },
   "games": {

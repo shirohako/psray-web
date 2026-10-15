@@ -25,13 +25,23 @@ export interface UpdateSettingPayload {
    * Omitted while only `avatar_url` is sent: the backend infers `true`.
    */
   use_custom_avatar?: boolean
+  /** Language mails are sent in — one of the five UI locales. */
+  locale?: string
+  /** Subscriptions to the three kinds of notification mail (account and security mail can't be turned off). */
+  mail_important?: boolean
+  mail_features?: boolean
+  mail_other?: boolean
 }
 
-/** Current banner/avatar settings, as returned by `GET /user/setting`. */
+/** Current account settings, as returned by `GET /user/setting`. */
 export interface UserSetting {
   banner_url: string | null
   avatar_url: string | null
   use_custom_avatar: boolean
+  locale: string
+  mail_important: boolean
+  mail_features: boolean
+  mail_other: boolean
 }
 
 export interface AvatarUploadResult {
@@ -109,7 +119,7 @@ export function useAccountApi() {
     // Step 1: send a verification code to the new address (shared send-code
     // endpoint, fixed `type`).
     sendEmailCode: (payload: SendEmailCodePayload) =>
-      post<MessageResult>('/auth/send-code', { ...payload, type: 'change_email' }),
+      post<MessageResult>('/auth/send-code', { ...payload, type: 'change_email', locale: currentUiLocale() }),
     // Step 2: confirm the change with the current password + received code.
     changeEmail: (payload: ChangeEmailPayload) =>
       post<MessageResult>('/user/setting/email', payload),

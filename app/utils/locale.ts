@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, HTML_LANG, isUiLocale } from '#shared/locales'
+import { DEFAULT_LOCALE, HTML_LANG, isUiLocale, type UiLocale } from '#shared/locales'
 
 /**
  * Locale access for the plain formatting helpers in `utils/`.
@@ -26,6 +26,20 @@ export function currentLocale(): string {
   }
   catch {
     return HTML_LANG[DEFAULT_LOCALE]
+  }
+}
+
+/**
+ * The active UI locale code (`ja`, `zh-Hans`, …) — what the API takes as
+ * `locale` (e.g. the language a verification mail is written in).
+ */
+export function currentUiLocale(): UiLocale {
+  try {
+    const locale = unref(useNuxtApp().$i18n.locale)
+    return isUiLocale(locale) ? locale : DEFAULT_LOCALE
+  }
+  catch {
+    return DEFAULT_LOCALE
   }
 }
 

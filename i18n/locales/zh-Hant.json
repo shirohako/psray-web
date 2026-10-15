@@ -661,6 +661,7 @@
     "nav": {
       "profile": "個人資料",
       "security": "帳號安全",
+      "notifications": "通知",
       "data": "資料"
     },
     "profile": {
@@ -728,6 +729,37 @@
         "good": "良好",
         "strong": "很強",
         "tip": "建議使用至少 8 位，並混合大小寫字母、數字和符號。"
+      }
+    },
+    "notifications": {
+      "heading": "郵件通知",
+      "subheading": "選擇要接收哪些郵件，以及郵件使用的語言。",
+      "loadFailed": "設定載入失敗，請重試。",
+      "saved": "通知設定已更新",
+      "saveFailed": "儲存失敗",
+      "language": {
+        "label": "郵件語言",
+        "hint": "PSRay 寄給你的郵件會使用這種語言。"
+      },
+      "mail": {
+        "heading": "接收的郵件",
+        "important": {
+          "label": "重要通知",
+          "hint": "服務故障、維護等需要你知道的通知。"
+        },
+        "features": {
+          "label": "新功能通知",
+          "hint": "PSRay 推出新功能時通知你。"
+        },
+        "other": {
+          "label": "其他推送",
+          "hint": "活動與其他消息。"
+        },
+        "transactional": {
+          "label": "帳號與安全",
+          "hint": "註冊、換綁信箱、註銷帳號的驗證碼等，與帳號安全相關，一律寄送。",
+          "always": "一律寄送"
+        }
       }
     },
     "data": {
@@ -823,6 +855,26 @@
       }
     }
   },
+  "unsubscribe": {
+    "invalid": {
+      "title": "退訂連結無效",
+      "body": "這個連結可能不完整，或帳號已被刪除。登入後可以在通知設定中管理郵件。"
+    },
+    "confirm": {
+      "title": "不再接收「{category}」？",
+      "body": "退訂後，{email} 將不再收到這類郵件。",
+      "action": "退訂"
+    },
+    "transactional": "帳號與安全類郵件（如驗證碼）不受影響。",
+    "done": {
+      "title": "已退訂「{category}」",
+      "body": "{email} 不會再收到這類郵件。",
+      "undo": "復原，繼續接收"
+    },
+    "manage": "管理所有郵件設定",
+    "resubscribed": "已恢復訂閱",
+    "failed": "操作失敗，請稍後再試。"
+  },
   "seo": {
     "games": {
       "title": "全部遊戲",
@@ -867,6 +919,9 @@
     },
     "settings": {
       "title": "使用者設定"
+    },
+    "unsubscribe": {
+      "title": "退訂郵件"
     }
   },
   "games": {

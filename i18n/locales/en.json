@@ -661,6 +661,7 @@
     "nav": {
       "profile": "Profile",
       "security": "Security",
+      "notifications": "Notifications",
       "data": "Data"
     },
     "profile": {
@@ -728,6 +729,37 @@
         "good": "Good",
         "strong": "Strong",
         "tip": "Use at least 8 characters, mixing upper and lower case, digits and symbols."
+      }
+    },
+    "notifications": {
+      "heading": "Email notifications",
+      "subheading": "Choose which emails you get and the language they're in.",
+      "loadFailed": "Couldn't load your settings. Please try again.",
+      "saved": "Notification settings updated",
+      "saveFailed": "Couldn't save",
+      "language": {
+        "label": "Email language",
+        "hint": "Emails from PSRay are written in this language."
+      },
+      "mail": {
+        "heading": "Emails you receive",
+        "important": {
+          "label": "Important notices",
+          "hint": "Outages, maintenance and other things you should know about."
+        },
+        "features": {
+          "label": "New feature updates",
+          "hint": "Hear about it when PSRay gets something new."
+        },
+        "other": {
+          "label": "Other updates",
+          "hint": "Events and other news."
+        },
+        "transactional": {
+          "label": "Account and security",
+          "hint": "Verification codes for signing up, changing your email or deleting your account. They keep your account safe, so they're always sent.",
+          "always": "Always sent"
+        }
       }
     },
     "data": {
@@ -823,6 +855,26 @@
       }
     }
   },
+  "unsubscribe": {
+    "invalid": {
+      "title": "This unsubscribe link doesn't work",
+      "body": "The link may be incomplete, or the account no longer exists. Sign in to manage your emails in notification settings."
+    },
+    "confirm": {
+      "title": "Stop receiving “{category}”?",
+      "body": "{email} won't get this kind of email any more.",
+      "action": "Unsubscribe"
+    },
+    "transactional": "Account and security emails, such as verification codes, still arrive.",
+    "done": {
+      "title": "You’ve unsubscribed from “{category}”",
+      "body": "{email} won't get this kind of email any more.",
+      "undo": "Undo, keep receiving them"
+    },
+    "manage": "Manage all email settings",
+    "resubscribed": "You're subscribed again",
+    "failed": "Something went wrong. Please try again later."
+  },
   "seo": {
     "games": {
       "title": "All games",
@@ -867,6 +919,9 @@
     },
     "settings": {
       "title": "Settings"
+    },
+    "unsubscribe": {
+      "title": "Unsubscribe"
     }
   },
   "games": {

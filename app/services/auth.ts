@@ -59,12 +59,16 @@ export interface RegisterPayload {
   psnid: string
   email: string
   password: string
+  /** UI locale at sign-up; becomes the language the account's mails are sent in. */
+  locale?: string
 }
 
 /** Shared `POST /auth/send-code` payload. `type` selects the code's purpose. */
 export interface SendCodePayload {
   email: string
   type: 'register' | 'change_email'
+  /** UI locale the code mail is written in (when logged in, the account's mail language wins). */
+  locale?: string
 }
 
 export interface LogoutPayload {
