@@ -45,19 +45,9 @@ const duration = computed(() => {
   return props.progress.duration ?? null
 })
 
-// Date and time are split so the date can lead and the time recede.
-function moment(value: number | string | null | undefined) {
-  const ms = timestamp(value)
-  if (ms == null) return null
-  const date = new Date(ms)
-  return {
-    date: date.toLocaleDateString(currentLocale(), { year: 'numeric', month: '2-digit', day: '2-digit' }),
-    time: date.toLocaleTimeString(currentLocale(), { hour: '2-digit', minute: '2-digit', hour12: false }),
-  }
-}
-
-const first = computed(() => moment(props.progress.first_earned_at))
-const last = computed(() => moment(props.progress.last_earned_at))
+// Shown as date and time apart, so the date can lead and the time recede.
+const first = computed(() => toIsoDate(props.progress.first_earned_at))
+const last = computed(() => toIsoDate(props.progress.last_earned_at))
 
 const earnedTotal = computed(() =>
   props.progress.earned_bronze
@@ -137,8 +127,8 @@ function isComplete(count: number, total: number | undefined) {
 
         <span class="truncate text-xs text-slate-500">{{ $t('profile.account.firstTrophy') }}</span>
         <span v-if="first" class="whitespace-nowrap text-sm tabular-nums">
-          <span class="font-semibold text-slate-800">{{ first.date }}</span>
-          <span class="ml-1.5 text-xs text-slate-400">{{ first.time }}</span>
+          <LocalTime :value="first" format="day" class="font-semibold text-slate-800" />
+          <LocalTime :value="first" format="time" class="ml-1.5 text-xs text-slate-400" />
         </span>
         <span v-else-if="incomplete" class="text-xs font-medium text-amber-600/75">{{ $t('common.timestampMissing') }}</span>
         <span v-else class="text-sm text-slate-400">—</span>
@@ -160,8 +150,8 @@ function isComplete(count: number, total: number | undefined) {
           {{ progress.progress === 100 ? $t('trophy.progress.complete') : $t('trophy.progress.lastTrophy') }}
         </span>
         <span v-if="last" class="whitespace-nowrap text-sm tabular-nums">
-          <span class="font-semibold text-slate-800">{{ last.date }}</span>
-          <span class="ml-1.5 text-xs text-slate-400">{{ last.time }}</span>
+          <LocalTime :value="last" format="day" class="font-semibold text-slate-800" />
+          <LocalTime :value="last" format="time" class="ml-1.5 text-xs text-slate-400" />
         </span>
         <span v-else-if="incomplete" class="text-xs font-medium text-amber-600/75">{{ $t('common.timestampMissing') }}</span>
         <span v-else class="text-sm text-slate-400">—</span>

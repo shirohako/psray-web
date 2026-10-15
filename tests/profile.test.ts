@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatHourInterval, platformLabel, resolveHourInterval } from '~/utils/profile'
+import { formatHourInterval, platformLabel, resolveHourInterval, toIsoDate } from '~/utils/profile'
 
 const compact = (value: string | null) => value?.replace(/\s/g, '')
 
@@ -29,5 +29,13 @@ describe('profile formatting', () => {
     expect(resolveHourInterval(168)).toEqual({ amount: 1, unit: 'week' })
     expect(resolveHourInterval(336)).toEqual({ amount: 2, unit: 'week' })
     expect(resolveHourInterval(8760)).toEqual({ amount: 1, unit: 'year' })
+  })
+
+  it('turns API timestamps into zoned ISO strings for <LocalTime>', () => {
+    expect(toIsoDate('2026-08-10T15:23:07.000000Z')).toBe('2026-08-10T15:23:07.000Z')
+    expect(toIsoDate(1_786_000_000)).toBe('2026-08-06T07:06:40.000Z')
+    expect(toIsoDate(null)).toBeNull()
+    expect(toIsoDate('')).toBeNull()
+    expect(toIsoDate('not a date')).toBeNull()
   })
 })

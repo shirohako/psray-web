@@ -12,10 +12,6 @@ const syncIntervalText = computed(() => {
   const form = interval.amount === 1 ? 'one' : 'other'
   return t(`profile.account.interval.${interval.unit}.${form}`, { count: interval.amount })
 })
-
-const nextSyncText = computed(() => props.profile.sync_next_at == null
-  ? t('profile.account.never')
-  : fmtDateTime(props.profile.sync_next_at))
 </script>
 
 <template>
@@ -43,7 +39,7 @@ const nextSyncText = computed(() => props.profile.sync_next_at == null
           <dt class="inline-flex items-center gap-2 text-slate-500">
             <LucideIcon :icon="Calendar" class="size-4 text-slate-400" />{{ $t('profile.account.joined') }}
           </dt>
-          <dd class="text-right font-mono font-medium text-slate-900">{{ fmtDateTime(profile.registered_at) }}</dd>
+          <dd class="text-right font-mono font-medium text-slate-900"><LocalTime :value="profile.registered_at" /></dd>
         </div>
       </dl>
 
@@ -52,13 +48,13 @@ const nextSyncText = computed(() => props.profile.sync_next_at == null
           <dt class="inline-flex items-center gap-2 text-slate-500">
             <LucideIcon :icon="Trophy" class="size-4 text-slate-400" />{{ $t('profile.account.firstTrophy') }}
           </dt>
-          <dd class="text-right font-mono font-medium text-slate-900">{{ fmtDateTime(profile.first_trophy_at) }}</dd>
+          <dd class="text-right font-mono font-medium text-slate-900"><LocalTime :value="profile.first_trophy_at" /></dd>
         </div>
         <div class="flex items-center justify-between gap-3">
           <dt class="inline-flex items-center gap-2 text-slate-500">
             <LucideIcon :icon="Clock" class="size-4 text-slate-400" />{{ $t('profile.account.lastTrophy') }}
           </dt>
-          <dd class="text-right font-mono font-medium text-slate-900">{{ fmtDateTime(profile.last_trophy_at) }}</dd>
+          <dd class="text-right font-mono font-medium text-slate-900"><LocalTime :value="profile.last_trophy_at" /></dd>
         </div>
       </dl>
 
@@ -73,13 +69,16 @@ const nextSyncText = computed(() => props.profile.sync_next_at == null
           <dt class="inline-flex items-center gap-2 text-slate-500">
             <LucideIcon :icon="History" class="size-4 text-slate-400" />{{ $t('profile.account.lastSync') }}
           </dt>
-          <dd class="text-right font-mono font-medium text-slate-900">{{ fmtDateTime(profile.last_synced_at) }}</dd>
+          <dd class="text-right font-mono font-medium text-slate-900"><LocalTime :value="profile.last_synced_at" /></dd>
         </div>
         <div class="flex items-center justify-between gap-3">
           <dt class="inline-flex items-center gap-2 text-slate-500">
             <LucideIcon :icon="Clock" class="size-4 text-slate-400" />{{ $t('profile.account.nextSync') }}
           </dt>
-          <dd class="text-right font-mono font-medium text-slate-900">{{ nextSyncText }}</dd>
+          <dd class="text-right font-mono font-medium text-slate-900">
+            <template v-if="profile.sync_next_at == null">{{ $t('profile.account.never') }}</template>
+            <LocalTime v-else :value="profile.sync_next_at" />
+          </dd>
         </div>
       </dl>
     </div>

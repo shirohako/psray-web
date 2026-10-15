@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Loader2, MessageSquareText, Search, ThumbsUp, Trash2, X } from 'lucide'
+import { ArrowDownWideNarrow, ChevronDown, Loader2, MessageSquareText, Search, ThumbsUp, Trash2, X } from 'lucide'
 import { useTips } from '~/services/tips'
 import type { AuthoredTipSort, ProfileTip, TipPageMeta } from '~/types/tip'
 import type { MyTipsState } from '~/utils/me'
@@ -128,51 +128,63 @@ const SORTS: { value: AuthoredTipSort; labelKey: string }[] = AUTHORED_TIP_SORTS
           <p class="mt-1.5 max-w-2xl text-xs leading-5 text-slate-500">{{ $t('me.tips.description') }}</p>
         </div>
       </div>
-      <dl v-if="user" class="flex shrink-0 gap-2">
-        <div class="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm">
-          <dt class="text-[11px] text-slate-400">{{ $t('me.tips.statsTips') }}</dt>
-          <dd class="text-base font-bold tabular-nums text-slate-900">{{ fmt(user.tip_count) }}</dd>
+      <dl v-if="user" class="grid shrink-0 grid-cols-2 divide-x divide-slate-100 rounded-xl border border-slate-200 bg-white shadow-sm sm:min-w-72">
+        <div class="flex items-center gap-3 px-4 py-3">
+          <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-sky-50 text-sky-600 ring-1 ring-inset ring-sky-100">
+            <LucideIcon :icon="MessageSquareText" class="size-4" />
+          </span>
+          <div class="flex min-w-0 flex-col-reverse">
+            <dt class="truncate text-[11px] font-medium text-slate-500">{{ $t('me.tips.statsTips') }}</dt>
+            <dd class="text-xl font-bold leading-tight tabular-nums tracking-tight text-slate-900">{{ fmt(user.tip_count) }}</dd>
+          </div>
         </div>
-        <div class="rounded-lg border border-slate-200 bg-white px-3 py-2 shadow-sm">
-          <dt class="inline-flex items-center gap-1 text-[11px] text-slate-400">
-            <LucideIcon :icon="ThumbsUp" class="size-3" />
-            {{ $t('me.tips.statsHelpful') }}
-          </dt>
-          <dd class="text-base font-bold tabular-nums text-slate-900">{{ fmt(user.tip_vote_count) }}</dd>
+        <div class="flex items-center gap-3 px-4 py-3">
+          <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-inset ring-emerald-100">
+            <LucideIcon :icon="ThumbsUp" class="size-4" />
+          </span>
+          <div class="flex min-w-0 flex-col-reverse">
+            <dt class="truncate text-[11px] font-medium text-slate-500">{{ $t('me.tips.statsHelpful') }}</dt>
+            <dd class="text-xl font-bold leading-tight tabular-nums tracking-tight text-slate-900">{{ fmt(user.tip_vote_count) }}</dd>
+          </div>
         </div>
       </dl>
     </header>
 
     <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div class="flex flex-col gap-2 border-b border-slate-200 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
-        <label class="relative block sm:w-80">
+      <div class="flex items-center gap-2 border-b border-slate-200 p-3 sm:px-4">
+        <!-- Search takes the rest of the row; sorting stays compact on the right -->
+        <label class="relative min-w-0 flex-1">
           <span class="sr-only">{{ $t('me.tips.searchPlaceholder') }}</span>
-          <LucideIcon :icon="Search" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
+          <LucideIcon :icon="Search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
           <input
             v-model="search"
             type="search"
             :maxlength="AUTHORED_TIP_SEARCH_MAX"
             :placeholder="$t('me.tips.searchPlaceholder')"
-            class="h-8 w-full rounded-md border border-slate-200 bg-white pl-8 pr-8 text-xs text-slate-700 placeholder:text-slate-400 focus:border-slate-400 focus:outline-none"
+            class="h-9 w-full rounded-lg border border-slate-200 bg-slate-50 pl-9 pr-9 text-sm text-slate-800 transition placeholder:text-slate-400 hover:border-slate-300 focus:border-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-slate-900/5 [&::-webkit-search-cancel-button]:appearance-none"
           >
           <button
             v-if="search"
             type="button"
-            class="absolute right-1.5 top-1/2 grid size-5 -translate-y-1/2 place-items-center rounded text-slate-400 hover:text-slate-700"
+            class="absolute right-1.5 top-1/2 grid size-6 -translate-y-1/2 place-items-center rounded-md text-slate-400 transition hover:bg-slate-200/70 hover:text-slate-700"
             :aria-label="$t('me.tips.clearSearch')"
             @click="search = ''"
           >
             <LucideIcon :icon="X" class="size-3.5" />
           </button>
         </label>
-        <select
-          :value="state.sort"
-          :aria-label="$t('me.tips.sort')"
-          class="h-8 rounded-md border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:border-slate-400 focus:outline-none"
-          @change="navigate({ sort: ($event.target as HTMLSelectElement).value as AuthoredTipSort })"
-        >
-          <option v-for="option in SORTS" :key="option.value" :value="option.value">{{ $t(option.labelKey) }}</option>
-        </select>
+        <label class="relative shrink-0">
+          <span class="sr-only">{{ $t('me.tips.sort') }}</span>
+          <LucideIcon :icon="ArrowDownWideNarrow" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
+          <select
+            :value="state.sort"
+            class="h-9 appearance-none rounded-lg border border-slate-200 bg-white pl-8 pr-7 text-xs font-semibold text-slate-700 transition hover:border-slate-300 focus:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-900/5"
+            @change="navigate({ sort: ($event.target as HTMLSelectElement).value as AuthoredTipSort })"
+          >
+            <option v-for="option in SORTS" :key="option.value" :value="option.value">{{ $t(option.labelKey) }}</option>
+          </select>
+          <LucideIcon :icon="ChevronDown" class="pointer-events-none absolute right-2 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
+        </label>
       </div>
 
       <section id="tip-results" class="scroll-mt-20" :aria-label="$t('me.tips.title')" :aria-busy="pending">

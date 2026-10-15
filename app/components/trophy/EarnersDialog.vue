@@ -111,7 +111,9 @@ watch(() => props.open, (v) => {
               <RegionFlag :country="p.country" class="text-xs" />
               <span class="truncate text-sm font-semibold text-slate-900 group-hover:text-slate-700">{{ p.psnid }}</span>
             </div>
-            <div class="mt-0.5 text-xs tabular-nums text-slate-400">{{ $t('trophy.earners.earnedAt', { time: fmtDateTime(p.earned_at) }) }}</div>
+            <i18n-t keypath="trophy.earners.earnedAt" scope="global" tag="div" class="mt-0.5 text-xs tabular-nums text-slate-400">
+              <template #time><LocalTime :value="p.earned_at" /></template>
+            </i18n-t>
           </div>
         </NuxtLink>
       </li>

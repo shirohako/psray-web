@@ -19,8 +19,8 @@ const props = withDefaults(defineProps<{
   open: boolean
   title?: string
   side?: Side
-  /** Panel width; `wide` suits record inspectors. */
-  size?: 'sm' | 'wide'
+  /** Panel width; `wide` suits record inspectors, `xs` phone menus (leaves some page showing). */
+  size?: 'xs' | 'sm' | 'wide'
 }>(), { side: 'left', size: 'sm' })
 
 const emit = defineEmits<{ 'update:open': [v: boolean] }>()
@@ -63,13 +63,16 @@ onUnmounted(() => {
           role="dialog"
           aria-modal="true"
           :inert="!open"
-          class="absolute inset-y-0 flex w-full flex-col bg-white shadow-2xl ring-1 ring-slate-900/5 transition-transform duration-300 will-change-transform motion-reduce:transition-none"
+          class="absolute flex w-full flex-col overflow-hidden bg-white shadow-2xl ring-1 ring-slate-900/5 transition-transform duration-300 will-change-transform motion-reduce:transition-none"
           :class="[
-            size === 'wide' ? 'max-w-2xl' : 'max-w-sm',
-            side === 'left' ? 'left-0' : 'right-0',
+            size === 'wide' ? 'max-w-2xl' : size === 'xs' ? 'max-w-xs' : 'max-w-sm',
+            // `xs` floats as a card a little off the screen edges; the others run edge to edge.
+            size === 'xs'
+              ? ['inset-y-2 rounded-2xl', side === 'left' ? 'left-2' : 'right-2']
+              : ['inset-y-0', side === 'left' ? 'left-0' : 'right-0'],
             open
               ? 'translate-x-0 ease-out'
-              : side === 'left' ? '-translate-x-full ease-in' : 'translate-x-full ease-in',
+              : side === 'left' ? '-translate-x-[calc(100%_+_1rem)] ease-in' : 'translate-x-[calc(100%_+_1rem)] ease-in',
           ]"
         >
           <!-- Header -->

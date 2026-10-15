@@ -55,6 +55,7 @@
         "admin": "管理"
       },
       "logout": "退出登录",
+      "menu": "账户菜单",
       "profile": "个人资料",
       "settings": "用户设置",
       "sync": "同步账户",
@@ -358,6 +359,8 @@
       "helpful": "有帮助",
       "notHelpful": "没有帮助",
       "voteFailed": "无法更新评价",
+      "minePosted": "你已在这里发表过留言",
+      "mineBadge": "我",
       "loadFailed": "无法加载留言。",
       "form": {
         "open": "发表留言",
@@ -1194,14 +1197,16 @@
       "emptyFollowersHint": "有玩家关注你之后，会显示在这里。",
       "browsePlayers": "去排行榜看看",
       "followBack": "回关",
-      "toggleFailed": "操作失败，请稍后重试"
+      "toggleFailed": "操作失败，请稍后重试",
+      "unfollowTitle": "取消关注",
+      "unfollowBody": "确定不再关注 {psnid} 吗？"
     },
     "tips": {
       "title": "我的留言",
       "description": "你在各个奖杯下发表的留言。可以在这里查看、修改或删除。",
-      "statsTips": "留言",
+      "statsTips": "留言数",
       "statsHelpful": "获得「有帮助」",
-      "searchPlaceholder": "搜索留言内容、奖杯或游戏名",
+      "searchPlaceholder": "搜索内容、奖杯或游戏",
       "clearSearch": "清除搜索",
       "sort": "排序",
       "sorts": {
@@ -1222,6 +1227,7 @@
       "editedAt": "修改于 {time}",
       "expand": "展开全文",
       "collapse": "收起",
+      "actions": "操作",
       "deleteTitle": "删除留言",
       "deleteBody": "确定删除你在「{trophy}」下的留言吗？删除后无法恢复，其他玩家对它的评价也会一并删除。"
     }

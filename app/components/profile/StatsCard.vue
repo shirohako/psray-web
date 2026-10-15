@@ -12,23 +12,23 @@ const total = computed(() => sumTrophies(props.profile))
     <dl class="grid grid-cols-2 gap-y-4">
       <div>
         <dt class="text-xs text-slate-400">{{ $t('profile.stats.games') }}</dt>
-        <dd class="mt-0.5 text-lg font-bold text-slate-900">{{ fmt(profile.played_game_count) }}</dd>
+        <dd class="mt-0.5 text-lg font-bold tabular-nums text-slate-900"><AnimatedNumber :value="profile.played_game_count" :duration="1200" /></dd>
       </div>
       <div>
         <dt class="text-xs text-slate-400">{{ $t('profile.stats.trophies') }}</dt>
-        <dd class="mt-0.5 text-lg font-bold text-slate-900">{{ fmt(total) }}</dd>
+        <dd class="mt-0.5 text-lg font-bold tabular-nums text-slate-900"><AnimatedNumber :value="total" :duration="1200" /></dd>
       </div>
       <div>
         <dt class="inline-flex items-center gap-1 text-xs text-slate-400">
           <LucideIcon :icon="CheckCircle2" class="size-3.5 text-emerald-400" />{{ $t('profile.stats.perfect') }}
         </dt>
-        <dd class="mt-0.5 text-lg font-bold text-slate-900">{{ fmt(profile.completed_game_count) }}</dd>
+        <dd class="mt-0.5 text-lg font-bold tabular-nums text-slate-900"><AnimatedNumber :value="profile.completed_game_count" :duration="1200" /></dd>
       </div>
       <div>
         <dt class="inline-flex items-center gap-1 text-xs text-slate-400">
           <LucideIcon :icon="Layers3" class="size-3.5 text-violet-400" />{{ $t('profile.stats.lowCompletion') }}
         </dt>
-        <dd class="mt-0.5 text-lg font-bold text-slate-900">{{ fmt(profile.abandoned_game_count) }}</dd>
+        <dd class="mt-0.5 text-lg font-bold tabular-nums text-slate-900"><AnimatedNumber :value="profile.abandoned_game_count" :duration="1200" /></dd>
       </div>
     </dl>
 
@@ -40,7 +40,7 @@ const total = computed(() => sumTrophies(props.profile))
           </span>
           <span class="truncate text-xs font-medium text-slate-500">{{ $t('profile.stats.comments') }}</span>
         </div>
-        <span class="shrink-0 text-base font-bold tabular-nums text-slate-900">{{ fmt(profile.tip_count) }}</span>
+        <span class="shrink-0 text-base font-bold tabular-nums text-slate-900"><AnimatedNumber :value="profile.tip_count" :duration="1200" /></span>
       </div>
       <div class="flex items-center justify-between gap-3 border-t border-slate-100 px-1 py-2">
         <div class="flex min-w-0 items-center gap-2.5">
@@ -49,7 +49,7 @@ const total = computed(() => sumTrophies(props.profile))
           </span>
           <span class="truncate text-xs font-medium text-slate-500">{{ $t('profile.stats.views') }}</span>
         </div>
-        <span class="shrink-0 text-base font-bold tabular-nums text-slate-900">{{ fmt(profile.page_view_count) }}</span>
+        <span class="shrink-0 text-base font-bold tabular-nums text-slate-900"><AnimatedNumber :value="profile.page_view_count" :duration="1200" /></span>
       </div>
     </div>
   </div>

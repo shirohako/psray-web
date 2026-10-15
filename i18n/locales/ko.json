@@ -55,6 +55,7 @@
         "admin": "관리"
       },
       "logout": "로그아웃",
+      "menu": "계정 메뉴",
       "profile": "프로필",
       "settings": "계정 설정",
       "sync": "계정 동기화",
@@ -358,6 +359,8 @@
       "helpful": "도움이 됨",
       "notHelpful": "도움이 안 됨",
       "voteFailed": "평가를 저장하지 못했습니다",
+      "minePosted": "이 트로피에 댓글을 남겼습니다",
+      "mineBadge": "나",
       "loadFailed": "댓글을 불러오지 못했습니다.",
       "form": {
         "open": "댓글 작성",
@@ -1194,14 +1197,16 @@
       "emptyFollowersHint": "누군가 나를 팔로우하면 여기에 표시됩니다.",
       "browsePlayers": "랭킹 보기",
       "followBack": "맞팔로우",
-      "toggleFailed": "작업에 실패했습니다. 잠시 후 다시 시도해 주세요"
+      "toggleFailed": "작업에 실패했습니다. 잠시 후 다시 시도해 주세요",
+      "unfollowTitle": "팔로우 취소",
+      "unfollowBody": "{psnid} 님의 팔로우를 취소할까요?"
     },
     "tips": {
       "title": "내 댓글",
       "description": "트로피에 남긴 내 댓글입니다. 여기서 확인, 수정, 삭제할 수 있습니다.",
-      "statsTips": "댓글",
-      "statsHelpful": "받은 「도움이 됨」",
-      "searchPlaceholder": "댓글 내용, 트로피 또는 게임 이름으로 검색",
+      "statsTips": "댓글 수",
+      "statsHelpful": "도움이 됨",
+      "searchPlaceholder": "내용, 트로피, 게임 검색",
       "clearSearch": "검색 지우기",
       "sort": "정렬",
       "sorts": {
@@ -1222,6 +1227,7 @@
       "editedAt": "{time} 수정",
       "expand": "전체 보기",
       "collapse": "접기",
+      "actions": "작업",
       "deleteTitle": "댓글 삭제",
       "deleteBody": "「{trophy}」에 남긴 댓글을 삭제할까요? 삭제하면 되돌릴 수 없으며, 다른 플레이어의 평가도 함께 삭제됩니다."
     }

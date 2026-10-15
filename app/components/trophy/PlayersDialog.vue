@@ -147,7 +147,7 @@ function rankClass(rank: number) {
               <span v-if="type === 'speedrun'" class="inline-flex items-center gap-1 font-medium text-slate-500">
                 <LucideIcon :icon="Timer" class="size-3" />{{ formatDuration(p.duration) }}
               </span>
-              <span v-else>{{ fmtDateTime(p.last_earned_at) }}</span>
+              <LocalTime v-else :value="p.last_earned_at" />
             </div>
           </div>
 

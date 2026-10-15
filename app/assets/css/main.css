@@ -9,7 +9,9 @@
 /* Tailwind v4 Preflight resets <button> to the default cursor; restore the
    pointer for enabled buttons (and role="button") app-wide. */
 @layer base {
-  html {
+  /* Set by plugins/smooth-scroll.client.ts once the app has hydrated, so the
+     browser's own scroll restore on reload isn't animated. */
+  html[data-scroll='smooth'] {
     scroll-behavior: smooth;
   }
 
@@ -132,7 +134,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html,
+  html[data-scroll='smooth'] {
     scroll-behavior: auto;
   }
 

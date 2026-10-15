@@ -50,7 +50,7 @@ const trophyTarget = computed(() =>
     <div class="min-w-0 flex-1">
       <h3 class="truncate text-sm font-semibold text-slate-900">{{ trophyName }}</h3>
       <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-400">
-        <span class="tabular-nums">{{ fmtDateTime(tip.updated_at) }}</span>
+        <LocalTime class="tabular-nums" :value="tip.updated_at" />
         <span v-if="edited && !compact" class="font-medium text-slate-500">{{ $t('trophy.tips.edited') }}</span>
         <span class="inline-flex items-center gap-2 leading-none">
           <span class="inline-grid items-center gap-0.5" :style="voteGrid">

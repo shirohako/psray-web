@@ -161,7 +161,7 @@ const displayedTipCount = computed(() => props.tipCount ?? props.trophy.tip_coun
       >
         <span class="inline-flex min-w-0 items-center gap-1" :title="$t('trophy.item.earnedAt')">
           <LucideIcon :icon="Clock3" class="size-3 shrink-0" />
-          <span class="truncate tabular-nums">{{ fmtDateTime(earnedAt) }}</span>
+          <LocalTime :value="earnedAt" class="truncate tabular-nums" />
         </span>
 
         <Tooltip v-if="earnedOrder" placement="top" class="shrink-0 cursor-help text-slate-500">

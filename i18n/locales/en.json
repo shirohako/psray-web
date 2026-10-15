@@ -55,6 +55,7 @@
         "admin": "Admin"
       },
       "logout": "Sign out",
+      "menu": "Account menu",
       "profile": "Profile",
       "settings": "Settings",
       "sync": "Sync account",
@@ -358,6 +359,8 @@
       "helpful": "Helpful",
       "notHelpful": "Not helpful",
       "voteFailed": "Could not save your vote",
+      "minePosted": "You've posted a tip here",
+      "mineBadge": "You",
       "loadFailed": "Tips could not be loaded.",
       "form": {
         "open": "Write a comment",
@@ -1194,14 +1197,16 @@
       "emptyFollowersHint": "Players who follow you will show up here.",
       "browsePlayers": "Browse the leaderboard",
       "followBack": "Follow back",
-      "toggleFailed": "Couldn't update. Please try again later"
+      "toggleFailed": "Couldn't update. Please try again later",
+      "unfollowTitle": "Unfollow",
+      "unfollowBody": "Stop following {psnid}?"
     },
     "tips": {
       "title": "My tips",
       "description": "Tips you've posted on trophies. Read, edit or delete them here.",
       "statsTips": "Tips",
       "statsHelpful": "Marked helpful",
-      "searchPlaceholder": "Search tips, trophies or games",
+      "searchPlaceholder": "Search text, trophies or games",
       "clearSearch": "Clear search",
       "sort": "Sort",
       "sorts": {
@@ -1222,6 +1227,7 @@
       "editedAt": "Edited {time}",
       "expand": "Show full text",
       "collapse": "Show less",
+      "actions": "Actions",
       "deleteTitle": "Delete tip",
       "deleteBody": "Delete your tip on “{trophy}”? This can’t be undone, and other players’ ratings of it are deleted too."
     }

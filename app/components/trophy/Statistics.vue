@@ -1,37 +1,39 @@
 <script setup lang="ts">
-import { Activity, Award, CheckCircle2, Clock3, Gauge, Timer, Trophy, Users, Zap } from 'lucide'
+import { Activity, Award, CheckCircle2, Clock3, Gauge, Timer, Trophy, Users, Zap, type IconNode } from 'lucide'
 import type { TrophySetDetailInfo } from '~/services/trophies'
 
 const props = defineProps<{ trophySet: TrophySetDetailInfo }>()
 
-const overviewStats = computed(() => [
+// Counted up on entry (AnimatedNumber); durations below stay static text.
+const overviewStats = computed<{ key: string, label: string, icon: IconNode, iconClass: string, value: number, suffix?: string }[]>(() => [
   {
     key: 'owners',
     label: 'trophy.banner.owners',
     icon: Users,
     iconClass: 'text-slate-700',
-    value: fmt(props.trophySet.owners),
+    value: props.trophySet.owners,
   },
   {
     key: 'averageProgress',
     label: 'trophy.banner.averageProgress',
     icon: Activity,
     iconClass: 'text-sky-500',
-    value: `${props.trophySet.average_progress}%`,
+    value: props.trophySet.average_progress,
+    suffix: '%',
   },
   {
     key: 'completed',
     label: 'trophy.banner.completed',
     icon: CheckCircle2,
     iconClass: 'text-emerald-500',
-    value: fmt(props.trophySet.completed_players),
+    value: props.trophySet.completed_players,
   },
   {
     key: 'platinums',
     label: 'trophy.banner.platinums',
     icon: Trophy,
     iconClass: 'text-cyan-500',
-    value: fmt(props.trophySet.platinum_achievers),
+    value: props.trophySet.platinum_achievers,
   },
 ])
 
@@ -95,7 +97,7 @@ const showPlatinumTime = computed(() =>
         </span>
         <div class="flex min-w-0 flex-col leading-tight">
           <dt class="order-2 mt-0.5 truncate text-[11px] text-slate-400">{{ $t(stat.label) }}</dt>
-          <dd class="order-1 truncate text-base font-bold text-slate-900 tabular-nums">{{ stat.value }}</dd>
+          <dd class="order-1 truncate text-base font-bold text-slate-900 tabular-nums"><AnimatedNumber :value="stat.value" :suffix="stat.suffix" :duration="1200" /></dd>
         </div>
       </div>
     </dl>
@@ -137,7 +139,7 @@ const showPlatinumTime = computed(() =>
             <p class="mt-0.5 text-[10px] leading-4 text-slate-400">{{ $t('trophy.statistics.difficultHint') }}</p>
           </div>
           <dd class="grid min-w-10 shrink-0 place-items-center rounded-lg bg-white px-2.5 py-2 text-sm font-bold leading-none text-slate-800 shadow-sm ring-1 ring-inset ring-slate-200 tabular-nums">
-            {{ fmt(trophySet.difficult_trophy_count) }}
+            <AnimatedNumber :value="trophySet.difficult_trophy_count" :duration="1200" />
           </dd>
         </div>
       </dl>

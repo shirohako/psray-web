@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { House, Menu, Gamepad2, LibraryBig, Trophy, LogOut, LogIn, UserPlus, User, Users, MessageSquareText, RefreshCw, Settings, Compass, LayoutDashboard, type IconNode } from 'lucide'
+import { House, Menu, Gamepad2, LibraryBig, Trophy, LogOut, LogIn, UserPlus, User, Users, MessageSquareText, RefreshCw, Settings, Compass, LayoutDashboard, ChevronRight, type IconNode } from 'lucide'
 
 const route = useRoute()
 const appConfig = useAppConfig()
@@ -15,6 +15,10 @@ const mobileOpen = ref(false)
 
 // Site-wide settings drawer (slides in from the right).
 const settingsOpen = ref(false)
+
+// Phones: the signed-in user's menu as a side panel (desktop keeps the dropdown).
+const userPanelOpen = ref(false)
+watch(() => route.fullPath, () => { userPanelOpen.value = false })
 
 onMounted(() => {
   const saved = localStorage.getItem('sidebar:collapsed')
@@ -85,6 +89,11 @@ const userMenu = computed<UserMenuGroup[]>(() => [
     : []),
 ])
 
+/** Whether a menu entry points at the page being shown. */
+function isCurrentPage(to: string | { path: string }) {
+  return route.path === (typeof to === 'string' ? to : to.path)
+}
+
 async function onLogout() {
   await logout()
   await navigateTo('/')
@@ -142,41 +151,31 @@ async function onLogout() {
           </button>
         </div>
 
+        <!-- Phones: the avatar opens the account panel instead of a dropdown -->
+        <button
+          v-if="loggedIn && user"
+          type="button"
+          class="grid size-10 shrink-0 place-items-center rounded-full transition hover:bg-slate-100 sm:hidden"
+          :aria-label="$t('nav.user.menu')"
+          :aria-expanded="userPanelOpen"
+          @click="userPanelOpen = true"
+        >
+          <UserAvatar :psnid="user.psnid" :src="user.avatar_url" class="size-8 ring-2 ring-white" />
+        </button>
+
         <DropdownMenu
           v-if="loggedIn && user"
           align="right"
-          panel-class="w-60"
-          class="flex min-w-0 cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 sm:px-3"
+          panel-class="w-56"
+          class="hidden min-w-0 cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 sm:flex"
         >
-          <img
-            v-if="user.avatar_url"
-            :src="user.avatar_url"
-            :alt="user.psnid"
-            class="size-8 shrink-0 rounded-full bg-slate-100 object-cover"
-          />
-          <span
-            v-else
-            class="grid size-8 shrink-0 place-items-center rounded-full bg-slate-900 text-xs font-bold text-white"
-          >
-            {{ user.psnid.slice(0, 1).toUpperCase() }}
-          </span>
-          <span class="hidden max-w-32 truncate sm:block">{{ user.psnid }}</span>
+          <UserAvatar :psnid="user.psnid" :src="user.avatar_url" class="size-8" />
+          <span class="max-w-32 truncate">{{ user.psnid }}</span>
 
           <template #menu="{ close }">
-            <!-- Who is signed in; the trigger hides the PSN ID on small screens -->
-            <div class="flex items-center gap-2.5 border-b border-slate-100 px-3 pb-2.5 pt-1.5">
-              <img
-                v-if="user.avatar_url"
-                :src="user.avatar_url"
-                :alt="user.psnid"
-                class="size-9 shrink-0 rounded-full bg-slate-100 object-cover"
-              />
-              <span
-                v-else
-                class="grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-xs font-bold text-white"
-              >
-                {{ user.psnid.slice(0, 1).toUpperCase() }}
-              </span>
+            <!-- Who is signed in -->
+            <div class="flex items-center gap-2.5 border-b border-slate-100 px-3 pb-2 pt-1">
+              <UserAvatar :psnid="user.psnid" :src="user.avatar_url" class="size-8" />
               <div class="min-w-0">
                 <p class="truncate text-sm font-semibold text-slate-900">{{ user.psnid }}</p>
                 <p class="text-xs tabular-nums text-slate-400">Lv {{ user.trophy_level }}</p>
@@ -190,12 +189,12 @@ async function onLogout() {
               :aria-label="$t(group.labelKey)"
               class="border-b border-slate-100 py-1"
             >
-              <p class="px-3 pb-1 pt-1.5 text-[11px] font-semibold text-slate-400">{{ $t(group.labelKey) }}</p>
+              <p class="px-3 pb-0.5 pt-1 text-[11px] font-semibold text-slate-400">{{ $t(group.labelKey) }}</p>
               <NuxtLink
                 v-for="item in group.items"
                 :key="item.labelKey"
                 :to="item.to"
-                class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                class="flex items-center gap-2.5 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
                 @click="close"
               >
                 <LucideIcon :icon="item.icon" class="size-4 text-slate-400" />
@@ -206,7 +205,7 @@ async function onLogout() {
             <div class="pt-1">
               <button
                 type="button"
-                class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                class="flex w-full items-center gap-2.5 px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
                 @click="close(); onLogout()"
               >
                 <LucideIcon :icon="LogOut" class="size-4 text-slate-400" />
@@ -340,6 +339,56 @@ async function onLogout() {
 
     <!-- Site-wide preferences -->
     <SettingsDrawer v-model:open="settingsOpen" />
+
+    <!-- Phones: the signed-in user's menu as a side panel with large rows -->
+    <Drawer v-if="loggedIn && user" v-model:open="userPanelOpen" side="right" size="xs">
+      <template #title>
+        <span class="flex min-w-0 items-center gap-3">
+          <UserAvatar :psnid="user.psnid" :src="user.avatar_url" class="size-10" />
+          <span class="min-w-0">
+            <span class="block truncate text-base font-semibold text-slate-900">{{ user.psnid }}</span>
+            <span class="block text-xs font-medium tabular-nums text-slate-400">Lv {{ user.trophy_level }}</span>
+          </span>
+        </span>
+      </template>
+
+      <nav class="space-y-5 bg-slate-50/70 px-4 py-5" :aria-label="$t('nav.user.menu')">
+        <section v-for="group in userMenu" :key="group.labelKey">
+          <h3 class="px-1 pb-2 text-[11px] font-semibold tracking-wide text-slate-400">{{ $t(group.labelKey) }}</h3>
+          <div class="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <NuxtLink
+              v-for="item in group.items"
+              :key="item.labelKey"
+              :to="item.to"
+              class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition active:bg-slate-100"
+              :class="isCurrentPage(item.to) ? 'bg-slate-50 text-slate-900' : 'text-slate-700 hover:bg-slate-50'"
+              :aria-current="isCurrentPage(item.to) ? 'page' : undefined"
+              @click="userPanelOpen = false"
+            >
+              <span
+                class="grid size-8 shrink-0 place-items-center rounded-lg"
+                :class="isCurrentPage(item.to) ? 'bg-slate-900 text-white' : 'bg-slate-100 text-slate-500'"
+              >
+                <LucideIcon :icon="item.icon" class="size-4" />
+              </span>
+              <span class="min-w-0 flex-1 truncate">{{ $t(item.labelKey) }}</span>
+              <LucideIcon :icon="ChevronRight" class="size-4 shrink-0 text-slate-300" />
+            </NuxtLink>
+          </div>
+        </section>
+      </nav>
+
+      <template #footer>
+        <button
+          type="button"
+          class="flex w-full items-center justify-center gap-2 rounded-lg border border-rose-200 bg-rose-50 py-2.5 text-sm font-semibold text-rose-600 transition hover:bg-rose-100 active:bg-rose-100"
+          @click="userPanelOpen = false; onLogout()"
+        >
+          <LucideIcon :icon="LogOut" class="size-4" />
+          {{ $t('nav.user.logout') }}
+        </button>
+      </template>
+    </Drawer>
 
     <!-- Feedback entry point, bottom-right on every public page -->
     <FeedbackFloatingButton />

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AlertTriangle, Heart, Loader2, RotateCw, UserCheck, UserPlus, Users, type IconNode } from 'lucide'
+import { AlertTriangle, Heart, Loader2, RotateCw, UserCheck, UserMinus, UserPlus, Users, type IconNode } from 'lucide'
 import { useProfiles, type FollowDirection, type FollowPageMeta, type MyFollowEntry } from '~/services/profile'
 import { ApiError } from '~/utils/ApiError'
 
@@ -72,9 +72,16 @@ function followsMe(person: MyFollowEntry) {
   return state.value.tab === 'followers' || person.is_mutual
 }
 
-async function toggle(person: MyFollowEntry) {
+/** What clicking the follow button does for this person. */
+function followActionLabel(person: MyFollowEntry) {
+  if (iFollow(person)) return t('profile.actions.unfollow')
+  return followsMe(person) ? t('me.following.followBack') : t('profile.actions.follow')
+}
+
+/** Follow or unfollow right away; true when the server took the change. */
+async function toggle(person: MyFollowEntry): Promise<boolean> {
   const psnid = person.psnid
-  if (busy.value[psnid]) return
+  if (busy.value[psnid]) return false
   const next = !iFollow(person)
   changed.value[psnid] = next
   busy.value[psnid] = true
@@ -86,18 +93,38 @@ async function toggle(person: MyFollowEntry) {
       user.value.following_count = Math.max(0, user.value.following_count + (next ? 1 : -1))
     }
     if (result.following) toast.success({ title: t('toast.followed.title'), description: t('toast.followed.description', { psnid }), icon: UserCheck })
+    return true
   }
   catch (error) {
     changed.value[psnid] = !next
     if (error instanceof ApiError && error.code === 'UNAUTHENTICATED') {
       await navigateTo({ path: '/auth/login', query: { redirect: route.fullPath } })
-      return
+      return false
     }
     toast.error({ title: t('me.following.toggleFailed'), description: error instanceof ApiError ? error.message : undefined })
+    return false
   }
   finally {
     delete busy.value[psnid]
   }
+}
+
+// Unfollowing asks first; following (back) happens on the click.
+const confirming = ref<MyFollowEntry | null>(null)
+const confirmOpen = ref(false)
+
+function onFollowClick(person: MyFollowEntry) {
+  if (!iFollow(person)) {
+    toggle(person)
+    return
+  }
+  confirming.value = person
+  confirmOpen.value = true
+}
+
+async function confirmUnfollow() {
+  const person = confirming.value
+  if (person && await toggle(person)) confirmOpen.value = false
 }
 
 // Placeholder rows: varied widths so they read like real PSN IDs.
@@ -154,9 +181,17 @@ const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28']
           </button>
         </div>
 
-        <ul v-else-if="items.length" class="divide-y divide-slate-100 transition-opacity" :class="{ 'opacity-55': pending }">
-          <li v-for="person in items" :key="person.profile_id">
-            <ProfileFollowRow :person="person">
+        <ul
+          v-else-if="items.length"
+          class="grid gap-3 p-3 transition-opacity sm:p-4 md:grid-cols-2 xl:grid-cols-3"
+          :class="{ 'opacity-55': pending }"
+        >
+          <li
+            v-for="person in items"
+            :key="person.profile_id"
+            class="overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-slate-300 hover:shadow-sm"
+          >
+            <ProfileFollowRow :person="person" variant="card">
               <template #badge>
                 <span
                   v-if="followsMe(person) && iFollow(person)"
@@ -168,41 +203,42 @@ const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28']
                 >{{ $t('profile.social.followsYou') }}</span>
               </template>
               <template #action>
-                <button
-                  v-if="iFollow(person)"
-                  type="button"
-                  :disabled="busy[person.psnid]"
-                  class="group/follow inline-flex h-8 min-w-24 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold text-slate-600 transition hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600 disabled:opacity-60"
-                  :aria-label="`${$t('profile.actions.unfollow')} ${person.psnid}`"
-                  @click="toggle(person)"
-                >
-                  <LucideIcon :icon="busy[person.psnid] ? Loader2 : UserCheck" class="size-3.5" :class="{ 'animate-spin': busy[person.psnid] }" />
-                  <span class="group-hover/follow:hidden">{{ $t('profile.actions.following') }}</span>
-                  <span class="hidden group-hover/follow:inline">{{ $t('profile.actions.unfollow') }}</span>
-                </button>
-                <button
-                  v-else
-                  type="button"
-                  :disabled="busy[person.psnid]"
-                  class="inline-flex h-8 min-w-24 items-center justify-center gap-1.5 rounded-lg bg-slate-900 px-3 text-xs font-semibold text-white transition hover:bg-slate-700 disabled:opacity-60"
-                  @click="toggle(person)"
-                >
-                  <LucideIcon :icon="busy[person.psnid] ? Loader2 : UserPlus" class="size-3.5" :class="{ 'animate-spin': busy[person.psnid] }" />
-                  {{ followsMe(person) ? $t('me.following.followBack') : $t('profile.actions.follow') }}
-                </button>
+                <!-- Icon-only so cards stay one row; the tooltip and accessible name say what a click does -->
+                <Tooltip :content="followActionLabel(person)" placement="top">
+                  <button
+                    type="button"
+                    :disabled="busy[person.psnid]"
+                    class="group/follow grid size-8 place-items-center rounded-lg ring-1 ring-inset transition active:scale-95 disabled:cursor-wait disabled:opacity-70"
+                    :class="iFollow(person)
+                      ? 'bg-emerald-50 text-emerald-600 ring-emerald-200 hover:bg-rose-50 hover:text-rose-600 hover:ring-rose-200'
+                      : followsMe(person)
+                        ? 'bg-sky-600 text-white ring-sky-600 hover:bg-sky-700 hover:ring-sky-700'
+                        : 'bg-slate-900 text-white ring-slate-900 hover:bg-slate-700 hover:ring-slate-700'"
+                    :aria-label="`${followActionLabel(person)} ${person.psnid}`"
+                    :aria-pressed="iFollow(person)"
+                    @click="onFollowClick(person)"
+                  >
+                    <LucideIcon v-if="busy[person.psnid]" :icon="Loader2" class="size-4 animate-spin" />
+                    <template v-else-if="iFollow(person)">
+                      <LucideIcon :icon="UserCheck" class="size-4 group-hover/follow:hidden" />
+                      <LucideIcon :icon="UserMinus" class="hidden size-4 group-hover/follow:block" />
+                    </template>
+                    <LucideIcon v-else :icon="UserPlus" class="size-4" />
+                  </button>
+                </Tooltip>
               </template>
             </ProfileFollowRow>
           </li>
         </ul>
 
-        <ul v-else-if="pending" class="animate-skeleton-in divide-y divide-slate-100" aria-hidden="true">
-          <li v-for="(width, i) in SKELETON_WIDTHS" :key="i" class="flex items-center gap-3 px-4 py-3 sm:px-5">
-            <div class="skeleton size-10 shrink-0 rounded-full" />
+        <ul v-else-if="pending" class="animate-skeleton-in grid gap-3 p-3 sm:p-4 md:grid-cols-2 xl:grid-cols-3" aria-hidden="true">
+          <li v-for="(width, i) in SKELETON_WIDTHS" :key="i" class="flex items-center gap-3 rounded-xl border border-slate-200 p-4">
+            <div class="skeleton size-11 shrink-0 rounded-full" />
             <div class="min-w-0 flex-1 space-y-2">
               <div class="skeleton h-3.5 rounded" :class="width" />
-              <div class="skeleton skeleton-soft h-2.5 w-24 rounded" />
+              <div class="skeleton skeleton-soft h-3 w-36 rounded" />
             </div>
-            <div class="skeleton skeleton-soft h-8 w-24 rounded-lg" />
+            <div class="skeleton skeleton-soft size-8 shrink-0 rounded-lg" />
           </li>
         </ul>
 
@@ -233,5 +269,36 @@ const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28']
         </div>
       </section>
     </div>
+
+    <Dialog v-model:open="confirmOpen" size="sm" :title="$t('me.following.unfollowTitle')">
+      <div v-if="confirming" class="flex items-center gap-3 p-4 sm:p-5">
+        <UserAvatar :psnid="confirming.psnid" :src="confirming.avatar_url" class="size-10" />
+        <p class="min-w-0 text-sm leading-6 text-slate-600">
+          <i18n-t keypath="me.following.unfollowBody" scope="global">
+            <template #psnid><span class="font-semibold text-slate-900">{{ confirming.psnid }}</span></template>
+          </i18n-t>
+        </p>
+      </div>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <button
+            type="button"
+            class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
+            @click="confirmOpen = false"
+          >
+            {{ $t('common.cancel') }}
+          </button>
+          <button
+            type="button"
+            :disabled="!!confirming && busy[confirming.psnid]"
+            class="inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-2 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-60"
+            @click="confirmUnfollow"
+          >
+            <LucideIcon :icon="confirming && busy[confirming.psnid] ? Loader2 : UserMinus" class="size-4" :class="{ 'animate-spin': confirming && busy[confirming.psnid] }" />
+            {{ $t('profile.actions.unfollow') }}
+          </button>
+        </div>
+      </template>
+    </Dialog>
   </div>
 </template>

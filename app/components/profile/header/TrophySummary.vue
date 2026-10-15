@@ -6,6 +6,8 @@ import type { Profile } from '~/services/profile'
 const props = defineProps<{ profile: Profile }>()
 
 const total = computed(() => sumTrophies(props.profile))
+// The level ring fills alongside the numbers counting up.
+const ring = useAnimatedNumber(() => props.profile.progress, { duration: 1200 })
 </script>
 
 <template>
@@ -18,13 +20,13 @@ const total = computed(() => sumTrophies(props.profile))
           <circle
             cx="18" cy="18" r="16" fill="none" stroke="#0f172a" stroke-width="3"
             stroke-linecap="round"
-            :stroke-dasharray="`${(profile.progress / 100) * 100.5} 100.5`"
+            :stroke-dasharray="`${(ring / 100) * 100.5} 100.5`"
           />
         </svg>
         <LucideIcon :icon="Trophy" class="absolute size-4 text-slate-900" />
       </div>
       <div class="leading-tight">
-        <div class="text-xl font-bold text-slate-900">{{ profile.trophy_level }}</div>
+        <div class="text-xl font-bold tabular-nums text-slate-900"><AnimatedNumber :value="profile.trophy_level" :duration="1200" reserve-width /></div>
         <div class="text-xs text-slate-500">{{ $t('profile.summary.level', { progress: profile.progress }) }}</div>
       </div>
     </div>
@@ -35,7 +37,7 @@ const total = computed(() => sumTrophies(props.profile))
         <LucideIcon :icon="Trophy" class="size-4.5" />
       </span>
       <div class="leading-tight">
-        <div class="text-xl font-bold text-slate-900">{{ fmt(total) }}</div>
+        <div class="text-xl font-bold tabular-nums text-slate-900"><AnimatedNumber :value="total" :duration="1200" reserve-width /></div>
         <div class="text-xs text-slate-400">{{ $t('profile.stats.trophies') }}</div>
       </div>
     </div>
@@ -43,7 +45,7 @@ const total = computed(() => sumTrophies(props.profile))
     <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
       <span v-for="t in trophyKinds" :key="t.key" class="inline-flex items-baseline gap-1.5">
         <span class="size-3 translate-y-0.5 rounded-full" :class="t.dot" />
-        <span class="text-sm font-bold text-slate-900">{{ fmt(profile[t.key]) }}</span>
+        <span class="text-sm font-bold tabular-nums text-slate-900"><AnimatedNumber :value="profile[t.key]" :duration="1200" reserve-width /></span>
         <span class="text-xs" :class="t.text">{{ $t(t.labelKey) }}</span>
       </span>
     </div>

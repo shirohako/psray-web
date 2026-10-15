@@ -20,6 +20,14 @@ function toDate(value: DateLike) {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
+/**
+ * An API timestamp (ISO string, or Unix seconds when numeric) as an ISO string
+ * with a zone, for `<LocalTime>`; null when missing or unparseable.
+ */
+export function toIsoDate(value: DateLike): string | null {
+  return toDate(value)?.toISOString() ?? null
+}
+
 /** Date only, in the active language, e.g. `May 29, 2026`. */
 export function fmtDate(value: DateLike) {
   const date = toDate(value)

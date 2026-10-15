@@ -9,7 +9,11 @@ import { ApiError } from '~/utils/ApiError'
  * metadata and votes. Spoiler tips stay masked behind a reveal button until the
  * reader opts in.
  */
-const props = defineProps<{ tip: TrophyTip }>()
+const props = defineProps<{
+  tip: TrophyTip
+  /** The signed-in viewer wrote it: marked so it's easy to find in the list. */
+  mine?: boolean
+}>()
 
 const route = useRoute()
 const { t } = useI18n()
@@ -91,6 +95,9 @@ async function evaluate(choice: 1 | -1) {
         <span v-if="tip.user.trophy_level != null" class="rounded bg-slate-100 px-1.5 text-[11px] font-semibold tabular-nums text-slate-500">
           Lv {{ tip.user.trophy_level }}
         </span>
+        <span v-if="mine" class="rounded bg-emerald-50 px-1.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-inset ring-emerald-200">
+          {{ $t('trophy.tips.mineBadge') }}
+        </span>
       </div>
 
       <!-- Body (masked when it contains spoilers) -->
@@ -108,7 +115,7 @@ async function evaluate(choice: 1 | -1) {
       <!-- Meta + helpfulness totals -->
       <div class="mt-2.5 flex flex-col items-start gap-1.5 text-xs text-slate-400 sm:flex-row sm:items-center sm:gap-2">
         <div class="flex flex-wrap items-center gap-1.5">
-          <time :datetime="tip.updated_at" class="whitespace-nowrap tabular-nums">{{ fmtDateTime(tip.updated_at) }}</time>
+          <LocalTime :value="tip.updated_at" class="whitespace-nowrap tabular-nums" />
           <span v-if="edited" class="whitespace-nowrap rounded-md bg-slate-100 px-1.5 py-0.5 font-medium text-slate-500">{{ $t('trophy.tips.edited') }}</span>
         </div>
         <span class="hidden text-slate-300 sm:inline">·</span>

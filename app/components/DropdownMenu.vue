@@ -65,12 +65,18 @@ function toggle() {
 function adjust() {
   const el = panel.value
   if (!el || !anchor) return
-  const rect = el.getBoundingClientRect()
+  // Layout size, not getBoundingClientRect(): the open transition starts the
+  // panel at scale-95, and a scaled width would push a right-aligned panel past
+  // the trigger's edge once it grows to full size.
+  const width = el.offsetWidth
+  const height = el.offsetHeight
+  // clientWidth leaves out the page scrollbar, which innerWidth includes.
+  const viewportWidth = document.documentElement.clientWidth
   const margin = 8
   let top = anchor.bottom + 8
-  let left = props.align === 'right' ? anchor.right - rect.width : anchor.left
-  if (left + rect.width + margin > window.innerWidth) left = window.innerWidth - rect.width - margin
-  if (top + rect.height + margin > window.innerHeight) top = window.innerHeight - rect.height - margin
+  let left = props.align === 'right' ? anchor.right - width : anchor.left
+  if (left + width + margin > viewportWidth) left = viewportWidth - width - margin
+  if (top + height + margin > window.innerHeight) top = window.innerHeight - height - margin
   position.value = { top: Math.max(margin, top), left: Math.max(margin, left) }
 }
 

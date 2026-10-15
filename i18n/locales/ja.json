@@ -55,6 +55,7 @@
         "admin": "管理"
       },
       "logout": "ログアウト",
+      "menu": "アカウントメニュー",
       "profile": "プロフィール",
       "settings": "アカウント設定",
       "sync": "アカウント同期",
@@ -358,6 +359,8 @@
       "helpful": "役に立つ",
       "notHelpful": "役に立たない",
       "voteFailed": "評価を更新できませんでした",
+      "minePosted": "このトロフィーにコメント済みです",
+      "mineBadge": "自分",
       "loadFailed": "コメントを読み込めませんでした。",
       "form": {
         "open": "コメントを書く",
@@ -1194,14 +1197,16 @@
       "emptyFollowersHint": "誰かにフォローされると、ここに表示されます。",
       "browsePlayers": "ランキングを見る",
       "followBack": "フォローバック",
-      "toggleFailed": "操作に失敗しました。しばらくしてからもう一度お試しください"
+      "toggleFailed": "操作に失敗しました。しばらくしてからもう一度お試しください",
+      "unfollowTitle": "フォロー解除",
+      "unfollowBody": "{psnid} のフォローを解除しますか？"
     },
     "tips": {
       "title": "自分のコメント",
       "description": "あなたがトロフィーに投稿したコメントです。ここで確認・編集・削除できます。",
-      "statsTips": "コメント",
-      "statsHelpful": "「参考になった」",
-      "searchPlaceholder": "コメント本文・トロフィー名・ゲーム名で検索",
+      "statsTips": "コメント数",
+      "statsHelpful": "参考になった",
+      "searchPlaceholder": "本文・トロフィー・ゲームで検索",
       "clearSearch": "検索をクリア",
       "sort": "並び替え",
       "sorts": {
@@ -1222,6 +1227,7 @@
       "editedAt": "{time} に編集",
       "expand": "全文を表示",
       "collapse": "閉じる",
+      "actions": "操作",
       "deleteTitle": "コメントを削除",
       "deleteBody": "「{trophy}」へのコメントを削除しますか？削除すると元に戻せません。他のプレイヤーからの評価も一緒に削除されます。"
     }

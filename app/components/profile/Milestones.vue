@@ -167,15 +167,15 @@ function milestoneMeta(item: ProfileMilestone) {
             <div class="min-w-0 flex-1">
               <p class="line-clamp-2 text-sm font-semibold text-slate-800 sm:truncate">{{ item.trophyName }}</p>
               <p class="mt-0.5 truncate text-xs text-slate-400">{{ item.trophySetName }}</p>
-              <time class="mt-1 inline-flex items-center gap-1 text-[11px] text-slate-400 tabular-nums sm:hidden">
+              <span class="mt-1 inline-flex items-center gap-1 text-[11px] text-slate-400 tabular-nums sm:hidden">
                 <LucideIcon :icon="Clock" class="size-3" />
-                {{ fmtDateTime(item.earned_at) }}
-              </time>
+                <LocalTime :value="item.earned_at" />
+              </span>
             </div>
-            <time class="ml-auto hidden shrink-0 items-center gap-1 text-xs text-slate-400 tabular-nums sm:inline-flex">
+            <span class="ml-auto hidden shrink-0 items-center gap-1 text-xs text-slate-400 tabular-nums sm:inline-flex">
               <LucideIcon :icon="Clock" class="size-3.5" />
-              {{ fmtDateTime(item.earned_at) }}
-            </time>
+              <LocalTime :value="item.earned_at" />
+            </span>
             <LucideIcon :icon="ChevronRight" class="size-4 shrink-0 text-slate-300 transition group-hover:text-slate-500 max-sm:hidden" />
           </div>
         </div>

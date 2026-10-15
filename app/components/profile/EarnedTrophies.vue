@@ -5,6 +5,14 @@ import type { RecentTrophy } from '~/services/profile'
 const props = defineProps<{ psnid: string; page: number }>()
 const emit = defineEmits<{ 'update:page': [page: number] }>()
 
+const listEl = ref<HTMLElement | null>(null)
+
+/** Change page, then bring the first trophy into view (the bottom pager leaves it far above). */
+function changePage(value: number) {
+  emit('update:page', value)
+  revealTop(listEl.value)
+}
+
 interface PageMeta {
   page: number
   per_page: number
@@ -97,7 +105,7 @@ function psnEarnedRate(item: RecentTrophy) {
       v-if="totalPages > 1 && trophies.length > 5"
       class="border-b border-slate-100 px-4 py-2.5"
     >
-      <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="emit('update:page', $event)" />
+      <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
     </div>
 
     <!-- Loading (initial only — on page change we keep the list visible) -->
@@ -141,7 +149,7 @@ function psnEarnedRate(item: RecentTrophy) {
     </div>
 
     <!-- List -->
-    <div v-else class="divide-y divide-slate-100 transition-opacity" :class="{ 'opacity-50': pending }">
+    <div v-else ref="listEl" class="divide-y divide-slate-100 transition-opacity" :class="{ 'opacity-50': pending }">
       <a
         v-for="(item, index) in trophies"
         :key="`${item.trophy_set_id}-${item.trophy_id}-${item.earned_at}`"
@@ -182,7 +190,7 @@ function psnEarnedRate(item: RecentTrophy) {
             <TimestampMissing v-if="item.earned_at == null" />
             <span v-else class="inline-flex items-center gap-1 tabular-nums">
               <LucideIcon :icon="Clock" class="size-3 text-slate-400" />
-              {{ fmtDateTime(item.earned_at) }}
+              <LocalTime :value="item.earned_at" />
             </span>
             <span
               v-if="elapsedSincePrev(index) != null"
@@ -212,7 +220,7 @@ function psnEarnedRate(item: RecentTrophy) {
 
     <!-- Bottom pager -->
     <div v-if="totalPages > 1" class="border-t border-slate-100 px-4 py-3">
-      <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="emit('update:page', $event)" />
+      <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
     </div>
   </div>
 </template>

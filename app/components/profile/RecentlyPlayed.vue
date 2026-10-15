@@ -56,6 +56,12 @@ const canCollapse = computed(() => recent.value.length > 4)
 const isSearching = computed(() => Boolean(props.query))
 const apiValidationFailed = computed(() => error.value instanceof ApiError && error.value.status === 422)
 
+/** Change page, then bring the first record into view (the bottom pager leaves it far above). */
+function changePage(value: number) {
+  emit('update:page', value)
+  revealTop(listEl.value)
+}
+
 function submitSearch() {
   const result = validateRecentlyPlayedSearch(searchInput.value)
   searchError.value = result.error
@@ -238,7 +244,7 @@ onBeforeUnmount(() => {
     v-if="totalPages > 1 && recent.length > 5"
     class="border-b border-slate-100 px-4 py-2.5"
   >
-    <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="emit('update:page', $event)" />
+    <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
   </div>
 
   <!-- Loading (initial only — on page change we keep the list visible) -->
@@ -357,7 +363,7 @@ onBeforeUnmount(() => {
             />
             <span v-else class="inline-flex items-center gap-1 leading-none tabular-nums">
               <LucideIcon :icon="Clock" class="size-3 shrink-0" />
-              {{ fmtDateTime(g.last_earned_at) }}
+              <LocalTime :value="g.last_earned_at" />
             </span>
             <!-- Some earned trophies lack a time: `duration` is always 0 then, so it's never
                  shown (the notice above already covers a set with no times at all). -->
@@ -416,7 +422,7 @@ onBeforeUnmount(() => {
     class="border-t border-slate-100 px-4 py-3"
     :class="canCollapse && !expanded ? 'max-sm:hidden' : ''"
   >
-    <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="emit('update:page', $event)" />
+    <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
   </div>
   </div>
 </template>

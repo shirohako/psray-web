@@ -47,7 +47,10 @@ const isRegistered = computed(() => props.profile.registered_at != null)
           <RegionFlag :country="profile.country" /> {{ regionName(profile.country) }}
         </span>
         <span v-if="profile.last_synced_at != null" class="inline-flex items-center gap-1">
-          <LucideIcon :icon="RefreshCw" class="size-3.5 text-slate-400" /> {{ $t('common.updatedAt', { time: fmtDateTime(profile.last_synced_at) }) }}
+          <LucideIcon :icon="RefreshCw" class="size-3.5 text-slate-400" />
+          <i18n-t keypath="common.updatedAt" scope="global">
+            <template #time><LocalTime :value="profile.last_synced_at" /></template>
+          </i18n-t>
         </span>
       </div>
     </div>
