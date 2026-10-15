@@ -10,6 +10,7 @@ import {
   Ban,
   PanelLeftClose,
   PanelLeftOpen,
+  Settings,
   Database,
   ShieldCheck,
   X,
@@ -54,6 +55,10 @@ const groups = [
       { name: '同步异常', to: '/admin/sync-failures', icon: TriangleAlert },
       { name: '错误日志', to: '/admin/logs', icon: FileText },
     ],
+  },
+  {
+    label: '系统',
+    items: [{ name: '系统设置', to: '/admin/settings', icon: Settings }],
   },
 ]
 const current = computed(() => {

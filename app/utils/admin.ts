@@ -167,6 +167,36 @@ export interface BanResult {
   purged: PurgeReport | null
   evidence: BanEvidence
 }
+/** One editable setting from `GET /settings`. Database values win over env. */
+export interface SystemSettingItem {
+  key: string
+  label: string
+  description: string | null
+  type: 'string' | 'integer' | 'boolean'
+  /** Stored encrypted; `value` is always null, only `is_set` tells. */
+  secret: boolean
+  /** The env var it falls back to, for display. */
+  env: string | null
+  is_set: boolean
+  source: 'database' | 'env' | null
+  value: string | number | boolean | null
+  /** Whether clearing the database value still leaves an env value. */
+  env_is_set: boolean
+  updated_at: string | null
+}
+export interface SystemSettingGroup {
+  key: string
+  label: string
+  description: string
+  items: SystemSettingItem[]
+}
+export interface SystemSettingsResponse {
+  groups: SystemSettingGroup[]
+}
+/** `PATCH /settings`: the keys that actually changed, plus the fresh list. */
+export interface SystemSettingsUpdate extends SystemSettingsResponse {
+  changed: string[]
+}
 /** The user `POST /sync-resets` acts on, with stats from before the reset. */
 export interface SyncResetTarget {
   id: number
