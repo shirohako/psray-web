@@ -27,13 +27,24 @@ async function refresh() {
 }
 onMounted(refresh)
 useAdminPoll(refresh)
-const queues = [
+// Filter options: the queues Horizon is configured with (from the summary
+// above), plus this fallback list for when Horizon is down or still loading.
+const KNOWN_QUEUES = [
   'default',
   'psn-sync',
   'psn-sync-auto',
   'psn-localization',
+  'psn-discovery',
   'share-card',
-].map((value) => ({ value, label: value }))
+  'igdb',
+  'mail',
+  'mail-bulk',
+]
+const queues = computed(() =>
+  [...new Set([...(summary.value?.queues.map((queue) => queue.name) ?? []), ...KNOWN_QUEUES])].map(
+    (value) => ({ value, label: value }),
+  ),
+)
 const liveColumns = [
   { key: 'id', label: 'UUID', mono: true },
   { key: 'job', label: '任务' },
