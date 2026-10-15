@@ -48,10 +48,17 @@
     },
     "user": {
       "admin": "管理后台",
+      "following": "我的关注",
+      "groups": {
+        "me": "我的",
+        "account": "账户",
+        "admin": "管理"
+      },
       "logout": "退出登录",
       "profile": "个人资料",
       "settings": "用户设置",
-      "sync": "同步账户"
+      "sync": "同步账户",
+      "tips": "我的留言"
     }
   },
   "home": {
@@ -921,6 +928,10 @@
     "settings": {
       "title": "用户设置"
     },
+    "me": {
+      "following": "我的关注",
+      "tips": "我的留言"
+    },
     "unsubscribe": {
       "title": "退订邮件"
     },
@@ -1171,6 +1182,48 @@
         "sent": "已补充",
         "failed": "补充失败"
       }
+    }
+  },
+  "me": {
+    "following": {
+      "title": "我的关注",
+      "description": "你关注的玩家，以及关注你的玩家。可以在这里取消关注或回关。",
+      "emptyFollowing": "你还没有关注任何人。",
+      "emptyFollowingHint": "在玩家主页点「关注」，之后就能在这里找到 TA。",
+      "emptyFollowers": "还没有人关注你。",
+      "emptyFollowersHint": "有玩家关注你之后，会显示在这里。",
+      "browsePlayers": "去排行榜看看",
+      "followBack": "回关",
+      "toggleFailed": "操作失败，请稍后重试"
+    },
+    "tips": {
+      "title": "我的留言",
+      "description": "你在各个奖杯下发表的留言。可以在这里查看、修改或删除。",
+      "statsTips": "留言",
+      "statsHelpful": "获得「有帮助」",
+      "searchPlaceholder": "搜索留言内容、奖杯或游戏名",
+      "clearSearch": "清除搜索",
+      "sort": "排序",
+      "sorts": {
+        "updated": "最近修改",
+        "created": "最新发表",
+        "helpful": "最有帮助"
+      },
+      "empty": "你还没有发表过留言。",
+      "emptyHint": "打开任意一枚奖杯的留言，就可以写下你的攻略和心得。",
+      "browseTrophies": "去看看奖杯",
+      "emptyFiltered": "没有符合条件的留言。",
+      "reset": "清除搜索",
+      "loadError": "留言加载失败",
+      "range": "第 {start}–{end} 条，共 {total} 条",
+      "trophyGone": "这枚奖杯已不存在",
+      "spoiler": "含剧透",
+      "publishedAt": "发表于 {time}",
+      "editedAt": "修改于 {time}",
+      "expand": "展开全文",
+      "collapse": "收起",
+      "deleteTitle": "删除留言",
+      "deleteBody": "确定删除你在「{trophy}」下的留言吗？删除后无法恢复，其他玩家对它的评价也会一并删除。"
     }
   }
 }

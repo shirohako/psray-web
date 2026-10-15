@@ -48,10 +48,17 @@
     },
     "user": {
       "admin": "管理後台",
+      "following": "我的追蹤",
+      "groups": {
+        "me": "我的",
+        "account": "帳號",
+        "admin": "管理"
+      },
       "logout": "登出",
       "profile": "個人資料",
       "settings": "使用者設定",
-      "sync": "同步帳號"
+      "sync": "同步帳號",
+      "tips": "我的留言"
     }
   },
   "home": {
@@ -921,6 +928,10 @@
     "settings": {
       "title": "使用者設定"
     },
+    "me": {
+      "following": "我的追蹤",
+      "tips": "我的留言"
+    },
     "unsubscribe": {
       "title": "退訂郵件"
     },
@@ -1171,6 +1182,48 @@
         "sent": "已補充",
         "failed": "補充失敗"
       }
+    }
+  },
+  "me": {
+    "following": {
+      "title": "我的追蹤",
+      "description": "你追蹤的玩家，以及追蹤你的玩家。可以在這裡取消追蹤或回追。",
+      "emptyFollowing": "你還沒有追蹤任何人。",
+      "emptyFollowingHint": "在玩家主頁點「追蹤」，之後就能在這裡找到 TA。",
+      "emptyFollowers": "還沒有人追蹤你。",
+      "emptyFollowersHint": "有玩家追蹤你之後，會顯示在這裡。",
+      "browsePlayers": "去排行榜看看",
+      "followBack": "回追",
+      "toggleFailed": "操作失敗，請稍後再試"
+    },
+    "tips": {
+      "title": "我的留言",
+      "description": "你在各個獎盃下發表的留言。可以在這裡查看、修改或刪除。",
+      "statsTips": "留言",
+      "statsHelpful": "獲得「有幫助」",
+      "searchPlaceholder": "搜尋留言內容、獎盃或遊戲名稱",
+      "clearSearch": "清除搜尋",
+      "sort": "排序",
+      "sorts": {
+        "updated": "最近修改",
+        "created": "最新發表",
+        "helpful": "最有幫助"
+      },
+      "empty": "你還沒有發表過留言。",
+      "emptyHint": "打開任意一個獎盃的留言，就可以寫下你的攻略和心得。",
+      "browseTrophies": "去看看獎盃",
+      "emptyFiltered": "沒有符合條件的留言。",
+      "reset": "清除搜尋",
+      "loadError": "留言載入失敗",
+      "range": "第 {start}–{end} 筆，共 {total} 筆",
+      "trophyGone": "這個獎盃已不存在",
+      "spoiler": "含劇透",
+      "publishedAt": "發表於 {time}",
+      "editedAt": "修改於 {time}",
+      "expand": "展開全文",
+      "collapse": "收起",
+      "deleteTitle": "刪除留言",
+      "deleteBody": "確定刪除你在「{trophy}」下的留言嗎？刪除後無法復原，其他玩家對它的評價也會一併刪除。"
     }
   }
 }

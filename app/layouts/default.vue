@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { House, Menu, Gamepad2, LibraryBig, Trophy, LogOut, LogIn, UserPlus, User, RefreshCw, Settings, Compass, LayoutDashboard, type IconNode } from 'lucide'
+import { House, Menu, Gamepad2, LibraryBig, Trophy, LogOut, LogIn, UserPlus, User, Users, MessageSquareText, RefreshCw, Settings, Compass, LayoutDashboard, type IconNode } from 'lucide'
 
 const route = useRoute()
 const appConfig = useAppConfig()
@@ -55,6 +55,35 @@ function isActive(to: string) {
 }
 
 const profilePath = computed(() => user.value?.psnid ? `/p/${encodeURIComponent(user.value.psnid)}` : '/')
+
+type UserMenuGroup = {
+  /** Message key of the group heading. */
+  labelKey: string
+  items: { labelKey: string; to: string | { path: string; query: Record<string, string | undefined> }; icon: IconNode }[]
+}
+
+// The signed-in user's menu, by group. Add an entry here for a new page; add a
+// group when several new pages belong together.
+const userMenu = computed<UserMenuGroup[]>(() => [
+  {
+    labelKey: 'nav.user.groups.me',
+    items: [
+      { labelKey: 'nav.user.profile', to: profilePath.value, icon: User },
+      { labelKey: 'nav.user.following', to: '/me/following', icon: Users },
+      { labelKey: 'nav.user.tips', to: '/me/tips', icon: MessageSquareText },
+    ],
+  },
+  {
+    labelKey: 'nav.user.groups.account',
+    items: [
+      { labelKey: 'nav.user.sync', to: { path: '/sync', query: { psnid: user.value?.psnid } }, icon: RefreshCw },
+      { labelKey: 'nav.user.settings', to: '/settings', icon: Settings },
+    ],
+  },
+  ...(hasRole('admin')
+    ? [{ labelKey: 'nav.user.groups.admin', items: [{ labelKey: 'nav.user.admin', to: '/admin', icon: LayoutDashboard }] }]
+    : []),
+])
 
 async function onLogout() {
   await logout()
@@ -116,6 +145,7 @@ async function onLogout() {
         <DropdownMenu
           v-if="loggedIn && user"
           align="right"
+          panel-class="w-60"
           class="flex min-w-0 cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 sm:px-3"
         >
           <img
@@ -133,50 +163,56 @@ async function onLogout() {
           <span class="hidden max-w-32 truncate sm:block">{{ user.psnid }}</span>
 
           <template #menu="{ close }">
-            <NuxtLink
-              v-if="hasRole('admin')"
-              to="/admin"
-              class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-              @click="close"
-            >
-              <LucideIcon
-                :icon="LayoutDashboard"
-                class="size-4 text-slate-400"
+            <!-- Who is signed in; the trigger hides the PSN ID on small screens -->
+            <div class="flex items-center gap-2.5 border-b border-slate-100 px-3 pb-2.5 pt-1.5">
+              <img
+                v-if="user.avatar_url"
+                :src="user.avatar_url"
+                :alt="user.psnid"
+                class="size-9 shrink-0 rounded-full bg-slate-100 object-cover"
               />
-              {{ $t('nav.user.admin') }}
-            </NuxtLink>
-            <NuxtLink
-              :to="profilePath"
-              class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-              @click="close"
+              <span
+                v-else
+                class="grid size-9 shrink-0 place-items-center rounded-full bg-slate-900 text-xs font-bold text-white"
+              >
+                {{ user.psnid.slice(0, 1).toUpperCase() }}
+              </span>
+              <div class="min-w-0">
+                <p class="truncate text-sm font-semibold text-slate-900">{{ user.psnid }}</p>
+                <p class="text-xs tabular-nums text-slate-400">Lv {{ user.trophy_level }}</p>
+              </div>
+            </div>
+
+            <div
+              v-for="group in userMenu"
+              :key="group.labelKey"
+              role="group"
+              :aria-label="$t(group.labelKey)"
+              class="border-b border-slate-100 py-1"
             >
-              <LucideIcon :icon="User" class="size-4 text-slate-400" />
-              {{ $t('nav.user.profile') }}
-            </NuxtLink>
-            <NuxtLink
-              :to="{ path: '/sync', query: { psnid: user.psnid } }"
-              class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-              @click="close"
-            >
-              <LucideIcon :icon="RefreshCw" class="size-4 text-slate-400" />
-              {{ $t('nav.user.sync') }}
-            </NuxtLink>
-            <NuxtLink
-              to="/settings"
-              class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-              @click="close"
-            >
-              <LucideIcon :icon="Settings" class="size-4 text-slate-400" />
-              {{ $t('nav.user.settings') }}
-            </NuxtLink>
-            <button
-              type="button"
-              class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-              @click="close(); onLogout()"
-            >
-              <LucideIcon :icon="LogOut" class="size-4 text-slate-400" />
-              {{ $t('nav.user.logout') }}
-            </button>
+              <p class="px-3 pb-1 pt-1.5 text-[11px] font-semibold text-slate-400">{{ $t(group.labelKey) }}</p>
+              <NuxtLink
+                v-for="item in group.items"
+                :key="item.labelKey"
+                :to="item.to"
+                class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                @click="close"
+              >
+                <LucideIcon :icon="item.icon" class="size-4 text-slate-400" />
+                {{ $t(item.labelKey) }}
+              </NuxtLink>
+            </div>
+
+            <div class="pt-1">
+              <button
+                type="button"
+                class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+                @click="close(); onLogout()"
+              >
+                <LucideIcon :icon="LogOut" class="size-4 text-slate-400" />
+                {{ $t('nav.user.logout') }}
+              </button>
+            </div>
           </template>
         </DropdownMenu>
 

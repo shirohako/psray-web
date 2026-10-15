@@ -7,8 +7,11 @@ import {
   adminLocalToUtc,
   adminParseTrophySetIds,
   adminQuery,
+  adminTipChanges,
   adminUtf8Bytes,
   adminValue,
+  TIP_LANGUAGE_LABELS,
+  TIP_LANGUAGE_OPTIONS,
 } from '../app/utils/admin'
 describe('admin contract helpers', () => {
   it('addresses admin routes from the shared API origin', () => {
@@ -88,5 +91,19 @@ describe('admin contract helpers', () => {
   it('measures penalty reasons in UTF-8 bytes', () => {
     expect(adminUtf8Bytes('cheat')).toBe(5)
     expect(adminUtf8Bytes('作弊')).toBe(6)
+  })
+  it('names every Tip language in Chinese for the filters', () => {
+    expect(TIP_LANGUAGE_OPTIONS).toHaveLength(23)
+    expect(TIP_LANGUAGE_OPTIONS[0]).toEqual({ value: 'zh', label: '中文（zh）' })
+    expect(TIP_LANGUAGE_LABELS.ja).toBe('日语')
+  })
+  it('sends only the Tip fields an edit changed', () => {
+    const saved = { content: 'Grind the tutorial', language: 'en', has_spoiler: false, missable: null }
+    expect(adminTipChanges(saved, { ...saved, content: '  Grind the tutorial \n' })).toEqual({})
+    expect(adminTipChanges(saved, { ...saved, content: 'Use the shield', missable: false })).toEqual({
+      content: 'Use the shield',
+      missable: false,
+    })
+    expect(adminTipChanges(saved, { ...saved, language: 'ja', has_spoiler: true })).toEqual({ language: 'ja', has_spoiler: true })
   })
 })

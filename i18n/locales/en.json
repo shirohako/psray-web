@@ -48,10 +48,17 @@
     },
     "user": {
       "admin": "Admin console",
+      "following": "Following",
+      "groups": {
+        "me": "You",
+        "account": "Account",
+        "admin": "Admin"
+      },
       "logout": "Sign out",
       "profile": "Profile",
       "settings": "Settings",
-      "sync": "Sync account"
+      "sync": "Sync account",
+      "tips": "My tips"
     }
   },
   "home": {
@@ -921,6 +928,10 @@
     "settings": {
       "title": "Settings"
     },
+    "me": {
+      "following": "Following",
+      "tips": "My tips"
+    },
     "unsubscribe": {
       "title": "Unsubscribe"
     },
@@ -1171,6 +1182,48 @@
         "sent": "Follow-up added",
         "failed": "Couldn't add your follow-up"
       }
+    }
+  },
+  "me": {
+    "following": {
+      "title": "Following",
+      "description": "Players you follow and players who follow you. Unfollow or follow back from here.",
+      "emptyFollowing": "You aren't following anyone yet.",
+      "emptyFollowingHint": "Hit “Follow” on a player’s profile and they’ll show up here.",
+      "emptyFollowers": "No followers yet.",
+      "emptyFollowersHint": "Players who follow you will show up here.",
+      "browsePlayers": "Browse the leaderboard",
+      "followBack": "Follow back",
+      "toggleFailed": "Couldn't update. Please try again later"
+    },
+    "tips": {
+      "title": "My tips",
+      "description": "Tips you've posted on trophies. Read, edit or delete them here.",
+      "statsTips": "Tips",
+      "statsHelpful": "Marked helpful",
+      "searchPlaceholder": "Search tips, trophies or games",
+      "clearSearch": "Clear search",
+      "sort": "Sort",
+      "sorts": {
+        "updated": "Recently edited",
+        "created": "Newest",
+        "helpful": "Most helpful"
+      },
+      "empty": "You haven't posted any tips yet.",
+      "emptyHint": "Open a trophy's tips to share how you got it.",
+      "browseTrophies": "Browse trophies",
+      "emptyFiltered": "No tips match your search.",
+      "reset": "Clear search",
+      "loadError": "Couldn't load your tips",
+      "range": "{start}–{end} of {total}",
+      "trophyGone": "This trophy no longer exists",
+      "spoiler": "Spoilers",
+      "publishedAt": "Posted {time}",
+      "editedAt": "Edited {time}",
+      "expand": "Show full text",
+      "collapse": "Show less",
+      "deleteTitle": "Delete tip",
+      "deleteBody": "Delete your tip on “{trophy}”? This can’t be undone, and other players’ ratings of it are deleted too."
     }
   }
 }

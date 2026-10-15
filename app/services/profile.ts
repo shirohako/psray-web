@@ -224,6 +224,12 @@ export interface ProfileFollowEntry {
   followed_at: string
 }
 
+/** A row of the signed-in user's own following / followers list (`GET /user/:direction`). */
+export interface MyFollowEntry extends ProfileFollowEntry {
+  /** Whether the follow goes both ways. */
+  is_mutual: boolean
+}
+
 /** Pagination of a follow list. */
 export interface FollowPageMeta {
   page: number

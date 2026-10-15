@@ -88,11 +88,6 @@ watch(direction, (key) => {
   if (open.value && !lists[key].loaded && !lists[key].pending) load(key, 1)
 })
 
-/** `followed_at` is UTC without a zone marker; read it as such. */
-function followedDate(value: string) {
-  return fmtDate(`${value.replace(' ', 'T')}Z`)
-}
-
 // Placeholder rows: varied widths so they read like real PSN IDs.
 const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28', 'w-20']
 </script>
@@ -174,28 +169,7 @@ const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28', 'w-20']
 
       <ul v-else class="divide-y divide-slate-100 transition-opacity" :class="{ 'opacity-50': current.pending }">
         <li v-for="person in current.items" :key="person.profile_id">
-          <NuxtLink
-            :to="`/p/${encodeURIComponent(person.psnid)}`"
-            class="group flex items-center gap-3 px-4 py-3 transition hover:bg-slate-50 sm:px-5"
-            @click="open = false"
-          >
-            <img
-              :src="person.avatar_url"
-              :alt="person.psnid"
-              loading="lazy"
-              class="size-10 shrink-0 rounded-full bg-slate-100 object-cover ring-1 ring-slate-900/5"
-            >
-            <div class="min-w-0 flex-1">
-              <div class="flex items-center gap-1.5">
-                <RegionFlag :country="person.country" class="shrink-0 text-sm" />
-                <span class="truncate text-sm font-semibold text-slate-900 group-hover:text-sky-600">{{ person.psnid }}</span>
-              </div>
-              <p class="mt-0.5 text-xs text-slate-400">{{ $t('profile.social.followedAt', { date: followedDate(person.followed_at) }) }}</p>
-            </div>
-            <span class="shrink-0 rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold tabular-nums text-slate-600">
-              Lv {{ person.trophy_level }}
-            </span>
-          </NuxtLink>
+          <ProfileFollowRow :person="person" @navigate="open = false" />
         </li>
       </ul>
     </div>

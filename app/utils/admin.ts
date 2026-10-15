@@ -1,3 +1,5 @@
+import { TIP_LANGUAGE_CODES } from '~/utils/tip'
+
 export interface AdminColumn {
   key: string
   label: string
@@ -341,6 +343,61 @@ export interface AdminFeedbackDetail {
   reviewed_at?: string | null
   replies?: AdminFeedbackReply[]
 }
+// ── Trophy tips ──────────────────────────────────────────────────────────────
+export const TIP_SORT_OPTIONS = [
+  { value: 'latest', label: '最新发布' },
+  { value: 'updated', label: '最近修改' },
+  { value: 'helpful', label: '「有帮助」最多' },
+  { value: 'unhelpful', label: '「无帮助」最多' },
+]
+export const TIP_SPOILER_OPTIONS = [
+  { value: '1', label: '含剧透' },
+  { value: '0', label: '不含剧透' },
+]
+/** Languages a Tip can be written in, named in Chinese like the rest of the console. */
+export const TIP_LANGUAGE_OPTIONS = TIP_LANGUAGE_CODES.map((code) => ({ value: code, label: `${chineseLanguageName(code)}（${code}）` }))
+export const TIP_LANGUAGE_LABELS: Record<string, string> = Object.fromEntries(TIP_LANGUAGE_CODES.map((code) => [code, chineseLanguageName(code)]))
+function chineseLanguageName(code: string): string {
+  try {
+    return new Intl.DisplayNames(['zh-Hans'], { type: 'language' }).of(code) ?? code
+  } catch {
+    return code
+  }
+}
+/** The fields of a Tip the console can edit. */
+export interface AdminTipFields {
+  content: string
+  language: string
+  has_spoiler: boolean
+  missable: boolean | null
+}
+/** `GET /tips/{id}`; list rows carry everything but `user`. */
+export interface AdminTipDetail extends AdminTipFields {
+  id: number
+  trophy_id: number
+  trophy_set_id: number | null
+  user_id: number | null
+  psnid: string | null
+  avatar_url: string | null
+  vote_up_count: number
+  vote_down_count: number
+  content_type: string
+  created_at: string
+  updated_at: string
+  trophy: { id: number, name: string, icon_url: string, type: string } | null
+  trophy_set: { id: number, name: string, icon_url: string, platform: string[] } | null
+  user?: { id: number, psnid: string, avatar_url: string | null, country: string | null, trophy_level: number | null, tip_count: number, tip_vote_count: number } | null
+}
+/** What an edit form changed (content compared trimmed), ready to PATCH; empty when nothing did. */
+export function adminTipChanges(saved: AdminTipFields, form: AdminTipFields): Partial<AdminTipFields> {
+  const changes: Partial<AdminTipFields> = {}
+  const content = form.content.trim()
+  if (content !== saved.content) changes.content = content
+  if (form.language !== saved.language) changes.language = form.language
+  if (form.has_spoiler !== saved.has_spoiler) changes.has_spoiler = form.has_spoiler
+  if (form.missable !== saved.missable) changes.missable = form.missable
+  return changes
+}
 /** One editable setting from `GET /settings`. Database values win over env. */
 export interface SystemSettingItem {
   key: string
@@ -564,6 +621,8 @@ export const fieldLabels: Record<string, string> = {
   source: '来源',
   is_default: '默认语言',
   trophy_id: '奖杯 ID',
+  trophy_set_id: '奖杯组 ID',
+  trophy_set: '奖杯组',
   psn_trophy_id: 'PSN 奖杯编号',
   psn_group_id: '分组',
   type: '类型',

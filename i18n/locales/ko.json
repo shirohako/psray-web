@@ -48,10 +48,17 @@
     },
     "user": {
       "admin": "관리자 콘솔",
+      "following": "팔로잉",
+      "groups": {
+        "me": "내 활동",
+        "account": "계정",
+        "admin": "관리"
+      },
       "logout": "로그아웃",
       "profile": "프로필",
       "settings": "계정 설정",
-      "sync": "계정 동기화"
+      "sync": "계정 동기화",
+      "tips": "내 댓글"
     }
   },
   "home": {
@@ -921,6 +928,10 @@
     "settings": {
       "title": "계정 설정"
     },
+    "me": {
+      "following": "팔로잉",
+      "tips": "내 댓글"
+    },
     "unsubscribe": {
       "title": "메일 수신 거부"
     },
@@ -1171,6 +1182,48 @@
         "sent": "내용을 추가했습니다",
         "failed": "내용을 추가하지 못했습니다"
       }
+    }
+  },
+  "me": {
+    "following": {
+      "title": "팔로잉",
+      "description": "내가 팔로우하는 플레이어와 나를 팔로우하는 플레이어입니다. 여기서 팔로우를 취소하거나 맞팔로우할 수 있습니다.",
+      "emptyFollowing": "아직 아무도 팔로우하지 않았습니다.",
+      "emptyFollowingHint": "플레이어 프로필에서 「팔로우」를 누르면 여기에 표시됩니다.",
+      "emptyFollowers": "아직 팔로워가 없습니다.",
+      "emptyFollowersHint": "누군가 나를 팔로우하면 여기에 표시됩니다.",
+      "browsePlayers": "랭킹 보기",
+      "followBack": "맞팔로우",
+      "toggleFailed": "작업에 실패했습니다. 잠시 후 다시 시도해 주세요"
+    },
+    "tips": {
+      "title": "내 댓글",
+      "description": "트로피에 남긴 내 댓글입니다. 여기서 확인, 수정, 삭제할 수 있습니다.",
+      "statsTips": "댓글",
+      "statsHelpful": "받은 「도움이 됨」",
+      "searchPlaceholder": "댓글 내용, 트로피 또는 게임 이름으로 검색",
+      "clearSearch": "검색 지우기",
+      "sort": "정렬",
+      "sorts": {
+        "updated": "최근 수정순",
+        "created": "최신 작성순",
+        "helpful": "도움이 됨 많은 순"
+      },
+      "empty": "아직 작성한 댓글이 없습니다.",
+      "emptyHint": "트로피의 댓글 창에서 공략과 팁을 남길 수 있습니다.",
+      "browseTrophies": "트로피 보러 가기",
+      "emptyFiltered": "조건에 맞는 댓글이 없습니다.",
+      "reset": "검색 지우기",
+      "loadError": "댓글을 불러오지 못했습니다",
+      "range": "{total}건 중 {start}–{end}",
+      "trophyGone": "더 이상 존재하지 않는 트로피입니다",
+      "spoiler": "스포일러 포함",
+      "publishedAt": "{time} 작성",
+      "editedAt": "{time} 수정",
+      "expand": "전체 보기",
+      "collapse": "접기",
+      "deleteTitle": "댓글 삭제",
+      "deleteBody": "「{trophy}」에 남긴 댓글을 삭제할까요? 삭제하면 되돌릴 수 없으며, 다른 플레이어의 평가도 함께 삭제됩니다."
     }
   }
 }

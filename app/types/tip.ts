@@ -50,6 +50,14 @@ export interface TipTrophy {
   type: TrophyType
 }
 
+/** The trophy set (game) a Tip's trophy belongs to, titled in the display language. */
+export interface TipTrophySet {
+  id: number
+  name: string
+  icon_url: string
+  platform: string[]
+}
+
 /** Tip returned by `GET /trophies/trophy/:id/tips`. */
 export interface TrophyTip extends TipBase {
   user: TipAuthor
@@ -67,13 +75,18 @@ export interface OwnTrophyTip extends TipBase {
   user?: TipAuthor | Record<string, never>
 }
 
-/** Tip returned by `GET /profile/:psnid/tips`. */
+/** Tip returned by `GET /profile/:psnid/tips` and `GET /user/tips`. */
 export interface ProfileTip extends TipBase {
-  /** Trophy-set route id used by the profile list's trophy deep link. */
-  trophy_set_id: number
+  /** Trophy-set route id used by the trophy deep link; null when the trophy is gone. */
+  trophy_set_id: number | null
   /** May be null when the related trophy is no longer available. */
   trophy: TipTrophy | null
+  /** Null when the related trophy (or its set) is no longer available. */
+  trophy_set: TipTrophySet | null
 }
+
+/** Orders for `GET /user/tips`: last edit (default), publication, or most helpful. */
+export type AuthoredTipSort = 'updated' | 'created' | 'helpful'
 
 /** Lightweight Tip embedded in `GET /profile/:psnid`. */
 export interface ProfileRecentTip extends Omit<ProfileTip, 'user_id'> {

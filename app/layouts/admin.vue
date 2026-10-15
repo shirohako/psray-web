@@ -16,6 +16,7 @@ import {
   FileStack,
   Megaphone,
   MessagesSquare,
+  Lightbulb,
   ShieldCheck,
   X,
 } from 'lucide'
@@ -53,6 +54,10 @@ const groups = [
       { name: '用户数据', to: '/admin/user-data', icon: Database },
       { name: '用户反馈', to: '/admin/feedback', icon: MessagesSquare },
     ],
+  },
+  {
+    label: '内容管理',
+    items: [{ name: '奖杯 Tip', to: '/admin/tips', icon: Lightbulb }],
   },
   {
     label: '邮件',

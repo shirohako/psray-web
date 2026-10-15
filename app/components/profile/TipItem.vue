@@ -17,20 +17,8 @@ const voteDigits = computed(() => Math.max(
 const voteGrid = computed(() => ({
   gridTemplateColumns: `0.75rem ${voteDigits.value}ch`,
 }))
-const trophyTarget = computed(() => {
-  const trophySetId = props.tip.trophy_set_id
-  if (!trophySetId) return null
-
-  const psnid = typeof route.params.psnid === 'string' ? route.params.psnid : undefined
-  return {
-    path: `/trophies/${trophySetId}`,
-    query: {
-      ...(psnid ? { psnid } : {}),
-      tips: String(props.tip.trophy_id),
-    },
-    hash: `#trophy-${props.tip.trophy_id}`,
-  }
-})
+const trophyTarget = computed(() =>
+  tipTrophyLink(props.tip, typeof route.params.psnid === 'string' ? route.params.psnid : undefined))
 </script>
 
 <template>

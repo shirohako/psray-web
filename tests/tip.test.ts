@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hasTipTrophy, isTipEdited, normalizeTipLanguage, tipExcerpt } from '~/utils/tip'
+import { hasTipTrophy, isTipEdited, normalizeTipLanguage, tipExcerpt, tipTrophyLink } from '~/utils/tip'
 
 describe('Tip utilities', () => {
   it('normalizes regional language tags to API short codes', () => {
@@ -35,5 +35,19 @@ See **this** [guide](/docs/markdown), ||including spoilers||.
   it('detects Tips updated after publication', () => {
     expect(isTipEdited({ created_at: '2026-08-01T00:00:00Z', updated_at: '2026-08-02T00:00:00Z' })).toBe(true)
     expect(isTipEdited({ created_at: '2026-08-01T00:00:00Z', updated_at: '2026-08-01T00:00:00Z' })).toBe(false)
+  })
+
+  it('links a Tip to its trophy row with the Tips open, keeping a profile view when given', () => {
+    expect(tipTrophyLink({ trophy_id: 3, trophy_set_id: 12 })).toEqual({
+      path: '/trophies/12',
+      query: { tips: '3' },
+      hash: '#trophy-3',
+    })
+    expect(tipTrophyLink({ trophy_id: 3, trophy_set_id: 12 }, 'player')).toEqual({
+      path: '/trophies/12',
+      query: { psnid: 'player', tips: '3' },
+      hash: '#trophy-3',
+    })
+    expect(tipTrophyLink({ trophy_id: 3, trophy_set_id: null })).toBeNull()
   })
 })

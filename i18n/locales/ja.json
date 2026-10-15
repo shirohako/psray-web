@@ -48,10 +48,17 @@
     },
     "user": {
       "admin": "管理コンソール",
+      "following": "フォロー中",
+      "groups": {
+        "me": "マイページ",
+        "account": "アカウント",
+        "admin": "管理"
+      },
       "logout": "ログアウト",
       "profile": "プロフィール",
       "settings": "アカウント設定",
-      "sync": "アカウント同期"
+      "sync": "アカウント同期",
+      "tips": "自分のコメント"
     }
   },
   "home": {
@@ -921,6 +928,10 @@
     "settings": {
       "title": "アカウント設定"
     },
+    "me": {
+      "following": "フォロー中",
+      "tips": "自分のコメント"
+    },
     "unsubscribe": {
       "title": "メール配信停止"
     },
@@ -1171,6 +1182,48 @@
         "sent": "追記しました",
         "failed": "追記できませんでした"
       }
+    }
+  },
+  "me": {
+    "following": {
+      "title": "フォロー中",
+      "description": "あなたがフォローしているプレイヤーと、あなたをフォローしているプレイヤーです。ここからフォロー解除やフォローバックができます。",
+      "emptyFollowing": "まだ誰もフォローしていません。",
+      "emptyFollowingHint": "プレイヤーのプロフィールで「フォロー」を押すと、ここに表示されます。",
+      "emptyFollowers": "まだフォロワーがいません。",
+      "emptyFollowersHint": "誰かにフォローされると、ここに表示されます。",
+      "browsePlayers": "ランキングを見る",
+      "followBack": "フォローバック",
+      "toggleFailed": "操作に失敗しました。しばらくしてからもう一度お試しください"
+    },
+    "tips": {
+      "title": "自分のコメント",
+      "description": "あなたがトロフィーに投稿したコメントです。ここで確認・編集・削除できます。",
+      "statsTips": "コメント",
+      "statsHelpful": "「参考になった」",
+      "searchPlaceholder": "コメント本文・トロフィー名・ゲーム名で検索",
+      "clearSearch": "検索をクリア",
+      "sort": "並び替え",
+      "sorts": {
+        "updated": "最近の更新順",
+        "created": "新しい投稿順",
+        "helpful": "参考になった順"
+      },
+      "empty": "まだコメントを投稿していません。",
+      "emptyHint": "トロフィーのコメント欄から、攻略やヒントを書き込めます。",
+      "browseTrophies": "トロフィーを見る",
+      "emptyFiltered": "条件に一致するコメントはありません。",
+      "reset": "検索をクリア",
+      "loadError": "コメントを読み込めませんでした",
+      "range": "{start}–{end} 件目 / 全 {total} 件",
+      "trophyGone": "このトロフィーは存在しません",
+      "spoiler": "ネタバレあり",
+      "publishedAt": "{time} に投稿",
+      "editedAt": "{time} に編集",
+      "expand": "全文を表示",
+      "collapse": "閉じる",
+      "deleteTitle": "コメントを削除",
+      "deleteBody": "「{trophy}」へのコメントを削除しますか？削除すると元に戻せません。他のプレイヤーからの評価も一緒に削除されます。"
     }
   }
 }

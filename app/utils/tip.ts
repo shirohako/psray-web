@@ -27,6 +27,19 @@ export function isTipEdited(tip: { created_at: string; updated_at: string }): bo
   return tip.updated_at !== tip.created_at
 }
 
+/**
+ * Trophy page link for a Tip: scrolls to its trophy and opens that trophy's
+ * Tips. `psnid` keeps a profile's progress view. Null when the trophy is gone.
+ */
+export function tipTrophyLink(tip: { trophy_id: number; trophy_set_id: number | null }, psnid?: string) {
+  if (!tip.trophy_set_id) return null
+  return {
+    path: `/trophies/${tip.trophy_set_id}`,
+    query: { ...(psnid ? { psnid } : {}), tips: String(tip.trophy_id) },
+    hash: `#trophy-${tip.trophy_id}`,
+  }
+}
+
 /** Plain-text summary for compact profile cards; full views use RichContent. */
 export function tipExcerpt(markdown: string, maxLength = 180): string {
   const plain = String(markdown ?? '')
