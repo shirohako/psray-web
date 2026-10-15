@@ -167,6 +167,32 @@ export interface BanResult {
   purged: PurgeReport | null
   evidence: BanEvidence
 }
+/** The user `POST /sync-resets` acts on, with stats from before the reset. */
+export interface SyncResetTarget {
+  id: number
+  psnid: string
+  account_id: string
+  registered_at: string | null
+  last_synced_at: string | null
+  played_game_count: number
+  trophy_count: number
+  points: number
+  rank: number | null
+}
+/** `POST /sync-resets` with `dry_run: true`. */
+export interface SyncResetPreview {
+  dry_run: true
+  user: SyncResetTarget
+  /** A sync is queued or running; submitting is refused until it ends. */
+  syncing: boolean
+  /** Sync data only, so `totals.account` is always 0. */
+  purge: PurgeReport
+}
+export interface SyncResetResult {
+  queue_id: number
+  user: SyncResetTarget
+  purged: PurgeReport
+}
 /** A row of `GET /bans`: an active penalty. An account with several
     penalties has one row each. */
 export interface BanRecord {

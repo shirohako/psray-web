@@ -10,6 +10,7 @@ import {
   Ban,
   PanelLeftClose,
   PanelLeftOpen,
+  Database,
   ShieldCheck,
   X,
 } from 'lucide'
@@ -40,7 +41,10 @@ const groups = [
   },
   {
     label: '用户管理',
-    items: [{ name: '反作弊', to: '/admin/bans', icon: Ban }],
+    items: [
+      { name: '反作弊', to: '/admin/bans', icon: Ban },
+      { name: '用户数据', to: '/admin/user-data', icon: Database },
+    ],
   },
   {
     label: '运行维护',
