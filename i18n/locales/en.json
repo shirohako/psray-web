@@ -736,6 +736,37 @@
       "danger": {
         "heading": "Danger zone"
       },
+      "resync": {
+        "label": "Reset and re-sync",
+        "hint": "Clear your synced trophy data and pull everything from PSN again. Use it when your data looks wrong.",
+        "open": "Reset and re-sync",
+        "syncing": "A sync is in progress. Try again once it finishes.",
+        "cooldownActive": "Cooling down — available again after {time}.",
+        "cooldownNext": "After a reset you can’t reset again for {duration}.",
+        "statusFailed": "Couldn’t load the status. Refresh the page and try again.",
+        "dialogTitle": "Reset and re-sync",
+        "intro": "This clears the following and immediately starts a full sync from PSN:",
+        "effects": {
+          "data": "Trophy history, game list and progress, milestones and the activity heatmap",
+          "stats": "Points, trophy level and rank drop to zero right away and come back once the sync finishes",
+          "time": "The more trophies you have, the longer the re-sync takes; your profile is incomplete until then",
+          "cooldown": "You can’t reset again for {duration}"
+        },
+        "kept": "Your account, linked email, follows and trophy tips are not affected.",
+        "confirmLabel": "Type your PSN ID “{psnid}” to confirm",
+        "confirm": "Reset and re-sync",
+        "resetting": "Working…",
+        "done": "Data cleared — re-syncing now",
+        "doneDetail": "You can follow the progress on the sync page.",
+        "errors": {
+          "SYNC_IN_PROGRESS": "Your account is being synced. Try again once the sync finishes.",
+          "SYNC_RESET_COOLDOWN": "The cooldown hasn’t ended yet, so you can’t reset again.",
+          "SYNC_WORKER_UNAVAILABLE": "The sync service is unavailable right now. Nothing was cleared — try again later.",
+          "PSN_PROFILE_PRIVATE": "Your PSN trophies are private, so they can’t be re-synced. Nothing was cleared.",
+          "PSN_PROFILE_FAILED": "Couldn’t load your PSN profile. Nothing was cleared — try again later.",
+          "LEVEL_BELOW_MINIMUM": "Your trophy level is below the sync minimum, so it can’t be re-synced. Nothing was cleared."
+        }
+      },
       "delete": {
         "label": "Delete account",
         "hint": "Permanently delete your account and all of its data. This cannot be undone.",

@@ -736,6 +736,37 @@
       "danger": {
         "heading": "危險操作"
       },
+      "resync": {
+        "label": "清除並重新同步",
+        "hint": "清除已同步的獎盃資料，從 PSN 重新完整抓取。適合發現資料有誤時使用。",
+        "open": "清除並重新同步",
+        "syncing": "正在同步中，同步結束後才能操作。",
+        "cooldownActive": "冷卻中，{time} 後可再次使用。",
+        "cooldownNext": "清除後 {duration} 內無法再次使用。",
+        "statusFailed": "讀取狀態失敗，請重新整理頁面再試。",
+        "dialogTitle": "清除並重新同步",
+        "intro": "將清除以下資料，並立即從 PSN 重新完整同步：",
+        "effects": {
+          "data": "獎盃紀錄、遊戲列表與進度、里程碑、活躍熱力圖",
+          "stats": "點數、獎盃等級與排名立即歸零，重新同步完成後恢復",
+          "time": "獎盃越多，重新同步耗時越長，期間個人頁面資料不完整",
+          "cooldown": "清除後 {duration} 內無法再次清除"
+        },
+        "kept": "帳號、綁定信箱、追蹤與獎盃攻略不受影響。",
+        "confirmLabel": "輸入你的 PSN ID「{psnid}」以確認",
+        "confirm": "清除並重新同步",
+        "resetting": "處理中…",
+        "done": "已清除，正在重新同步",
+        "doneDetail": "可在同步頁查看進度。",
+        "errors": {
+          "SYNC_IN_PROGRESS": "你的帳號正在同步中，請等待同步結束後再操作。",
+          "SYNC_RESET_COOLDOWN": "冷卻時間未到，暫時無法再次清除。",
+          "SYNC_WORKER_UNAVAILABLE": "同步服務暫時無法使用，資料未被清除，請稍後再試。",
+          "PSN_PROFILE_PRIVATE": "你的 PSN 獎盃未公開，無法重新同步，資料未被清除。",
+          "PSN_PROFILE_FAILED": "抓取 PSN 資料失敗，資料未被清除，請稍後再試。",
+          "LEVEL_BELOW_MINIMUM": "獎盃等級低於同步門檻，無法重新同步，資料未被清除。"
+        }
+      },
       "delete": {
         "label": "註銷帳號",
         "hint": "永久刪除你的帳號及全部資料，此操作無法復原。",

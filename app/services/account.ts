@@ -2,7 +2,8 @@ import type { ApiSuccess } from '~/types/api'
 
 /**
  * Account self-service mutations for the user-settings pages: banner +
- * avatar settings, avatar upload, email + password changes, account deletion.
+ * avatar settings, avatar upload, email + password changes, account deletion,
+ * resetting synced PSN data.
  *
  * Mirrors `useAuthApi()` in `~/services/auth` — thin wrappers over `useApi()`.
  * `uploadAvatar` is still by-convention pending its endpoint.
@@ -71,6 +72,25 @@ export interface AccountDeletionResult extends MessageResult {
   }
 }
 
+/** `GET /user/account/sync-reset`: whether a reset is allowed right now, and what it would cost. */
+export interface SyncResetStatus {
+  /** Earned trophies (all grades) — the cooldown scales with it. */
+  trophy_count: number
+  /** Cooldown a reset started now would put in place, in hours. */
+  cooldown_hours: number
+  /** When the current cooldown ends (ISO 8601); `null` when not cooling down. */
+  available_at: string | null
+  /** A sync is queued or running — the reset is refused until it ends. */
+  syncing: boolean
+}
+
+export interface SyncResetResult {
+  /** The full re-sync's queue id; follow it on `/sync?psnid=…`. */
+  queue_id: number
+  /** When this reset's cooldown ends (ISO 8601). */
+  available_at: string
+}
+
 export function useAccountApi() {
   const { get, patch, post, $api } = useApi()
 
@@ -103,6 +123,11 @@ export function useAccountApi() {
     deleteAccount: (payload: DeleteAccountPayload) =>
       post<AccountDeletionResult>('/user/account/deletion', payload),
 
+    // --- Reset synced data --------------------------------------------------
+    // Wipes the synced trophy data, zeroes points/rank and queues a full
+    // re-sync. `psnid` must repeat the account's own PSN ID (confirmation).
+    resetSync: (psnid: string) =>
+      post<SyncResetResult>('/user/account/sync-reset', { psnid }),
 
     // Multipart upload — hand the FormData straight to ofetch so it sets the
     // multipart boundary itself (the `$api` plugin only sets `Accept`).

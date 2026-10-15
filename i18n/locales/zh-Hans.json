@@ -736,6 +736,37 @@
       "danger": {
         "heading": "危险操作"
       },
+      "resync": {
+        "label": "清空并重新同步",
+        "hint": "清空已同步的奖杯数据，从 PSN 重新全量拉取。适合发现数据有误时使用。",
+        "open": "清空并重新同步",
+        "syncing": "正在同步中，同步结束后才能操作。",
+        "cooldownActive": "冷却中，{time} 后可再次使用。",
+        "cooldownNext": "清空后 {duration} 内不能再次使用。",
+        "statusFailed": "读取状态失败，请刷新页面重试。",
+        "dialogTitle": "清空并重新同步",
+        "intro": "将清空以下数据，并立即从 PSN 重新全量同步：",
+        "effects": {
+          "data": "奖杯记录、游戏列表与进度、里程碑、活跃热力图",
+          "stats": "积分、奖杯等级与排名立即归零，重新同步完成后恢复",
+          "time": "奖杯越多，重新同步耗时越长，期间资料页数据不完整",
+          "cooldown": "清空后 {duration} 内不能再次清空"
+        },
+        "kept": "账户、绑定邮箱、关注与奖杯攻略不受影响。",
+        "confirmLabel": "输入你的 PSN ID「{psnid}」以确认",
+        "confirm": "清空并重新同步",
+        "resetting": "处理中…",
+        "done": "已清空，正在重新同步",
+        "doneDetail": "可在同步页查看进度。",
+        "errors": {
+          "SYNC_IN_PROGRESS": "你的账号正在同步中，请等待同步结束后再操作。",
+          "SYNC_RESET_COOLDOWN": "冷却时间未到，暂时不能再次清空。",
+          "SYNC_WORKER_UNAVAILABLE": "同步服务暂时不可用，数据未被清空，请稍后再试。",
+          "PSN_PROFILE_PRIVATE": "你的 PSN 奖杯未公开，无法重新同步，数据未被清空。",
+          "PSN_PROFILE_FAILED": "拉取 PSN 资料失败，数据未被清空，请稍后再试。",
+          "LEVEL_BELOW_MINIMUM": "奖杯等级低于同步门槛，无法重新同步，数据未被清空。"
+        }
+      },
       "delete": {
         "label": "注销账户",
         "hint": "永久删除你的账户及全部数据，此操作无法撤销。",

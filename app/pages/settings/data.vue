@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { AlertTriangle, Database, KeyRound, Loader2, Lock, Send, Trash2, UserX } from 'lucide'
+import { AlertTriangle, AtSign, Database, KeyRound, Loader2, Lock, RotateCcw, Send, Trash2, UserX } from 'lucide'
+import type { SyncResetStatus } from '~/services/account'
 import { useAccountApi } from '~/services/account'
 import { ApiError } from '~/utils/ApiError'
 
 const { user, hasRole, logout } = useAuth()
-const { t } = useI18n()
+const { t, te } = useI18n()
 const toast = useToast()
 const api = useAccountApi()
 
@@ -12,6 +13,58 @@ const api = useAccountApi()
 // by accident; say so up front instead of letting them run into the error.
 const isStaff = computed(() => hasRole('admin') || hasRole('moderator'))
 
+// --- Reset synced data (confirm by retyping the PSN ID) --------------------
+// Cooldown + "a sync is running" come from the server, so the row can say why
+// the button is off before anyone clicks it.
+const { data: resetStatus, error: resetStatusError, refresh: refreshResetStatus }
+  = await useApiFetch<SyncResetStatus>('/user/account/sync-reset')
+
+const resetOpen = ref(false)
+const resetConfirm = ref('')
+const resetting = ref(false)
+
+const resetBlocked = computed(() => !resetStatus.value || resetStatus.value.syncing || !!resetStatus.value.available_at)
+// Past two days, round up to whole days: "7 days" reads better than "159 hours",
+// and erring long never promises a reset before the server allows one.
+const resetCooldown = computed(() => {
+  const hours = resetStatus.value?.cooldown_hours ?? 0
+  return formatHourInterval(hours >= 48 ? Math.ceil(hours / 24) * 24 : hours) ?? ''
+})
+const resetHint = computed(() => {
+  const status = resetStatus.value
+  if (resetStatusError.value || !status) return t('settings.data.resync.statusFailed')
+  if (status.syncing) return t('settings.data.resync.syncing')
+  if (status.available_at) return t('settings.data.resync.cooldownActive', { time: fmtDateTime(status.available_at) })
+  return t('settings.data.resync.cooldownNext', { duration: resetCooldown.value })
+})
+// Exact match, like the API: a typo must not go through.
+const canReset = computed(() => resetConfirm.value.trim() === user.value?.psnid && !resetting.value)
+
+function openReset() {
+  resetConfirm.value = ''
+  resetOpen.value = true
+}
+
+async function resetSync() {
+  if (!canReset.value || !user.value) return
+  resetting.value = true
+  try {
+    await api.resetSync(resetConfirm.value.trim())
+  }
+  catch (error) {
+    // Localized copy for the expected refusals; anything else shows the server's message.
+    const key = error instanceof ApiError ? `settings.data.resync.errors.${error.code}` : ''
+    if (key && te(key)) toast.error({ title: t(key) })
+    else mapError(error)
+    resetting.value = false
+    await refreshResetStatus()
+    return
+  }
+
+  resetOpen.value = false
+  toast.success({ title: t('settings.data.resync.done'), description: t('settings.data.resync.doneDetail') })
+  await navigateTo({ path: '/sync', query: { psnid: user.value.psnid } })
+}
 
 // --- Delete account (two-step: email a code, then confirm with password) ---
 const deleteOpen = ref(false)
@@ -120,6 +173,35 @@ async function deleteAccount() {
           <h4 class="text-sm font-semibold text-rose-700">{{ $t('settings.data.danger.heading') }}</h4>
         </header>
 
+        <!-- Reset synced data -->
+        <div class="flex flex-col gap-4 border-b border-slate-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <span class="flex min-w-0 items-start gap-3">
+            <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-amber-50 text-amber-600 ring-1 ring-amber-100">
+              <LucideIcon :icon="RotateCcw" class="size-5" />
+            </span>
+            <span class="min-w-0">
+              <span class="block text-sm font-semibold text-slate-900">{{ $t('settings.data.resync.label') }}</span>
+              <span class="mt-1 block text-sm text-slate-500">{{ $t('settings.data.resync.hint') }}</span>
+              <span
+                class="mt-1.5 block text-xs font-medium"
+                :class="resetBlocked ? 'text-amber-600' : 'text-slate-400'"
+              >
+                {{ resetHint }}
+              </span>
+            </span>
+          </span>
+          <button
+            type="button"
+            :disabled="resetBlocked"
+            class="inline-flex shrink-0 items-center justify-center gap-1.5 self-start rounded-lg border border-amber-300 bg-white px-3 py-2 text-sm font-semibold text-amber-700 shadow-sm transition hover:border-amber-400 hover:bg-amber-50 disabled:cursor-not-allowed disabled:opacity-50 sm:self-auto"
+            @click="openReset"
+          >
+            <LucideIcon :icon="RotateCcw" class="size-4" />
+            {{ $t('settings.data.resync.open') }}
+          </button>
+        </div>
+
+        <!-- Delete account -->
         <div class="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
           <span class="flex min-w-0 items-start gap-3">
             <span class="grid size-10 shrink-0 place-items-center rounded-lg bg-rose-50 text-rose-600 ring-1 ring-rose-100">
@@ -144,6 +226,55 @@ async function deleteAccount() {
         </div>
       </section>
     </div>
+
+    <Dialog v-model:open="resetOpen" :title="$t('settings.data.resync.dialogTitle')" size="md">
+      <form id="reset-sync-form" class="space-y-4 p-5" @submit.prevent="resetSync">
+        <div class="rounded-lg border border-amber-200 bg-amber-50 p-3.5">
+          <p class="flex items-center gap-2 text-sm font-semibold text-amber-800">
+            <LucideIcon :icon="AlertTriangle" class="size-4 shrink-0" />
+            {{ $t('settings.data.resync.intro') }}
+          </p>
+          <ul class="mt-2 list-disc space-y-1 pl-6 text-sm leading-relaxed text-amber-800/90">
+            <li>{{ $t('settings.data.resync.effects.data') }}</li>
+            <li>{{ $t('settings.data.resync.effects.stats') }}</li>
+            <li>{{ $t('settings.data.resync.effects.time') }}</li>
+            <li>{{ $t('settings.data.resync.effects.cooldown', { duration: resetCooldown }) }}</li>
+          </ul>
+          <p class="mt-2 text-xs leading-relaxed text-amber-800/75">{{ $t('settings.data.resync.kept') }}</p>
+        </div>
+
+        <AuthField
+          v-model="resetConfirm"
+          compact
+          :label="$t('settings.data.resync.confirmLabel', { psnid: user?.psnid ?? '' })"
+          type="text"
+          :icon="AtSign"
+          :placeholder="user?.psnid ?? ''"
+          autocomplete="off"
+        />
+      </form>
+
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <button
+            type="button"
+            class="inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+            @click="resetOpen = false"
+          >
+            {{ $t('common.cancel') }}
+          </button>
+          <button
+            type="submit"
+            form="reset-sync-form"
+            :disabled="!canReset"
+            class="inline-flex items-center gap-1.5 rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-amber-600/20 transition hover:bg-amber-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <LucideIcon :icon="resetting ? Loader2 : RotateCcw" class="size-4" :class="resetting && 'animate-spin'" />
+            {{ resetting ? $t('settings.data.resync.resetting') : $t('settings.data.resync.confirm') }}
+          </button>
+        </div>
+      </template>
+    </Dialog>
 
     <Dialog v-model:open="deleteOpen" :title="$t('settings.data.delete.dialogTitle')" size="md">
       <form id="delete-account-form" class="space-y-4 p-5" @submit.prevent="deleteAccount">
