@@ -235,6 +235,41 @@ export interface MailPreview {
   text: string
   unknown_variables: string[]
 }
+/** `POST /mail/campaigns` with `dry_run: true`: who would get the mail. */
+export interface MailCampaignPreview {
+  dry_run: true
+  template_id: number
+  /** Registered users with an email, subscribed or not. */
+  registered: number
+  /** Those with this category switched on — they get the mail. */
+  recipients: number
+  unsubscribed: number
+  /** Recipients whose language the template lacks; they get `sent_in`. */
+  fallback_recipients: number
+  locales: { locale: string; recipients: number; has_translation: boolean; sent_in: string | null }[]
+  per_minute: number
+  estimated_minutes: number
+}
+export interface MailCampaign {
+  id: number
+  template_id: number
+  template_key: string
+  name: string
+  category: MailCategory
+  status: 'sending' | 'completed' | 'cancelled'
+  recipient_count: number
+  per_minute: number
+  /** Mails per status (queued / sent / failed / skipped / cancelled). */
+  progress: Record<string, number>
+  locales: string[]
+  created_by: string | null
+  started_at: string | null
+  dispatched_at: string | null
+  finished_at: string | null
+  cancelled_at: string | null
+  /** Detail only: the copy as it was when sending started. */
+  content_snapshot?: Record<string, { subject: string; body: string }>
+}
 /** The five UI languages, which are also the languages mails are sent in. */
 export const MAIL_LOCALES = [
   { value: 'zh-Hans', label: '简体中文' },

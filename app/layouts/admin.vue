@@ -14,6 +14,7 @@ import {
   Database,
   Mail,
   FileStack,
+  Megaphone,
   ShieldCheck,
   X,
 } from 'lucide'
@@ -54,6 +55,7 @@ const groups = [
     items: [
       { name: '邮件记录', to: '/admin/mail/logs', icon: Mail },
       { name: '邮件模板', to: '/admin/mail/templates', icon: FileStack },
+      { name: '群发邮件', to: '/admin/mail/campaigns', icon: Megaphone },
     ],
   },
   {
