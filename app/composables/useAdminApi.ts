@@ -10,11 +10,13 @@ export function useAdminApi() {
     write: <T = any>(
       path: string,
       body: Record<string, any>,
-      method: 'post' | 'patch' = 'post',
+      method: 'post' | 'patch' | 'put' = 'post',
       key: string = crypto.randomUUID(),
     ) =>
       api[method]<T>(prefix + path, body, {
         headers: { 'Idempotency-Key': key },
       }),
+    remove: <T = any>(path: string, key: string = crypto.randomUUID()) =>
+      api.delete<T>(prefix + path, { headers: { 'Idempotency-Key': key } }),
   }
 }

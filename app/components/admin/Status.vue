@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { adminValue } from '~/utils/admin'
 const props = defineProps<{ value: unknown }>()
-const GOOD = ['success', 'healthy', 'online', 'completed']
+const GOOD = ['success', 'healthy', 'online', 'completed', 'sent']
 const BAD = ['failed', 'offline', 'stale', 'termination']
-const WARN = ['partial', 'running', 'queued', 'pending', 'ranking_ban', 'suspected_interrupted']
+const WARN = ['partial', 'running', 'queued', 'pending', 'sending', 'ranking_ban', 'suspected_interrupted']
 const tone = computed(() => {
   const value = String(props.value)
   if (GOOD.includes(value)) return 'bg-emerald-500 ring-emerald-500/20'

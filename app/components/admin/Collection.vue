@@ -33,6 +33,9 @@ const props = withDefaults(
     /** Nested under a page's own header and tab strip: no page header, and
         the panel joins the strip above it. */
     embedded?: boolean
+    /** Detail fields the generic data view skips, e.g. ones a
+        `#detail-actions` slot renders itself. */
+    detailOmit?: string[]
   }>(),
   { idKey: 'id' },
 )
@@ -51,6 +54,10 @@ const selected = ref<any>(null),
   detailLoading = ref(false),
   detailError = ref<any>(null)
 let generation = 0
+const detailData = computed(() => {
+  if (!props.detailOmit?.length || !detail.value || typeof detail.value !== 'object') return detail.value
+  return Object.fromEntries(Object.entries(detail.value).filter(([key]) => !props.detailOmit!.includes(key)))
+})
 async function refresh() {
   const current = ++generation
   loading.value = true
@@ -432,7 +439,7 @@ defineExpose({ refresh, changed })
               detailOpen = false
             }
           "
-        /><AdminDataView :value="detail" /></div
+        /><AdminDataView :value="detailData" /></div
     ></Drawer>
   </section>
 </template>

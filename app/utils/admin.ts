@@ -167,6 +167,74 @@ export interface BanResult {
   purged: PurgeReport | null
   evidence: BanEvidence
 }
+/** Mail categories: whether a mail honours the subscription switches and can be unsubscribed from. */
+export const MAIL_CATEGORIES = [
+  { value: 'transactional', label: '账户与安全', note: '验证码等，总是发送、不能退订' },
+  { value: 'important', label: '重要通知', note: '故障、维护等' },
+  { value: 'features', label: '新功能通知', note: '' },
+  { value: 'other', label: '其他推送', note: '' },
+] as const
+export type MailCategory = (typeof MAIL_CATEGORIES)[number]['value']
+export const MAIL_CATEGORY_LABELS = Object.fromEntries(MAIL_CATEGORIES.map((c) => [c.value, c.label])) as Record<MailCategory, string>
+export const MAIL_STATUSES = [
+  { value: 'queued', label: '排队中' },
+  { value: 'sent', label: '已发送' },
+  { value: 'failed', label: '失败' },
+  { value: 'skipped', label: '已跳过' },
+  { value: 'cancelled', label: '已取消' },
+] as const
+/** A row of `GET /mail/logs`; `GET /mail/logs/{id}` adds `uuid`, `error` and `body_html`. */
+export interface MailLogRecord {
+  id: number
+  status: string
+  skip_reason: string | null
+  category: MailCategory
+  template_key: string
+  template_name: string | null
+  campaign_id: number | null
+  user_id: number | null
+  psnid: string | null
+  to_email: string
+  locale: string
+  subject: string | null
+  attempts: number
+  has_body: boolean
+  queued_at: string | null
+  sent_at: string | null
+  failed_at: string | null
+  created_at: string
+  uuid?: string
+  error?: string | null
+  body_html?: string | null
+}
+export interface MailVariable {
+  name: string
+  label: string
+  sample: string
+  sensitive: boolean
+  /** Rendered as a block of HTML; must stand alone on its own line. */
+  block: boolean
+}
+export interface MailTemplateSummary {
+  id: number
+  key: string
+  name: string
+  description: string | null
+  category: MailCategory
+  is_system: boolean
+  locales: string[]
+  updated_at: string | null
+}
+export interface MailTemplateDetail extends MailTemplateSummary {
+  variables: MailVariable[]
+  translations: Record<string, { subject: string; body: string; updated_at: string | null; updated_by: string | null }>
+}
+export interface MailPreview {
+  subject: string
+  html: string
+  text: string
+  unknown_variables: string[]
+}
 /** The five UI languages, which are also the languages mails are sent in. */
 export const MAIL_LOCALES = [
   { value: 'zh-Hans', label: '简体中文' },
@@ -308,6 +376,9 @@ export const statusLabels: Record<string, string> = {
   dispatched: '已派发',
   manual: '手动',
   automatic: '自动',
+  sent: '已发送',
+  sending: '发送中',
+  cancelled: '已取消',
 }
 export const fieldLabels: Record<string, string> = {
   id: 'ID',

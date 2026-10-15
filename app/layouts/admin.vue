@@ -12,6 +12,8 @@ import {
   PanelLeftOpen,
   Settings,
   Database,
+  Mail,
+  FileStack,
   ShieldCheck,
   X,
 } from 'lucide'
@@ -48,6 +50,13 @@ const groups = [
     ],
   },
   {
+    label: '邮件',
+    items: [
+      { name: '邮件记录', to: '/admin/mail/logs', icon: Mail },
+      { name: '邮件模板', to: '/admin/mail/templates', icon: FileStack },
+    ],
+  },
+  {
     label: '运行维护',
     items: [
       { name: '队列监控', to: '/admin/queues', icon: ListTodo },
@@ -61,9 +70,13 @@ const groups = [
     items: [{ name: '系统设置', to: '/admin/settings', icon: Settings }],
   },
 ]
+// Child pages (e.g. a template's editor) count as their section; /admin itself only matches exactly.
+function isCurrent(to: string) {
+  return route.path === to || (to !== '/admin' && route.path.startsWith(`${to}/`))
+}
 const current = computed(() => {
   for (const group of groups) {
-    const item = group.items.find((i) => i.to === route.path)
+    const item = group.items.find((i) => isCurrent(i.to))
     if (item) return { group: group.label, name: item.name }
   }
   return { group: '工作台', name: '管理后台' }
@@ -155,9 +168,9 @@ useHead({
               :key="item.to"
               :to="item.to"
               :title="collapsed ? item.name : undefined"
-              :aria-current="route.path === item.to ? 'page' : undefined"
+              :aria-current="isCurrent(item.to) ? 'page' : undefined"
               :class="[
-                route.path === item.to
+                isCurrent(item.to)
                   ? 'bg-white text-slate-950 shadow-[0_6px_18px_-6px_rgb(255_255_255/0.45)]'
                   : 'hover:bg-white/5 hover:text-white',
                 collapsed ? 'lg:justify-center lg:px-0' : '',
