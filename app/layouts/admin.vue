@@ -18,6 +18,7 @@ import {
   MessagesSquare,
   Lightbulb,
   ShieldCheck,
+  Trophy,
   X,
 } from 'lucide'
 import { adminDate } from '~/utils/admin'
@@ -57,7 +58,10 @@ const groups = [
   },
   {
     label: '内容管理',
-    items: [{ name: '奖杯 Tip', to: '/admin/tips', icon: Lightbulb }],
+    items: [
+      { name: '奖杯组', to: '/admin/trophy-sets', icon: Trophy },
+      { name: '奖杯 Tip', to: '/admin/tips', icon: Lightbulb },
+    ],
   },
   {
     label: '邮件',

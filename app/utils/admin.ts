@@ -398,6 +398,51 @@ export function adminTipChanges(saved: AdminTipFields, form: AdminTipFields): Pa
   if (form.missable !== saved.missable) changes.missable = form.missable
   return changes
 }
+export const TROPHY_SET_SORT_OPTIONS = [
+  { value: 'latest', label: '最新入库' },
+  { value: 'updated', label: '最近更新' },
+  { value: 'owners', label: '玩家最多' },
+]
+export interface TrophyCountsRecord {
+  bronze: number
+  silver: number
+  gold: number
+  platinum: number
+}
+/** `GET /trophy-sets` row. */
+export interface AdminTrophySet {
+  id: number
+  np_communication_id: string
+  name: string
+  icon_url: string | null
+  platform: string[]
+  version: string
+  np_service_name: string
+  defined_trophies: TrophyCountsRecord | null
+  has_trophy_groups: boolean
+  owners: number
+  created_at: string | null
+  updated_at: string | null
+}
+/** `GET /trophy-sets/{id}`; list rows carry everything but the fields below. */
+export interface AdminTrophySetDetail extends AdminTrophySet {
+  detail?: string | null
+  default_language?: string | null
+  game_id?: number | null
+  groups?: { id: number, psn_group_id: string, name: string, detail: string, icon_url: string | null, defined_trophies: TrophyCountsRecord | null }[]
+  trophies?: { id: number, psn_trophy_id: number, psn_group_id: string, type: string, name: string, icon_url: string | null, is_hidden: boolean }[]
+}
+export interface AdminTrophySetRowChanges {
+  added: number
+  updated: number
+  icon_updated: number
+}
+/** `POST /trophy-sets/{id}/refresh`. */
+export interface AdminTrophySetRefresh {
+  changes: { trophy_set: string[], groups: AdminTrophySetRowChanges, trophies: AdminTrophySetRowChanges }
+  localization_queued: boolean
+  trophy_set: AdminTrophySetDetail
+}
 /** One editable setting from `GET /settings`. Database values win over env. */
 export interface SystemSettingItem {
   key: string
