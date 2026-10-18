@@ -19,6 +19,32 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+
+  /* Page scrollbar in the near-black of the site's buttons: a slate pill with
+     a faint top-to-bottom gradient on a clear track, darker on hover. Firefox
+     has no scrollbar pseudo-elements, so it gets a solid colour; that rule is
+     kept out of Chromium, which ignores the pseudo-elements once
+     scrollbar-color is set. */
+  html::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+  html::-webkit-scrollbar-track {
+    background: var(--color-slate-50);
+  }
+  html::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background: linear-gradient(to bottom, var(--color-slate-700), var(--color-slate-900)) padding-box;
+  }
+  html::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, var(--color-slate-800), var(--color-slate-950)) padding-box;
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    html {
+      scrollbar-color: var(--color-slate-800) transparent;
+    }
+  }
 }
 
 /* Subtle entrance + ambient motion used by the auth pages. Kept global so the
