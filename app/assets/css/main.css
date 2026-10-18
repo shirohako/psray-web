@@ -67,6 +67,16 @@
   }
 }
 
+/* Sheen running along the top-of-page loading bar. */
+@keyframes loading-bar-sheen {
+  from {
+    background-position: -100% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
 /* Loading placeholders. The highlight is pinned to the viewport
    (`background-attachment: fixed`), so every `.skeleton` block on screen is lit
    by one band sweeping left to right rather than each shimmering on its own.
@@ -107,6 +117,37 @@
   /* Secondary lines: same sweep on a lighter ground. */
   .skeleton-soft {
     background-color: color-mix(in oklab, var(--color-slate-200) 45%, transparent);
+  }
+  /* Fill of <LoadingBar>: brand gradient with a bright leading edge (::before)
+     and a sheen sweeping along it (::after); rose when the load failed. */
+  .loading-bar-fill {
+    background: linear-gradient(to right, var(--color-sky-400), var(--color-indigo-500) 70%, var(--color-violet-500));
+    box-shadow: 0 0 8px color-mix(in oklab, var(--color-indigo-500) 55%, transparent);
+  }
+  .loading-bar-fill::before {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    right: 0;
+    width: 96px;
+    background: linear-gradient(to right, transparent, rgb(255 255 255 / 0.6));
+  }
+  .loading-bar-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent) no-repeat;
+    background-size: 40% 100%;
+    animation: loading-bar-sheen 1.4s linear infinite;
+  }
+  .loading-bar-fill.is-error {
+    background: linear-gradient(to right, var(--color-rose-400), var(--color-rose-600));
+    box-shadow: 0 0 8px color-mix(in oklab, var(--color-rose-500) 55%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .loading-bar-fill::after {
+      display: none;
+    }
   }
   /* On dark grounds (the trophy set banner): faint white bars, dimmer sweep. */
   .skeleton-dark {

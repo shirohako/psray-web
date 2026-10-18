@@ -12,7 +12,7 @@ let anyFailed = false
 let finishTimer: ReturnType<typeof setTimeout> | undefined
 
 /**
- * Keeps the top-of-page `<NuxtLoadingIndicator>` running while a lazy fetch is
+ * Keeps the top-of-page `<LoadingBar>` running while a lazy fetch is
  * in flight, and fills it when the data lands (red if any of them failed).
  *
  * Lazy pages mount before their data arrives, and Nuxt fires

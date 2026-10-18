@@ -16,7 +16,7 @@ useHead(() => ({
 
 <template>
   <div>
-    <NuxtLoadingIndicator class="opacity-100" />
+    <LoadingBar />
     <NuxtRouteAnnouncer />
     <NuxtLayout>
       <NuxtPage />
