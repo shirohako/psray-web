@@ -7,6 +7,7 @@
  *
  * ```vue
  * <LocalTime :value="tip.created_at" />              2026/10/16 14:30  (as fmtDateTime)
+ * <LocalTime :value="at" format="seconds" />         2026/10/16 14:30:05
  * <LocalTime :value="joinedAt" format="date" />      2026年10月16日     (as fmtDate)
  * <LocalTime :value="at" format="day" />             2026/10/16
  * <LocalTime :value="at" format="time" />            14:30
@@ -20,6 +21,7 @@ const props = withDefaults(defineProps<{
 
 const FORMATS = {
   datetime: { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false },
+  seconds: { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false },
   date: { year: 'numeric', month: 'long', day: 'numeric' },
   day: { year: 'numeric', month: '2-digit', day: '2-digit' },
   time: { hour: '2-digit', minute: '2-digit', hour12: false },
