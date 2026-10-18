@@ -90,7 +90,7 @@ function rankClass(rank: number) {
 <template>
   <Dialog
     :open="open"
-    size="2xl"
+    size="3xl"
     :title="$t('trophy.players.title')"
     @update:open="emit('update:open', $event)"
   >

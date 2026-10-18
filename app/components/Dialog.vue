@@ -12,7 +12,7 @@ import { X } from 'lucide'
  * </Dialog>
  * ```
  */
-type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '4xl'
+type Size = 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl'
 
 const props = withDefaults(defineProps<{
   open: boolean
@@ -34,6 +34,7 @@ const SIZE: Record<Size, string> = {
   lg: 'max-w-lg',
   xl: 'max-w-xl',
   '2xl': 'max-w-2xl',
+  '3xl': 'max-w-3xl',
   '4xl': 'max-w-4xl',
 }
 
