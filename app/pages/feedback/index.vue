@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MessageSquarePlus, MessagesSquare } from 'lucide'
-import type { FeedbackItem, FeedbackPageMeta, FeedbackStatus, FeedbackType } from '~/types/feedback'
+import type { FeedbackItem, FeedbackPageMeta } from '~/types/feedback'
 import type { FeedbackListState, GuestFeedbackEntry } from '~/utils/feedback'
 
 const { t } = useI18n()
@@ -110,24 +110,22 @@ function onCreated() {
           </button>
         </div>
         <div v-if="!guestMine" class="flex flex-wrap items-center gap-2">
-          <select
-            :value="state.type ?? ''"
+          <SelectMenu
+            :model-value="state.type"
+            :options="[{ value: null, label: $t('feedback.list.allTypes') }, ...FEEDBACK_TYPES.map(value => ({ value, label: $t(`feedback.types.${value}`) }))]"
+            size="sm"
+            :highlight="!!state.type"
             :aria-label="$t('feedback.list.type')"
-            class="h-8 rounded-md border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:border-slate-400 focus:outline-none"
-            @change="navigate({ type: (($event.target as HTMLSelectElement).value || null) as FeedbackType | null })"
-          >
-            <option value="">{{ $t('feedback.list.allTypes') }}</option>
-            <option v-for="value in FEEDBACK_TYPES" :key="value" :value="value">{{ $t(`feedback.types.${value}`) }}</option>
-          </select>
-          <select
-            :value="state.status ?? ''"
+            @update:model-value="navigate({ type: $event })"
+          />
+          <SelectMenu
+            :model-value="state.status"
+            :options="[{ value: null, label: $t('feedback.list.allStatuses') }, ...FEEDBACK_STATUSES.map(value => ({ value, label: $t(`feedback.statuses.${value}`) }))]"
+            size="sm"
+            :highlight="!!state.status"
             :aria-label="$t('feedback.list.status')"
-            class="h-8 rounded-md border border-slate-200 bg-white px-2 text-xs text-slate-700 focus:border-slate-400 focus:outline-none"
-            @change="navigate({ status: (($event.target as HTMLSelectElement).value || null) as FeedbackStatus | null })"
-          >
-            <option value="">{{ $t('feedback.list.allStatuses') }}</option>
-            <option v-for="value in FEEDBACK_STATUSES" :key="value" :value="value">{{ $t(`feedback.statuses.${value}`) }}</option>
-          </select>
+            @update:model-value="navigate({ status: $event })"
+          />
         </div>
       </div>
 

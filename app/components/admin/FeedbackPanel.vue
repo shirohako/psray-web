@@ -120,25 +120,23 @@ function deleteFeedback() {
         <button v-if="detail.awaiting_reply" class="admin-button" :disabled="!!busy" title="移出「待回复」，不发回复" @click="update('dismiss', { awaiting_reply: false })">无需回复</button>
         <label class="flex items-center gap-1.5 text-xs text-slate-500">
           类型
-          <select
-            class="admin-input w-auto"
-            :value="detail.type"
+          <SelectMenu
+            :model-value="detail.type"
+            :options="FEEDBACK_TYPE_OPTIONS"
+            size="sm"
             :disabled="!!busy"
-            @change="update('type', { type: ($event.target as HTMLSelectElement).value })"
-          >
-            <option v-for="option in FEEDBACK_TYPE_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>
-          </select>
+            @update:model-value="update('type', { type: $event })"
+          />
         </label>
         <label class="flex items-center gap-1.5 text-xs text-slate-500">
           状态
-          <select
-            class="admin-input w-auto"
-            :value="detail.status"
+          <SelectMenu
+            :model-value="detail.status"
+            :options="FEEDBACK_STATUS_OPTIONS"
+            size="sm"
             :disabled="!!busy"
-            @change="update('status', { status: ($event.target as HTMLSelectElement).value })"
-          >
-            <option v-for="option in FEEDBACK_STATUS_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>
-          </select>
+            @update:model-value="update('status', { status: $event })"
+          />
         </label>
         <button class="admin-button admin-danger ml-auto" :disabled="!!busy" @click="confirmDelete = true">
           <LucideIcon :icon="Trash2" class="size-3.5" />删除
@@ -264,10 +262,12 @@ function deleteFeedback() {
         <div class="flex flex-wrap items-center justify-end gap-2">
           <label class="flex items-center gap-1.5 text-xs text-slate-500">
             同时把状态改为
-            <select v-model="replyStatus" class="admin-input w-auto" :disabled="!!busy">
-              <option value="">不修改</option>
-              <option v-for="option in FEEDBACK_STATUS_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>
-            </select>
+            <SelectMenu
+              v-model="replyStatus"
+              :options="[{ value: '', label: '不修改' }, ...FEEDBACK_STATUS_OPTIONS]"
+              size="sm"
+              :disabled="!!busy"
+            />
           </label>
           <button class="admin-button admin-primary" :disabled="!!busy || !reply.trim()">
             <LucideIcon :icon="Send" class="size-3.5" />{{ busy === 'reply' ? '正在发送…' : '发送回复' }}

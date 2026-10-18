@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowDownWideNarrow, ChevronDown, Loader2, MessageSquareText, Search, ThumbsUp, Trash2, X } from 'lucide'
+import { ArrowDownWideNarrow, Loader2, MessageSquareText, Search, ThumbsUp, Trash2, X } from 'lucide'
 import { useTips } from '~/services/tips'
 import type { AuthoredTipSort, ProfileTip, TipPageMeta } from '~/types/tip'
 import type { MyTipsState } from '~/utils/me'
@@ -173,18 +173,14 @@ const SORTS: { value: AuthoredTipSort; labelKey: string }[] = AUTHORED_TIP_SORTS
             <LucideIcon :icon="X" class="size-3.5" />
           </button>
         </label>
-        <label class="relative shrink-0">
-          <span class="sr-only">{{ $t('me.tips.sort') }}</span>
-          <LucideIcon :icon="ArrowDownWideNarrow" class="pointer-events-none absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
-          <select
-            :value="state.sort"
-            class="h-9 appearance-none rounded-lg border border-slate-200 bg-white pl-8 pr-7 text-xs font-semibold text-slate-700 transition hover:border-slate-300 focus:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-900/5"
-            @change="navigate({ sort: ($event.target as HTMLSelectElement).value as AuthoredTipSort })"
-          >
-            <option v-for="option in SORTS" :key="option.value" :value="option.value">{{ $t(option.labelKey) }}</option>
-          </select>
-          <LucideIcon :icon="ChevronDown" class="pointer-events-none absolute right-2 top-1/2 size-3.5 -translate-y-1/2 text-slate-400" />
-        </label>
+        <SelectMenu
+          :model-value="state.sort"
+          :options="SORTS.map(option => ({ value: option.value, label: $t(option.labelKey) }))"
+          :icon="ArrowDownWideNarrow"
+          class="shrink-0"
+          :aria-label="$t('me.tips.sort')"
+          @update:model-value="navigate({ sort: $event })"
+        />
       </div>
 
       <section id="tip-results" class="scroll-mt-20" :aria-label="$t('me.tips.title')" :aria-busy="pending">

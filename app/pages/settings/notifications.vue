@@ -117,14 +117,14 @@ async function save() {
                 <span class="mt-1 block text-sm text-slate-500">{{ $t('settings.notifications.language.hint') }}</span>
               </span>
             </span>
-            <select
+            <SelectMenu
               id="mail-locale"
               v-model="form.locale"
+              :options="UI_LOCALES.map(code => ({ value: code, label: LOCALE_NAMES[code] ?? code }))"
               :disabled="saving"
-              class="h-10 shrink-0 rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-800 shadow-sm outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-900/10 sm:w-44"
-            >
-              <option v-for="code in UI_LOCALES" :key="code" :value="code">{{ LOCALE_NAMES[code] ?? code }}</option>
-            </select>
+              size="lg"
+              class="shrink-0 sm:w-44"
+            />
           </div>
         </section>
 

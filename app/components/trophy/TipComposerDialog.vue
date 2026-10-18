@@ -212,14 +212,13 @@ watch(() => props.open, (value) => {
       <div class="space-y-3">
         <label class="block w-full">
           <span class="mb-1.5 block text-xs font-semibold text-slate-600">{{ $t('trophy.tips.form.language') }}</span>
-          <select
+          <SelectMenu
             v-model="language"
+            :options="TIP_LANGUAGE_CODES.map(code => ({ value: code, label: langLabel(code) }))"
             :disabled="publishing || deleting"
-            class="w-full rounded-lg border bg-white px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-4"
-            :class="fieldErrors.language ? 'border-rose-300 focus:ring-rose-500/10' : 'border-slate-200 focus:border-slate-900 focus:ring-slate-900/10'"
-          >
-            <option v-for="code in TIP_LANGUAGE_CODES" :key="code" :value="code">{{ langLabel(code) }}</option>
-          </select>
+            :invalid="!!fieldErrors.language"
+            class="w-full"
+          />
           <span v-if="fieldErrors.language" class="mt-1 block text-xs font-medium text-rose-600">{{ fieldErrors.language }}</span>
         </label>
 

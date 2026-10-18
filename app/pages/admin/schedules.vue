@@ -323,14 +323,20 @@ useAdminPoll(refresh)
           class="flex flex-wrap items-center gap-2 border-b border-slate-200 bg-slate-50/70 px-5 py-2.5"
           @submit.prevent="loadHistory(1)"
         >
-          <select v-model="historyFilters.status" class="admin-input w-auto" aria-label="状态">
-            <option value="">状态：全部</option>
-            <option value="running">执行中</option>
-            <option value="success">成功</option>
-            <option value="failed">失败</option>
-            <option value="skipped">已跳过</option>
-            <option value="suspected_interrupted">疑似中断</option>
-          </select>
+          <SelectMenu
+            v-model="historyFilters.status"
+            :options="[
+              { value: '', label: '状态：全部' },
+              { value: 'running', label: '执行中' },
+              { value: 'success', label: '成功' },
+              { value: 'failed', label: '失败' },
+              { value: 'skipped', label: '已跳过' },
+              { value: 'suspected_interrupted', label: '疑似中断' },
+            ]"
+            size="sm"
+            :highlight="!!historyFilters.status"
+            aria-label="状态"
+          />
           <label
             class="flex h-8 items-center gap-2 rounded-md border border-slate-200 bg-white pl-2.5 text-[13px]"
             ><span class="text-xs text-slate-400">开始</span
@@ -347,15 +353,12 @@ useAdminPoll(refresh)
               type="datetime-local"
               class="h-full bg-transparent pr-2 outline-none"
           /></label>
-          <select
-            v-model.number="historyFilters.per_page"
-            class="admin-input w-auto"
+          <SelectMenu
+            v-model="historyFilters.per_page"
+            :options="[20, 50, 100].map(n => ({ value: n, label: `${n} 条/页` }))"
+            size="sm"
             aria-label="每页条数"
-          >
-            <option :value="20">20 条/页</option>
-            <option :value="50">50 条/页</option>
-            <option :value="100">100 条/页</option>
-          </select>
+          />
           <button class="admin-button admin-primary" :disabled="historyLoading">
             筛选
           </button>

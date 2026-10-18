@@ -145,18 +145,15 @@ async function save() {
         </div>
         <div class="min-w-0 space-y-1.5">
           <div class="flex items-center gap-2">
-            <select
+            <SelectMenu
               v-if="item.options.length"
               :id="`setting-${item.key}`"
               v-model="drafts[item.key]"
+              :options="[{ value: '', label: placeholder(item) }, ...item.options]"
               :disabled="busy || clearing.includes(item.key)"
-              class="admin-input"
-            >
-              <option value="">{{ placeholder(item) }}</option>
-              <option v-for="o in item.options" :key="o.value" :value="o.value">
-                {{ o.label }}
-              </option>
-            </select>
+              size="sm"
+              class="w-full"
+            />
             <input
               v-else
               :id="`setting-${item.key}`"

@@ -133,9 +133,7 @@ async function create() {
       </div>
       <div>
         <label for="mt-category" class="mb-1.5 block text-xs font-medium text-slate-700">分类</label>
-        <select id="mt-category" v-model="form.category" class="admin-input">
-          <option v-for="c in SUBSCRIBABLE" :key="c.value" :value="c.value">{{ c.label }}</option>
-        </select>
+        <SelectMenu id="mt-category" v-model="form.category" :options="SUBSCRIBABLE" size="sm" class="w-full" />
         <p class="mt-1 text-xs text-slate-500">决定发给谁：只发给开启了这一类订阅的用户，邮件里带这一类的退订链接。</p>
       </div>
       <div>

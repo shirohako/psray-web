@@ -246,9 +246,7 @@ const placeholder = (name: string) => '{' + '{ ' + name + ' }' + '}'
       </div>
       <div>
         <label for="mt-category" class="mb-1.5 block text-xs font-medium text-slate-700">分类</label>
-        <select id="mt-category" v-model="meta.category" class="admin-input">
-          <option v-for="c in SUBSCRIBABLE" :key="c.value" :value="c.value">{{ c.label }}</option>
-        </select>
+        <SelectMenu id="mt-category" v-model="meta.category" :options="SUBSCRIBABLE" size="sm" class="w-full" />
       </div>
       <div>
         <label for="mt-desc" class="mb-1.5 block text-xs font-medium text-slate-700">说明</label>
@@ -384,9 +382,7 @@ const placeholder = (name: string) => '{' + '{ ' + name + ' }' + '}'
         </div>
         <div>
           <label for="mt-test-locale" class="mb-1.5 block text-xs font-medium text-slate-700">语言</label>
-          <select id="mt-test-locale" v-model="testLocale" class="admin-input" :disabled="testing">
-            <option v-for="l in MAIL_LOCALES" :key="l.value" :value="l.value">{{ l.label }}</option>
-          </select>
+          <SelectMenu id="mt-test-locale" v-model="testLocale" :options="MAIL_LOCALES" size="sm" class="w-full" :disabled="testing" />
         </div>
       </div>
       <AdminError :error="testError" />

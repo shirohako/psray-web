@@ -67,9 +67,7 @@ async function send() {
         </div>
         <div>
           <label for="admin-mail-test-locale" class="mb-1.5 block text-xs font-medium text-slate-700">邮件语言</label>
-          <select id="admin-mail-test-locale" v-model="locale" class="admin-input" :disabled="busy">
-            <option v-for="l in MAIL_LOCALES" :key="l.value" :value="l.value">{{ l.label }}</option>
-          </select>
+          <SelectMenu id="admin-mail-test-locale" v-model="locale" :options="MAIL_LOCALES" size="sm" class="w-full" :disabled="busy" />
         </div>
       </div>
       <AdminError :error="error" />

@@ -193,20 +193,13 @@ defineExpose({ refresh, changed })
         <template v-for="filter in otherFilters" :key="filter.key">
           <label v-if="filter.options" class="w-full sm:w-auto">
             <span class="sr-only">{{ filter.label }}</span>
-            <select
+            <SelectMenu
               v-model="form[filter.key]"
-              class="admin-input sm:w-auto sm:min-w-36"
-              :class="form[filter.key] ? 'border-slate-900' : 'text-slate-500'"
-            >
-              <option value="">{{ filter.label }}：全部</option>
-              <option
-                v-for="option in filter.options"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </option>
-            </select>
+              :options="[{ value: '', label: `${filter.label}：全部` }, ...filter.options]"
+              size="sm"
+              :highlight="!!form[filter.key]"
+              class="w-full sm:w-auto sm:min-w-36"
+            />
           </label>
           <label
             v-else

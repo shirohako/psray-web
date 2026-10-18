@@ -67,14 +67,13 @@
                 </span>
               </button>
 
-              <label class="inline-flex min-w-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-sm text-slate-600 transition focus-within:border-slate-400 sm:shrink-0">
-                <LucideIcon :icon="ArrowUpDown" class="size-4 text-slate-400" />
-                <select v-model="sort" class="min-w-0 flex-1 cursor-pointer bg-transparent pr-1 font-medium text-slate-900 focus:outline-none sm:flex-none" :aria-label="$t('trophy.sort.label')">
-                  <option value="default">{{ $t('trophy.sort.default') }}</option>
-                  <option value="earned" :disabled="!hasViewer">{{ $t('trophy.sort.earned') }}</option>
-                  <option value="rarity">{{ $t('trophy.sort.rarity') }}</option>
-                </select>
-              </label>
+              <SelectMenu
+                v-model="sort"
+                :options="sortOptions"
+                :icon="ArrowUpDown"
+                class="max-sm:flex-1 sm:shrink-0"
+                :aria-label="$t('trophy.sort.label')"
+              />
             </div>
           </div>
 
@@ -155,6 +154,7 @@
 import { ArrowUpDown, ChevronDown } from 'lucide'
 import TrophyStatistics from '~/components/trophy/Statistics.vue'
 import type { EarnedInfo, Trophy, TrophyGroup, TrophySetDetail } from '~/services/trophies'
+import type { SelectOption } from '~/types/select'
 import { DEFAULT_LOCALE, PSN_LANG, canonicalContentLang, isUiLocale, type UiLocale } from '#shared/locales'
 
 definePageMeta({ path: '/trophies/:id(\\d+)' })
@@ -377,6 +377,11 @@ const filterOptions: { value: FilterMode; labelKey: string }[] = [
 ]
 const filter = ref<FilterMode>('all')
 const sort = ref<SortMode>('default')
+const sortOptions = computed<SelectOption<SortMode>[]>(() => [
+  { value: 'default', label: t('trophy.sort.default') },
+  { value: 'earned', label: t('trophy.sort.earned'), disabled: !hasViewer.value },
+  { value: 'rarity', label: t('trophy.sort.rarity') },
+])
 // URL fragments are unavailable to SSR. Start collapsed on both server and
 // client, then reveal and re-scroll after hydration to avoid a class mismatch.
 const trophyListExpanded = ref(false)

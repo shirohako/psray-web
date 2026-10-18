@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Languages, Percent, Check, Gamepad2, Trophy } from 'lucide'
 import type { DisplayDensity, RateBasis, TrophyLangPref } from '~/composables/usePreferences'
+import type { SelectOption } from '~/types/select'
 
 /** Site preferences drawer. Open via `v-model:open`. */
 const open = defineModel<boolean>('open', { default: false })
@@ -44,6 +45,11 @@ const languages = TROPHY_LANGUAGE_CODES.map(code => ({
   code,
   label: `${langNameEn(code)} (${code})`,
 }))
+const primaryOptions = computed<SelectOption[]>(() => [
+  { value: '', label: t('settings.prefs.lang.unset') },
+  ...languages.map(l => ({ value: l.code, label: l.label })),
+])
+const secondaryOptions = computed(() => primaryOptions.value.map(o => ({ ...o, disabled: o.value !== '' && o.value === draft.value.primary })))
 
 // The only invalid combination is picking the same code twice; leaving both
 // unset is allowed — on save it collapses into turning the preference off.
@@ -116,31 +122,12 @@ function save() {
         <div v-if="draft.enabled" class="mt-4 space-y-3">
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-slate-600">{{ $t('settings.prefs.lang.primary') }}</span>
-            <select
-              v-model="draft.primary"
-              class="w-full cursor-pointer rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 transition focus:border-slate-400 focus:outline-none"
-            >
-              <option value="">{{ $t('settings.prefs.lang.unset') }}</option>
-              <option v-for="l in languages" :key="l.code" :value="l.code">{{ l.label }}</option>
-            </select>
+            <SelectMenu v-model="draft.primary" :options="primaryOptions" searchable class="w-full" />
           </label>
 
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-slate-600">{{ $t('settings.prefs.lang.secondary') }}</span>
-            <select
-              v-model="draft.secondary"
-              class="w-full cursor-pointer rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-900 transition focus:border-slate-400 focus:outline-none"
-            >
-              <option value="">{{ $t('settings.prefs.lang.unset') }}</option>
-              <option
-                v-for="l in languages"
-                :key="l.code"
-                :value="l.code"
-                :disabled="l.code === draft.primary"
-              >
-                {{ l.label }}
-              </option>
-            </select>
+            <SelectMenu v-model="draft.secondary" :options="secondaryOptions" searchable class="w-full" />
           </label>
 
           <p v-if="error" class="text-xs font-medium text-rose-500">{{ error }}</p>

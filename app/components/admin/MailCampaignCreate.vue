@@ -28,6 +28,10 @@ const open = ref(false),
   submitError = ref<any>(null)
 const LOCALE_LABELS: Record<string, string> = Object.fromEntries(MAIL_LOCALES.map((l) => [l.value, l.label]))
 const selected = computed(() => templates.value.find((t) => t.id === templateId.value) ?? null)
+const templateOptions = computed(() => templates.value.map((t) => ({
+  value: t.id,
+  label: `${t.name} · ${MAIL_CATEGORY_LABELS[t.category]} · ${t.locales.join(' / ')}`,
+})))
 
 async function start() {
   open.value = true
@@ -103,12 +107,16 @@ async function submit() {
     <div class="space-y-5 p-5">
       <div>
         <label for="mc-template" class="mb-1.5 block text-xs font-medium text-slate-700">群发模板</label>
-        <select id="mc-template" v-model="templateId" class="admin-input" :disabled="busy">
-          <option :value="null" disabled>选择一个群发模板</option>
-          <option v-for="t in templates" :key="t.id" :value="t.id">
-            {{ t.name }} · {{ MAIL_CATEGORY_LABELS[t.category] }} · {{ t.locales.join(' / ') }}
-          </option>
-        </select>
+        <SelectMenu
+          id="mc-template"
+          v-model="templateId"
+          :options="templateOptions"
+          placeholder="选择一个群发模板"
+          size="sm"
+          class="w-full"
+          :searchable="templateOptions.length > 10"
+          :disabled="busy"
+        />
         <p class="mt-1.5 text-xs text-slate-500">
           只列出已有文案的群发模板。需要新内容先到
           <NuxtLink to="/admin/mail/templates" class="underline">邮件模板</NuxtLink> 新建；系统模板（验证码等）不能群发。
@@ -169,9 +177,7 @@ async function submit() {
           <h3 class="mb-2 text-[13px] font-semibold text-slate-900">先给自己发一封看看</h3>
           <div class="flex flex-wrap gap-2">
             <input v-model="testEmail" type="email" :placeholder="user?.email ?? '收件邮箱'" class="admin-input w-56 flex-1" :disabled="testing" />
-            <select v-model="testLocale" class="admin-input w-32" :disabled="testing">
-              <option v-for="l in MAIL_LOCALES" :key="l.value" :value="l.value">{{ l.label }}</option>
-            </select>
+            <SelectMenu v-model="testLocale" :options="MAIL_LOCALES" size="sm" class="w-32" :disabled="testing" />
             <button type="button" class="admin-button" :disabled="testing || !(testEmail || user?.email)" @click="sendTest">
               <LucideIcon :icon="testing ? RotateCw : Send" class="size-3.5" :class="testing && 'animate-spin'" />发送测试
             </button>

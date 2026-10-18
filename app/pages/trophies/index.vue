@@ -253,9 +253,13 @@ function changePage(value: number) {
         <div v-show="advancedOpen" id="library-advanced" class="grid grid-cols-1 gap-3 border-t border-slate-100 bg-slate-50/40 p-3 sm:grid-cols-3 sm:px-4">
           <label v-for="field in fields" :key="field.key" class="filter-field">
             <span>{{ $t(`library.advanced.${field.key}`) }}</span>
-            <select :value="filters[field.key]" @change="setFilters({ [field.key]: ($event.target as HTMLSelectElement).value })">
-              <option v-for="option in field.options" :key="option" :value="option">{{ $t(`library.options.${field.key}.${option}`) }}</option>
-            </select>
+            <SelectMenu
+              :model-value="filters[field.key]"
+              :options="field.options.map(option => ({ value: option, label: $t(`library.options.${field.key}.${option}`) }))"
+              size="sm"
+              class="w-full"
+              @update:model-value="setFilters({ [field.key]: $event })"
+            />
           </label>
         </div>
 
@@ -332,7 +336,5 @@ function changePage(value: number) {
 
 <style scoped>
 .filter-field { display: flex; min-width: 0; flex-direction: column; gap: 6px; font-size: 11px; color: var(--color-slate-500); }
-.filter-field select { width: 100%; height: 32px; padding: 0 8px; border: 1px solid var(--color-slate-200); border-radius: 5px; background: white; color: var(--color-slate-700); outline: none; }
-.filter-field select:focus-visible { outline: 2px solid var(--color-slate-400); outline-offset: 1px; }
 input[type='search']::-webkit-search-cancel-button { -webkit-appearance: none; }
 </style>

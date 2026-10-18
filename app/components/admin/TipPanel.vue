@@ -156,9 +156,7 @@ const MISSABLE_OPTIONS = [
         <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
           <label class="flex items-center gap-1.5 text-xs text-slate-500">
             语言
-            <select v-model="form.language" class="admin-input w-auto" :disabled="!!busy">
-              <option v-for="option in TIP_LANGUAGE_OPTIONS" :key="option.value" :value="option.value">{{ option.label }}</option>
-            </select>
+            <SelectMenu v-model="form.language" :options="TIP_LANGUAGE_OPTIONS" size="sm" :disabled="!!busy" />
           </label>
           <label class="flex items-center gap-1.5 text-xs text-slate-600">
             <input v-model="form.has_spoiler" type="checkbox" class="size-4 accent-slate-900" :disabled="!!busy" />
@@ -166,9 +164,7 @@ const MISSABLE_OPTIONS = [
           </label>
           <label class="flex items-center gap-1.5 text-xs text-slate-500">
             易错过
-            <select v-model="form.missable" class="admin-input w-auto" :disabled="!!busy">
-              <option v-for="option in MISSABLE_OPTIONS" :key="String(option.value)" :value="option.value">{{ option.label }}</option>
-            </select>
+            <SelectMenu v-model="form.missable" :options="MISSABLE_OPTIONS" size="sm" :disabled="!!busy" />
           </label>
         </div>
         <textarea v-model="form.content" class="admin-input font-mono text-xs leading-relaxed" rows="10" :disabled="!!busy" placeholder="Markdown 正文" />
