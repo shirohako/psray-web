@@ -9,7 +9,8 @@ const props = withDefaults(defineProps<{
   maximumFractionDigits?: number
   /**
    * Hold the width of the final value while counting, so text after the number
-   * (e.g. "/ 22") doesn't shift as digits are added. Needs `tabular-nums`.
+   * (e.g. "/ 22") doesn't shift as digits are added: an invisible copy of the
+   * final value sits in the same grid cell. Best with `tabular-nums`.
    */
   reserveWidth?: boolean
   /** Text shown with the number (e.g. `#`, `%`), so it appears together with it. */
@@ -82,8 +83,6 @@ const formatted = computed(() => shown.value
   ? props.prefix + formatter.value.format(displayValue.value) + props.suffix
   : final.value)
 
-const style = computed(() => props.reserveWidth ? { minWidth: `${final.value.length}ch` } : undefined)
-
 // Runs in the browser as soon as the server HTML is parsed (see above). It must
 // be self-contained: Nuxt inlines its source.
 onPrehydrate((el: HTMLElement) => {
@@ -121,8 +120,7 @@ onPrehydrate((el: HTMLElement) => {
   <!-- The counting digits are decoration: screen readers and crawlers get the
        final value instead. -->
   <span
-    :class="{ 'inline-block text-right': reserveWidth }"
-    :style="style"
+    :class="{ 'inline-grid justify-items-end': reserveWidth }"
     :data-count-to="animateInitial ? target : undefined"
     :data-count-from="animateInitial ? props.from : undefined"
     :data-count-duration="animateInitial ? duration : undefined"
@@ -132,6 +130,6 @@ onPrehydrate((el: HTMLElement) => {
     :data-count-prefix="animateInitial && prefix ? prefix : undefined"
     :data-count-suffix="animateInitial && suffix ? suffix : undefined"
   >
-    <span aria-hidden="true" data-allow-mismatch="text" :class="{ invisible: !shown }">{{ formatted }}</span><span class="sr-only">{{ final }}</span>
+    <span aria-hidden="true" data-allow-mismatch="text" :class="{ 'invisible': !shown, '[grid-area:1/1]': reserveWidth }">{{ formatted }}</span><span v-if="reserveWidth" aria-hidden="true" class="invisible [grid-area:1/1]">{{ final }}</span><span class="sr-only">{{ final }}</span>
   </span>
 </template>
