@@ -293,10 +293,17 @@ onBeforeUnmount(() => {
         v-for="g in recent"
         :key="g.id"
         :href="`/trophies/${g.trophy_set_id}`"
-        class="group flex items-start transition hover:bg-slate-50"
+        class="group relative isolate flex items-start overflow-hidden transition hover:bg-slate-50"
         :class="density.row"
         @click="openTrophyWithProgress($event, g.trophy_set_id, psnid)"
       >
+        <!-- Completed: a faint hanamaru stamped behind the right end of the row
+             (desktop only). -z-10 inside the row's isolated stacking context:
+             above its (hover) background, below its content. -->
+        <Hanamaru
+          v-if="g.progress === 100"
+          class="pointer-events-none absolute top-1/2 right-8 -z-10 hidden aspect-square h-[78%] -translate-y-1/2 -rotate-12 text-rose-500/15 sm:block"
+        />
         <!-- Fixed-width slot keeps rows aligned; the image renders at its natural
              aspect (PS4 320×176 landscape, PS5 square) with a soft ring instead of
              a gray letterbox box around it, plus a loading skeleton. -->
