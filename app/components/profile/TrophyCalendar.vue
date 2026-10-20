@@ -98,7 +98,7 @@ function activityClass(count: number) {
 
 <template>
   <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-    <div class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 px-4 py-3 sm:px-5">
+    <div class="flex flex-col gap-3 border-b border-slate-100 px-4 py-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4 sm:px-5">
       <div>
         <div class="flex items-center gap-2">
           <span class="grid size-8 place-items-center rounded-lg bg-slate-900 text-white shadow-sm">
@@ -110,18 +110,19 @@ function activityClass(count: number) {
           </div>
         </div>
       </div>
-      <div class="flex items-center gap-5 text-right">
-        <div>
-          <div class="text-base font-bold text-slate-900">{{ fmt(total) }}</div>
-          <div class="text-[11px] text-slate-400">{{ $t('profile.calendar.trophiesEarned') }}</div>
+      <!-- Phones: an even three-column strip under the title. Wider: beside it. -->
+      <div class="grid grid-cols-3 divide-x divide-slate-200/70 rounded-lg bg-slate-50 py-2 text-center sm:flex sm:items-center sm:gap-5 sm:divide-x-0 sm:rounded-none sm:bg-transparent sm:py-0 sm:text-right">
+        <div class="px-1 min-[360px]:px-2 sm:px-0">
+          <div class="text-base font-bold tabular-nums text-slate-900">{{ fmt(total) }}</div>
+          <div class="text-[10px] leading-tight text-slate-400 min-[360px]:text-[11px]">{{ $t('profile.calendar.trophiesEarned') }}</div>
         </div>
-        <div>
-          <div class="text-base font-bold text-slate-900">{{ fmt(activeDays) }}</div>
-          <div class="text-[11px] text-slate-400">{{ $t('profile.calendar.activeDays') }}</div>
+        <div class="px-1 min-[360px]:px-2 sm:px-0">
+          <div class="text-base font-bold tabular-nums text-slate-900">{{ fmt(activeDays) }}</div>
+          <div class="text-[10px] leading-tight text-slate-400 min-[360px]:text-[11px]">{{ $t('profile.calendar.activeDays') }}</div>
         </div>
-        <div class="max-sm:hidden">
-          <div class="text-base font-bold text-slate-900">{{ fmt(maxCount) }}</div>
-          <div class="text-[11px] text-slate-400">{{ $t('profile.calendar.bestDay') }}</div>
+        <div class="px-1 min-[360px]:px-2 sm:px-0">
+          <div class="text-base font-bold tabular-nums text-slate-900">{{ fmt(maxCount) }}</div>
+          <div class="text-[10px] leading-tight text-slate-400 min-[360px]:text-[11px]">{{ $t('profile.calendar.bestDay') }}</div>
         </div>
       </div>
     </div>
