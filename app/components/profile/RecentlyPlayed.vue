@@ -362,7 +362,7 @@ onBeforeUnmount(() => {
             <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
               <div
                 class="h-full rounded-full"
-                :class="g.progress === 100 ? 'bg-cyan-400' : 'bg-slate-900'"
+                :class="g.progress === 100 ? 'progress-complete' : 'bg-slate-900'"
                 :style="{ width: `${g.progress}%` }"
               />
             </div>

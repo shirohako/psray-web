@@ -103,6 +103,17 @@
   }
 }
 
+/* Sheen crossing a completed progress bar, then resting before the next pass. */
+@keyframes progress-sheen {
+  0% {
+    background-position: -100% 0;
+  }
+  40%,
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 /* Loading placeholders. The highlight is pinned to the viewport
    (`background-attachment: fixed`), so every `.skeleton` block on screen is lit
    by one band sweeping left to right rather than each shimmering on its own.
@@ -172,6 +183,27 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .loading-bar-fill::after {
+      display: none;
+    }
+  }
+  /* Fill of a 100% progress bar: platinum cyan, with a sheen passing over it
+     every few seconds. */
+  .progress-complete {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to right, var(--color-cyan-300), var(--color-cyan-400) 60%, var(--color-sky-400));
+  }
+  .progress-complete::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.9) 50%, transparent 70%) no-repeat;
+    background-size: 45% 100%;
+    background-position: -100% 0;
+    animation: progress-sheen 3.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .progress-complete::after {
       display: none;
     }
   }
