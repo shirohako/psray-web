@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatHourInterval, platformLabel, resolveHourInterval, stopwatch, toIsoDate } from '~/utils/profile'
+import { formatHourInterval, levelTier, platformLabel, resolveHourInterval, stopwatch, toIsoDate } from '~/utils/profile'
 
 const compact = (value: string | null) => value?.replace(/\s/g, '')
 
@@ -45,5 +45,16 @@ describe('profile formatting', () => {
     expect(stopwatch(86_400 + 5 * 3600 + 610)).toEqual({ days: 1, time: '05:10:10' })
     expect(stopwatch(400 * 86_400 + 0.9)).toEqual({ days: 400, time: '00:00:00' })
     expect(stopwatch(-5)).toEqual({ days: 0, time: '0:00:00' })
+  })
+
+  it('maps trophy levels to the PlayStation level tiers', () => {
+    expect(levelTier(1)).toBe('bronze')
+    expect(levelTier(299)).toBe('bronze')
+    expect(levelTier(300)).toBe('silver')
+    expect(levelTier(599)).toBe('silver')
+    expect(levelTier(600)).toBe('gold')
+    expect(levelTier(998)).toBe('gold')
+    expect(levelTier(999)).toBe('platinum')
+    expect(levelTier(1500)).toBe('platinum')
   })
 })

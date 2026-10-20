@@ -251,3 +251,15 @@ export const trophyKinds: { key: TrophyKey; labelKey: string; dot: string; text:
   { key: 'silver', labelKey: 'trophy.tier.silver', dot: 'bg-slate-400', text: 'text-slate-500' },
   { key: 'bronze', labelKey: 'trophy.tier.bronze', dot: 'bg-orange-400', text: 'text-orange-600' },
 ]
+
+/**
+ * Trophy-level tier, after PlayStation's level icons: bronze for 1–299, silver
+ * for 300–599, gold for 600–998, platinum from 999. The site's level has no cap,
+ * so everything past 999 stays platinum.
+ */
+export function levelTier(level: number): TrophyKey {
+  if (level >= 999) return 'platinum'
+  if (level >= 600) return 'gold'
+  if (level >= 300) return 'silver'
+  return 'bronze'
+}

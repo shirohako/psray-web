@@ -513,7 +513,7 @@
       "unranked": "순위 없음"
     },
     "summary": {
-      "level": "계정 레벨 · {progress}%"
+      "level": "계정 레벨"
     },
     "account": {
       "title": "계정 정보",
