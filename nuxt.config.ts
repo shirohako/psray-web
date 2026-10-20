@@ -90,7 +90,6 @@ export default defineNuxtConfig({
     ],
     optimizeDeps: {
       include: [
-        'animejs',
         'lucide',
         'qrcode', // CJS
       ]

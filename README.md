@@ -14,7 +14,7 @@ by, or operated by Sony Interactive Entertainment Inc.
 - **Tailwind CSS 4** via `@tailwindcss/vite`
 - **[@nuxtjs/i18n](https://i18n.nuxtjs.org)** — five UI locales, `ja` default
 - **[@psray/markdown-editor](https://www.npmjs.com/package/@psray/markdown-editor)** — the tip editor and syntax guide
-- `animejs`, `lucide`, `qrcode`
+- `lucide`, `qrcode`
 - **Vitest** for unit tests
 - **pnpm** (see `packageManager` in `package.json`)
 

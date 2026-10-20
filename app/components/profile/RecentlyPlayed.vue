@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { animate, type JSAnimation } from 'animejs'
 import { Clock, ChevronDown, ChevronRight, Globe, Hourglass, Search, X } from 'lucide'
 import type { PlayedTrophySet } from '~/services/profile'
 import { ApiError } from '~/utils/ApiError'
@@ -28,7 +27,7 @@ const expanded = ref(false)
 const animatedReady = ref(false)
 const toggleIconTouched = ref(false)
 const listEl = ref<HTMLElement | null>(null)
-const listAnimation = shallowRef<JSAnimation | null>(null)
+const listAnimation = shallowRef<Animation | null>(null)
 const { profileGameDensity } = usePreferences()
 
 const density = computed(() => recentlyPlayedDensity[profileGameDensity.value])
@@ -142,7 +141,14 @@ async function animateListHeight(isExpanded: boolean) {
     return
   }
 
-  listAnimation.value?.cancel()
+  // Toggled mid-animation: keep the height it has reached (cancel() alone would
+  // snap back to the inline height) and carry on from there.
+  const running = listAnimation.value
+  if (running) {
+    running.commitStyles()
+    running.cancel()
+    listAnimation.value = null
+  }
 
   const fromHeight = el.getBoundingClientRect().height
   el.style.height = `${fromHeight}px`
@@ -152,17 +158,23 @@ async function animateListHeight(isExpanded: boolean) {
 
   const toHeight = isExpanded ? el.scrollHeight : Math.min(collapsedListHeight.value, el.scrollHeight)
 
-  listAnimation.value = animate(el, {
-    height: `${toHeight}px`,
-    duration: isExpanded ? 1100 : 820,
-    ease: isExpanded ? 'outQuart' : 'inOutCubic',
-    onComplete: () => {
-      el.style.height = isExpanded ? 'auto' : `${toHeight}px`
-      el.style.overflow = 'hidden'
-      el.style.opacity = ''
-      listAnimation.value = null
+  // Land on the final height underneath the animation, so nothing jumps when
+  // it ends and its effect is removed.
+  el.style.height = `${toHeight}px`
+  const animation = el.animate(
+    [{ height: `${fromHeight}px` }, { height: `${toHeight}px` }],
+    {
+      duration: isExpanded ? 1100 : 820,
+      // easeOutQuart / easeInOutCubic
+      easing: isExpanded ? 'cubic-bezier(0.25, 1, 0.5, 1)' : 'cubic-bezier(0.65, 0, 0.35, 1)',
     },
-  })
+  )
+  listAnimation.value = animation
+  animation.onfinish = () => {
+    el.style.height = isExpanded ? 'auto' : `${toHeight}px`
+    el.style.opacity = ''
+    listAnimation.value = null
+  }
 }
 
 watch(() => props.psnid, () => {

@@ -17,7 +17,6 @@
     "@nuxtjs/i18n": "^10.6.0",
     "@psray/markdown-editor": "^0.2.1",
     "@tailwindcss/vite": "^4.3.3",
-    "animejs": "^4.5.0",
     "lucide": "^1.59.0",
     "nuxt": "^4.6.2",
     "qrcode": "^1.5.4",
