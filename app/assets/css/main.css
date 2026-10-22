@@ -20,24 +20,30 @@
     cursor: pointer;
   }
 
-  /* Page scrollbar in the near-black of the site's buttons: a slate pill with
-     a faint top-to-bottom gradient on a clear track, darker on hover. Firefox
-     has no scrollbar pseudo-elements, so it gets a solid colour; that rule is
-     kept out of Chromium, which ignores the pseudo-elements once
-     scrollbar-color is set. */
-  html::-webkit-scrollbar {
+  /* Scrollbars in the near-black of the site's buttons, on the page and on
+     every inner scroll area (dialogs, menus, wide tables): a slate pill with a
+     faint top-to-bottom gradient, darker on hover. Inner areas get a clear
+     track; the page's track is tinted. Firefox has no scrollbar
+     pseudo-elements, so it gets a solid colour (scrollbar-color inherits, so
+     setting it on html covers everything); that rule is kept out of Chromium,
+     which ignores the pseudo-elements once scrollbar-color is set. */
+  ::-webkit-scrollbar {
     width: 12px;
     height: 12px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
   }
   html::-webkit-scrollbar-track {
     background: var(--color-slate-50);
   }
-  html::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     border: 3px solid transparent;
     border-radius: 9999px;
     background: linear-gradient(to bottom, var(--color-slate-700), var(--color-slate-900)) padding-box;
   }
-  html::-webkit-scrollbar-thumb:hover {
+  ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(to bottom, var(--color-slate-800), var(--color-slate-950)) padding-box;
   }
   @supports not selector(::-webkit-scrollbar) {
