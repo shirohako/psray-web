@@ -12,13 +12,32 @@ defineProps<{
 }>()
 
 const expanded = defineModel<boolean>('expanded', { required: true })
+
+// Revealing a row unfolds without the height animation: mid-animation the list,
+// and with it the page, is still short, so the scroll would stop above the row
+// (and scroll the clipped list itself instead).
+const instant = ref(false)
+
+/** Unfold at once and scroll the row with this element id into view. */
+async function reveal(id: string) {
+  instant.value = true
+  expanded.value = true
+  await nextTick()
+  document.getElementById(id)?.scrollIntoView({ block: 'start' })
+  instant.value = false
+}
+
+defineExpose({ reveal })
 </script>
 
 <template>
   <div class="relative">
     <div
-      class="divide-y divide-slate-200 transition-[max-height] duration-500 ease-out max-sm:overflow-hidden"
-      :class="expanded ? 'max-sm:max-h-[9999px]' : 'max-sm:max-h-136'"
+      class="divide-y divide-slate-200 max-sm:overflow-hidden"
+      :class="[
+        expanded ? 'max-sm:max-h-[9999px]' : 'max-sm:max-h-136',
+        { 'transition-[max-height] duration-500 ease-out': !instant },
+      ]"
     >
       <slot />
     </div>

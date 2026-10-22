@@ -26,7 +26,7 @@
             :has-viewer="hasViewer"
           />
 
-          <TrophyListCollapse v-model:expanded="trophyListExpanded" :collapsible="visibleTrophyCount > 6">
+          <TrophyListCollapse ref="trophyList" v-model:expanded="trophyListExpanded" :collapsible="visibleTrophyCount > 6">
             <TrophyGroupSection
               v-for="group in sortedGroups"
               :key="group.id"
@@ -95,6 +95,7 @@ type TrophyDialogKind = 'detail' | 'earners' | 'tips'
 const dialogHost = useTemplateRef<{
   open: (kind: TrophyDialogKind, trophy: Trophy) => void
 }>('dialogHost')
+const trophyList = useTemplateRef<{ reveal: (id: string) => Promise<void> }>('trophyList')
 const tipCounts = reactive<Record<number, number>>({})
 
 function updateTipCount(trophyId: number, value: number) {
@@ -228,15 +229,15 @@ watch([filter, sort, showSpoilers], () => {
   trophyListExpanded.value = false
 })
 
-async function revealHashTarget(hash: string) {
-  if (!/^#trophy-\d+$/.test(hash)) return
-  trophyListExpanded.value = true
-  await nextTick()
-  document.getElementById(hash.slice(1))?.scrollIntoView({ block: 'start' })
+// `#trophy-…` links (a Tip's way back to its trophy, say) open the list at that
+// row. The row exists once its set has loaded: at mount after a server render,
+// but only later after client-side navigation, so look again when it arrives.
+function revealHashTarget() {
+  if (data.value && /^#trophy-\d+$/.test(route.hash)) trophyList.value?.reveal(route.hash.slice(1))
 }
 
-onMounted(() => revealHashTarget(route.hash))
-watch(() => route.hash, revealHashTarget)
+onMounted(revealHashTarget)
+watch([() => data.value?.trophy_set.id, () => route.hash], revealHashTarget, { flush: 'post' })
 
 /**
  * The set's title in the language actually being displayed. `available_languages`
