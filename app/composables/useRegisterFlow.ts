@@ -47,7 +47,7 @@ export function useRegisterFlow() {
   const checkedProfile = ref<Profile | null>(null)
   const sending = ref(false) // send-code request in flight
   const submitting = ref(false) // register request in flight
-  const cooldown = ref(0) // send-code resend cooldown, seconds
+  const { remaining: cooldown, start: startCooldown } = useCooldown() // send-code resend cooldown, seconds
   const sentEmail = ref('') // email a code was last successfully sent to
   const sentPsnid = ref('') // PSN ID the current code belongs to
   const errorMessage = ref('')
@@ -93,20 +93,6 @@ export function useRegisterFlow() {
       fieldErrors.value = rest
     }
   })
-
-  // --- Resend cooldown timer -----------------------------------------------
-  let cooldownTimer: ReturnType<typeof setInterval> | undefined
-  function startCooldown(seconds = 60) {
-    cooldown.value = seconds
-    cooldownTimer = setInterval(() => {
-      cooldown.value -= 1
-      if (cooldown.value <= 0 && cooldownTimer) {
-        clearInterval(cooldownTimer)
-        cooldownTimer = undefined
-      }
-    }, 1000)
-  }
-  onBeforeUnmount(() => cooldownTimer && clearInterval(cooldownTimer))
 
   // --- Navigation ----------------------------------------------------------
   function back() {

@@ -18,9 +18,7 @@ const { data: milestones, status, error } = useApiFetch<ProfileMilestone[]>(
   () => `/profile/${props.psnid}/milestones`,
   { lazy: true },
 )
-// A lazy fetch sits at `idle` until it starts, so count that as loading too.
-const pending = computed(() => status.value === 'pending' || status.value === 'idle')
-useLoadingBar(pending, () => status.value === 'error')
+const pending = useFetchPending(status)
 
 // Placeholder cards: varied widths so they read like real trophy names.
 const SKELETON_ROWS = [

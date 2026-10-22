@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Megaphone } from 'lucide'
-import { MAIL_CATEGORY_LABELS, type MailCampaign } from '~/utils/admin'
+import { adminCampaignFinished, MAIL_CATEGORY_LABELS } from '~/utils/admin'
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
 const columns = [
   { key: 'id', label: 'ID', mono: true },
@@ -11,10 +11,6 @@ const columns = [
   { key: 'created_by', label: '发起人' },
   { key: 'started_at', label: '开始时间' },
 ]
-function done(c: MailCampaign) {
-  const p = c.progress
-  return (p.sent ?? 0) + (p.failed ?? 0) + (p.skipped ?? 0) + (p.cancelled ?? 0)
-}
 </script>
 <template>
   <AdminCollection
@@ -34,7 +30,7 @@ function done(c: MailCampaign) {
         <span class="block h-1.5 overflow-hidden rounded-full bg-slate-100">
           <span
             class="block h-full rounded-full bg-slate-900 transition-[width]"
-            :style="{ width: row.recipient_count ? `${Math.min(100, (done(row) / row.recipient_count) * 100)}%` : '0%' }"
+            :style="{ width: row.recipient_count ? `${Math.min(100, (adminCampaignFinished(row.progress) / row.recipient_count) * 100)}%` : '0%' }"
           />
         </span>
         <span class="mt-1 block text-xs tabular-nums text-slate-500"

@@ -28,9 +28,7 @@ const { data: response, status, error, refresh } = await useApiFetchRaw<Feedback
 const items = computed(() => response.value?.data ?? [])
 const meta = computed(() => response.value?.meta)
 const totalPages = computed(() => meta.value?.total_pages ?? 1)
-// A lazy fetch sits at `idle` until it starts, so count that as loading too.
-const pending = computed(() => status.value === 'pending' || status.value === 'idle')
-useLoadingBar(pending, () => status.value === 'error')
+const pending = useFetchPending(status)
 const rangeStart = computed(() => items.value.length ? ((meta.value?.page ?? 1) - 1) * (meta.value?.per_page ?? 20) + 1 : 0)
 const rangeEnd = computed(() => items.value.length ? rangeStart.value + items.value.length - 1 : 0)
 const filtered = computed(() => state.value.type !== null || state.value.status !== null)
@@ -73,16 +71,7 @@ function onCreated() {
 
 <template>
   <div class="space-y-5">
-    <header class="flex flex-col gap-4 pb-1 pt-1 sm:flex-row sm:items-start sm:justify-between">
-      <div class="flex items-start gap-3">
-        <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm">
-          <LucideIcon :icon="MessagesSquare" class="size-5" stroke-width="1.5" />
-        </span>
-        <div>
-          <h1 class="text-xl font-bold tracking-tight text-slate-900">{{ $t('feedback.title') }}</h1>
-          <p class="mt-1.5 max-w-2xl text-xs leading-5 text-slate-500">{{ $t('feedback.description') }}</p>
-        </div>
-      </div>
+    <PageHeader :icon="MessagesSquare" :title="$t('feedback.title')" :description="$t('feedback.description')">
       <button
         type="button"
         class="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
@@ -91,7 +80,7 @@ function onCreated() {
         <LucideIcon :icon="MessageSquarePlus" class="size-4" />
         {{ $t('feedback.write') }}
       </button>
-    </header>
+    </PageHeader>
 
     <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <div class="flex flex-col gap-3 border-b border-slate-200 p-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">

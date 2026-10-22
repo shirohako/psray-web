@@ -1,4 +1,5 @@
 import type { Ref } from 'vue'
+import type { AsyncDataRequestStatus } from '#app'
 
 // Fetches currently holding the bar, across every component on the page (a
 // profile and its active tab can both be loading). The bar runs while any of
@@ -67,4 +68,20 @@ export function useLoadingBar(pending: Ref<boolean>, failed: () => boolean = () 
     off()
     release(false)
   })
+}
+
+/**
+ * `pending` for a lazy fetch, with the loading bar held while it is true. A
+ * lazy fetch sits at `idle` until it starts, so that counts as loading too.
+ * `failed` decides whether the bar fills red; by default, when the fetch failed.
+ *
+ * ```ts
+ * const { data, status } = await useApiFetch<Thing>(url, { lazy: true })
+ * const pending = useFetchPending(status)
+ * ```
+ */
+export function useFetchPending(status: Ref<AsyncDataRequestStatus>, failed = () => status.value === 'error') {
+  const pending = computed(() => status.value === 'pending' || status.value === 'idle')
+  useLoadingBar(pending, failed)
+  return pending
 }

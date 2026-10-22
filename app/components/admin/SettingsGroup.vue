@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { Check, KeyRound, RotateCcw, Save } from 'lucide'
-import {
-  adminDate,
-  type SystemSettingGroup,
-  type SystemSettingItem,
-  type SystemSettingsUpdate,
-} from '~/utils/admin'
+import { adminDate } from '~/utils/admin'
+import type { SystemSettingGroup, SystemSettingItem, SystemSettingsUpdate } from '~/types/admin'
 /**
  * One settings group as a form panel (`/admin/settings`). Only fields the
  * admin touched are sent: a blank secret stays as it is, and "改用环境变量"

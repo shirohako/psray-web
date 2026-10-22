@@ -6,8 +6,8 @@ import {
   FEEDBACK_TYPE_OPTIONS,
   FEEDBACK_VISIBILITY_LABELS,
   FEEDBACK_VISIBILITY_OPTIONS,
-  type AdminFilter,
 } from '~/utils/admin'
+import type { AdminFilter } from '~/types/admin'
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
 const route = useRoute(),
   router = useRouter()

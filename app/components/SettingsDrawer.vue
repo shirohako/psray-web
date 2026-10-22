@@ -21,14 +21,13 @@ const toast = useToast()
 // Edit local drafts so nothing commits until save; re-sync on each open.
 const draft = ref<TrophyLangPref>({ ...trophyLang.value })
 const rateDraft = ref<RateBasis>(rateBasis.value)
-const profileGameDensityDraft = ref<DisplayDensity>(profileGameDensity.value)
-const trophyDensityDraft = ref<DisplayDensity>(trophyDensity.value)
+const densityDraft = reactive({ profileGame: profileGameDensity.value, trophy: trophyDensity.value })
 watch(open, (v) => {
   if (v) {
     draft.value = { ...trophyLang.value }
     rateDraft.value = rateBasis.value
-    profileGameDensityDraft.value = profileGameDensity.value
-    trophyDensityDraft.value = trophyDensity.value
+    densityDraft.profileGame = profileGameDensity.value
+    densityDraft.trophy = trophyDensity.value
   }
 })
 
@@ -38,6 +37,11 @@ const rateBasisOptions: { value: RateBasis; label: string }[] = [
 ]
 
 const densityOptions: DisplayDensity[] = ['dense', 'compact', 'standard']
+// Row density is set per list: profile recently-played games, then trophy rows.
+const densityLists = [
+  { kind: 'profileGame', i18n: 'profile', icon: Gamepad2 },
+  { kind: 'trophy', i18n: 'trophy', icon: Trophy },
+] as const
 
 // English names deliberately: this list picks the language the *API* should
 // answer in, and PSN's own codes read the same way to everyone.
@@ -76,8 +80,7 @@ function save() {
       : { enabled: false, primary: '', secondary: '' },
   )
   saveRateBasis(rateDraft.value)
-  saveDensity('profileGame', profileGameDensityDraft.value)
-  saveDensity('trophy', trophyDensityDraft.value)
+  for (const { kind } of densityLists) saveDensity(kind, densityDraft[kind])
   open.value = false
   toast.success({
     title: t('settings.prefs.saved.title'),
@@ -134,54 +137,26 @@ function save() {
         </div>
       </section>
 
-      <!-- Profile recently-played row density -->
-      <section>
+      <!-- Row density, per list -->
+      <section v-for="list in densityLists" :key="list.kind">
         <div class="flex items-start gap-2.5">
           <span class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-slate-100 text-slate-500">
-            <LucideIcon :icon="Gamepad2" class="size-4.5" />
+            <LucideIcon :icon="list.icon" class="size-4.5" />
           </span>
           <div class="min-w-0 flex-1">
-            <h3 class="text-sm font-semibold text-slate-900">{{ $t('settings.prefs.density.profile.title') }}</h3>
+            <h3 class="text-sm font-semibold text-slate-900">{{ $t(`settings.prefs.density.${list.i18n}.title`) }}</h3>
             <p class="mt-0.5 text-xs leading-relaxed text-slate-500">
-              {{ $t('settings.prefs.density.profile.hint') }}
+              {{ $t(`settings.prefs.density.${list.i18n}.hint`) }}
             </p>
             <div class="mt-3 grid grid-cols-3 rounded-lg bg-slate-100 p-0.5">
               <button
                 v-for="density in densityOptions"
                 :key="density"
                 type="button"
-                :aria-pressed="profileGameDensityDraft === density"
+                :aria-pressed="densityDraft[list.kind] === density"
                 class="min-w-0 rounded-md px-1 py-1.5 text-xs font-medium transition"
-                :class="profileGameDensityDraft === density ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'"
-                @click="profileGameDensityDraft = density"
-              >
-                {{ $t(`settings.prefs.density.options.${density}`) }}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Trophy row density -->
-      <section>
-        <div class="flex items-start gap-2.5">
-          <span class="mt-0.5 grid size-8 shrink-0 place-items-center rounded-lg bg-slate-100 text-slate-500">
-            <LucideIcon :icon="Trophy" class="size-4.5" />
-          </span>
-          <div class="min-w-0 flex-1">
-            <h3 class="text-sm font-semibold text-slate-900">{{ $t('settings.prefs.density.trophy.title') }}</h3>
-            <p class="mt-0.5 text-xs leading-relaxed text-slate-500">
-              {{ $t('settings.prefs.density.trophy.hint') }}
-            </p>
-            <div class="mt-3 grid grid-cols-3 rounded-lg bg-slate-100 p-0.5">
-              <button
-                v-for="density in densityOptions"
-                :key="density"
-                type="button"
-                :aria-pressed="trophyDensityDraft === density"
-                class="min-w-0 rounded-md px-1 py-1.5 text-xs font-medium transition"
-                :class="trophyDensityDraft === density ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'"
-                @click="trophyDensityDraft = density"
+                :class="densityDraft[list.kind] === density ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'"
+                @click="densityDraft[list.kind] = density"
               >
                 {{ $t(`settings.prefs.density.options.${density}`) }}
               </button>

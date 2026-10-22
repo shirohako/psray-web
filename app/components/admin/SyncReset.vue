@@ -8,11 +8,8 @@ import {
   Search,
   TriangleAlert,
 } from 'lucide'
-import {
-  adminDate,
-  type SyncResetPreview,
-  type SyncResetResult,
-} from '~/utils/admin'
+import { adminDate } from '~/utils/admin'
+import type { SyncResetPreview, SyncResetResult } from '~/types/admin'
 /**
  * Reset any user's synced PSN data: look up a PSN ID with a dry run, review
  * the current stats and what will be deleted, then submit. Same flow as the

@@ -1,4 +1,4 @@
-import type { AdminFeedbackSummary } from '~/utils/admin'
+import type { AdminFeedbackSummary } from '~/types/admin'
 
 /**
  * Feedback waiting on staff: pending review and awaiting a reply. One shared

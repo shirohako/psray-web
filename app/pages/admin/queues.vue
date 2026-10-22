@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Activity, CircleX, History, ListTodo, Server } from 'lucide'
-import { statusLabels, type QueueSummary } from '~/utils/admin'
+import { statusLabels } from '~/utils/admin'
+import type { QueueSummary } from '~/types/admin'
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
 const api = useAdminApi(),
   route = useRoute(),

@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { FileText, Lock, Plus } from 'lucide'
-import {
-  adminDate,
-  MAIL_CATEGORIES,
-  MAIL_CATEGORY_LABELS,
-  MAIL_LOCALES,
-  type MailTemplateDetail,
-  type MailTemplateSummary,
-} from '~/utils/admin'
+import { adminDate, MAIL_CAMPAIGN_CATEGORIES, MAIL_CATEGORY_LABELS, MAIL_LOCALES } from '~/utils/admin'
+import type { MailTemplateDetail, MailTemplateSummary } from '~/types/admin'
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
 const api = useAdminApi()
 const templates = ref<MailTemplateSummary[] | null>(null),
@@ -27,7 +21,6 @@ async function refresh() {
 onMounted(refresh)
 
 // --- New campaign template -------------------------------------------------
-const SUBSCRIBABLE = MAIL_CATEGORIES.filter((c) => c.value !== 'transactional')
 const createOpen = ref(false),
   form = reactive({ key: '', name: '', category: 'important', description: '' }),
   creating = ref(false),
@@ -133,7 +126,7 @@ async function create() {
       </div>
       <div>
         <label for="mt-category" class="mb-1.5 block text-xs font-medium text-slate-700">分类</label>
-        <SelectMenu id="mt-category" v-model="form.category" :options="SUBSCRIBABLE" size="sm" class="w-full" />
+        <SelectMenu id="mt-category" v-model="form.category" :options="MAIL_CAMPAIGN_CATEGORIES" size="sm" class="w-full" />
         <p class="mt-1 text-xs text-slate-500">决定发给谁：只发给开启了这一类订阅的用户，邮件里带这一类的退订链接。</p>
       </div>
       <div>

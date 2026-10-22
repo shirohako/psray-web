@@ -5,8 +5,8 @@ import {
   FEEDBACK_STATUS_OPTIONS,
   FEEDBACK_TYPE_OPTIONS,
   FEEDBACK_VISIBILITY_LABELS,
-  type AdminFeedbackDetail,
 } from '~/utils/admin'
+import type { AdminFeedbackDetail } from '~/types/admin'
 
 /**
  * Drawer body for one feedback item: who sent it and from where, the text and

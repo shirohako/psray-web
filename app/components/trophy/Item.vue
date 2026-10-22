@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Trophy, Check, Eye, EyeOff, MessageSquare, Copy, FileText, Users, Info, Clock3, Medal, Timer } from 'lucide'
+import { Trophy, Check, Eye, EyeOff, MessageSquare, Copy, FileText, Users, Info, Clock3, Medal, Timer, type IconNode } from 'lucide'
 import type { Trophy as TrophyData } from '~/services/trophies'
 
 const props = defineProps<{
@@ -97,6 +97,15 @@ async function copy(text: string, label: string) {
 }
 
 const displayedTipCount = computed(() => props.tipCount ?? props.trophy.tip_count)
+
+// The row's menu, in order: the trophy's dialogs and copying its text.
+const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
+  { icon: Info, labelKey: 'trophy.item.menu.view', run: () => emit('detail', props.trophy) },
+  { icon: MessageSquare, labelKey: 'trophy.item.menu.viewTips', run: () => emit('tips', props.trophy) },
+  { icon: Copy, labelKey: 'trophy.item.menu.copyTitle', run: () => copy(name.value, t('trophy.item.menu.titleLabel')) },
+  { icon: FileText, labelKey: 'trophy.item.menu.copyDetail', run: () => copy(detail.value, t('trophy.item.menu.detailLabel')) },
+  { icon: Users, labelKey: 'trophy.item.menu.recentEarners', run: () => emit('earners', props.trophy) },
+]
 </script>
 
 <template>
@@ -234,49 +243,15 @@ const displayedTipCount = computed(() => props.tipCount ?? props.trophy.tip_coun
 
     <template #menu="{ close }">
       <button
+        v-for="item in menuItems"
+        :key="item.labelKey"
         type="button"
         role="menuitem"
         class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-slate-700 transition hover:bg-slate-50"
-        @click="emit('detail', trophy); close()"
+        @click="item.run(); close()"
       >
-        <LucideIcon :icon="Info" class="size-4 text-slate-400" />
-        {{ $t('trophy.item.menu.view') }}
-      </button>
-      <button
-        type="button"
-        role="menuitem"
-        class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-slate-700 transition hover:bg-slate-50"
-        @click="emit('tips', trophy); close()"
-      >
-        <LucideIcon :icon="MessageSquare" class="size-4 text-slate-400" />
-        {{ $t('trophy.item.menu.viewTips') }}
-      </button>
-      <button
-        type="button"
-        role="menuitem"
-        class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-slate-700 transition hover:bg-slate-50"
-        @click="copy(name, $t('trophy.item.menu.titleLabel')); close()"
-      >
-        <LucideIcon :icon="Copy" class="size-4 text-slate-400" />
-        {{ $t('trophy.item.menu.copyTitle') }}
-      </button>
-      <button
-        type="button"
-        role="menuitem"
-        class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-slate-700 transition hover:bg-slate-50"
-        @click="copy(detail, $t('trophy.item.menu.detailLabel')); close()"
-      >
-        <LucideIcon :icon="FileText" class="size-4 text-slate-400" />
-        {{ $t('trophy.item.menu.copyDetail') }}
-      </button>
-      <button
-        type="button"
-        role="menuitem"
-        class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-slate-700 transition hover:bg-slate-50"
-        @click="emit('earners', trophy); close()"
-      >
-        <LucideIcon :icon="Users" class="size-4 text-slate-400" />
-        {{ $t('trophy.item.menu.recentEarners') }}
+        <LucideIcon :icon="item.icon" class="size-4 text-slate-400" />
+        {{ $t(item.labelKey) }}
       </button>
     </template>
   </Popover>

@@ -23,7 +23,7 @@ export interface LeaderboardBoard {
   /** Message key for the one-line subtitle shown in the board header. */
   descriptionKey: string
   icon: IconNode
-  /** Pastel accent of the board's picker card (classes live in the page). */
+  /** Pastel accent of the board's picker card (classes live in `leaderboard/BoardPicker.vue`). */
   accent: 'violet' | 'sky' | 'pink'
   columns: LeaderboardColumn[]
   /** Show the region picker and pass `region` to `fetch`. */

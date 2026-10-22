@@ -37,9 +37,7 @@ const { data: response, status, error, refresh } = await useApiFetchRaw<GameBrow
 const games = computed(() => response.value?.data ?? [])
 const meta = computed(() => response.value?.meta)
 const totalPages = computed(() => meta.value?.total_pages ?? 1)
-// A lazy fetch sits at `idle` until it starts, so count that as loading too.
-const pending = computed(() => status.value === 'pending' || status.value === 'idle')
-useLoadingBar(pending, () => status.value === 'error')
+const pending = useFetchPending(status)
 const rangeStart = computed(() => games.value.length ? ((meta.value?.page ?? page.value) - 1) * (meta.value?.per_page ?? GAME_PAGE_SIZE) + 1 : 0)
 const rangeEnd = computed(() => games.value.length ? rangeStart.value + games.value.length - 1 : 0)
 
@@ -92,15 +90,7 @@ function changePage(value: number) {
 
 <template>
   <div class="space-y-5">
-    <header class="flex items-start gap-3 pb-1 pt-1">
-      <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm">
-        <LucideIcon :icon="LibraryBig" class="size-5" stroke-width="1.5" />
-      </span>
-      <div>
-        <h1 class="text-xl font-bold tracking-tight text-slate-900">{{ $t('games.title') }}</h1>
-        <p class="mt-1.5 text-xs leading-5 text-slate-500">{{ $t('games.description') }}</p>
-      </div>
-    </header>
+    <PageHeader :icon="LibraryBig" :title="$t('games.title')" :description="$t('games.description')" />
 
     <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <div>

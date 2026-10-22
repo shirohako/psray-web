@@ -1,15 +1,8 @@
 <script setup lang="ts">
-import { Clock, ChevronDown, ChevronRight, Globe, Hourglass, Search, X } from 'lucide'
+import { ChevronDown } from 'lucide'
 import type { PlayedTrophySet } from '~/services/profile'
 import { ApiError } from '~/utils/ApiError'
-import {
-  RECENTLY_PLAYED_SEARCH_MAX_KEYWORDS,
-  RECENTLY_PLAYED_SEARCH_MAX_LENGTH,
-  RECENTLY_PLAYED_SEARCH_MIN_KEYWORD_LENGTH,
-  recentlyPlayedPath,
-  validateRecentlyPlayedSearch,
-  type RecentlyPlayedSearchError,
-} from '~/utils/recentlyPlayedSearch'
+import { recentlyPlayedPath } from '~/utils/recentlyPlayedSearch'
 
 const props = defineProps<{ psnid: string; page: number; query: string }>()
 const emit = defineEmits<{ 'update:page': [page: number]; 'search': [query: string] }>()
@@ -21,21 +14,9 @@ interface PageMeta {
   total_pages: number
 }
 
-const searchInput = ref(props.query)
-const searchError = ref<RecentlyPlayedSearchError | null>(null)
-const expanded = ref(false)
-const animatedReady = ref(false)
 const toggleIconTouched = ref(false)
 const listEl = ref<HTMLElement | null>(null)
-const listAnimation = shallowRef<Animation | null>(null)
 const { profileGameDensity } = usePreferences()
-
-const density = computed(() => recentlyPlayedDensity[profileGameDensity.value])
-const collapsedListHeight = computed(() => ({
-  dense: 280,
-  compact: 340,
-  standard: 400,
-})[profileGameDensity.value])
 
 // Page and the submitted query are read by the URL getter, so either change
 // re-fetches while edits in the input remain local until the form is submitted.
@@ -45,9 +26,7 @@ const { data: res, status, error, refresh } = useApiFetchRaw<PlayedTrophySet[], 
   () => recentlyPlayedPath(props.psnid, props.page, props.query),
   { lazy: true },
 )
-// A lazy fetch sits at `idle` until it starts, so count that as loading too.
-const pending = computed(() => status.value === 'pending' || status.value === 'idle')
-useLoadingBar(pending, () => status.value === 'error')
+const pending = useFetchPending(status)
 
 const recent = computed(() => res.value?.data ?? [])
 const totalPages = computed(() => res.value?.meta?.total_pages ?? 1)
@@ -55,74 +34,24 @@ const canCollapse = computed(() => recent.value.length > 4)
 const isSearching = computed(() => Boolean(props.query))
 const apiValidationFailed = computed(() => error.value instanceof ApiError && error.value.status === 422)
 
+// Phones fold a long list down to its first rows, animating the height as it
+// opens and closes. Denser rows fold shorter.
+const collapsedListHeight = computed(() => ({
+  dense: 280,
+  compact: 340,
+  standard: 400,
+})[profileGameDensity.value])
+const { expanded, ready: animatedReady, sync: syncListHeight } = useListFold(listEl, canCollapse, collapsedListHeight)
+
 /** Change page, then bring the first record into view (the bottom pager leaves it far above). */
 function changePage(value: number) {
   emit('update:page', value)
   revealTop(listEl.value)
 }
 
-function submitSearch() {
-  const result = validateRecentlyPlayedSearch(searchInput.value)
-  searchError.value = result.error
-  if (result.error) return
-
-  searchInput.value = result.query
-  emit('search', result.query)
-}
-
+// The search box mirrors the submitted query, so it empties along with it.
 function clearSearch() {
-  searchInput.value = ''
-  searchError.value = null
-  if (props.query) emit('search', '')
-}
-
-function trophySetName(g: PlayedTrophySet) {
-  return g.trophy_set.localized_name || g.trophy_set.name
-}
-
-/** Per-tier earned counts in display order (platinum → bronze). */
-function earnedTiers(g: PlayedTrophySet) {
-  return [
-    { dot: 'bg-cyan-400', count: g.earned_platinum },
-    { dot: 'bg-amber-400', count: g.earned_gold },
-    { dot: 'bg-slate-400', count: g.earned_silver },
-    { dot: 'bg-orange-400', count: g.earned_bronze },
-  ]
-}
-
-function isMobileViewport() {
-  return import.meta.client && window.matchMedia('(max-width: 639.98px)').matches
-}
-
-function prefersReducedMotion() {
-  return import.meta.client && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
-function targetListHeight() {
-  const el = listEl.value
-  if (!el) return collapsedListHeight.value
-  return expanded.value || !canCollapse.value
-    ? el.scrollHeight
-    : Math.min(collapsedListHeight.value, el.scrollHeight)
-}
-
-function syncListHeight() {
-  const el = listEl.value
-  if (!el) return
-
-  listAnimation.value?.cancel()
-  listAnimation.value = null
-
-  if (!canCollapse.value || !isMobileViewport()) {
-    el.style.height = ''
-    el.style.overflow = ''
-    el.style.opacity = ''
-    return
-  }
-
-  el.style.overflow = 'hidden'
-  el.style.height = expanded.value ? 'auto' : `${targetListHeight()}px`
-  el.style.opacity = ''
+  emit('search', '')
 }
 
 function toggleExpanded() {
@@ -130,126 +59,19 @@ function toggleExpanded() {
   expanded.value = !expanded.value
 }
 
-async function animateListHeight(isExpanded: boolean) {
-  await nextTick()
-
-  const el = listEl.value
-  if (!el) return
-
-  if (!animatedReady.value || !canCollapse.value || !isMobileViewport() || prefersReducedMotion()) {
-    syncListHeight()
-    return
-  }
-
-  // Toggled mid-animation: keep the height it has reached (cancel() alone would
-  // snap back to the inline height) and carry on from there.
-  const running = listAnimation.value
-  if (running) {
-    running.commitStyles()
-    running.cancel()
-    listAnimation.value = null
-  }
-
-  const fromHeight = el.getBoundingClientRect().height
-  el.style.height = `${fromHeight}px`
-  el.style.overflow = 'hidden'
-
-  await nextTick()
-
-  const toHeight = isExpanded ? el.scrollHeight : Math.min(collapsedListHeight.value, el.scrollHeight)
-
-  // Land on the final height underneath the animation, so nothing jumps when
-  // it ends and its effect is removed.
-  el.style.height = `${toHeight}px`
-  const animation = el.animate(
-    [{ height: `${fromHeight}px` }, { height: `${toHeight}px` }],
-    {
-      duration: isExpanded ? 1100 : 820,
-      // easeOutQuart / easeInOutCubic
-      easing: isExpanded ? 'cubic-bezier(0.25, 1, 0.5, 1)' : 'cubic-bezier(0.65, 0, 0.35, 1)',
-    },
-  )
-  listAnimation.value = animation
-  animation.onfinish = () => {
-    el.style.height = isExpanded ? 'auto' : `${toHeight}px`
-    el.style.opacity = ''
-    listAnimation.value = null
-  }
-}
-
 watch(() => props.psnid, () => {
   expanded.value = false
 })
-
-// Back/Forward can change the submitted search; mirror it in the input.
-watch(() => props.query, (query) => {
-  searchInput.value = query
-  searchError.value = null
-})
-
-watch(searchInput, () => {
-  if (searchError.value) searchError.value = null
-})
-
-watch(expanded, animateListHeight)
 
 watch([recent, canCollapse, profileGameDensity], async () => {
   await nextTick()
   syncListHeight()
 })
-
-onMounted(async () => {
-  await nextTick()
-  animatedReady.value = true
-  syncListHeight()
-})
-
-onBeforeUnmount(() => {
-  listAnimation.value?.cancel()
-})
 </script>
 
 <template>
   <div>
-  <form class="border-b border-slate-100 px-4 py-3 sm:px-5" role="search" novalidate @submit.prevent="submitSearch">
-    <div class="relative">
-      <LucideIcon :icon="Search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-      <input
-        v-model="searchInput"
-        type="search"
-        :maxlength="RECENTLY_PLAYED_SEARCH_MAX_LENGTH"
-        :aria-label="$t('profile.recent.search')"
-        :aria-invalid="Boolean(searchError)"
-        :placeholder="$t('profile.recent.searchPlaceholder')"
-        class="profile-recent-search h-9 w-full rounded-md border bg-slate-50/60 pl-9 pr-18 text-xs text-slate-900 outline-none transition placeholder:text-slate-400 focus:ring-2"
-        :class="searchError ? 'border-red-300 focus:border-red-400 focus:ring-red-100' : 'border-slate-200 focus:border-slate-400 focus:ring-slate-100'"
-      />
-      <button
-        v-if="searchInput"
-        type="button"
-        class="absolute right-9 top-1.5 grid size-6 place-items-center rounded text-slate-400 transition hover:bg-slate-200 hover:text-slate-600"
-        :aria-label="$t('profile.recent.clearSearch')"
-        @click="clearSearch"
-      >
-        <LucideIcon :icon="X" class="size-3.5" />
-      </button>
-      <button
-        type="submit"
-        class="absolute right-1 top-1 grid size-7 place-items-center rounded text-slate-500 transition hover:bg-slate-200 hover:text-slate-800 disabled:cursor-wait disabled:opacity-40"
-        :aria-label="$t('profile.recent.searchSubmit')"
-        :disabled="pending"
-      >
-        <LucideIcon :icon="Search" class="size-3.5" />
-      </button>
-    </div>
-    <p v-if="searchError" class="mt-1.5 text-xs text-red-600" role="alert">
-      {{ $t(`profile.recent.searchErrors.${searchError}`, {
-        min: RECENTLY_PLAYED_SEARCH_MIN_KEYWORD_LENGTH,
-        max: RECENTLY_PLAYED_SEARCH_MAX_KEYWORDS,
-        length: RECENTLY_PLAYED_SEARCH_MAX_LENGTH,
-      }) }}
-    </p>
-  </form>
+  <ProfileRecentlyPlayedSearch :query="query" :pending="pending" @search="emit('search', $event)" />
 
   <!-- Top pager (only when the current page is long enough to be worth it) -->
   <div
@@ -289,126 +111,7 @@ onBeforeUnmount(() => {
         !animatedReady && canCollapse && !expanded ? 'max-sm:max-h-100' : '',
       ]"
     >
-      <a
-        v-for="g in recent"
-        :key="g.id"
-        :href="`/trophies/${g.trophy_set_id}`"
-        class="group relative isolate flex items-start overflow-hidden transition hover:bg-slate-50"
-        :class="density.row"
-        @click="openTrophyWithProgress($event, g.trophy_set_id, psnid)"
-      >
-        <!-- Completed: a faint hanamaru stamped behind the right end of the row
-             (desktop only). -z-10 inside the row's isolated stacking context:
-             above its (hover) background, below its content. -->
-        <Hanamaru
-          v-if="g.progress === 100"
-          class="pointer-events-none absolute top-1/2 right-8 -z-10 hidden aspect-square h-[78%] -translate-y-1/2 -rotate-12 text-rose-500/15 sm:block"
-        />
-        <!-- Fixed-width slot keeps rows aligned; the image renders at its natural
-             aspect (PS4 320×176 landscape, PS5 square) with a soft ring instead of
-             a gray letterbox box around it, plus a loading skeleton. -->
-        <div class="flex shrink-0 flex-col items-center" :class="density.artColumn">
-          <div class="relative flex items-center justify-center" :class="density.art">
-            <TrophySetImage
-              :src="g.trophy_set.icon_url"
-              :alt="trophySetName(g)"
-              :platform="platformList(g.trophy_set.platform)"
-            />
-          </div>
-          <div class="flex flex-wrap justify-center sm:hidden" :class="density.mobileBadges">
-            <span
-              v-for="platform in platformList(g.trophy_set.platform)"
-              :key="platform"
-              class="inline-flex h-4 shrink-0 items-center rounded px-1.5 text-[10px] font-bold leading-none"
-              :class="platformBadgeClass(platform)"
-            >
-              {{ platformLabel(platform) }}
-            </span>
-            <span
-              v-if="g.trophy_set.region"
-              class="inline-flex shrink-0 items-center gap-1 rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold leading-none tracking-wide text-slate-500"
-            >
-              <LucideIcon :icon="Globe" class="size-3 text-slate-400" />
-              {{ g.trophy_set.region }}
-            </span>
-          </div>
-        </div>
-
-        <div class="flex min-w-0 flex-1 flex-col" :class="density.content">
-          <!-- Title -->
-          <h3 class="truncate font-semibold text-slate-900" :class="density.title">{{ trophySetName(g) }}</h3>
-
-          <!-- Platform + region + per-tier earned counts -->
-          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span
-              v-for="platform in platformList(g.trophy_set.platform)"
-              :key="platform"
-              class="hidden h-4 shrink-0 items-center rounded px-1.5 text-[10px] font-bold leading-none sm:inline-flex"
-              :class="platformBadgeClass(platform)"
-            >
-              {{ platformLabel(platform) }}
-            </span>
-            <span
-              v-if="g.trophy_set.region"
-              class="hidden shrink-0 items-center gap-1 rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold leading-none tracking-wide text-slate-500 sm:inline-flex"
-            >
-              <LucideIcon :icon="Globe" class="size-3 text-slate-400" />
-              {{ g.trophy_set.region }}
-            </span>
-            <span
-              v-for="(t, i) in earnedTiers(g)"
-              :key="i"
-              class="inline-flex items-center gap-1 text-xs tabular-nums text-slate-500"
-            >
-              <span class="size-2 rounded-full" :class="t.dot" />{{ t.count }}
-            </span>
-          </div>
-
-          <!-- Progress -->
-          <div class="flex items-center" :class="density.progress">
-            <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-100">
-              <div
-                class="h-full rounded-full"
-                :class="g.progress === 100 ? 'progress-complete' : 'bg-slate-900'"
-                :style="{ width: `${g.progress}%` }"
-              />
-            </div>
-            <span class="w-9 shrink-0 text-right text-xs font-semibold tabular-nums text-slate-600">{{ g.progress }}%</span>
-          </div>
-          <div class="flex flex-wrap items-center text-slate-400" :class="density.tiers">
-            <TimestampMissing
-              v-if="g.timestamps_incomplete && g.last_earned_at == null"
-              :hint="$t('common.timestampsIncompleteHint')"
-            />
-            <span v-else class="inline-flex items-center gap-1 leading-none tabular-nums">
-              <LucideIcon :icon="Clock" class="size-3 shrink-0" />
-              <LocalTime :value="g.last_earned_at" />
-            </span>
-            <!-- Some earned trophies lack a time: `duration` is always 0 then, so it's never
-                 shown (the notice above already covers a set with no times at all). -->
-            <TimestampMissing
-              v-if="g.progress === 100 && g.timestamps_incomplete && g.last_earned_at != null"
-              :hint="$t('common.timestampsIncompleteHint')"
-            />
-            <span
-              v-else-if="g.progress === 100 && !g.timestamps_incomplete && g.duration != null"
-              class="inline-flex shrink-0 items-center gap-1 leading-none text-slate-400"
-            >
-              <LucideIcon :icon="Hourglass" class="size-3 shrink-0 text-slate-400" />
-              <span class="hidden tabular-nums text-slate-500 sm:inline">
-                {{ $t('profile.recent.completedIn', { duration: formatDuration(g.duration) }) }}
-              </span>
-              <span class="tabular-nums text-slate-500 sm:hidden">{{ formatDuration(g.duration) }}</span>
-            </span>
-          </div>
-        </div>
-
-        <LucideIcon
-          :icon="ChevronRight"
-          class="shrink-0 text-slate-300 transition group-hover:text-slate-400"
-          :class="density.chevron"
-        />
-      </a>
+      <ProfileRecentlyPlayedItem v-for="g in recent" :key="g.id" :game="g" :psnid="psnid" />
     </div>
 
     <div
@@ -447,12 +150,6 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.profile-recent-search::-webkit-search-cancel-button,
-.profile-recent-search::-webkit-search-decoration {
-  appearance: none;
-  -webkit-appearance: none;
-}
-
 .profile-toggle-chevron {
   transform: rotate(0deg);
   transform-origin: center;

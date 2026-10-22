@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { Mail } from 'lucide'
-import {
-  MAIL_CATEGORIES,
-  MAIL_CATEGORY_LABELS,
-  MAIL_LOCALES,
-  MAIL_STATUSES,
-  type MailLogRecord,
-} from '~/utils/admin'
+import { MAIL_CATEGORIES, MAIL_CATEGORY_LABELS, MAIL_LOCALE_LABELS, MAIL_STATUSES } from '~/utils/admin'
+import type { MailLogRecord } from '~/types/admin'
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
 const columns = [
   { key: 'id', label: 'ID', mono: true },
@@ -25,7 +20,6 @@ const filters = [
   { key: 'from', label: '开始时间', type: 'datetime-local' },
   { key: 'to', label: '结束时间', type: 'datetime-local' },
 ]
-const LOCALE_LABELS: Record<string, string> = Object.fromEntries(MAIL_LOCALES.map((l) => [l.value, l.label]))
 const SKIP_REASONS: Record<string, string> = { unsubscribed: '收件人关闭了这一类邮件' }
 </script>
 <template>
@@ -47,7 +41,7 @@ const SKIP_REASONS: Record<string, string> = { unsubscribed: '收件人关闭了
     ><template #cell-category="{ row }"
       ><span class="text-slate-600">{{ MAIL_CATEGORY_LABELS[row.category as keyof typeof MAIL_CATEGORY_LABELS] ?? row.category }}</span></template
     ><template #cell-locale="{ row }"
-      ><span class="text-slate-600">{{ LOCALE_LABELS[row.locale] ?? row.locale }}</span></template
+      ><span class="text-slate-600">{{ MAIL_LOCALE_LABELS[row.locale] ?? row.locale }}</span></template
     ><template #detail-actions="{ detail }"
       ><div v-if="detail" class="space-y-3">
         <p

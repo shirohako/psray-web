@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ExternalLink, ImageOff, RefreshCw } from 'lucide'
-import { adminDate, type AdminTrophySetDetail, type AdminTrophySetRefresh, type AdminTrophySetRowChanges } from '~/utils/admin'
+import { adminDate } from '~/utils/admin'
+import type { AdminTrophySetDetail, AdminTrophySetRefresh, AdminTrophySetRowChanges } from '~/types/admin'
 
 /**
  * Drawer body for one trophy set: its stored artwork with dead Sony CDN images

@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Check, LocateFixed, Trophy } from 'lucide'
+import { Trophy } from 'lucide'
 import type { LeaderboardRow, LeaderboardMeta } from '~/services/leaderboard'
-import type { LeaderboardBoard } from '~/composables/useRankingBoards'
 import { LEADERBOARD_DEFAULT_REGION, leaderboardRouteQuery, parseLeaderboardQuery, type LeaderboardQueryState } from '~/utils/leaderboardQuery'
 
 const { t } = useI18n()
@@ -19,16 +18,6 @@ const boards = useRankingBoards().filter(board => !hiddenBoardKeys.has(board.key
 
 const boardKeys = boards.map(b => b.key)
 const defaultBoard = boards[0]!
-
-// Picker card colours per board accent, a muted pastel palette: a pale wash
-// with a border one step deeper in the same hue (no shadow or halo), and a
-// soft mid-pastel icon tile with a dark icon. Idle cards stay white; their tile
-// keeps a pale tint. `mark` fills the corner marker of the selected card.
-const ACCENTS: Record<LeaderboardBoard['accent'], { selected: string; tile: string; idleTile: string; mark: string }> = {
-  violet: { selected: 'border-violet-300 bg-violet-50/70', tile: 'bg-violet-200 text-violet-700', idleTile: 'bg-violet-50 text-violet-500', mark: 'border-violet-400 bg-violet-400' },
-  sky: { selected: 'border-sky-300 bg-sky-50/70', tile: 'bg-sky-200 text-sky-700', idleTile: 'bg-sky-50 text-sky-500', mark: 'border-sky-400 bg-sky-400' },
-  pink: { selected: 'border-pink-300 bg-pink-50/70', tile: 'bg-pink-200 text-pink-700', idleTile: 'bg-pink-50 text-pink-500', mark: 'border-pink-400 bg-pink-400' },
-}
 
 // Board, filters and page live in the URL so Back/Forward and shared links
 // restore the same ranking.
@@ -56,34 +45,15 @@ const { data, status } = await useAsyncData('leaderboard', () =>
 const rows = computed<LeaderboardRow[]>(() => data.value?.data ?? [])
 const meta = computed<LeaderboardMeta | undefined>(() => data.value?.meta)
 const totalPages = computed(() => meta.value?.total_pages ?? 1)
-// A lazy fetch sits at `idle` until it starts, so count that as loading too.
-const pending = computed(() => status.value === 'pending' || status.value === 'idle')
-useLoadingBar(pending, () => status.value === 'error')
+const pending = useFetchPending(status)
 const rangeStart = computed(() => rows.value.length ? (page.value - 1) * (meta.value?.per_page ?? rows.value.length) + 1 : 0)
 const rangeEnd = computed(() => rows.value.length ? rangeStart.value + rows.value.length - 1 : 0)
 
-// The signed-in user's standing, as the board reports it in `meta.me` (same
-// filters, any page). Boards that don't report it fall back to the user's row
-// when it happens to be on screen.
+// The signed-in user: their row is marked, and their standing shows on every
+// page and board.
 const user = computed(() => auth.user.value)
-const me = computed(() => meta.value?.me ?? null)
-const selfRank = computed(() => {
-  if (!user.value) return null
-  if (meta.value?.me !== undefined) return me.value?.rank ?? null
-  const psnid = user.value.psnid.toLowerCase()
-  return rows.value.find(row => row.psnid.toLowerCase() === psnid)?.rank ?? null
-})
-const selfPoints = computed(() => me.value?.score ?? user.value?.points)
-// Without `meta.me` the rank only comes from a row on screen, so that's the page.
-const selfPage = computed(() => {
-  if (meta.value?.me !== undefined) return me.value?.on_page ?? null
-  return selfRank.value ? page.value : null
-})
 // Nothing to show for the standing until the first response lands.
 const standingLoading = computed(() => pending.value && !meta.value)
-// Whole percentages come back without the `.0`, so pad to one decimal here.
-const selfTopPercent = computed(() => me.value?.top_percent?.toFixed(1) ?? null)
-const selfToNext = computed(() => me.value?.gap_to_next ?? null)
 
 /**
  * Board and page changes push a history entry so Back returns to them; filter
@@ -135,14 +105,13 @@ function revealSelf() {
   })
 }
 
-function goToSelf() {
-  if (!selfPage.value) return
-  if (selfPage.value === page.value) {
+function goToSelf(selfPage: number) {
+  if (selfPage === page.value) {
     revealSelf()
     return
   }
   revealSelfPending.value = true
-  navigate({ page: selfPage.value })
+  navigate({ page: selfPage })
 }
 
 watch(rows, () => {
@@ -160,92 +129,19 @@ watch(rows, () => {
       </div>
       <p class="-mt-2 text-xs leading-5 text-slate-500">{{ $t('seo.leaderboard.description') }}</p>
 
-      <div role="tablist" :aria-label="$t('leaderboard.boards')" class="grid grid-cols-2 gap-3">
-        <button
-          v-for="b in boards"
-          :key="b.key"
-          type="button"
-          role="tab"
-          :aria-selected="b.key === activeKey"
-          class="group relative flex min-w-0 items-center gap-3 rounded-xl border px-2 py-3 text-left transition max-sm:justify-center max-sm:text-center sm:p-4"
-          :class="b.key === activeKey
-            ? ACCENTS[b.accent].selected
-            : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'"
-          @click="selectBoard(b.key)"
-        >
-          <!-- Corner marker on every card: filled with a check when chosen, an empty circle otherwise -->
-          <span
-            class="absolute right-3 top-3 grid size-5 place-items-center rounded-full border-2 transition max-sm:hidden"
-            :class="b.key === activeKey ? ACCENTS[b.accent].mark : 'border-slate-300 bg-white group-hover:border-slate-400'"
-          >
-            <LucideIcon v-if="b.key === activeKey" :icon="Check" class="size-3 text-white" stroke-width="3" />
-          </span>
-          <span
-            class="grid size-10 shrink-0 place-items-center rounded-lg transition max-sm:hidden"
-            :class="b.key === activeKey ? ACCENTS[b.accent].tile : ACCENTS[b.accent].idleTile"
-          >
-            <LucideIcon :icon="b.icon" class="size-5" />
-          </span>
-          <span class="min-w-0">
-            <span
-              class="block whitespace-nowrap text-sm font-semibold max-sm:text-[13px]"
-              :class="b.key === activeKey ? 'text-slate-900' : 'text-slate-600 group-hover:text-slate-900'"
-            >{{ $t(b.labelKey) }}</span>
-            <span class="mt-0.5 block text-xs leading-5 text-slate-500 max-sm:hidden">{{ $t(b.descriptionKey) }}</span>
-          </span>
-        </button>
-      </div>
+      <LeaderboardBoardPicker :boards="boards" :active="activeKey" @select="selectBoard" />
     </header>
 
     <!-- Signed-in user's standing, on every page and board -->
-    <section
+    <LeaderboardStanding
       v-if="user"
-      aria-labelledby="leaderboard-self-title"
-      class="rounded-xl border border-slate-200/80 bg-white shadow-sm"
-    >
-      <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5">
-        <h2 id="leaderboard-self-title" class="text-sm font-semibold text-slate-900">{{ $t('leaderboard.self.title') }}</h2>
-        <button
-          v-if="selfPage"
-          type="button"
-          class="inline-flex h-8 items-center gap-1.5 rounded-lg bg-slate-900 px-3 text-xs font-semibold text-white transition hover:bg-slate-700"
-          @click="goToSelf"
-        >
-          <LucideIcon :icon="LocateFixed" class="size-3.5" />
-          {{ $t('leaderboard.self.jump', { page: selfPage }) }}
-        </button>
-      </div>
-      <div class="flex flex-wrap items-center gap-x-8 gap-y-3 px-4 py-3">
-        <div class="flex min-w-0 items-center gap-2.5">
-          <img :src="user.avatar_url" :alt="user.psnid" class="size-10 shrink-0 rounded-full bg-slate-100 object-cover">
-          <div class="min-w-0">
-            <p class="truncate text-sm font-semibold text-slate-900">{{ user.psnid }}</p>
-            <p class="text-[11px] text-slate-500">{{ $t('leaderboard.column.level') }} {{ user.trophy_level }}</p>
-          </div>
-        </div>
-        <dl class="flex flex-wrap items-start gap-x-6 gap-y-2">
-          <div>
-            <dt class="text-[11px] text-slate-500">{{ $t('leaderboard.column.rank') }}</dt>
-            <dd v-if="standingLoading" class="skeleton mt-1 h-4 w-12 rounded" />
-            <dd v-else class="text-sm font-semibold tabular-nums text-slate-900">{{ selfRank ? `#${fmt(selfRank)}` : '—' }}</dd>
-          </div>
-          <div>
-            <dt class="text-[11px] text-slate-500">{{ $t('leaderboard.column.points') }}</dt>
-            <dd v-if="standingLoading" class="skeleton mt-1 h-4 w-16 rounded" />
-            <dd v-else class="text-sm font-semibold tabular-nums text-slate-900">{{ fmt(selfPoints) }}</dd>
-          </div>
-          <div v-if="selfTopPercent">
-            <dt class="text-[11px] text-slate-500">{{ $t('leaderboard.self.top') }}</dt>
-            <dd class="text-sm font-semibold tabular-nums text-slate-900">{{ selfTopPercent }}%</dd>
-          </div>
-          <div v-if="selfToNext != null">
-            <dt class="text-[11px] text-slate-500">{{ $t('leaderboard.self.toNext') }}</dt>
-            <dd class="text-sm font-semibold tabular-nums text-slate-900">{{ fmt(selfToNext) }}</dd>
-          </div>
-        </dl>
-        <p v-if="!selfRank && !standingLoading" class="text-xs text-slate-500">{{ $t('leaderboard.self.unranked') }}</p>
-      </div>
-    </section>
+      :user="user"
+      :rows="rows"
+      :page="page"
+      :meta="meta"
+      :loading="standingLoading"
+      @jump="goToSelf"
+    />
 
     <section id="leaderboard-results" class="scroll-mt-20" :aria-label="$t(board.labelKey)">
       <LeaderboardTable :columns="board.columns" :rows="rows" :pending="pending" :self-psnid="user?.psnid">

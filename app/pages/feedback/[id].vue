@@ -1,13 +1,9 @@
 <script setup lang="ts">
-import { ArrowLeft, EyeOff, Hourglass, Loader2, MessagesSquare, Trash2 } from 'lucide'
-import { useFeedbackApi } from '~/services/feedback'
+import { ArrowLeft, EyeOff, Hourglass, Loader2, MessagesSquare } from 'lucide'
 import type { FeedbackDetail } from '~/types/feedback'
-import { ApiError } from '~/utils/ApiError'
 
 const route = useRoute()
-const { t, te } = useI18n()
-const toast = useToast()
-const api = useFeedbackApi()
+const { t } = useI18n()
 
 const id = computed(() => Number(route.params.id))
 
@@ -18,7 +14,7 @@ const guestToken = ref<string | null>(null)
 const storageRead = ref(false)
 
 const { data: feedback, error, status, refresh } = await useApiFetch<FeedbackDetail>(() => `/feedback/${id.value}`, {
-  headers: computed(() => guestToken.value ? { [FEEDBACK_TOKEN_HEADER]: guestToken.value } : {}),
+  headers: computed((): Record<string, string> => guestToken.value ? { [FEEDBACK_TOKEN_HEADER]: guestToken.value } : {}),
   watch: [guestToken],
 })
 
@@ -39,30 +35,6 @@ useSeo({
 
 function onReplied(updated: FeedbackDetail) {
   feedback.value = updated
-}
-
-const confirmingDelete = ref(false)
-const deleting = ref(false)
-
-async function deleteFeedback() {
-  if (deleting.value) return
-  deleting.value = true
-  try {
-    await api.remove(id.value, guestToken.value)
-    forgetGuestFeedback(feedbackStorage(), id.value)
-    toast.success({ title: t('feedback.detail.deleted') })
-    await navigateTo({ path: '/feedback', query: route.query.lang ? { lang: route.query.lang } : {} })
-  }
-  catch (error) {
-    const key = error instanceof ApiError ? `errors.api.${error.code}` : ''
-    toast.error({
-      title: t('feedback.detail.deleteFailed'),
-      description: error instanceof ApiError ? (te(key) ? t(key) : error.message) : undefined,
-    })
-  }
-  finally {
-    deleting.value = false
-  }
 }
 </script>
 
@@ -111,32 +83,7 @@ async function deleteFeedback() {
         <FeedbackImages v-if="feedback.image_urls.length" class="mt-3" :urls="feedback.image_urls" />
 
         <div v-if="feedback.viewer.can_delete" class="mt-4 border-t border-slate-100 pt-3">
-          <div v-if="confirmingDelete" class="flex flex-col gap-3 rounded-lg border border-rose-200 bg-rose-50 px-3 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-xs font-medium text-rose-700">{{ $t('feedback.detail.deleteConfirm') }}</p>
-            <div class="flex shrink-0 items-center gap-2">
-              <button type="button" class="rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-white/70" @click="confirmingDelete = false">
-                {{ $t('common.cancel') }}
-              </button>
-              <button
-                type="button"
-                :disabled="deleting"
-                class="inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-700 disabled:opacity-60"
-                @click="deleteFeedback"
-              >
-                <LucideIcon :icon="deleting ? Loader2 : Trash2" class="size-3.5" :class="{ 'animate-spin': deleting }" />
-                {{ $t(deleting ? 'feedback.detail.deleting' : 'feedback.detail.deleteConfirmAction') }}
-              </button>
-            </div>
-          </div>
-          <button
-            v-else
-            type="button"
-            class="inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-rose-600 transition hover:bg-rose-50"
-            @click="confirmingDelete = true"
-          >
-            <LucideIcon :icon="Trash2" class="size-3.5" />
-            {{ $t('feedback.detail.delete') }}
-          </button>
+          <FeedbackDeleteButton :feedback-id="feedback.id" :guest-token="guestToken" />
         </div>
       </article>
 

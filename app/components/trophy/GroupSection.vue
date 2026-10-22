@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import type { EarnedInfo, Trophy, TrophyGroup } from '~/services/trophies'
+import { filterTrophies, isTrophyEarned, sortTrophies, type TrophyFilterMode, type TrophySortMode } from '~/utils/trophyList'
 
 const props = defineProps<{
+  /** A group whose trophies are already in PSN order (see `sortTrophyGroups`). */
   group: TrophyGroup
   /** id → earned order, timestamp, and gap since the previous earned trophy. */
   earnedInfo: Map<number, EarnedInfo>
   hasViewer: boolean
-  filter: 'all' | 'earned' | 'unearned'
-  sort: 'default' | 'earned' | 'rarity'
+  filter: TrophyFilterMode
+  sort: TrophySortMode
   /** Reveal PSN-hidden (spoiler) trophies. */
   showSpoilers: boolean
   /** Continuous serial number per trophy (db id → number). */
@@ -30,7 +32,7 @@ const title = computed(() => {
 })
 
 function isEarned(trophy: Trophy) {
-  return props.hasViewer && (trophy.earned_by_viewer ?? props.earnedInfo.has(trophy.id))
+  return isTrophyEarned(trophy, props.hasViewer, props.earnedInfo)
 }
 
 function earnedAt(t: Trophy) {
@@ -48,35 +50,13 @@ function earnedGap(t: Trophy) {
   return props.earnedInfo.get(t.id)?.sincePrev ?? null
 }
 
-const defaultTrophies = computed(() =>
-  [...props.group.trophies].sort((a, b) =>
-    a.psn_trophy_id - b.psn_trophy_id || a.id - b.id,
-  ),
-)
-
 // Filter then sort. Earned-based filter/sort only apply when a viewer is set.
-const displayTrophies = computed(() => {
-  let list = defaultTrophies.value
-
-  if (props.hasViewer && props.filter !== 'all') {
-    const want = props.filter === 'earned'
-    list = list.filter(t => isEarned(t) === want)
-  }
-
-  if (props.sort === 'rarity') {
-    // Lower PSN earn rate = rarer, so ascending puts the rarest first.
-    list = [...list].sort((a, b) => Number(a.psn_earned_rate) - Number(b.psn_earned_rate))
-  } else if (props.sort === 'earned' && props.hasViewer) {
-    // Earned trophies first, in the order the viewer earned them; rest after.
-    list = [...list].sort((a, b) => {
-      const ra = props.earnedInfo.get(a.id)?.rank ?? Infinity
-      const rb = props.earnedInfo.get(b.id)?.rank ?? Infinity
-      return ra - rb
-    })
-  }
-
-  return list
-})
+const displayTrophies = computed(() => sortTrophies(
+  filterTrophies(props.group.trophies, props.filter, props.hasViewer, props.earnedInfo),
+  props.sort,
+  props.hasViewer,
+  props.earnedInfo,
+))
 </script>
 
 <template>

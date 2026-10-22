@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ArrowLeft, Ban, Megaphone, ScrollText } from 'lucide'
-import { adminDate, MAIL_CATEGORY_LABELS, MAIL_LOCALES, MAIL_STATUSES, type MailCampaign } from '~/utils/admin'
+import { adminCampaignFinished, adminDate, MAIL_CATEGORY_LABELS, MAIL_LOCALE_LABELS, MAIL_STATUSES } from '~/utils/admin'
+import type { MailCampaign } from '~/types/admin'
 /**
  * One campaign's progress: mails per status, refreshed every 5 s while it is
  * still sending, the copy that went out (a snapshot taken at the start) and
@@ -33,12 +34,8 @@ onMounted(async () => {
 })
 onBeforeUnmount(() => clearInterval(timer))
 
-const LOCALE_LABELS: Record<string, string> = Object.fromEntries(MAIL_LOCALES.map((l) => [l.value, l.label]))
 const total = computed(() => campaign.value?.recipient_count ?? 0)
-const finished = computed(() => {
-  const p = campaign.value?.progress ?? {}
-  return (p.sent ?? 0) + (p.failed ?? 0) + (p.skipped ?? 0) + (p.cancelled ?? 0)
-})
+const finished = computed(() => adminCampaignFinished(campaign.value?.progress ?? {}))
 const percent = computed(() => (total.value ? Math.min(100, Math.round((finished.value / total.value) * 100)) : 0))
 const remainingMinutes = computed(() =>
   campaign.value ? Math.ceil((campaign.value.progress.queued ?? 0) / Math.max(1, campaign.value.per_minute)) : 0,
@@ -111,7 +108,7 @@ async function cancel() {
       <header class="admin-panel-head"><h2 class="admin-panel-title">发出的文案（开始发送时的快照）</h2></header>
       <ul class="divide-y divide-slate-100">
         <li v-for="(content, locale) in campaign.content_snapshot" :key="locale" class="px-4 py-3 text-[13px]">
-          <p class="text-xs font-medium text-slate-500">{{ LOCALE_LABELS[locale] ?? locale }}</p>
+          <p class="text-xs font-medium text-slate-500">{{ MAIL_LOCALE_LABELS[locale] ?? locale }}</p>
           <p class="mt-0.5 font-medium text-slate-900">{{ content.subject }}</p>
           <pre class="mt-1 max-h-48 overflow-auto whitespace-pre-wrap break-words font-mono text-[12px] text-slate-600">{{ content.body }}</pre>
         </li>

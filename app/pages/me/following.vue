@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { AlertTriangle, Heart, Loader2, RotateCw, UserCheck, UserMinus, UserPlus, Users, type IconNode } from 'lucide'
-import { useProfiles, type FollowDirection, type FollowPageMeta, type MyFollowEntry } from '~/services/profile'
-import { ApiError } from '~/utils/ApiError'
+import { AlertTriangle, Heart, RotateCw, UserMinus, Users, type IconNode } from 'lucide'
+import type { FollowDirection, FollowPageMeta, MyFollowEntry } from '~/services/profile'
 
 /**
  * The signed-in user's follows: who they follow (unfollow from here) and who
@@ -15,9 +14,7 @@ useSeo({ title: () => t('seo.me.following'), noindex: true })
 
 const route = useRoute()
 const router = useRouter()
-const toast = useToast()
 const { user } = useAuth()
-const { follow, unfollow } = useProfiles()
 
 // Tab and page live in the URL so Back/Forward and reloads restore the same list.
 const state = computed(() => parseMyFollowsQuery(route.query))
@@ -27,9 +24,7 @@ const { data: response, status, error, refresh } = await useApiFetchRaw<MyFollow
 const items = computed(() => response.value?.data ?? [])
 const meta = computed(() => response.value?.meta)
 const totalPages = computed(() => meta.value?.total_pages ?? 1)
-// A lazy fetch sits at `idle` until it starts, so count that as loading too.
-const pending = computed(() => status.value === 'pending' || status.value === 'idle')
-useLoadingBar(pending, () => status.value === 'error')
+const pending = useFetchPending(status)
 
 const TABS: { key: FollowDirection; labelKey: string; icon: IconNode }[] = [
   { key: 'following', labelKey: 'profile.social.following', icon: Heart },
@@ -56,76 +51,9 @@ function changePage(page: number) {
   document.getElementById('follow-results')?.scrollIntoView({ block: 'start' })
 }
 
-// Follow changes made on this page, by PSN ID, until the next fetch brings
-// the server's view of them.
-const changed = ref<Record<string, boolean>>({})
-const busy = ref<Record<string, boolean>>({})
-watch(response, () => { changed.value = {} })
-
-/** Whether the signed-in user follows this person right now. */
-function iFollow(person: MyFollowEntry) {
-  return changed.value[person.psnid] ?? (state.value.tab === 'following' || person.is_mutual)
-}
-
-/** Whether this person follows the signed-in user. */
-function followsMe(person: MyFollowEntry) {
-  return state.value.tab === 'followers' || person.is_mutual
-}
-
-/** What clicking the follow button does for this person. */
-function followActionLabel(person: MyFollowEntry) {
-  if (iFollow(person)) return t('profile.actions.unfollow')
-  return followsMe(person) ? t('me.following.followBack') : t('profile.actions.follow')
-}
-
-/** Follow or unfollow right away; true when the server took the change. */
-async function toggle(person: MyFollowEntry): Promise<boolean> {
-  const psnid = person.psnid
-  if (busy.value[psnid]) return false
-  const next = !iFollow(person)
-  changed.value[psnid] = next
-  busy.value[psnid] = true
-  try {
-    const result = next ? await follow(psnid) : await unfollow(psnid)
-    changed.value[psnid] = result.following
-    // Keep the tab count in step without reloading the whole session.
-    if (user.value && result.following === next) {
-      user.value.following_count = Math.max(0, user.value.following_count + (next ? 1 : -1))
-    }
-    if (result.following) toast.success({ title: t('toast.followed.title'), description: t('toast.followed.description', { psnid }), icon: UserCheck })
-    return true
-  }
-  catch (error) {
-    changed.value[psnid] = !next
-    if (error instanceof ApiError && error.code === 'UNAUTHENTICATED') {
-      await navigateTo({ path: '/auth/login', query: { redirect: route.fullPath } })
-      return false
-    }
-    toast.error({ title: t('me.following.toggleFailed'), description: error instanceof ApiError ? error.message : undefined })
-    return false
-  }
-  finally {
-    delete busy.value[psnid]
-  }
-}
-
-// Unfollowing asks first; following (back) happens on the click.
-const confirming = ref<MyFollowEntry | null>(null)
-const confirmOpen = ref(false)
-
-function onFollowClick(person: MyFollowEntry) {
-  if (!iFollow(person)) {
-    toggle(person)
-    return
-  }
-  confirming.value = person
-  confirmOpen.value = true
-}
-
-async function confirmUnfollow() {
-  const person = confirming.value
-  if (person && await toggle(person)) confirmOpen.value = false
-}
+// Follow / unfollow from the cards; unfollowing asks first.
+const { iFollow, followsMe, busy, onFollowClick, confirming, confirmOpen, confirmUnfollow }
+  = useMyFollowToggle(() => state.value.tab, response)
 
 // Placeholder rows: varied widths so they read like real PSN IDs.
 const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28']
@@ -133,15 +61,7 @@ const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28']
 
 <template>
   <div class="space-y-5">
-    <header class="flex items-start gap-3 pb-1 pt-1">
-      <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-sm">
-        <LucideIcon :icon="Users" class="size-5" stroke-width="1.5" />
-      </span>
-      <div>
-        <h1 class="text-xl font-bold tracking-tight text-slate-900">{{ $t('me.following.title') }}</h1>
-        <p class="mt-1.5 max-w-2xl text-xs leading-5 text-slate-500">{{ $t('me.following.description') }}</p>
-      </div>
-    </header>
+    <PageHeader :icon="Users" :title="$t('me.following.title')" :description="$t('me.following.description')" />
 
     <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
       <div class="border-b border-slate-200 p-3 sm:px-4">
@@ -203,29 +123,13 @@ const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28']
                 >{{ $t('profile.social.followsYou') }}</span>
               </template>
               <template #action>
-                <!-- Icon-only so cards stay one row; the tooltip and accessible name say what a click does -->
-                <Tooltip :content="followActionLabel(person)" placement="top">
-                  <button
-                    type="button"
-                    :disabled="busy[person.psnid]"
-                    class="group/follow grid size-8 place-items-center rounded-lg ring-1 ring-inset transition active:scale-95 disabled:cursor-wait disabled:opacity-70"
-                    :class="iFollow(person)
-                      ? 'bg-emerald-50 text-emerald-600 ring-emerald-200 hover:bg-rose-50 hover:text-rose-600 hover:ring-rose-200'
-                      : followsMe(person)
-                        ? 'bg-sky-600 text-white ring-sky-600 hover:bg-sky-700 hover:ring-sky-700'
-                        : 'bg-slate-900 text-white ring-slate-900 hover:bg-slate-700 hover:ring-slate-700'"
-                    :aria-label="`${followActionLabel(person)} ${person.psnid}`"
-                    :aria-pressed="iFollow(person)"
-                    @click="onFollowClick(person)"
-                  >
-                    <LucideIcon v-if="busy[person.psnid]" :icon="Loader2" class="size-4 animate-spin" />
-                    <template v-else-if="iFollow(person)">
-                      <LucideIcon :icon="UserCheck" class="size-4 group-hover/follow:hidden" />
-                      <LucideIcon :icon="UserMinus" class="hidden size-4 group-hover/follow:block" />
-                    </template>
-                    <LucideIcon v-else :icon="UserPlus" class="size-4" />
-                  </button>
-                </Tooltip>
+                <MeFollowButton
+                  :psnid="person.psnid"
+                  :following="iFollow(person)"
+                  :follows-me="followsMe(person)"
+                  :busy="busy[person.psnid]"
+                  @toggle="onFollowClick(person)"
+                />
               </template>
             </ProfileFollowRow>
           </li>
@@ -270,7 +174,15 @@ const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28']
       </section>
     </div>
 
-    <Dialog v-model:open="confirmOpen" size="sm" :title="$t('me.following.unfollowTitle')">
+    <ConfirmDialog
+      v-model:open="confirmOpen"
+      size="sm"
+      :title="$t('me.following.unfollowTitle')"
+      :icon="UserMinus"
+      :confirm-label="$t('profile.actions.unfollow')"
+      :busy="!!confirming && busy[confirming.psnid]"
+      @confirm="confirmUnfollow"
+    >
       <div v-if="confirming" class="flex items-center gap-3 p-4 sm:p-5">
         <UserAvatar :psnid="confirming.psnid" :src="confirming.avatar_url" class="size-10" />
         <p class="min-w-0 text-sm leading-6 text-slate-600">
@@ -279,26 +191,6 @@ const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28']
           </i18n-t>
         </p>
       </div>
-      <template #footer>
-        <div class="flex justify-end gap-2">
-          <button
-            type="button"
-            class="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
-            @click="confirmOpen = false"
-          >
-            {{ $t('common.cancel') }}
-          </button>
-          <button
-            type="button"
-            :disabled="!!confirming && busy[confirming.psnid]"
-            class="inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-3 py-2 text-sm font-semibold text-white hover:bg-rose-700 disabled:opacity-60"
-            @click="confirmUnfollow"
-          >
-            <LucideIcon :icon="confirming && busy[confirming.psnid] ? Loader2 : UserMinus" class="size-4" :class="{ 'animate-spin': confirming && busy[confirming.psnid] }" />
-            {{ $t('profile.actions.unfollow') }}
-          </button>
-        </div>
-      </template>
-    </Dialog>
+    </ConfirmDialog>
   </div>
 </template>

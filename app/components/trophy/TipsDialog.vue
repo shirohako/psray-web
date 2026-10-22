@@ -59,7 +59,7 @@ async function deleteMine() {
   try {
     await remove(props.trophyId)
     // The editor keeps a draft per trophy; it shouldn't come back after a delete.
-    if (import.meta.client && user.value) localStorage.removeItem(`trophy-tip-draft:${user.value.id}:${props.trophyId}`)
+    if (import.meta.client && user.value) localStorage.removeItem(tipDraftKey(user.value.id, props.trophyId))
     confirmingDelete.value = false
     toast.success({ title: t('trophy.tips.form.deleted') })
     if (page.value !== 1) page.value = 1

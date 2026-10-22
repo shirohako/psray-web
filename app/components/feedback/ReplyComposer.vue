@@ -12,23 +12,20 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ replied: [feedback: FeedbackDetail] }>()
 
-const { t, te } = useI18n()
+const { t } = useI18n()
 const toast = useToast()
 const api = useFeedbackApi()
+const errorText = useApiErrorText()
 
 const content = ref('')
 const imageUrls = ref<string[]>([])
 const sending = ref(false)
 const fieldErrors = ref<Record<string, string>>({})
-const imageErrors = computed(() => Object.fromEntries(
-  Object.entries(fieldErrors.value)
-    .filter(([key]) => key.startsWith('image_urls.'))
-    .map(([key, message]) => [Number(key.slice('image_urls.'.length)), message]),
-))
+const imageErrors = computed(() => imageUrlErrors(fieldErrors.value))
 
 async function send() {
   if (sending.value) return
-  imageUrls.value = [...new Set(imageUrls.value.map(url => url.trim()).filter(Boolean))]
+  imageUrls.value = cleanImageUrls(imageUrls.value)
   const errors: Record<string, string> = {}
   const text = content.value.trim()
   if (!text) errors.content = t('feedback.form.errors.contentRequired')
@@ -49,11 +46,7 @@ async function send() {
   }
   catch (error) {
     if (error instanceof ApiError && error.isValidation) fieldErrors.value = error.fieldErrors()
-    const key = error instanceof ApiError ? `errors.api.${error.code}` : ''
-    toast.error({
-      title: t('feedback.detail.followUp.failed'),
-      description: error instanceof ApiError ? (te(key) ? t(key) : error.message) : undefined,
-    })
+    toast.error({ title: t('feedback.detail.followUp.failed'), description: errorText(error) })
   }
   finally {
     sending.value = false

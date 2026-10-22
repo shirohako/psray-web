@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ArrowRight } from 'lucide'
 
-/** Step 5 — registration complete. Registration does not auto-login, so the CTA goes to sign-in. */
+/** After step 5 — registration complete. Registration does not auto-login, so the CTA goes to sign-in. */
 defineEmits<{ login: [] }>()
 
 const animationSrc = ref('')

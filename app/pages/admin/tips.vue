@@ -6,8 +6,8 @@ import {
   TIP_LANGUAGE_OPTIONS,
   TIP_SORT_OPTIONS,
   TIP_SPOILER_OPTIONS,
-  type AdminFilter,
 } from '~/utils/admin'
+import type { AdminFilter } from '~/types/admin'
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
 const columns = [
   { key: 'id', label: 'ID', mono: true },

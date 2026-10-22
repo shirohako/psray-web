@@ -124,6 +124,20 @@ export function isHttpsUrl(value: string): boolean {
   }
 }
 
+/** The screenshot links as sent: trimmed, without blank rows or repeats. */
+export function cleanImageUrls(urls: string[]): string[] {
+  return [...new Set(urls.map(url => url.trim()).filter(Boolean))]
+}
+
+/** The `image_urls.<index>` messages among a form's field errors, by row index. */
+export function imageUrlErrors(fieldErrors: Record<string, string>): Record<number, string> {
+  return Object.fromEntries(
+    Object.entries(fieldErrors)
+      .filter(([key]) => key.startsWith('image_urls.'))
+      .map(([key, message]) => [Number(key.slice('image_urls.'.length)), message]),
+  )
+}
+
 // ── Page context ─────────────────────────────────────────────────────────────
 
 // Query parameters that can carry credentials (unsubscribe links, codes…).

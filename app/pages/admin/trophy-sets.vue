@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Trophy } from 'lucide'
-import { adminDate, TROPHY_SET_SORT_OPTIONS, type AdminFilter } from '~/utils/admin'
+import { adminDate, TROPHY_SET_SORT_OPTIONS } from '~/utils/admin'
+import type { AdminFilter } from '~/types/admin'
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
 const columns = [
   { key: 'id', label: 'ID', mono: true },

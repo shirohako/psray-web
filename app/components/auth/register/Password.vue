@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Lock } from 'lucide'
 
-/** Step 2 — set the account password. `mismatch` is surfaced on the confirm field. */
+/** Step 3 — set the account password. `mismatch` is surfaced on the confirm field. */
 defineProps<{ passwordError?: string, mismatch?: boolean }>()
 const password = defineModel<string>('password', { required: true })
 const confirmPassword = defineModel<string>('confirmPassword', { required: true })

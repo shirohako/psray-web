@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import {
+  cleanImageUrls,
   collectFeedbackContext,
   feedbackExcerpt,
   feedbackRouteQuery,
   forgetGuestFeedback,
   guestFeedbackToken,
+  imageUrlErrors,
   isHttpsUrl,
   linkifyText,
   parseFeedbackQuery,
@@ -71,6 +73,18 @@ describe('Feedback text', () => {
     expect(isHttpsUrl('http://i.example.com/a.png')).toBe(false)
     expect(isHttpsUrl('data:image/png;base64,AAAA')).toBe(false)
     expect(isHttpsUrl('not a url')).toBe(false)
+  })
+
+  it('tidies the screenshot links: trimmed, no blank rows, no repeats', () => {
+    expect(cleanImageUrls([' https://i.example.com/a.png ', '', '  ', 'https://i.example.com/b.png', 'https://i.example.com/a.png']))
+      .toEqual(['https://i.example.com/a.png', 'https://i.example.com/b.png'])
+    expect(cleanImageUrls([])).toEqual([])
+  })
+
+  it('picks the screenshot link errors out of the field errors, by row', () => {
+    expect(imageUrlErrors({ 'content': 'Too short', 'image_urls.0': 'Bad link', 'image_urls.2': 'Not https' }))
+      .toEqual({ 0: 'Bad link', 2: 'Not https' })
+    expect(imageUrlErrors({ content: 'Too short' })).toEqual({})
   })
 })
 

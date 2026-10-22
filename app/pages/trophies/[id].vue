@@ -11,113 +11,38 @@
       <!-- Main: grouped trophy list -->
       <div class="lg:col-span-2">
         <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-          <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 sm:px-5">
-            <h2 class="inline-flex items-baseline gap-2 font-semibold text-slate-900">
-              {{ $t('trophy.list.heading') }}
-              <span class="text-sm font-normal text-slate-400">
-                {{ $t('trophy.list.count', totalDefined(data.trophy_set.defined_trophies)) }}
-              </span>
-            </h2>
-            <div v-if="availableLanguages.length" class="flex items-center gap-2.5">
-              <span class="hidden items-center gap-1 text-xs font-medium text-slate-400 sm:inline-flex">
-                <i18n-t keypath="trophy.lang.available" scope="global" tag="span" class="inline-flex items-center gap-1" :plural="availableLanguages.length">
-                  <template #badge>
-                    <span class="rounded-full bg-slate-100 px-1.5 py-0.5 font-semibold tabular-nums text-slate-600">{{ availableLanguages.length }}</span>
-                  </template>
-                </i18n-t>
-              </span>
-              <TrophyLanguagePicker
-                :languages="availableLanguages"
-                :current="data.display_language"
-                :loading="pending"
-                @select="switchLanguage"
-              />
-            </div>
-          </div>
+          <TrophyListHeading
+            :total="totalDefined(data.trophy_set.defined_trophies)"
+            :languages="availableLanguages"
+            :current="data.display_language"
+            :loading="pending"
+            @language="switchLanguage"
+          />
 
-          <!-- Filter + sort toolbar -->
-          <div class="flex flex-col gap-2.5 border-b border-slate-200 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-5">
-            <div class="grid grid-cols-3 rounded-lg bg-slate-100 p-0.5 sm:inline-flex">
-              <button
-                v-for="f in filterOptions"
-                :key="f.value"
-                type="button"
-                :disabled="f.value !== 'all' && !hasViewer"
-                :title="f.value !== 'all' && !hasViewer ? $t('trophy.filter.needsPsnid') : undefined"
-                class="rounded-md px-3 py-1 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-40"
-                :class="filter === f.value ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-900'"
-                @click="filter = f.value"
-              >
-                {{ $t(f.labelKey) }}
-              </button>
-            </div>
+          <TrophyListToolbar
+            v-model:filter="filter"
+            v-model:sort="sort"
+            v-model:show-spoilers="showSpoilers"
+            :has-viewer="hasViewer"
+          />
 
-            <div class="flex min-w-0 flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:gap-3">
-              <!-- Spoiler toggle -->
-              <button
-                type="button"
-                role="switch"
-                :aria-checked="showSpoilers"
-                class="inline-flex min-w-0 items-center justify-between gap-2 rounded-lg px-1 py-1 text-sm font-medium text-slate-600 sm:justify-normal sm:p-0"
-                @click="showSpoilers = !showSpoilers"
-              >
-                <span>{{ $t('trophy.list.showHidden') }}</span>
-                <span class="relative h-5 w-9 rounded-full transition-colors" :class="showSpoilers ? 'bg-slate-900' : 'bg-slate-300'">
-                  <span class="absolute top-0.5 size-4 rounded-full bg-white shadow transition-all" :class="showSpoilers ? 'left-4.5' : 'left-0.5'" />
-                </span>
-              </button>
-
-              <SelectMenu
-                v-model="sort"
-                :options="sortOptions"
-                :icon="ArrowUpDown"
-                class="max-sm:flex-1 sm:shrink-0"
-                :aria-label="$t('trophy.sort.label')"
-              />
-            </div>
-          </div>
-
-          <div class="relative">
-            <div
-              class="divide-y divide-slate-200 transition-[max-height] duration-500 ease-out max-sm:overflow-hidden"
-              :class="trophyListExpanded ? 'max-sm:max-h-[9999px]' : 'max-sm:max-h-136'"
-            >
-              <TrophyGroupSection
-                v-for="group in sortedGroups"
-                :key="group.id"
-                :group="group"
-                :earned-info="earnedInfo"
-                :has-viewer="hasViewer"
-                :filter="filter"
-                :sort="sort"
-                :show-spoilers="showSpoilers"
-                :numbers="trophyNumbers"
-                :tip-counts="tipCounts"
-                @detail="dialogHost?.open('detail', $event)"
-                @earners="dialogHost?.open('earners', $event)"
-                @tips="dialogHost?.open('tips', $event)"
-              />
-            </div>
-
-            <div
-              v-if="visibleTrophyCount > 6"
-              class="sm:hidden"
-              :class="trophyListExpanded ? 'border-t border-slate-200 bg-white px-4 py-3' : 'pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-white via-white/95 to-white/0 px-4 pb-4 pt-18'"
-            >
-              <button
-                type="button"
-                class="pointer-events-auto flex w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm shadow-slate-900/5 transition active:scale-[0.99]"
-                @click="trophyListExpanded = !trophyListExpanded"
-              >
-                {{ trophyListExpanded ? $t('trophy.list.collapse') : $t('trophy.list.expand') }}
-                <LucideIcon
-                  :icon="ChevronDown"
-                  class="size-4 transition-transform duration-300"
-                  :class="trophyListExpanded ? 'rotate-180' : ''"
-                />
-              </button>
-            </div>
-          </div>
+          <TrophyListCollapse v-model:expanded="trophyListExpanded" :collapsible="visibleTrophyCount > 6">
+            <TrophyGroupSection
+              v-for="group in sortedGroups"
+              :key="group.id"
+              :group="group"
+              :earned-info="earnedInfo"
+              :has-viewer="hasViewer"
+              :filter="filter"
+              :sort="sort"
+              :show-spoilers="showSpoilers"
+              :numbers="trophyNumbers"
+              :tip-counts="tipCounts"
+              @detail="dialogHost?.open('detail', $event)"
+              @earners="dialogHost?.open('earners', $event)"
+              @tips="dialogHost?.open('tips', $event)"
+            />
+          </TrophyListCollapse>
         </div>
       </div>
 
@@ -151,16 +76,20 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowUpDown, ChevronDown } from 'lucide'
 import TrophyStatistics from '~/components/trophy/Statistics.vue'
-import type { EarnedInfo, Trophy, TrophyGroup, TrophySetDetail } from '~/services/trophies'
-import type { SelectOption } from '~/types/select'
+import type { Trophy, TrophySetDetail } from '~/services/trophies'
+import {
+  buildEarnedInfo,
+  buildTrophyNumbers,
+  countVisibleTrophies,
+  sortTrophyGroups,
+  type TrophyFilterMode,
+  type TrophySortMode,
+} from '~/utils/trophyList'
 import { DEFAULT_LOCALE, PSN_LANG, canonicalContentLang, isUiLocale, type UiLocale } from '#shared/locales'
 
 definePageMeta({ path: '/trophies/:id(\\d+)' })
 
-type FilterMode = 'all' | 'earned' | 'unearned'
-type SortMode = 'default' | 'earned' | 'rarity'
 type TrophyDialogKind = 'detail' | 'earners' | 'tips'
 
 const dialogHost = useTemplateRef<{
@@ -218,10 +147,8 @@ const { data, status, error } = await useApiFetch<TrophySetDetail>(
   },
 )
 
-// A lazy fetch sits at `idle` until it starts, so count that as loading too.
 // The bar also runs while a language switch or `?psnid=` lookup refetches.
-const pending = computed(() => status.value === 'pending' || status.value === 'idle')
-useLoadingBar(pending, () => status.value === 'error')
+const pending = useFetchPending(status)
 
 const viewerCountry = computed(() => {
   const progress = data.value?.viewer_progress
@@ -264,126 +191,21 @@ function switchLanguage(code: string) {
   return navigateTo({ path: route.path, query, hash: route.hash })
 }
 
-// Parse an API date (unix seconds or ISO string) to epoch ms, or null.
-function toMs(value: number | string | null): number | null {
-  if (value == null || value === '') return null
-  const date = typeof value === 'number' ? new Date(value * 1000) : new Date(value)
-  const t = date.getTime()
-  return Number.isNaN(t) ? null : t
-}
-
-// Maps each earned trophy's db id to its chronological earned position (0-based
-// `rank`, also drives the "by earned time" sort), timestamp, and seconds since the
-// previously earned trophy (`null` for the first). The raw `earned_trophies`
-// list isn't guaranteed to be time-sorted, so we order by `earned_trophies_at`
-// to get the true "this is the Nth trophy earned" sequence and gaps (trophies
-// missing a timestamp sort last). `timestampMissing` marks trophies the API
-// explicitly reports as earned with a `null` time (early PSN titles).
-const earnedInfo = computed(() => {
-  const m = new Map<number, EarnedInfo>()
-  const progress = data.value?.viewer_progress
-  if (!progress) return m
-
-  // Platinum is awarded in the same instant as the trophy that completes the
-  // set, so they share a timestamp. Treat platinum as earned last in any tie so
-  // it ranks after the trophy that actually triggered it.
-  const isPlatinum = new Set<number>()
-  for (const group of data.value?.groups ?? []) {
-    for (const t of group.trophies) {
-      if (t.type === 'platinum') isPlatinum.add(t.id)
-    }
-  }
-
-  const times = progress.earned_trophies_at ?? {}
-  const ordered = progress.earned_trophies
-    .map(id => ({ id, earnedAt: times[id] ?? null, missing: times[id] === null, ms: toMs(times[id] ?? null) }))
-    .sort((a, b) => {
-      if (a.ms == null) return b.ms == null ? 0 : 1
-      if (b.ms == null) return -1
-      if (a.ms !== b.ms) return a.ms - b.ms
-      // Same timestamp: platinum sorts after non-platinum.
-      return Number(isPlatinum.has(a.id)) - Number(isPlatinum.has(b.id))
-    })
-
-  let prevMs: number | null = null
-  ordered.forEach(({ id, earnedAt, missing, ms }, i) => {
-    const sincePrev = i > 0 && ms != null && prevMs != null
-      ? Math.round((ms - prevMs) / 1000)
-      : null
-    m.set(id, { rank: i, earnedAt, sincePrev, timestampMissing: missing })
-    if (ms != null) prevMs = ms
-  })
-
-  return m
-})
-
-function groupSortKey(group: TrophyGroup) {
-  if (group.psn_group_id === 'default') return -1
-  const numeric = Number(group.psn_group_id)
-  return Number.isFinite(numeric) ? numeric : Number.MAX_SAFE_INTEGER
-}
-
-// PSN groups are ordered as base game first (`default`), then DLC groups
-// (`001`, `002`, ...). Trophies inside each group follow PSN's own id.
-const sortedGroups = computed(() =>
-  [...(data.value?.groups ?? [])]
-    .sort((a, b) =>
-      groupSortKey(a) - groupSortKey(b)
-      || a.psn_group_id.localeCompare(b.psn_group_id)
-      || a.id - b.id,
-    )
-    .map(group => ({
-      ...group,
-      trophies: [...group.trophies].sort((a, b) =>
-        a.psn_trophy_id - b.psn_trophy_id || a.id - b.id,
-      ),
-    })),
-)
-
+// The trophy list: groups (and their trophies) in PSN order, the viewer's
+// earned order, and each trophy's row number.
+const earnedInfo = computed(() => buildEarnedInfo(data.value?.viewer_progress, data.value?.groups ?? []))
+const sortedGroups = computed(() => sortTrophyGroups(data.value?.groups ?? []))
 const allTrophies = computed(() => sortedGroups.value.flatMap(group => group.trophies))
-
-function isTrophyEarned(trophy: Trophy) {
-  return hasViewer.value && (trophy.earned_by_viewer ?? earnedInfo.value.has(trophy.id))
-}
-
-const visibleTrophyCount = computed(() => {
-  let count = 0
-  for (const group of sortedGroups.value) {
-    for (const trophy of group.trophies) {
-      if (hasViewer.value && filter.value !== 'all') {
-        const want = filter.value === 'earned'
-        if (isTrophyEarned(trophy) !== want) continue
-      }
-      count += 1
-    }
-  }
-  return count
-})
-
-// Trophy row number is PSN's zero-based trophy id shifted to user-facing 1-based.
-const trophyNumbers = computed(() => {
-  const m = new Map<number, number>()
-  for (const group of data.value?.groups ?? []) {
-    for (const t of group.trophies) m.set(t.id, t.psn_trophy_id + 1)
-  }
-  return m
-})
+const trophyNumbers = computed(() => buildTrophyNumbers(data.value?.groups ?? []))
 
 // Filter + sort controls for the trophy list.
-const filterOptions: { value: FilterMode; labelKey: string }[] = [
-  { value: 'all', labelKey: 'trophy.filter.all' },
-  { value: 'earned', labelKey: 'trophy.filter.earned' },
-  { value: 'unearned', labelKey: 'trophy.filter.unearned' },
-]
-const filter = ref<FilterMode>('all')
-const sort = ref<SortMode>('default')
-const sortOptions = computed<SelectOption<SortMode>[]>(() => [
-  { value: 'default', label: t('trophy.sort.default') },
-  { value: 'earned', label: t('trophy.sort.earned'), disabled: !hasViewer.value },
-  { value: 'rarity', label: t('trophy.sort.rarity') },
-])
-// URL fragments are unavailable to SSR. Start collapsed on both server and
-// client, then reveal and re-scroll after hydration to avoid a class mismatch.
+const filter = ref<TrophyFilterMode>('all')
+const sort = ref<TrophySortMode>('default')
+const visibleTrophyCount = computed(() =>
+  countVisibleTrophies(sortedGroups.value, filter.value, hasViewer.value, earnedInfo.value))
+// Phones fold the list after its first rows. URL fragments are unavailable to
+// SSR: start collapsed on both server and client, then reveal and re-scroll
+// after hydration to avoid a class mismatch.
 const trophyListExpanded = ref(false)
 
 // Mask spoiler (PSN-hidden) trophies until toggled on; earned ones stay visible.

@@ -18,8 +18,9 @@ const emit = defineEmits<{
   created: [feedback: FeedbackDetail]
 }>()
 
-const { t, te, locale } = useI18n()
+const { t, locale } = useI18n()
 const toast = useToast()
+const errorText = useApiErrorText()
 const route = useRoute()
 const { user, loggedIn } = useAuth()
 const api = useFeedbackApi()
@@ -41,11 +42,7 @@ const sent = ref<FeedbackDetail | null>(null)
 let context: FeedbackContext | undefined
 
 // Server errors come back as `image_urls.<index>`; the rows are sent as shown.
-const imageErrors = computed(() => Object.fromEntries(
-  Object.entries(fieldErrors.value)
-    .filter(([key]) => key.startsWith('image_urls.'))
-    .map(([key, message]) => [Number(key.slice('image_urls.'.length)), message]),
-))
+const imageErrors = computed(() => imageUrlErrors(fieldErrors.value))
 const loginLink = computed(() => ({ path: '/auth/login', query: { redirect: route.fullPath } }))
 
 // ── Draft ────────────────────────────────────────────────────────────────────
@@ -117,16 +114,10 @@ function validate() {
   return Object.keys(errors).length === 0
 }
 
-function describe(error: unknown) {
-  if (!(error instanceof ApiError)) return undefined
-  const key = `errors.api.${error.code}`
-  return te(key) ? t(key) : error.message
-}
-
 async function submit() {
   if (submitting.value) return
   // Drop blank rows and repeats first, so error indexes match what's on screen.
-  imageUrls.value = [...new Set(imageUrls.value.map(url => url.trim()).filter(Boolean))]
+  imageUrls.value = cleanImageUrls(imageUrls.value)
   if (!validate() || !type.value) return
   submitting.value = true
   try {
@@ -151,7 +142,7 @@ async function submit() {
   }
   catch (error) {
     if (error instanceof ApiError && error.isValidation) fieldErrors.value = { ...fieldErrors.value, ...error.fieldErrors() }
-    toast.error({ title: t('feedback.form.submitFailed'), description: describe(error) })
+    toast.error({ title: t('feedback.form.submitFailed'), description: errorText(error) })
   }
   finally {
     submitting.value = false

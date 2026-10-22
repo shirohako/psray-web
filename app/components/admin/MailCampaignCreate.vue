@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { CircleCheck, CircleX, Megaphone, RotateCw, Send, TriangleAlert } from 'lucide'
-import {
-  adminDuration,
-  MAIL_CATEGORY_LABELS,
-  MAIL_LOCALES,
-  type MailCampaign,
-  type MailCampaignPreview,
-  type MailTemplateSummary,
-} from '~/utils/admin'
+import { adminDuration, MAIL_CATEGORY_LABELS, MAIL_LOCALE_LABELS, MAIL_LOCALES } from '~/utils/admin'
+import type { MailCampaign, MailCampaignPreview, MailTemplateSummary } from '~/types/admin'
 /**
  * New campaign: pick a campaign template, look at who would get it (a dry
  * run: recipients, opt-outs, language split, who falls back to English),
@@ -26,7 +20,6 @@ const open = ref(false),
   confirmed = ref(false),
   busy = ref(false),
   submitError = ref<any>(null)
-const LOCALE_LABELS: Record<string, string> = Object.fromEntries(MAIL_LOCALES.map((l) => [l.value, l.label]))
 const selected = computed(() => templates.value.find((t) => t.id === templateId.value) ?? null)
 const templateOptions = computed(() => templates.value.map((t) => ({
   value: t.id,
@@ -159,11 +152,11 @@ async function submit() {
           </thead>
           <tbody class="divide-y divide-slate-100">
             <tr v-for="l in preview.locales" :key="l.locale" :class="l.recipients ? '' : 'text-slate-400'">
-              <td class="py-1.5">{{ LOCALE_LABELS[l.locale] }}</td>
+              <td class="py-1.5">{{ MAIL_LOCALE_LABELS[l.locale] }}</td>
               <td class="py-1.5 text-right tabular-nums">{{ l.recipients.toLocaleString() }}</td>
               <td class="py-1.5 pl-4">
-                <span v-if="l.has_translation">{{ LOCALE_LABELS[l.locale] }}</span>
-                <span v-else :class="l.recipients ? 'font-medium text-amber-700' : ''">缺翻译，收{{ LOCALE_LABELS[l.sent_in ?? ''] ?? '—' }}</span>
+                <span v-if="l.has_translation">{{ MAIL_LOCALE_LABELS[l.locale] }}</span>
+                <span v-else :class="l.recipients ? 'font-medium text-amber-700' : ''">缺翻译，收{{ MAIL_LOCALE_LABELS[l.sent_in ?? ''] ?? '—' }}</span>
               </td>
             </tr>
           </tbody>

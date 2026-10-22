@@ -1,15 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import {
   adminApiPrefix,
+  adminCampaignFinished,
   adminDate,
   adminDuration,
   adminField,
   adminLocalToUtc,
+  adminLogLines,
+  adminMailPlaceholder,
   adminParseTrophySetIds,
   adminQuery,
   adminTipChanges,
   adminUtf8Bytes,
   adminValue,
+  MAIL_CAMPAIGN_CATEGORIES,
   TIP_LANGUAGE_LABELS,
   TIP_LANGUAGE_OPTIONS,
 } from '../app/utils/admin'
@@ -105,5 +109,33 @@ describe('admin contract helpers', () => {
       missable: false,
     })
     expect(adminTipChanges(saved, { ...saved, language: 'ja', has_spoiler: true })).toEqual({ language: 'ja', has_spoiler: true })
+  })
+  it('splits a log window into stamped lines tagged by severity', () => {
+    const lines = adminLogLines(
+      [
+        '[2026-10-22 06:00:00] local.INFO: Sync finished',
+        '[2026-10-22 06:00:01] local.WARNING: Slow response',
+        '[2026-10-22 06:00:02] local.ERROR: Boom',
+        '[2026-10-22 06:00:03] production.CRITICAL: Disk full',
+        'Stack trace:',
+        '#0 /var/www/app/Foo.php(12): bar()',
+        '   at Foo->bar()',
+        'plain text',
+      ].join('\n'),
+    )
+    expect(lines.map((l) => l.level)).toEqual(['info', 'warning', 'error', 'error', 'trace', 'trace', 'trace', 'info'])
+    expect(lines[2]).toEqual({ stamp: '[2026-10-22 06:00:02]', text: ' local.ERROR: Boom', level: 'error' })
+    expect(lines[7]).toEqual({ stamp: '', text: 'plain text', level: 'info' })
+    expect(adminLogLines('')).toEqual([{ stamp: '', text: '', level: 'info' }])
+  })
+  it('writes mail template variables the way template copy spells them', () => {
+    expect(adminMailPlaceholder('code')).toBe('{{ code }}')
+  })
+  it('offers campaign templates every mail category but transactional', () => {
+    expect(MAIL_CAMPAIGN_CATEGORIES.map((c) => c.value)).toEqual(['important', 'features', 'other'])
+  })
+  it('counts the campaign mails that are done with, whatever the outcome', () => {
+    expect(adminCampaignFinished({ queued: 5, sent: 3, failed: 1, skipped: 2, cancelled: 4 })).toBe(10)
+    expect(adminCampaignFinished({ queued: 5 })).toBe(0)
   })
 })

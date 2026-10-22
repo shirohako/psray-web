@@ -1,135 +1,13 @@
+import type { AdminTipFields, LogLine, MailCategory, MailLocale, PenaltyLevel, PurgeCategory } from '~/types/admin'
 import { TIP_LANGUAGE_CODES } from '~/utils/tip'
 
-export interface AdminColumn {
-  key: string
-  label: string
-  /** Render identifiers (IDs, UUIDs, queue names) in monospace. */
-  mono?: boolean
-}
-export interface AdminFilter {
-  key: string
-  label: string
-  options?: { value: string; label: string }[]
-  type?: string
-}
-export interface QueueSummary {
-  available: boolean
-  worker_status: string
-  message?: string
-  updated_at?: string
-  queues: { name: string; waiting: number; delayed: number; reserved: number }[]
-  supervisors: unknown[]
-}
-export type ScheduleRunStatus =
-  | 'running'
-  | 'success'
-  | 'failed'
-  | 'skipped'
-  | 'suspected_interrupted'
-
-export interface ScheduleRunSummary {
-  id: number
-  status: ScheduleRunStatus
-  started_at: string
-  finished_at: string | null
-  duration_ms: number | null
-  exit_code: number | null
-  error: string | null
-}
-
-export interface ScheduleRunDetail extends ScheduleRunSummary {
-  task: string
-  output: string | null
-}
-
-export interface ScheduleRunCounts {
-  total: ScheduleRunResultCounts
-  last_24_hours: ScheduleRunResultCounts
-  last_7_days: ScheduleRunResultCounts
-  last_30_days: ScheduleRunResultCounts
-}
-
-export interface ScheduleRunResultCounts {
-  success: number
-  failed: number
-}
-
-export interface ScheduleTask {
-  key: string
-  command: string
-  description: string
-  expression: string
-  frequency: string
-  timezone: string
-  next_run_at: string | null
-  last_run: ScheduleRunSummary | null
-  run_counts: ScheduleRunCounts
-  skipped: number
-  running: number
-  history_available: boolean
-}
-export interface ScheduleSummary {
-  scheduler: {
-    available: boolean
-    history_available: boolean
-    last_seen_at: string | null
-    status: 'healthy' | 'stale' | 'unknown' | 'unavailable'
-    task_count: number
-  }
-  tasks: ScheduleTask[]
-}
-export interface LogWindow {
-  available: boolean
-  text: string
-  next_cursor: string | null
-  window_bytes?: number
-  file_size?: number
-  rotated?: boolean
-}
-export type PurgeCategory = 'sync' | 'account'
-export interface PurgeItem {
-  key: string
-  label: string
-  category: PurgeCategory
-  impact: string | null
-  count: number
-}
-export interface PurgeReport {
-  items: PurgeItem[]
-  totals: Record<PurgeCategory, number>
-}
-export interface BanEvidenceItem {
-  type: string
-  trophy_set_id: number
-  np_communication_id?: string
-  trophy_set_name: string
-  platform?: string
-  summary: {
-    progress: number
-    earned: Record<'platinum' | 'gold' | 'silver' | 'bronze', number>
-    first_earned_at: string | null
-    last_earned_at: string | null
-    duration_seconds: number
-  } | null
-  trophies: unknown[]
-}
-export interface BanEvidence {
-  items: BanEvidenceItem[]
-  skipped: (number | string)[]
-}
 /**
- * The ban target. `synced=false` is an account never synced here: it is
- * resolved through PSN (`psnid` is PSN's canonical spelling) and has no
- * local user or data.
+ * Admin console helpers: option lists and labels, value formatting, and the
+ * parsers the forms share. API shapes live in `~/types/admin`.
  */
-export interface BanTarget {
-  id: number | null
-  psnid: string
-  account_id: string
-  registered_at: string | null
-  synced: boolean
-}
-export type PenaltyLevel = 'ranking_ban' | 'termination'
+
+// ── Penalties ────────────────────────────────────────────────────────────────
+
 /** Penalty levels, mildest first. The API has no default: picking the wrong
     one can delete an account, so the admin always chooses. */
 export const PENALTY_LEVELS: {
@@ -148,381 +26,14 @@ export const PENALTY_LEVELS: {
     effect: '禁止同步与登录，删除该用户的全部数据连同用户行，资料页随之消失。',
   },
 ]
-/** `POST /bans` with `dry_run: true`. */
-export interface BanPreview {
-  dry_run: true
-  user: BanTarget
-  level: PenaltyLevel
-  /** What submitting will do, worded by the API. */
-  effect: string
-  /** The account already has an active penalty of this level; submitting
-      reuses it (and a termination purges again). */
-  already_applied: boolean
-  requires_account_confirmation: boolean
-  purge: PurgeReport | null
-  evidence: BanEvidence
-}
-export interface BanResult {
-  penalty_id: number
-  level: PenaltyLevel
-  user: BanTarget
-  purged: PurgeReport | null
-  evidence: BanEvidence
-}
-/** Mail categories: whether a mail honours the subscription switches and can be unsubscribed from. */
-export const MAIL_CATEGORIES = [
-  { value: 'transactional', label: '账户与安全', note: '验证码、反馈回复等，总是发送、不能退订' },
-  { value: 'important', label: '重要通知', note: '故障、维护等' },
-  { value: 'features', label: '新功能通知', note: '' },
-  { value: 'other', label: '其他推送', note: '' },
-] as const
-export type MailCategory = (typeof MAIL_CATEGORIES)[number]['value']
-export const MAIL_CATEGORY_LABELS = Object.fromEntries(MAIL_CATEGORIES.map((c) => [c.value, c.label])) as Record<MailCategory, string>
-export const MAIL_STATUSES = [
-  { value: 'queued', label: '排队中' },
-  { value: 'sent', label: '已发送' },
-  { value: 'failed', label: '失败' },
-  { value: 'skipped', label: '已跳过' },
-  { value: 'cancelled', label: '已取消' },
-] as const
-/** A row of `GET /mail/logs`; `GET /mail/logs/{id}` adds `uuid`, `error` and `body_html`. */
-export interface MailLogRecord {
-  id: number
-  status: string
-  skip_reason: string | null
-  category: MailCategory
-  template_key: string
-  template_name: string | null
-  campaign_id: number | null
-  user_id: number | null
-  psnid: string | null
-  to_email: string
-  locale: string
-  subject: string | null
-  attempts: number
-  has_body: boolean
-  queued_at: string | null
-  sent_at: string | null
-  failed_at: string | null
-  created_at: string
-  uuid?: string
-  error?: string | null
-  body_html?: string | null
-}
-export interface MailVariable {
-  name: string
-  label: string
-  sample: string
-  sensitive: boolean
-  /** Rendered as a block of HTML; must stand alone on its own line. */
-  block: boolean
-}
-export interface MailTemplateSummary {
-  id: number
-  key: string
-  name: string
-  description: string | null
-  category: MailCategory
-  is_system: boolean
-  locales: string[]
-  updated_at: string | null
-}
-export interface MailTemplateDetail extends MailTemplateSummary {
-  variables: MailVariable[]
-  translations: Record<string, { subject: string; body: string; updated_at: string | null; updated_by: string | null }>
-}
-export interface MailPreview {
-  subject: string
-  html: string
-  text: string
-  unknown_variables: string[]
-}
-/** `POST /mail/campaigns` with `dry_run: true`: who would get the mail. */
-export interface MailCampaignPreview {
-  dry_run: true
-  template_id: number
-  /** Registered users with an email, subscribed or not. */
-  registered: number
-  /** Those with this category switched on — they get the mail. */
-  recipients: number
-  unsubscribed: number
-  /** Recipients whose language the template lacks; they get `sent_in`. */
-  fallback_recipients: number
-  locales: { locale: string; recipients: number; has_translation: boolean; sent_in: string | null }[]
-  per_minute: number
-  estimated_minutes: number
-}
-export interface MailCampaign {
-  id: number
-  template_id: number
-  template_key: string
-  name: string
-  category: MailCategory
-  status: 'sending' | 'completed' | 'cancelled'
-  recipient_count: number
-  per_minute: number
-  /** Mails per status (queued / sent / failed / skipped / cancelled). */
-  progress: Record<string, number>
-  locales: string[]
-  created_by: string | null
-  started_at: string | null
-  dispatched_at: string | null
-  finished_at: string | null
-  cancelled_at: string | null
-  /** Detail only: the copy as it was when sending started. */
-  content_snapshot?: Record<string, { subject: string; body: string }>
-}
-/** The five UI languages, which are also the languages mails are sent in. */
-export const MAIL_LOCALES = [
-  { value: 'zh-Hans', label: '简体中文' },
-  { value: 'zh-Hant', label: '繁體中文' },
-  { value: 'ja', label: '日本語' },
-  { value: 'en', label: 'English' },
-  { value: 'ko', label: '한국어' },
-] as const
-export type MailLocale = (typeof MAIL_LOCALES)[number]['value']
-/** Feedback type / visibility labels and filter options (statuses go through `statusLabels`). */
-export const FEEDBACK_TYPE_OPTIONS = [
-  { value: 'bug', label: 'Bug' },
-  { value: 'suggestion', label: '建议' },
-  { value: 'other', label: '其他' },
+export const PENALTY_LEVEL_LABELS = Object.fromEntries(
+  PENALTY_LEVELS.map((l) => [l.value, l.label]),
+) as Record<PenaltyLevel, string>
+/** How a purge report groups what it deletes, account data first. */
+export const PURGE_CATEGORIES: { key: PurgeCategory; label: string; note: string }[] = [
+  { key: 'account', label: '账户数据', note: '站内账户数据，删除后无法恢复' },
+  { key: 'sync', label: '同步数据', note: '来自 PSN 同步' },
 ]
-export const FEEDBACK_STATUS_OPTIONS = [
-  { value: 'open', label: '待处理' },
-  { value: 'in_progress', label: '处理中' },
-  { value: 'done', label: '已完成' },
-  { value: 'declined', label: '不处理' },
-]
-export const FEEDBACK_VISIBILITY_OPTIONS = [
-  { value: 'pending', label: '待审核' },
-  { value: 'public', label: '公开' },
-  { value: 'hidden', label: '已隐藏' },
-]
-export const FEEDBACK_TYPE_LABELS: Record<string, string> = Object.fromEntries(FEEDBACK_TYPE_OPTIONS.map((o) => [o.value, o.label]))
-export const FEEDBACK_VISIBILITY_LABELS: Record<string, string> = Object.fromEntries(FEEDBACK_VISIBILITY_OPTIONS.map((o) => [o.value, o.label]))
-/** `GET /feedback/summary`: what the sidebar badge and the page's tabs count. */
-export interface AdminFeedbackSummary {
-  pending: number
-  awaiting: number
-}
-/** One reply in `GET /feedback/{id}`. */
-export interface AdminFeedbackReply {
-  id: number
-  is_staff: boolean
-  user_id: number | null
-  psnid: string | null
-  avatar_url: string | null
-  content: string
-  image_urls: string[]
-  ip_address: string | null
-  created_at: string
-}
-/** `GET /feedback/{id}`; list rows carry the fields up to `last_activity_at`. */
-export interface AdminFeedbackDetail {
-  id: number
-  type: string
-  status: string
-  visibility: 'pending' | 'public' | 'hidden'
-  author: 'user' | 'guest'
-  user_id: number | null
-  psnid: string | null
-  guest_name: string | null
-  content: string
-  image_urls: string[]
-  reply_count: number
-  has_staff_reply: boolean
-  awaiting_reply: boolean
-  ip_address: string | null
-  created_at: string
-  last_activity_at: string
-  user?: { id: number, psnid: string, avatar_url: string | null, country: string | null, trophy_level: number | null } | null
-  notifies_author?: boolean
-  user_agent?: string | null
-  context?: Partial<Record<'page_url' | 'screen' | 'viewport' | 'locale' | 'timezone', string>> | null
-  reviewed_by?: string | null
-  reviewed_at?: string | null
-  replies?: AdminFeedbackReply[]
-}
-// ── Trophy tips ──────────────────────────────────────────────────────────────
-export const TIP_SORT_OPTIONS = [
-  { value: 'latest', label: '最新发布' },
-  { value: 'updated', label: '最近修改' },
-  { value: 'helpful', label: '「有帮助」最多' },
-  { value: 'unhelpful', label: '「无帮助」最多' },
-]
-export const TIP_SPOILER_OPTIONS = [
-  { value: '1', label: '含剧透' },
-  { value: '0', label: '不含剧透' },
-]
-/** Languages a Tip can be written in, named in Chinese like the rest of the console. */
-export const TIP_LANGUAGE_OPTIONS = TIP_LANGUAGE_CODES.map((code) => ({ value: code, label: `${chineseLanguageName(code)}（${code}）` }))
-export const TIP_LANGUAGE_LABELS: Record<string, string> = Object.fromEntries(TIP_LANGUAGE_CODES.map((code) => [code, chineseLanguageName(code)]))
-function chineseLanguageName(code: string): string {
-  try {
-    return new Intl.DisplayNames(['zh-Hans'], { type: 'language' }).of(code) ?? code
-  } catch {
-    return code
-  }
-}
-/** The fields of a Tip the console can edit. */
-export interface AdminTipFields {
-  content: string
-  language: string
-  has_spoiler: boolean
-  missable: boolean | null
-}
-/** `GET /tips/{id}`; list rows carry everything but `user`. */
-export interface AdminTipDetail extends AdminTipFields {
-  id: number
-  trophy_id: number
-  trophy_set_id: number | null
-  user_id: number | null
-  psnid: string | null
-  avatar_url: string | null
-  vote_up_count: number
-  vote_down_count: number
-  content_type: string
-  created_at: string
-  updated_at: string
-  trophy: { id: number, name: string, icon_url: string, type: string } | null
-  trophy_set: { id: number, name: string, icon_url: string, platform: string[] } | null
-  user?: { id: number, psnid: string, avatar_url: string | null, country: string | null, trophy_level: number | null, tip_count: number, tip_vote_count: number } | null
-}
-/** What an edit form changed (content compared trimmed), ready to PATCH; empty when nothing did. */
-export function adminTipChanges(saved: AdminTipFields, form: AdminTipFields): Partial<AdminTipFields> {
-  const changes: Partial<AdminTipFields> = {}
-  const content = form.content.trim()
-  if (content !== saved.content) changes.content = content
-  if (form.language !== saved.language) changes.language = form.language
-  if (form.has_spoiler !== saved.has_spoiler) changes.has_spoiler = form.has_spoiler
-  if (form.missable !== saved.missable) changes.missable = form.missable
-  return changes
-}
-export const TROPHY_SET_SORT_OPTIONS = [
-  { value: 'latest', label: '最新入库' },
-  { value: 'updated', label: '最近更新' },
-  { value: 'owners', label: '玩家最多' },
-]
-export interface TrophyCountsRecord {
-  bronze: number
-  silver: number
-  gold: number
-  platinum: number
-}
-/** `GET /trophy-sets` row. */
-export interface AdminTrophySet {
-  id: number
-  np_communication_id: string
-  name: string
-  icon_url: string | null
-  platform: string[]
-  version: string
-  np_service_name: string
-  defined_trophies: TrophyCountsRecord | null
-  has_trophy_groups: boolean
-  owners: number
-  created_at: string | null
-  updated_at: string | null
-}
-/** `GET /trophy-sets/{id}`; list rows carry everything but the fields below. */
-export interface AdminTrophySetDetail extends AdminTrophySet {
-  detail?: string | null
-  default_language?: string | null
-  game_id?: number | null
-  groups?: { id: number, psn_group_id: string, name: string, detail: string, icon_url: string | null, defined_trophies: TrophyCountsRecord | null }[]
-  trophies?: { id: number, psn_trophy_id: number, psn_group_id: string, type: string, name: string, icon_url: string | null, is_hidden: boolean }[]
-}
-export interface AdminTrophySetRowChanges {
-  added: number
-  updated: number
-  icon_updated: number
-}
-/** `POST /trophy-sets/{id}/refresh`. */
-export interface AdminTrophySetRefresh {
-  changes: { trophy_set: string[], groups: AdminTrophySetRowChanges, trophies: AdminTrophySetRowChanges }
-  localization_queued: boolean
-  trophy_set: AdminTrophySetDetail
-}
-/** One editable setting from `GET /settings`. Database values win over env. */
-export interface SystemSettingItem {
-  key: string
-  label: string
-  description: string | null
-  type: 'string' | 'integer' | 'boolean'
-  /** Stored encrypted; `value` is always null, only `is_set` tells. */
-  secret: boolean
-  /** The env var it falls back to, for display. */
-  env: string | null
-  is_set: boolean
-  /** Where the effective value comes from; `default` is the definition's own default. */
-  source: 'database' | 'env' | 'default' | null
-  value: string | number | boolean | null
-  /** Allowed values for a select; empty for free input. */
-  options: { value: string; label: string }[]
-  /** Whether clearing the database value still leaves an env value. */
-  env_is_set: boolean
-  /** The definition's default, used when neither database nor env has a value. */
-  default: string | number | boolean | null
-  updated_at: string | null
-}
-export interface SystemSettingGroup {
-  key: string
-  label: string
-  description: string
-  items: SystemSettingItem[]
-}
-export interface SystemSettingsResponse {
-  groups: SystemSettingGroup[]
-}
-/** `PATCH /settings`: the keys that actually changed, plus the fresh list. */
-export interface SystemSettingsUpdate extends SystemSettingsResponse {
-  changed: string[]
-}
-/** The user `POST /sync-resets` acts on, with stats from before the reset. */
-export interface SyncResetTarget {
-  id: number
-  psnid: string
-  account_id: string
-  registered_at: string | null
-  last_synced_at: string | null
-  played_game_count: number
-  trophy_count: number
-  points: number
-  rank: number | null
-}
-/** `POST /sync-resets` with `dry_run: true`. */
-export interface SyncResetPreview {
-  dry_run: true
-  user: SyncResetTarget
-  /** A sync is queued or running; submitting is refused until it ends. */
-  syncing: boolean
-  /** Sync data only, so `totals.account` is always 0. */
-  purge: PurgeReport
-}
-export interface SyncResetResult {
-  queue_id: number
-  user: SyncResetTarget
-  purged: PurgeReport
-}
-/** A row of `GET /bans`: an active penalty. An account with several
-    penalties has one row each. */
-export interface BanRecord {
-  id: number
-  account_id: string
-  /** The name recorded at ban time; later renames do not update it. */
-  psnid: string
-  level: PenaltyLevel
-  source: string
-  reason_code: string | null
-  reason: string | null
-  moderator: { id: number; psnid: string } | null
-  banned_at: string
-  /** Terminations only: null while the purge is unfinished, and
-      resubmitting the termination retries it. Always null for ranking bans. */
-  data_purged_at: string | null
-  evidence_count: number
-  is_psnprofiles_banned: boolean
-}
 /** The API saves evidence for at most this many trophy sets per ban. */
 export const BAN_EVIDENCE_MAX = 20
 /**
@@ -550,6 +61,128 @@ export function adminParseTrophySetIds(text: string): {
 export function adminUtf8Bytes(text: string): number {
   return new TextEncoder().encode(text).length
 }
+
+// ── Mail ─────────────────────────────────────────────────────────────────────
+
+export const MAIL_CATEGORIES = [
+  { value: 'transactional', label: '账户与安全', note: '验证码、反馈回复等，总是发送、不能退订' },
+  { value: 'important', label: '重要通知', note: '故障、维护等' },
+  { value: 'features', label: '新功能通知', note: '' },
+  { value: 'other', label: '其他推送', note: '' },
+] as const satisfies readonly { value: MailCategory, label: string, note: string }[]
+export const MAIL_CATEGORY_LABELS = Object.fromEntries(MAIL_CATEGORIES.map((c) => [c.value, c.label])) as Record<MailCategory, string>
+/** Categories a campaign template can take: the ones subscribers can switch off. */
+export const MAIL_CAMPAIGN_CATEGORIES = MAIL_CATEGORIES.filter((c) => c.value !== 'transactional')
+export const MAIL_STATUSES = [
+  { value: 'queued', label: '排队中' },
+  { value: 'sent', label: '已发送' },
+  { value: 'failed', label: '失败' },
+  { value: 'skipped', label: '已跳过' },
+  { value: 'cancelled', label: '已取消' },
+] as const
+export const MAIL_LOCALES = [
+  { value: 'zh-Hans', label: '简体中文' },
+  { value: 'zh-Hant', label: '繁體中文' },
+  { value: 'ja', label: '日本語' },
+  { value: 'en', label: 'English' },
+  { value: 'ko', label: '한국어' },
+] as const satisfies readonly { value: MailLocale, label: string }[]
+export const MAIL_LOCALE_LABELS: Record<string, string> = Object.fromEntries(MAIL_LOCALES.map((l) => [l.value, l.label]))
+/** A variable as template copy writes it, `{{ name }}`. Built in script: a literal one in a Vue template would end the interpolation. */
+export function adminMailPlaceholder(name: string): string {
+  return '{' + '{ ' + name + ' }' + '}'
+}
+/** Mails of a campaign that are done with, whatever the outcome. */
+export function adminCampaignFinished(progress: Record<string, number>): number {
+  return (progress.sent ?? 0) + (progress.failed ?? 0) + (progress.skipped ?? 0) + (progress.cancelled ?? 0)
+}
+
+// ── Feedback ─────────────────────────────────────────────────────────────────
+
+/** Feedback type / visibility labels and filter options (statuses go through `statusLabels`). */
+export const FEEDBACK_TYPE_OPTIONS = [
+  { value: 'bug', label: 'Bug' },
+  { value: 'suggestion', label: '建议' },
+  { value: 'other', label: '其他' },
+]
+export const FEEDBACK_STATUS_OPTIONS = [
+  { value: 'open', label: '待处理' },
+  { value: 'in_progress', label: '处理中' },
+  { value: 'done', label: '已完成' },
+  { value: 'declined', label: '不处理' },
+]
+export const FEEDBACK_VISIBILITY_OPTIONS = [
+  { value: 'pending', label: '待审核' },
+  { value: 'public', label: '公开' },
+  { value: 'hidden', label: '已隐藏' },
+]
+export const FEEDBACK_TYPE_LABELS: Record<string, string> = Object.fromEntries(FEEDBACK_TYPE_OPTIONS.map((o) => [o.value, o.label]))
+export const FEEDBACK_VISIBILITY_LABELS: Record<string, string> = Object.fromEntries(FEEDBACK_VISIBILITY_OPTIONS.map((o) => [o.value, o.label]))
+
+// ── Trophy tips ──────────────────────────────────────────────────────────────
+
+export const TIP_SORT_OPTIONS = [
+  { value: 'latest', label: '最新发布' },
+  { value: 'updated', label: '最近修改' },
+  { value: 'helpful', label: '「有帮助」最多' },
+  { value: 'unhelpful', label: '「无帮助」最多' },
+]
+export const TIP_SPOILER_OPTIONS = [
+  { value: '1', label: '含剧透' },
+  { value: '0', label: '不含剧透' },
+]
+/** Languages a Tip can be written in, named in Chinese like the rest of the console. */
+export const TIP_LANGUAGE_OPTIONS = TIP_LANGUAGE_CODES.map((code) => ({ value: code, label: `${chineseLanguageName(code)}（${code}）` }))
+export const TIP_LANGUAGE_LABELS: Record<string, string> = Object.fromEntries(TIP_LANGUAGE_CODES.map((code) => [code, chineseLanguageName(code)]))
+function chineseLanguageName(code: string): string {
+  try {
+    return new Intl.DisplayNames(['zh-Hans'], { type: 'language' }).of(code) ?? code
+  } catch {
+    return code
+  }
+}
+/** What an edit form changed (content compared trimmed), ready to PATCH; empty when nothing did. */
+export function adminTipChanges(saved: AdminTipFields, form: AdminTipFields): Partial<AdminTipFields> {
+  const changes: Partial<AdminTipFields> = {}
+  const content = form.content.trim()
+  if (content !== saved.content) changes.content = content
+  if (form.language !== saved.language) changes.language = form.language
+  if (form.has_spoiler !== saved.has_spoiler) changes.has_spoiler = form.has_spoiler
+  if (form.missable !== saved.missable) changes.missable = form.missable
+  return changes
+}
+
+// ── Trophy sets ──────────────────────────────────────────────────────────────
+
+export const TROPHY_SET_SORT_OPTIONS = [
+  { value: 'latest', label: '最新入库' },
+  { value: 'updated', label: '最近更新' },
+  { value: 'owners', label: '玩家最多' },
+]
+
+// ── Logs ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Split a log window into lines and tag each with a severity so the viewer
+ * can tint it; the text itself stays verbatim, with a leading `[timestamp]`
+ * split off.
+ */
+export function adminLogLines(text: string): LogLine[] {
+  return text.split('\n').map((line) => {
+    const level = /\.(ERROR|CRITICAL|ALERT|EMERGENCY)\b/.test(line)
+      ? 'error'
+      : /\.WARNING\b/.test(line)
+        ? 'warning'
+        : /^(#\d+ |Stack trace:|\s+at )/.test(line)
+          ? 'trace'
+          : 'info'
+    const stamp = /^\[[^\]]+\]/.exec(line)?.[0] ?? ''
+    return { text: line.slice(stamp.length), stamp, level }
+  })
+}
+
+// ── Labels and formatting ────────────────────────────────────────────────────
+
 export const statusLabels: Record<string, string> = {
   success: '成功',
   failed: '失败',
@@ -805,6 +438,9 @@ export function adminLocalToUtc(value: string): string {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? value : date.toISOString().slice(0, 16)
 }
+
+// ── API ──────────────────────────────────────────────────────────────────────
+
 export function adminApiPrefix(base: string): string {
   return `${base.replace(/\/+$/, '')}/admin`
 }

@@ -14,6 +14,13 @@ export const totalDefined = (d: DefinedTrophies) =>
   d.bronze + d.silver + d.gold + d.platinum
 
 /**
+ * localStorage key of a user's unsent tip draft for a trophy: the composer
+ * saves drafts under it, and deleting the tip clears it.
+ */
+export const tipDraftKey = (userId: number, trophyId: number | string) =>
+  `trophy-tip-draft:${userId}:${trophyId}`
+
+/**
  * Tier accent colour (text class) for a trophy icon/badge. Matches the dot
  * palette in `trophyKinds` (platinum→cyan, gold→amber, silver→slate, bronze→orange).
  */

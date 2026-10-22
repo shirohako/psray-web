@@ -27,9 +27,7 @@ const { data: res, status } = useApiFetchRaw<RecentTrophy[], PageMeta>(
   () => `/profile/${props.psnid}/recent-trophies?page=${props.page}`,
   { lazy: true },
 )
-// A lazy fetch sits at `idle` until it starts, so count that as loading too.
-const pending = computed(() => status.value === 'pending' || status.value === 'idle')
-useLoadingBar(pending, () => status.value === 'error')
+const pending = useFetchPending(status)
 
 // Placeholder rows: varied widths so they read like real trophy names.
 const SKELETON_ROWS = [

@@ -24,8 +24,6 @@ const props = defineProps<{
   selfPsnid?: string
 }>()
 
-const { t } = useI18n()
-
 // Single source of truth for each column's header + layout. Boards only choose
 // which keys to pass in `columns`; rendering for each key lives in the template.
 const META: Record<LeaderboardColumn, { labelKey: string; align: 'left' | 'center' | 'right'; class?: string }> = {
@@ -55,18 +53,6 @@ const TIER_DOT: Record<Tier, string> = {
   silver: 'bg-slate-400',
   bronze: 'bg-orange-400',
 }
-const TIER_STROKE: Record<Tier, string> = {
-  platinum: 'stroke-cyan-400',
-  gold: 'stroke-amber-400',
-  silver: 'stroke-slate-400',
-  bronze: 'stroke-orange-400',
-}
-const TIER_LABEL: Record<Tier, string> = {
-  platinum: 'trophy.tier.platinum',
-  gold: 'trophy.tier.gold',
-  silver: 'trophy.tier.silver',
-  bronze: 'trophy.tier.bronze',
-}
 const isTier = (c: LeaderboardColumn): c is Tier => (TIERS as readonly string[]).includes(c)
 
 // Phone rows show one headline metric on the right and the rest on a second line.
@@ -84,29 +70,6 @@ const STRIPE_ROW = 'even:bg-slate-50 hover:bg-slate-200/50'
 
 function isSelf(row: LeaderboardRow) {
   return !!props.selfPsnid && row.psnid.toLowerCase() === props.selfPsnid.toLowerCase()
-}
-
-const mixTotal = (row: LeaderboardRow) => TIERS.reduce((sum, tier) => sum + (row[tier] ?? 0), 0)
-
-// Composition ring: one arc per tier on a circle of this radius (SVG units).
-const RING_RADIUS = 9
-const RING_LENGTH = 2 * Math.PI * RING_RADIUS
-
-/** Each tier's count and share, plus its arc on the composition ring. */
-function mix(row: LeaderboardRow) {
-  const total = mixTotal(row)
-  let start = 0
-  return TIERS.map((tier) => {
-    const share = total ? row[tier] / total : 0
-    const length = share * RING_LENGTH
-    const arc = { dasharray: `${length} ${RING_LENGTH - length}`, dashoffset: -start }
-    start += length
-    return { tier, count: row[tier], percent: (share * 100).toFixed(1), arc }
-  })
-}
-
-function mixLabel(row: LeaderboardRow) {
-  return TIERS.map(tier => `${t(TIER_LABEL[tier])} ${fmt(row[tier])}`).join(' · ')
 }
 
 function primaryValue(row: LeaderboardRow) {
@@ -269,43 +232,7 @@ function skeletonDelay(index: number) {
                 <span v-else-if="isTier(c)" class="tabular-nums text-slate-700">{{ fmt(r[c]) }}</span>
 
                 <!-- Share of each tier among the player's trophies -->
-                <Tooltip v-else-if="c === 'mix'" placement="top" class="justify-center">
-                  <svg viewBox="0 0 24 24" class="size-6 -rotate-90" role="img" :aria-label="mixLabel(r)">
-                    <circle cx="12" cy="12" :r="RING_RADIUS" fill="none" stroke-width="4" class="stroke-slate-100" />
-                    <circle
-                      v-for="part in mix(r)"
-                      :key="part.tier"
-                      cx="12"
-                      cy="12"
-                      :r="RING_RADIUS"
-                      fill="none"
-                      stroke-width="4"
-                      :class="TIER_STROKE[part.tier]"
-                      :stroke-dasharray="part.arc.dasharray"
-                      :stroke-dashoffset="part.arc.dashoffset"
-                    />
-                  </svg>
-                  <!-- One line per tier: dot, name, count, share; total underneath -->
-                  <template #content>
-                    <span class="block min-w-44 py-1 font-normal">
-                      <span
-                        v-for="part in mix(r)"
-                        :key="part.tier"
-                        class="grid grid-cols-[auto_1fr_auto_3rem] items-center gap-x-2 py-0.5"
-                      >
-                        <span class="size-2 rounded-full" :class="TIER_DOT[part.tier]" />
-                        <span class="text-slate-300">{{ $t(TIER_LABEL[part.tier]) }}</span>
-                        <span class="text-right font-semibold tabular-nums text-white">{{ fmt(part.count) }}</span>
-                        <span class="text-right tabular-nums text-slate-400">{{ part.percent }}%</span>
-                      </span>
-                      <span class="mt-1.5 grid grid-cols-[1fr_auto_3rem] gap-x-2 border-t border-slate-700 pt-1.5">
-                        <span class="text-slate-300">{{ $t('leaderboard.mixTotal') }}</span>
-                        <span class="text-right font-semibold tabular-nums text-white">{{ fmt(mixTotal(r)) }}</span>
-                        <span />
-                      </span>
-                    </span>
-                  </template>
-                </Tooltip>
+                <LeaderboardTierMix v-else-if="c === 'mix'" :row="r" />
 
                 <!-- Points (primary metric) -->
                 <span v-else-if="c === 'points'" class="text-[15px] font-bold tabular-nums text-slate-900">{{ fmt(r.points) }}</span>

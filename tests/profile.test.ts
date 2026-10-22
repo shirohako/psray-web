@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { formatHourInterval, levelTier, platformLabel, resolveHourInterval, stopwatch, toIsoDate } from '~/utils/profile'
+import type { Profile } from '~/services/profile'
+import { earnedTiers, formatHourInterval, levelTier, platformLabel, profilePageJsonLd, resolveHourInterval, stopwatch, toIsoDate } from '~/utils/profile'
 
 const compact = (value: string | null) => value?.replace(/\s/g, '')
 
@@ -47,6 +48,15 @@ describe('profile formatting', () => {
     expect(stopwatch(-5)).toEqual({ days: 0, time: '0:00:00' })
   })
 
+  it('lists earned counts per tier from platinum down, with each tier\'s dot', () => {
+    expect(earnedTiers({ earned_platinum: 1, earned_gold: 2, earned_silver: 3, earned_bronze: 4 })).toEqual([
+      { dot: 'bg-cyan-400', count: 1 },
+      { dot: 'bg-amber-400', count: 2 },
+      { dot: 'bg-slate-400', count: 3 },
+      { dot: 'bg-orange-400', count: 4 },
+    ])
+  })
+
   it('maps trophy levels to the PlayStation level tiers', () => {
     expect(levelTier(1)).toBe('bronze')
     expect(levelTier(299)).toBe('bronze')
@@ -56,5 +66,59 @@ describe('profile formatting', () => {
     expect(levelTier(998)).toBe('gold')
     expect(levelTier(999)).toBe('platinum')
     expect(levelTier(1500)).toBe('platinum')
+  })
+})
+
+describe('profile structured data', () => {
+  const profile = {
+    psnid: 'player',
+    avatar_url: 'https://img.example/avatar.webp',
+    about_me: '',
+    is_profile_public: true,
+    registered_at: '2026-06-30T22:37:57.000000Z',
+    follower_count: 3,
+    following_count: 5,
+    tip_count: 7,
+  } as Profile
+  const url = 'https://psray.net/p/player'
+
+  it('describes a registered public profile as a ProfilePage about its player', () => {
+    expect(profilePageJsonLd(profile, url, 'ja-JP')).toEqual({
+      '@context': 'https://schema.org',
+      '@type': 'ProfilePage',
+      'url': url,
+      'dateCreated': '2026-06-30T22:37:57.000Z',
+      'inLanguage': 'ja-JP',
+      'mainEntity': {
+        '@id': `${url}#person`,
+        '@type': 'Person',
+        'name': 'player',
+        'identifier': 'player',
+        'url': url,
+        'image': 'https://img.example/avatar.webp',
+        'interactionStatistic': [
+          { '@type': 'InteractionCounter', 'interactionType': 'https://schema.org/FollowAction', 'userInteractionCount': 3 },
+        ],
+        'agentInteractionStatistic': [
+          { '@type': 'InteractionCounter', 'interactionType': 'https://schema.org/FollowAction', 'userInteractionCount': 5 },
+          { '@type': 'InteractionCounter', 'interactionType': 'https://schema.org/WriteAction', 'userInteractionCount': 7 },
+        ],
+      },
+    })
+  })
+
+  it('adds the about text when there is one', () => {
+    const data = profilePageJsonLd({ ...profile, about_me: 'Hello' }, url, 'en-US')
+    expect((data?.mainEntity as Record<string, unknown>).description).toBe('Hello')
+  })
+
+  it('advertises nothing for private or unregistered profiles', () => {
+    expect(profilePageJsonLd({ ...profile, is_profile_public: false }, url, 'ja-JP')).toBeNull()
+    expect(profilePageJsonLd({ ...profile, registered_at: null }, url, 'ja-JP')).toBeNull()
+  })
+
+  it('leaves out an unreadable registration date', () => {
+    const data = profilePageJsonLd({ ...profile, registered_at: 'not a date' }, url, 'ja-JP')
+    expect(JSON.parse(JSON.stringify(data))).not.toHaveProperty('dateCreated')
   })
 })

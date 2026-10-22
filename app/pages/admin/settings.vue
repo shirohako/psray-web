@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Settings } from 'lucide'
-import type { SystemSettingGroup, SystemSettingsResponse } from '~/utils/admin'
+import type { SystemSettingGroup, SystemSettingsResponse } from '~/types/admin'
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
 const api = useAdminApi()
 const groups = ref<SystemSettingGroup[] | null>(null),

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Loader2, MailCheck, RotateCcw } from 'lucide'
+import { MailCheck, RotateCcw } from 'lucide'
 
-/** Step 4 — instructions to place the emailed code into the PSN profile + resend. */
+/** Step 5 — instructions to place the emailed code into the PSN profile + resend. */
 defineProps<{ email: string, cooldown: number, sending: boolean }>()
 defineEmits<{ resend: [] }>()
 
@@ -29,16 +29,15 @@ const guideKeys = [1, 2, 3].map(n => `auth.register.verify.step${n}`)
       </li>
     </ol>
 
-    <button
-      type="button"
-      :disabled="cooldown > 0 || sending"
-      class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500 transition hover:text-slate-900 disabled:cursor-not-allowed disabled:opacity-50"
-      @click="$emit('resend')"
-    >
-      <LucideIcon :icon="sending ? Loader2 : RotateCcw" class="size-4" :class="sending && 'animate-spin'" />
-      {{ cooldown > 0
-        ? $t('auth.register.cta.resendIn', { seconds: cooldown })
-        : $t('auth.register.verify.resend') }}
-    </button>
+    <!-- The label stays "Resend" while sending; the spinning icon says it's on its way -->
+    <AuthSendCodeButton
+      :cooldown="cooldown"
+      :sending="sending"
+      :icon="RotateCcw"
+      :label="$t('auth.register.verify.resend')"
+      :sending-label="$t('auth.register.verify.resend')"
+      class="font-medium text-slate-500 hover:text-slate-900"
+      @send="$emit('resend')"
+    />
   </div>
 </template>

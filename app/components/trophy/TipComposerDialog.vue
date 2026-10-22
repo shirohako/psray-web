@@ -36,8 +36,15 @@ const spoiler = ref(false)
 const missable = ref<boolean | null>(null)
 const fieldErrors = ref<Record<string, string>>({})
 
+// The three answers to "missable?", each in its own accent: unset, yes, no.
+const MISSABLE_OPTIONS = [
+  { value: null, labelKey: 'trophy.tips.form.missableUnset', focus: 'focus-within:ring-slate-400/40', selected: 'border-slate-400 bg-slate-100 text-slate-800 ring-1 ring-slate-300/60', idle: 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50' },
+  { value: true, labelKey: 'trophy.tips.form.missableYes', focus: 'focus-within:ring-amber-400/40', selected: 'border-amber-300 bg-amber-50 text-amber-700 ring-1 ring-amber-200/60', idle: 'border-slate-200 bg-white text-slate-500 hover:bg-amber-50/50' },
+  { value: false, labelKey: 'trophy.tips.form.missableNo', focus: 'focus-within:ring-emerald-400/40', selected: 'border-emerald-300 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/60', idle: 'border-slate-200 bg-white text-slate-500 hover:bg-emerald-50/50' },
+] as const
+
 const draftKey = computed(() => user.value?.id
-  ? `trophy-tip-draft:${user.value.id}:${props.trophyId}`
+  ? tipDraftKey(user.value.id, props.trophyId)
   : '')
 
 function saveDraft() {
@@ -236,26 +243,17 @@ watch(() => props.open, (value) => {
         <fieldset :disabled="publishing || deleting" class="disabled:opacity-60">
           <legend class="mb-1.5 text-xs font-semibold text-slate-600">{{ $t('trophy.tips.form.missable') }}</legend>
           <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
-            <label class="cursor-pointer rounded-lg focus-within:ring-2 focus-within:ring-slate-400/40">
-              <input v-model="missable" type="radio" :name="`tip-missable-${trophyId}`" :value="null" class="sr-only" />
+            <label
+              v-for="option in MISSABLE_OPTIONS"
+              :key="String(option.value)"
+              class="cursor-pointer rounded-lg focus-within:ring-2"
+              :class="option.focus"
+            >
+              <input v-model="missable" type="radio" :name="`tip-missable-${trophyId}`" :value="option.value" class="sr-only" />
               <span
                 class="flex items-center justify-center rounded-lg border px-3 py-2 text-xs font-semibold transition"
-                :class="missable === null ? 'border-slate-400 bg-slate-100 text-slate-800 ring-1 ring-slate-300/60' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'"
-              >{{ $t('trophy.tips.form.missableUnset') }}</span>
-            </label>
-            <label class="cursor-pointer rounded-lg focus-within:ring-2 focus-within:ring-amber-400/40">
-              <input v-model="missable" type="radio" :name="`tip-missable-${trophyId}`" :value="true" class="sr-only" />
-              <span
-                class="flex items-center justify-center rounded-lg border px-3 py-2 text-xs font-semibold transition"
-                :class="missable === true ? 'border-amber-300 bg-amber-50 text-amber-700 ring-1 ring-amber-200/60' : 'border-slate-200 bg-white text-slate-500 hover:bg-amber-50/50'"
-              >{{ $t('trophy.tips.form.missableYes') }}</span>
-            </label>
-            <label class="cursor-pointer rounded-lg focus-within:ring-2 focus-within:ring-emerald-400/40">
-              <input v-model="missable" type="radio" :name="`tip-missable-${trophyId}`" :value="false" class="sr-only" />
-              <span
-                class="flex items-center justify-center rounded-lg border px-3 py-2 text-xs font-semibold transition"
-                :class="missable === false ? 'border-emerald-300 bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200/60' : 'border-slate-200 bg-white text-slate-500 hover:bg-emerald-50/50'"
-              >{{ $t('trophy.tips.form.missableNo') }}</span>
+                :class="missable === option.value ? option.selected : option.idle"
+              >{{ $t(option.labelKey) }}</span>
             </label>
           </div>
         </fieldset>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ExternalLink, Save, ThumbsDown, ThumbsUp, Trash2 } from 'lucide'
-import { adminDate, adminTipChanges, TIP_LANGUAGE_OPTIONS, type AdminTipDetail, type AdminTipFields } from '~/utils/admin'
+import { adminDate, adminTipChanges, TIP_LANGUAGE_OPTIONS } from '~/utils/admin'
+import type { AdminTipDetail, AdminTipFields } from '~/types/admin'
 
 /**
  * Drawer body for one Tip: where it sits and who wrote it, the text as the

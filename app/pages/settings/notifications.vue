@@ -70,22 +70,7 @@ async function save() {
 <template>
   <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
     <div class="space-y-6 p-5">
-      <div class="overflow-hidden rounded-lg border border-stone-800 bg-stone-900 text-white shadow-sm">
-        <div class="p-5">
-          <div class="flex min-w-0 items-start gap-3">
-            <span class="grid size-11 shrink-0 place-items-center rounded-lg bg-white/10 text-sky-200 ring-1 ring-white/15">
-              <LucideIcon :icon="Bell" class="size-5.5" />
-            </span>
-            <div class="min-w-0">
-              <p class="text-xs font-semibold uppercase tracking-wide text-sky-200">Notifications</p>
-              <h3 class="mt-1 text-xl font-bold tracking-tight text-white">{{ $t('settings.notifications.heading') }}</h3>
-              <p class="mt-1 max-w-xl text-sm leading-relaxed text-stone-300">
-                {{ $t('settings.notifications.subheading') }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <SettingsHero :icon="Bell" eyebrow="Notifications" :title="$t('settings.notifications.heading')" :description="$t('settings.notifications.subheading')" />
 
       <!-- Loading -->
       <div v-if="pending" class="space-y-3">

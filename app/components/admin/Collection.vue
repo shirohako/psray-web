@@ -9,14 +9,8 @@ import {
   X,
   type IconNode,
 } from 'lucide'
-import {
-  adminDate,
-  adminField,
-  adminLocalToUtc,
-  adminQuery,
-  type AdminColumn,
-  type AdminFilter,
-} from '~/utils/admin'
+import { adminDate, adminField, adminLocalToUtc, adminQuery } from '~/utils/admin'
+import type { AdminColumn, AdminFilter } from '~/types/admin'
 const props = withDefaults(
   defineProps<{
     title: string

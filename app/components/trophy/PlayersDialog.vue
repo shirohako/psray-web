@@ -65,15 +65,6 @@ watch(() => props.open, (v) => {
   load()
 })
 
-function tiers(p: PlayerRanking) {
-  return [
-    { dot: 'bg-cyan-400', count: p.earned_platinum },
-    { dot: 'bg-amber-400', count: p.earned_gold },
-    { dot: 'bg-slate-400', count: p.earned_silver },
-    { dot: 'bg-orange-400', count: p.earned_bronze },
-  ]
-}
-
 /** Rows decided by a finish: every speedrun row, and finish-order rows at 100%. */
 function finished(p: PlayerRanking) {
   return shownType.value === 'speedrun' || (shownType.value === 'progress' && p.progress >= 100)
@@ -169,13 +160,15 @@ function rankClass(rank: number) {
             </div>
           </div>
 
-          <!-- Finished rows: the old breakdown + percent, then the figure the ranking is decided by -->
+          <!-- Trophy breakdown, on every row -->
+          <div class="hidden shrink-0 items-center gap-2.5 text-xs text-slate-500 sm:flex">
+            <span v-for="(t, i) in earnedTiers(p)" :key="i" class="inline-flex items-center gap-0.5">
+              <span class="size-2 rounded-full" :class="t.dot" />{{ t.count }}
+            </span>
+          </div>
+
+          <!-- Finished rows: the old percent, then the figure the ranking is decided by -->
           <template v-if="finished(p)">
-            <div class="hidden shrink-0 items-center gap-2.5 text-xs text-slate-500 sm:flex">
-              <span v-for="(t, i) in tiers(p)" :key="i" class="inline-flex items-center gap-0.5">
-                <span class="size-2 rounded-full" :class="t.dot" />{{ t.count }}
-              </span>
-            </div>
             <div class="hidden w-10 shrink-0 text-right text-xs font-semibold tabular-nums text-slate-400 sm:block">{{ p.progress }}%</div>
             <div class="hidden h-8 w-px shrink-0 bg-slate-100 sm:block" />
             <!-- Speedrun: the time taken, to the second -->
@@ -195,15 +188,8 @@ function rankClass(rank: number) {
             </div>
           </template>
 
-          <!-- Still playing: trophy breakdown and progress -->
-          <template v-else>
-            <div class="hidden shrink-0 items-center gap-2.5 text-xs text-slate-500 sm:flex">
-              <span v-for="(t, i) in tiers(p)" :key="i" class="inline-flex items-center gap-0.5">
-                <span class="size-2 rounded-full" :class="t.dot" />{{ t.count }}
-              </span>
-            </div>
-            <div class="w-12 shrink-0 text-right text-sm font-bold text-slate-900 tabular-nums">{{ p.progress }}%</div>
-          </template>
+          <!-- Still playing: progress -->
+          <div v-else class="w-12 shrink-0 text-right text-sm font-bold text-slate-900 tabular-nums">{{ p.progress }}%</div>
         </TrophyPlayerMenu>
       </li>
     </ul>

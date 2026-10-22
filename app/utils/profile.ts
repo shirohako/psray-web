@@ -196,6 +196,52 @@ export function regionName(c: string) {
   }
 }
 
+/**
+ * schema.org `ProfilePage` structured data for a profile page at `url`, or
+ * `null` when there is nothing to advertise. Only registered PSRay members are
+ * creators affiliated with this site: a synced-only PSN record is useful
+ * content, but it is not a community profile. A private profile gets none.
+ */
+export function profilePageJsonLd(p: Profile, url: string, inLanguage: string): Record<string, unknown> | null {
+  if (!p.is_profile_public || p.registered_at == null) return null
+
+  const person: Record<string, unknown> = {
+    '@id': `${url}#person`,
+    '@type': 'Person',
+    'name': p.psnid,
+    'identifier': p.psnid,
+    'url': url,
+    'image': p.avatar_url,
+    'interactionStatistic': [{
+      '@type': 'InteractionCounter',
+      'interactionType': 'https://schema.org/FollowAction',
+      'userInteractionCount': p.follower_count,
+    }],
+    'agentInteractionStatistic': [
+      {
+        '@type': 'InteractionCounter',
+        'interactionType': 'https://schema.org/FollowAction',
+        'userInteractionCount': p.following_count,
+      },
+      {
+        '@type': 'InteractionCounter',
+        'interactionType': 'https://schema.org/WriteAction',
+        'userInteractionCount': p.tip_count,
+      },
+    ],
+  }
+  if (p.about_me) person.description = p.about_me
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    'url': url,
+    'dateCreated': toIsoDate(p.registered_at) ?? undefined,
+    'inLanguage': inLanguage,
+    'mainEntity': person,
+  }
+}
+
 /** A rank value: `#1,234`, or the "unranked" label when the user has no rank yet. */
 export const rankText = (r: number | null | undefined) =>
   (r == null ? tr('profile.stats.unranked') : `#${fmt(r)}`)
@@ -251,6 +297,14 @@ export const trophyKinds: { key: TrophyKey; labelKey: string; dot: string; text:
   { key: 'silver', labelKey: 'trophy.tier.silver', dot: 'bg-slate-400', text: 'text-slate-500' },
   { key: 'bronze', labelKey: 'trophy.tier.bronze', dot: 'bg-orange-400', text: 'text-orange-600' },
 ]
+
+/**
+ * A player's earned count for each tier, in `trophyKinds` order with the
+ * tier's dot colour, from any record with `earned_platinum` … `earned_bronze`.
+ */
+export function earnedTiers(record: Record<`earned_${TrophyKey}`, number>) {
+  return trophyKinds.map(kind => ({ dot: kind.dot, count: record[`earned_${kind.key}` as const] }))
+}
 
 /**
  * Trophy-level tier, after PlayStation's level icons: bronze for 1–299, silver
