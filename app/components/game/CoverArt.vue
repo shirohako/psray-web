@@ -29,10 +29,14 @@ const BAND_SYMBOLS = BUTTON_SHAPES.map((shape, index) => ({ shape, x: 230 + inde
 
 /** Sunburst: 18 rays of 10° fanning up from below the bottom edge; every other one is filled. */
 const BURST = { x: 150, y: 420, r: 560 }
+// Rounded to 0.01: Math.cos / Math.sin can differ in the last digit between the
+// server's JavaScript engine and the browser's, and hydration would then see a
+// different path.
+const round = (n: number) => Math.round(n * 100) / 100
 const rays = Array.from({ length: 9 }, (_, index) => {
   const point = (degrees: number) => {
     const radians = (degrees * Math.PI) / 180
-    return `${BURST.x + BURST.r * Math.cos(radians)} ${BURST.y + BURST.r * Math.sin(radians)}`
+    return `${round(BURST.x + BURST.r * Math.cos(radians))} ${round(BURST.y + BURST.r * Math.sin(radians))}`
   }
   const start = 180 + index * 20
   return `M${BURST.x} ${BURST.y}L${point(start)}A${BURST.r} ${BURST.r} 0 0 1 ${point(start + 10)}Z`
