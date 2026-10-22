@@ -369,7 +369,6 @@
       "loadFailed": "コメントを読み込めませんでした。",
       "form": {
         "open": "コメントを書く",
-        "edit": "コメントを編集",
         "heading": "コメントを書く",
         "headingEdit": "コメントを編集",
         "loading": "コメントを読み込んでいます…",
@@ -472,9 +471,7 @@
     },
     "identity": {
       "registered": "認証済み",
-      "unregistered": "未登録（PSN プロフィールの同期のみ）",
       "noAboutMe": "自己紹介はまだありません。",
-      "views": "{count} 回閲覧",
       "notRealtime": "最新のデータではない場合があります"
     },
     "actions": {
@@ -503,7 +500,6 @@
       "trophies": "トロフィー総数",
       "perfect": "コンプリート",
       "lowCompletion": "積みゲー",
-      "favorites": "お気に入り",
       "comments": "コメント",
       "views": "閲覧数",
       "globalRank": "世界ランキング",
@@ -586,9 +582,6 @@
       "empty": "投稿したコメントはまだありません。",
       "loadFailed": "コメントを読み込めませんでした。",
       "total": "全 {count} 件"
-    },
-    "log": {
-      "comingSoon": "トロフィーログは近日公開予定です。"
     },
     "private": {
       "title": "非公開のアカウントです",
@@ -967,7 +960,6 @@
     "retry": "再読み込み",
     "trophySetCount": "トロフィーセット {n} 個",
     "morePlatforms": "ほか {n} プラットフォーム",
-    "noCover": "カバー画像なし",
     "tba": "発売日未定",
     "quarter": "{year}年 第{quarter}四半期",
     "regions": {
@@ -1007,7 +999,6 @@
       "names": "名称",
       "commonName": "共通名",
       "aliases": "別名",
-      "links": "外部リンク",
       "showMore": "続きを読む",
       "showLess": "閉じる"
     }

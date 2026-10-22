@@ -88,11 +88,3 @@ export interface FeedbackReplyPayload {
   content: string
   image_urls?: string[]
 }
-
-export interface FeedbackListQuery {
-  page?: number
-  type?: FeedbackType
-  status?: FeedbackStatus
-  /** Signed-in only: the viewer's own feedback, hidden ones included. */
-  mine?: 1
-}

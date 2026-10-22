@@ -1,5 +1,3 @@
-export const defaultSitemapUrl = 'https://api.psray.net/sitemap.xml'
-
 export function sitemapUrl(value: string): string {
   const url = new URL(value)
   if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Invalid sitemap URL')

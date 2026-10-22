@@ -136,7 +136,7 @@ function milestoneMeta(item: ProfileMilestone) {
         move-class="transition-transform duration-500 ease-in-out"
       >
       <a
-        v-for="(item, index) in visibleMilestones"
+        v-for="item in visibleMilestones"
         :key="`${item.type}-${item.index}-${item.trophy_id}`"
         :href="`/trophies/${item.trophy_set_id}`"
         class="group relative flex gap-3 py-3"

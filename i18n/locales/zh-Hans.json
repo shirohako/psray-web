@@ -369,7 +369,6 @@
       "loadFailed": "无法加载留言。",
       "form": {
         "open": "发表留言",
-        "edit": "编辑留言",
         "heading": "发表留言",
         "headingEdit": "编辑留言",
         "loading": "正在读取留言…",
@@ -472,9 +471,7 @@
     },
     "identity": {
       "registered": "已验证",
-      "unregistered": "未注册（仅同步 PSN 资料）",
       "noAboutMe": "这个人很神秘，什么都没留下。",
-      "views": "{count} 次浏览",
       "notRealtime": "非实时数据"
     },
     "actions": {
@@ -503,7 +500,6 @@
       "trophies": "奖杯总数",
       "perfect": "完美",
       "lowCompletion": "低完成率",
-      "favorites": "收藏游戏",
       "comments": "留言",
       "views": "浏览次数",
       "globalRank": "全球排名",
@@ -586,9 +582,6 @@
       "empty": "还没有发表过留言。",
       "loadFailed": "无法加载留言。",
       "total": "共 {count} 条"
-    },
-    "log": {
-      "comingSoon": "奖杯记录功能敬请期待。"
     },
     "private": {
       "title": "这是一个非公开的账户",
@@ -967,7 +960,6 @@
     "retry": "重新加载",
     "trophySetCount": "{n} 个奖杯组",
     "morePlatforms": "另有 {n} 个平台",
-    "noCover": "暂无封面",
     "tba": "发售日未定",
     "quarter": "{year} 年第 {quarter} 季度",
     "regions": {
@@ -1007,7 +999,6 @@
       "names": "名称",
       "commonName": "通用名",
       "aliases": "别名",
-      "links": "外部链接",
       "showMore": "展开全文",
       "showLess": "收起"
     }

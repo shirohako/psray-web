@@ -369,7 +369,6 @@
       "loadFailed": "無法載入留言。",
       "form": {
         "open": "發表留言",
-        "edit": "編輯留言",
         "heading": "發表留言",
         "headingEdit": "編輯留言",
         "loading": "正在讀取留言…",
@@ -472,9 +471,7 @@
     },
     "identity": {
       "registered": "已驗證",
-      "unregistered": "未註冊（僅同步 PSN 資料）",
       "noAboutMe": "這個人很神秘，什麼都沒留下。",
-      "views": "{count} 次瀏覽",
       "notRealtime": "非即時資料"
     },
     "actions": {
@@ -503,7 +500,6 @@
       "trophies": "獎盃總數",
       "perfect": "完美",
       "lowCompletion": "低完成率",
-      "favorites": "收藏遊戲",
       "comments": "留言",
       "views": "瀏覽次數",
       "globalRank": "全球排名",
@@ -586,9 +582,6 @@
       "empty": "還沒有發表過留言。",
       "loadFailed": "無法載入留言。",
       "total": "共 {count} 則"
-    },
-    "log": {
-      "comingSoon": "獎盃記錄功能敬請期待。"
     },
     "private": {
       "title": "這是一個非公開的帳號",
@@ -967,7 +960,6 @@
     "retry": "重新載入",
     "trophySetCount": "{n} 個獎盃組",
     "morePlatforms": "另有 {n} 個平台",
-    "noCover": "暫無封面",
     "tba": "發售日未定",
     "quarter": "{year} 年第 {quarter} 季",
     "regions": {
@@ -1007,7 +999,6 @@
       "names": "名稱",
       "commonName": "通用名稱",
       "aliases": "別名",
-      "links": "外部連結",
       "showMore": "展開全文",
       "showLess": "收合"
     }

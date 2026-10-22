@@ -369,7 +369,6 @@
       "loadFailed": "Tips could not be loaded.",
       "form": {
         "open": "Write a comment",
-        "edit": "Edit comment",
         "heading": "Write a comment",
         "headingEdit": "Edit comment",
         "loading": "Loading comment…",
@@ -472,9 +471,7 @@
     },
     "identity": {
       "registered": "Verified",
-      "unregistered": "Not registered (PSN profile synced only)",
       "noAboutMe": "This player hasn’t written anything yet.",
-      "views": "{count} views",
       "notRealtime": "Not real-time data"
     },
     "actions": {
@@ -503,7 +500,6 @@
       "trophies": "Total trophies",
       "perfect": "100% complete",
       "lowCompletion": "Low completion",
-      "favorites": "Favorites",
       "comments": "Comments",
       "views": "Views",
       "globalRank": "Global rank",
@@ -586,9 +582,6 @@
       "empty": "No comments have been published yet.",
       "loadFailed": "Comments could not be loaded.",
       "total": "{count} total"
-    },
-    "log": {
-      "comingSoon": "The trophy log is coming soon."
     },
     "private": {
       "title": "This profile is private",
@@ -967,7 +960,6 @@
     "retry": "Reload",
     "trophySetCount": "no trophy sets | {n} trophy set | {n} trophy sets",
     "morePlatforms": "{n} more platform | {n} more platforms",
-    "noCover": "No cover art",
     "tba": "TBA",
     "quarter": "Q{quarter} {year}",
     "regions": {
@@ -1007,7 +999,6 @@
       "names": "Names",
       "commonName": "Common name",
       "aliases": "Also known as",
-      "links": "Links",
       "showMore": "Read more",
       "showLess": "Show less"
     }

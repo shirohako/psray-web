@@ -191,25 +191,6 @@ export interface BanResult {
   purged: PurgeReport | null
   evidence: BanEvidence
 }
-/** A row of `GET /bans`: an active penalty. An account with several
-    penalties has one row each. */
-export interface BanRecord {
-  id: number
-  account_id: string
-  /** The name recorded at ban time; later renames do not update it. */
-  psnid: string
-  level: PenaltyLevel
-  source: string
-  reason_code: string | null
-  reason: string | null
-  moderator: { id: number; psnid: string } | null
-  banned_at: string
-  /** Terminations only: null while the purge is unfinished, and
-      resubmitting the termination retries it. Always null for ranking bans. */
-  data_purged_at: string | null
-  evidence_count: number
-  is_psnprofiles_banned: boolean
-}
 /** The user `POST /sync-resets` acts on, with stats from before the reset. */
 export interface SyncResetTarget {
   id: number

@@ -268,30 +268,6 @@ export interface TrophySetDetail {
   viewer_progress: ViewerProgress | null
 }
 
-/** One trophy's localized text from `GET /trophies/:id/localization`. */
-export interface TrophyLocalizationTrophy {
-  id: number
-  localized_name: string
-  localized_detail: string
-}
-
-/** One group's localized text from `GET /trophies/:id/localization`. */
-export interface TrophyLocalizationGroup {
-  id: number
-  localized_name: string
-  localized_detail: string
-  trophies: TrophyLocalizationTrophy[]
-}
-
-/**
- * Payload of `GET /trophies/:id/localization` — only the translatable text, to
- * patch onto an already-rendered detail page when switching display language.
- */
-export interface TrophyLocalization {
-  display_language: string
-  groups: TrophyLocalizationGroup[]
-}
-
 /** Player-ranking modes for `GET /trophies/:id/players`. */
 export type PlayerRankType = 'recent' | 'progress' | 'speedrun'
 
@@ -330,28 +306,9 @@ export interface TrophyPlayer {
 }
 
 export function useTrophies() {
-  const { get, raw } = useApi()
+  const { raw } = useApi()
 
   return {
-    /** Public trophy-set browser. All filters and ordering are applied server-side. */
-    browse: (query?: TrophyBrowseQuery) =>
-      raw.get<TrophyBrowseItem[], TrophyBrowseMeta>('/trophies', { query }),
-
-    /** Trophy-set detail. Pass `psnid` to embed a user's progress. */
-    find: (id: number | string, query?: { psnid?: string; lang?: string }) =>
-      get<TrophySetDetail>(`/trophies/${id}`, { query }),
-
-    /**
-     * Localized text only — `localized_name` / `localized_detail` keyed by id,
-     * without progress / players / similar sets.
-     *
-     * @deprecated The trophy page now re-fetches `find()` with `?lang=` instead,
-     * so the chosen language lives in the URL and each translation gets its own
-     * shareable, indexable address.
-     */
-    localization: (id: number | string, query?: { lang?: string }) =>
-      get<TrophyLocalization>(`/trophies/${id}/localization`, { query }),
-
     /** Ranked players for a set (paginated — returns the `{ data, meta }` envelope). */
     players: (id: number | string, query?: { type?: PlayerRankType; page?: number }) =>
       raw.get<PlayerRanking[], PlayersMeta>(`/trophies/${id}/players`, { query }),

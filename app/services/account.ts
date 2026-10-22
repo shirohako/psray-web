@@ -1,12 +1,9 @@
-import type { ApiSuccess } from '~/types/api'
-
 /**
  * Account self-service mutations for the user-settings pages: banner +
- * avatar settings, avatar upload, email + password changes, account deletion,
- * resetting synced PSN data.
+ * avatar settings, email + password changes, account deletion, resetting
+ * synced PSN data.
  *
  * Mirrors `useAuthApi()` in `~/services/auth` — thin wrappers over `useApi()`.
- * `uploadAvatar` is still by-convention pending its endpoint.
  */
 
 /** Standard success payload for the mutation endpoints: a displayable message. */
@@ -42,10 +39,6 @@ export interface UserSetting {
   mail_important: boolean
   mail_features: boolean
   mail_other: boolean
-}
-
-export interface AvatarUploadResult {
-  avatar_url: string
 }
 
 export interface ChangePasswordPayload {
@@ -102,10 +95,9 @@ export interface SyncResetResult {
 }
 
 export function useAccountApi() {
-  const { get, patch, post, $api } = useApi()
+  const { patch, post } = useApi()
 
   return {
-    getSetting: () => get<UserSetting>('/user/setting'),
     updateSetting: (payload: UpdateSettingPayload) =>
       patch<MessageResult>('/user/setting', payload),
 
@@ -138,17 +130,5 @@ export function useAccountApi() {
     // re-sync. `psnid` must repeat the account's own PSN ID (confirmation).
     resetSync: (psnid: string) =>
       post<SyncResetResult>('/user/account/sync-reset', { psnid }),
-
-    // Multipart upload — hand the FormData straight to ofetch so it sets the
-    // multipart boundary itself (the `$api` plugin only sets `Accept`).
-    async uploadAvatar(file: File) {
-      const form = new FormData()
-      form.append('avatar', file)
-      const res = await $api<ApiSuccess<AvatarUploadResult>>('/auth/avatar', {
-        method: 'POST',
-        body: form,
-      })
-      return res.data
-    },
   }
 }

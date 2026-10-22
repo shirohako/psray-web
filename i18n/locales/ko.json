@@ -369,7 +369,6 @@
       "loadFailed": "댓글을 불러오지 못했습니다.",
       "form": {
         "open": "댓글 작성",
-        "edit": "댓글 수정",
         "heading": "댓글 작성",
         "headingEdit": "댓글 수정",
         "loading": "댓글을 불러오는 중…",
@@ -472,9 +471,7 @@
     },
     "identity": {
       "registered": "인증됨",
-      "unregistered": "미가입 (PSN 프로필 동기화만)",
       "noAboutMe": "이 플레이어는 아무것도 남기지 않았습니다.",
-      "views": "조회 {count}회",
       "notRealtime": "실시간 데이터가 아닙니다"
     },
     "actions": {
@@ -503,7 +500,6 @@
       "trophies": "총 트로피",
       "perfect": "100% 완료",
       "lowCompletion": "완료율 낮은 게임",
-      "favorites": "즐겨찾기",
       "comments": "댓글",
       "views": "조회수",
       "globalRank": "전체 순위",
@@ -586,9 +582,6 @@
       "empty": "아직 작성한 댓글이 없습니다.",
       "loadFailed": "댓글을 불러오지 못했습니다.",
       "total": "총 {count}개"
-    },
-    "log": {
-      "comingSoon": "트로피 기록 기능은 곧 제공됩니다."
     },
     "private": {
       "title": "비공개 계정입니다",
@@ -967,7 +960,6 @@
     "retry": "다시 불러오기",
     "trophySetCount": "트로피 세트 {n}개",
     "morePlatforms": "외 {n}개 플랫폼",
-    "noCover": "커버 이미지 없음",
     "tba": "발매일 미정",
     "quarter": "{year}년 {quarter}분기",
     "regions": {
@@ -1007,7 +999,6 @@
       "names": "이름",
       "commonName": "공통 이름",
       "aliases": "별칭",
-      "links": "외부 링크",
       "showMore": "더 보기",
       "showLess": "접기"
     }

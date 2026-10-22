@@ -33,9 +33,7 @@ export function useAuth() {
   const user = useState<AuthUser | null>('auth:user', () => null)
   const roles = useState<string[]>('auth:roles', () => [])
   const permissions = useState<string[]>('auth:permissions', () => [])
-  const tokenMeta = useState<AuthSession['token'] | null>('auth:tokenMeta', () => null)
   const ready = useState('auth:ready', () => false)
-  const loading = useState('auth:loading', () => false)
 
   const loggedIn = computed(() => !!token.value && !!user.value)
   const hasToken = computed(() => !!token.value)
@@ -44,7 +42,6 @@ export function useAuth() {
     user.value = session.user
     roles.value = session.roles ?? []
     permissions.value = session.permissions ?? []
-    tokenMeta.value = session.token
     ready.value = true
   }
 
@@ -52,7 +49,6 @@ export function useAuth() {
     user.value = null
     roles.value = []
     permissions.value = []
-    tokenMeta.value = null
     ready.value = true
   }
 
@@ -76,7 +72,6 @@ export function useAuth() {
 
     // `useCookie` needs the Nuxt instance, which SSR loses after an `await`.
     const nuxtApp = useNuxtApp()
-    loading.value = true
     try {
       const session = await useAuthApi().me()
       applySession(session)
@@ -95,9 +90,6 @@ export function useAuth() {
 
       ready.value = false
       throw error
-    }
-    finally {
-      loading.value = false
     }
   }
 
@@ -122,29 +114,23 @@ export function useAuth() {
   // to an identical `AuthUser` with no shapes to keep in sync. (Registration
   // does not log in — see `useRegisterFlow`.)
   async function login(payload: LoginPayload) {
-    loading.value = true
-    try {
-      const issued = await useAuthApi().login(payload)
-      setToken(issued.token, issued.expiresAt)
-      // `setToken` writes the `auth_token` cookie through a `useCookie` ref,
-      // whose actual `document.cookie` write is flushed by a watcher on the next
-      // tick, not synchronously. Without this wait the immediate `fetchMe()`
-      // below can fire before the new cookie lands, so its Authorization header
-      // re-reads the old (or absent) token and 401s.
-      await nextTick()
-      const session = await fetchMe()
-      if (!session) {
-        throw new ApiError({
-          code: 'INTERNAL_ERROR',
-          message: 'Login succeeded, but loading the account failed.',
-          status: 500,
-        })
-      }
-      return session
+    const issued = await useAuthApi().login(payload)
+    setToken(issued.token, issued.expiresAt)
+    // `setToken` writes the `auth_token` cookie through a `useCookie` ref,
+    // whose actual `document.cookie` write is flushed by a watcher on the next
+    // tick, not synchronously. Without this wait the immediate `fetchMe()`
+    // below can fire before the new cookie lands, so its Authorization header
+    // re-reads the old (or absent) token and 401s.
+    await nextTick()
+    const session = await fetchMe()
+    if (!session) {
+      throw new ApiError({
+        code: 'INTERNAL_ERROR',
+        message: 'Login succeeded, but loading the account failed.',
+        status: 500,
+      })
     }
-    finally {
-      loading.value = false
-    }
+    return session
   }
 
   async function logout() {
@@ -190,9 +176,7 @@ export function useAuth() {
     user,
     roles,
     permissions,
-    tokenMeta,
     ready,
-    loading,
     loggedIn,
     hasToken,
     init,

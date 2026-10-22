@@ -28,15 +28,6 @@ export function toIsoDate(value: DateLike): string | null {
   return toDate(value)?.toISOString() ?? null
 }
 
-/** Date only, in the active language, e.g. `May 29, 2026`. */
-export function fmtDate(value: DateLike) {
-  const date = toDate(value)
-  if (!date) return '—'
-  return date.toLocaleDateString(currentLocale(), {
-    year: 'numeric', month: 'long', day: 'numeric',
-  })
-}
-
 /** Absolute date down to the minute, e.g. `2026/05/29 14:30`. */
 export function fmtDateTime(value: DateLike) {
   const date = toDate(value)
@@ -137,45 +128,6 @@ export function stopwatch(sec: number): { days: number; time: string } {
   const h = Math.floor((total % 86_400) / 3600)
   const pad = (n: number) => String(n).padStart(2, '0')
   return { days, time: `${days ? pad(h) : h}:${pad(Math.floor((total % 3600) / 60))}:${pad(total % 60)}` }
-}
-
-
-/**
- * Gap between two consecutively earned trophies, in English units spaced for
- * readability, e.g.「18 h 12 m 15 s」「1 d 3 h」「5 s」. Lists every non-zero
- * unit (d/h/m/s).「< 1 s」for sub-second gaps;「null」when there's no previous
- * trophy to compare against.
- */
-export function fmtEarnGap(sec: number | null | undefined) {
-  if (sec == null) return null
-  if (sec < 1) return '< 1 s'
-  const d = Math.floor(sec / 86_400)
-  const h = Math.floor((sec % 86_400) / 3600)
-  const m = Math.floor((sec % 3600) / 60)
-  const s = Math.floor(sec % 60)
-  const parts: string[] = []
-  if (d) parts.push(`${d} d`)
-  if (h) parts.push(`${h} h`)
-  if (m) parts.push(`${m} m`)
-  if (s) parts.push(`${s} s`)
-  return parts.join(' ')
-}
-
-/**
- * Coarse relative time, e.g. `3 days ago`.
- *
- * `numeric: 'auto'` is what makes today/yesterday come out as words in every
- * language, so those cases need no special-casing here.
- */
-export function fromNow(value: DateLike) {
-  const date = toDate(value)
-  if (!date) return '—'
-  const days = Math.floor((Date.now() - date.getTime()) / 86_400_000)
-  const rtf = new Intl.RelativeTimeFormat(currentLocale(), { numeric: 'auto' })
-  if (days < 1) return rtf.format(0, 'day')
-  if (days < 30) return rtf.format(-days, 'day')
-  if (days < 365) return rtf.format(-Math.floor(days / 30), 'month')
-  return rtf.format(-Math.floor(days / 365), 'year')
 }
 
 const REGION_NAMES = Object.fromEntries(REGIONS.map(r => [r.code, r.name]))

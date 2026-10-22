@@ -8,7 +8,7 @@
  * ```vue
  * <LocalTime :value="tip.created_at" />              2026/10/16 14:30  (as fmtDateTime)
  * <LocalTime :value="at" format="seconds" />         2026/10/16 14:30:05
- * <LocalTime :value="joinedAt" format="date" />      2026年10月16日     (as fmtDate)
+ * <LocalTime :value="joinedAt" format="date" />      2026年10月16日
  * <LocalTime :value="at" format="day" />             2026/10/16
  * <LocalTime :value="at" format="time" />            14:30
  * ```
