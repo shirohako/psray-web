@@ -126,13 +126,15 @@ watch(psnid, (value) => {
 // which we have no interface for, and reading French trophy names shouldn't drag
 // the rest of the site out of the reader's own language.
 //
-// Without the param we ask for whatever the interface language implies, so a
-// bare URL renders identically for every visitor instead of following whatever
-// `Accept-Language` the browser happened to send.
+// The param goes to the API as `lang`, ahead of the order the API plugin sends
+// as `Accept-Language`: the reader's trophy-language preference (primary, then
+// fallback), then the interface language; the set's own language comes last.
+// Without a preference a bare URL therefore shows the interface language's
+// text, identically for every visitor whatever their browser sends.
+const { trophyLang } = usePreferences()
 const uiContentLang = computed(() =>
   PSN_LANG[isUiLocale(locale.value) ? locale.value as UiLocale : DEFAULT_LOCALE])
 const contentLangParam = computed(() => canonicalContentLang(route.query.tlang))
-const requestedLang = computed(() => contentLangParam.value || uiContentLang.value)
 
 // `lazy` lets client-side navigation open the page at once and show
 // placeholders while the set loads; the server still waits for it, so a
@@ -142,7 +144,7 @@ const { data, status, error } = await useApiFetch<TrophySetDetail>(
   {
     query: computed(() => ({
       psnid: psnid.value || undefined,
-      lang: requestedLang.value,
+      lang: contentLangParam.value || undefined,
     })),
     lazy: true,
   },
@@ -186,8 +188,10 @@ function switchLanguage(code: string) {
   if (!code || code === data.value?.display_language) return
   const query = { ...route.query }
   // Back to what the interface language already implies: drop the param rather
-  // than spell it out, so each variant keeps a single canonical URL.
-  if (code === uiContentLang.value) delete query.tlang
+  // than spell it out, so each variant keeps a single canonical URL. With a
+  // trophy-language preference on, the bare URL shows the preferred language
+  // instead, so the choice has to stay in the URL.
+  if (code === uiContentLang.value && !trophyLang.value.enabled) delete query.tlang
   else query.tlang = code
   return navigateTo({ path: route.path, query, hash: route.hash })
 }

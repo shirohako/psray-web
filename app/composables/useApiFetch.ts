@@ -31,6 +31,7 @@ export function useApiFetch<T>(
     $fetch: $api as typeof $fetch,
     transform: (res: ApiSuccess<T>) => res.data,
     ...options,
+    watch: withLanguageWatch(options?.watch),
   })
 }
 
@@ -51,5 +52,17 @@ export function useApiFetchRaw<T, M = ApiMeta>(
   return useFetch(url, {
     $fetch: $api as typeof $fetch,
     ...options,
+    watch: withLanguageWatch(options?.watch),
   })
+}
+
+/**
+ * Add the translation order to a fetch's watch sources. Responses are picked
+ * by the `Accept-Language` the API plugin sends (trophy-language preference,
+ * then interface language), so data fetches again when either changes, unless
+ * the caller turned watching off.
+ */
+function withLanguageWatch<W>(watch: W[] | false | undefined) {
+  if (watch === false) return false
+  return [...(watch ?? []), usePreferences().acceptLanguage]
 }

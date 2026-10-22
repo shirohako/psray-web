@@ -12,7 +12,6 @@ import {
 } from '~/utils/trophyLibrary'
 
 const { t } = useI18n()
-const { acceptLanguage } = usePreferences()
 useSeo({ title: () => t('library.title'), description: () => t('library.description') })
 
 const route = useRoute()
@@ -45,7 +44,6 @@ const rangeStart = computed(() => games.value.length ? ((meta.value?.page ?? pag
 const rangeEnd = computed(() => games.value.length ? rangeStart.value + games.value.length - 1 : 0)
 
 watch(() => filters.value.search, (search) => { searchInput.value = search })
-watch(acceptLanguage, () => refresh())
 
 /**
  * Filter changes replace the history entry and go back to page 1; page changes

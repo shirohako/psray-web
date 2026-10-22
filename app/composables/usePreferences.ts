@@ -1,3 +1,5 @@
+import { DEFAULT_LOCALE, PSN_LANG, isUiLocale } from '#shared/locales'
+
 /**
  * Site-wide user preferences, persisted locally and shared across the app via
  * `useState`.
@@ -62,21 +64,10 @@ function toAcceptLanguage(langs: readonly string[]): string {
     .join(',')
 }
 
-/**
- * The user's own language preference, independent of our setting: from
- * `navigator.languages` on the client, or the incoming page request's
- * `Accept-Language` during SSR.
- */
-function browserAcceptLanguage(): string {
-  if (import.meta.client) {
-    const langs = navigator.languages?.length
-      ? navigator.languages
-      : navigator.language
-        ? [navigator.language]
-        : []
-    return toAcceptLanguage(langs)
-  }
-  return useRequestHeaders(['accept-language'])['accept-language'] ?? ''
+/** PSN language code of the interface language. */
+function interfaceTrophyLanguage(): string {
+  const locale = unref(useNuxtApp().$i18n.locale)
+  return PSN_LANG[isUiLocale(locale) ? locale : DEFAULT_LOCALE]
 }
 
 export function usePreferences() {
@@ -107,15 +98,15 @@ export function usePreferences() {
   )
 
   /**
-   * Effective `Accept-Language` for API requests:
-   * - the trophy-language preference when enabled — `primary` alone, or
-   *   `primary,secondary;q=0.9` when a secondary is set,
-   * - otherwise the user's browser languages, so a header is always sent.
+   * `Accept-Language` for API requests, the order the API picks translations
+   * in: the trophy-language preference when enabled (primary, then fallback),
+   * then the interface language. A trophy page's `?tlang=` goes ahead of all of
+   * these, and a trophy set's own language is the API's last resort. The
+   * browser's languages play no part, like for the interface language itself.
    */
   const acceptLanguage = computed(() => {
     const { enabled, primary, secondary } = trophyLang.value
-    if (enabled && primary) return toAcceptLanguage([primary, secondary])
-    return browserAcceptLanguage()
+    return toAcceptLanguage([...(enabled ? [primary, secondary] : []), interfaceTrophyLanguage()])
   })
 
   /** Hydrate from the cookie, or migrate legacy localStorage. Returns true when SSR must be replayed. */
@@ -141,7 +132,11 @@ export function usePreferences() {
     return false
   }
 
-  /** Commit a new trophy-language preference for both SSR and the browser. */
+  /**
+   * Commit a new trophy-language preference for both SSR and the browser. Data
+   * on the page follows by itself: `useApiFetch` fetches again when the
+   * resulting `Accept-Language` changes.
+   */
   function saveTrophyLang(pref: TrophyLangPref) {
     trophyLang.value = normalizeTrophyLang(pref)
     trophyLangCookie.value = { ...trophyLang.value }

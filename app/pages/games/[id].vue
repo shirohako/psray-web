@@ -70,17 +70,15 @@ definePageMeta({ path: '/games/:id(\\d+)' })
 
 const route = useRoute()
 const { t } = useI18n()
-const { acceptLanguage } = usePreferences()
 const id = computed(() => String(route.params.id))
 
 // Names follow the reader's language preference (sent as Accept-Language by
-// the API plugin), the same as the trophy and game lists.
+// the API plugin, and fetched again when it changes), like every other page.
 // `lazy` lets client-side navigation open the page at once and show
 // placeholders; the server still waits, so a missing game still answers 404.
-const { data, status, error, refresh } = await useApiFetch<GameDetail>(() => `/games/${id.value}`, { lazy: true })
+const { data, status, error } = await useApiFetch<GameDetail>(() => `/games/${id.value}`, { lazy: true })
 
 const pending = useFetchPending(status)
-watch(acceptLanguage, () => refresh())
 
 // A missing game has to answer 404, not a 200 page that says "not found".
 // Watched rather than checked once: moving between two game pages reuses this

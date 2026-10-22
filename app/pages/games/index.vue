@@ -13,7 +13,6 @@ import {
 import { TROPHY_SEARCH_MIN_LENGTH } from '~/utils/trophyLibrary'
 
 const { t } = useI18n()
-const { acceptLanguage } = usePreferences()
 const toast = useToast()
 useSeo({ title: () => t('seo.games.title'), description: () => t('seo.games.description') })
 
@@ -44,7 +43,6 @@ const rangeEnd = computed(() => games.value.length ? rangeStart.value + games.va
 const chips = computed(() => filters.value.search ? [{ id: 'search', label: filters.value.search, clear: clearSearch }] : [])
 
 watch(() => filters.value.search, (search) => { searchInput.value = search })
-watch(acceptLanguage, () => refresh())
 
 /**
  * Filter changes replace the history entry and go back to page 1; page changes

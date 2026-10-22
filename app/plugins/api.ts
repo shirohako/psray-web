@@ -34,8 +34,9 @@ export default defineNuxtPlugin(() => {
       if (token.value && !headers.has('Authorization')) {
         headers.set('Authorization', `Bearer ${token.value}`)
       }
-      // Attach Accept-Language: the saved trophy-language preference when
-      // enabled, otherwise the user's browser default. A per-call header wins.
+      // Attach Accept-Language, the order the API picks translations in: the
+      // trophy-language preference when enabled, then the interface language
+      // (see usePreferences). A per-call header wins.
       const acceptLanguage = usePreferences().acceptLanguage.value
       if (acceptLanguage && !headers.has('Accept-Language')) {
         headers.set('Accept-Language', acceptLanguage)
