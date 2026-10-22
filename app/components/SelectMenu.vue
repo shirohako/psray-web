@@ -21,6 +21,9 @@ import type { SelectOption } from '~/types/select'
  * ```
  */
 // Trigger + teleported panel make this a fragment; class etc. go on the trigger.
+// The trigger is align-top so a plain wrapper (e.g. a block <label>) is exactly
+// its height: on the baseline it would sit in a taller line box, below the
+// controls beside it.
 defineOptions({ inheritAttrs: false })
 
 const props = withDefaults(defineProps<{
@@ -252,7 +255,7 @@ onBeforeUnmount(() => {
     aria-haspopup="listbox"
     :aria-expanded="open"
     :aria-controls="open ? listId : undefined"
-    class="group inline-flex min-w-0 items-center border bg-white text-left transition focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
+    class="group inline-flex min-w-0 items-center border align-top bg-white text-left transition focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
     :class="[
       SIZES[size],
       invalid
