@@ -93,7 +93,13 @@ export default defineNuxtConfig({
         'lucide',
         'qrcode', // CJS
       ]
-    }
+    },
+    server: {
+      // Vite's dev server rejects unknown Host headers. Read here rather than
+      // via __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS so it can live in .env
+      // (Vite reads that one before Nuxt loads .env). Comma-separated.
+      allowedHosts: process.env.NUXT_DEV_ALLOWED_HOSTS?.split(','),
+    },
   },
 
   modules: ['@nuxtjs/i18n', '@psray/markdown-editor'],
