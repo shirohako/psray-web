@@ -134,6 +134,21 @@ export function uiLocaleFor(raw: LangParam): UiLocale | '' {
   return (UI_LOCALES as readonly string[]).includes(code) ? code as UiLocale : ''
 }
 
+/**
+ * The UI locale whose readers a PSN language tag belongs to — a trophy set's
+ * translation, a profile's PSN language, an old-site URL segment — or `''`
+ * when the interface isn't translated into it. Case-insensitive, and regional
+ * spellings fold onto their script (`zh-TW` → `zh-Hant`, `en-GB` → `en`).
+ */
+export function uiLocaleForPsnLanguage(raw: LangParam): UiLocale | '' {
+  const [language, subtag = ''] = canonicalContentLang(raw).toLowerCase().split('-')
+  if (language === 'ja' || language === 'en' || language === 'ko') return language
+  if (language !== 'zh') return ''
+  if (['hant', 'tw', 'hk', 'mo'].includes(subtag)) return 'zh-Hant'
+  if (['hans', 'cn', 'sg', 'my'].includes(subtag)) return 'zh-Hans'
+  return ''
+}
+
 /** Narrowing guard for values read back out of cookies, payloads, or the API. */
 export function isUiLocale(value: unknown): value is UiLocale {
   return typeof value === 'string' && (UI_LOCALES as readonly string[]).includes(value)

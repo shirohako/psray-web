@@ -41,7 +41,9 @@ export default defineNuxtConfig({
       // deployment variable can never leak localhost URLs into social cards.
       // Override with NUXT_PUBLIC_SITE_URL for local or alternate environments.
       siteUrl: 'https://psray.net',
-      sitemapUrl: 'https://api.psray.net/sitemap.xml',
+      // nginx serves the API-generated sitemap files from this origin, so the
+      // index lives beside the pages it lists. Override with NUXT_PUBLIC_SITEMAP_URL.
+      sitemapUrl: 'https://psray.net/sitemap.xml',
       // Backend-generated social images. Override with NUXT_PUBLIC_CARD_BASE.
       cardBase: 'https://api.psray.net',
     },
