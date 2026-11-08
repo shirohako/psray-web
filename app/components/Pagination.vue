@@ -2,8 +2,19 @@
 import { ChevronLeft, ChevronRight } from 'lucide'
 
 const props = withDefaults(
-  defineProps<{ page: number; totalPages: number; siblings?: number; jump?: boolean }>(),
-  { siblings: 1, jump: false },
+  defineProps<{
+    page: number
+    totalPages: number
+    siblings?: number
+    jump?: boolean
+    /**
+     * URL of page `n`. Given it, pages render as real links — crawlable, and
+     * openable in a new tab — while a plain click still pages in place.
+     * Without it (dialogs, views that aren't indexed), they stay buttons.
+     */
+    hrefFor?: (page: number) => string
+  }>(),
+  { siblings: 1, jump: false, hrefFor: undefined },
 )
 const emit = defineEmits<{ 'update:page': [n: number] }>()
 
@@ -56,6 +67,20 @@ function goto(p: number) {
   emit('update:page', p)
 }
 
+/** Link or button, by whether this pager has URLs. */
+const control = computed(() => (props.hrefFor ? 'a' : 'button'))
+
+/** Attributes for the control that goes to page `p`; `enabled` false disables it. */
+function controlAttrs(p: number, enabled = true, rel?: 'prev' | 'next') {
+  if (!props.hrefFor) return { type: 'button', disabled: !enabled }
+  return enabled ? { href: props.hrefFor(p), rel } : { 'aria-disabled': 'true' }
+}
+
+function onControl(event: MouseEvent, p: number) {
+  if (!props.hrefFor) return goto(p)
+  interceptClick(event, () => goto(p))
+}
+
 // Optional "go to page" box for long lists; out-of-range input is clamped.
 const jumpInput = ref('')
 const jumpId = useId()
@@ -71,7 +96,7 @@ function submitJump() {
 <template>
   <!-- With `jump`, render the plain pager (this component, recursively) beside the box. -->
   <div v-if="jump" class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-    <Pagination :page="page" :total-pages="totalPages" :siblings="siblings" @update:page="goto" />
+    <Pagination :page="page" :total-pages="totalPages" :siblings="siblings" :href-for="hrefFor" @update:page="goto" />
     <form class="flex items-center gap-2 sm:border-l sm:border-slate-200 sm:pl-4" @submit.prevent="submitJump">
       <label :for="jumpId" class="text-xs text-slate-500">{{ $t('common.goToPage') }}</label>
       <input
@@ -91,42 +116,43 @@ function submitJump() {
   </div>
 
   <nav v-else class="flex items-center justify-center gap-1">
-    <button
-      type="button"
-      :disabled="page <= 1"
-      @click="goto(page - 1)"
-      class="grid size-7 place-items-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30 disabled:hover:bg-transparent"
+    <component
+      :is="control"
+      v-bind="controlAttrs(page - 1, page > 1, 'prev')"
+      @click="onControl($event, page - 1)"
+      class="grid size-7 place-items-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30 disabled:hover:bg-transparent aria-disabled:opacity-30 aria-disabled:hover:bg-transparent"
       :aria-label="$t('common.previousPage')"
     >
       <LucideIcon :icon="ChevronLeft" class="size-3.5" />
-    </button>
+    </component>
 
     <div v-for="(list, l) in lists" :key="l" class="flex items-center gap-1" :class="list.class">
       <template v-for="(item, i) in list.items" :key="i">
         <span v-if="item === '…'" class="px-1 text-xs text-slate-400">…</span>
-        <button
+        <component
+          :is="control"
           v-else
-          type="button"
-          @click="goto(item)"
-          class="min-w-7 rounded-md px-1.5 py-1 text-xs font-medium transition"
+          v-bind="controlAttrs(item)"
+          @click="onControl($event, item)"
+          class="min-w-7 rounded-md px-1.5 py-1 text-center text-xs font-medium transition"
           :class="item === page
             ? 'bg-slate-900 text-white'
             : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'"
           :aria-current="item === page ? 'page' : undefined"
         >
           {{ item }}
-        </button>
+        </component>
       </template>
     </div>
 
-    <button
-      type="button"
-      :disabled="page >= totalPages"
-      @click="goto(page + 1)"
-      class="grid size-7 place-items-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30 disabled:hover:bg-transparent"
+    <component
+      :is="control"
+      v-bind="controlAttrs(page + 1, page < totalPages, 'next')"
+      @click="onControl($event, page + 1)"
+      class="grid size-7 place-items-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30 disabled:hover:bg-transparent aria-disabled:opacity-30 aria-disabled:hover:bg-transparent"
       :aria-label="$t('common.nextPage')"
     >
       <LucideIcon :icon="ChevronRight" class="size-3.5" />
-    </button>
+    </component>
   </nav>
 </template>

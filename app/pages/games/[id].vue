@@ -6,7 +6,7 @@
        with a real HTTP status instead. -->
   <div v-else-if="data" class="space-y-6">
     <nav :aria-label="$t('games.detail.breadcrumb')" class="flex min-w-0 items-center gap-1.5 text-xs text-slate-400">
-      <NuxtLink to="/games" class="shrink-0 transition hover:text-slate-900">{{ $t('games.detail.breadcrumb') }}</NuxtLink>
+      <AppLink to="/games" class="shrink-0 transition hover:text-slate-900">{{ $t('games.detail.breadcrumb') }}</AppLink>
       <LucideIcon :icon="ChevronRight" class="size-3 shrink-0" />
       <span class="truncate text-slate-600" aria-current="page">{{ data.localized_name }}</span>
     </nav>
@@ -59,14 +59,19 @@
         </div>
       </section>
     </div>
+
+    <!-- This game in each language it's indexed in (the footer's list is off). -->
+    <LanguageLinks :locales="editions" class="text-xs text-slate-400" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ChevronRight, Trophy } from 'lucide'
 import type { GameDetail } from '~/services/games'
+import { contentEditions } from '#shared/locales'
+import { breadcrumbJsonLd, jsonLdScript, videoGameJsonLd } from '~/utils/structuredData'
 
-definePageMeta({ path: '/games/:id(\\d+)' })
+definePageMeta({ path: '/games/:id(\\d+)', languageLinks: false })
 
 const route = useRoute()
 const { t } = useI18n()
@@ -95,7 +100,10 @@ function raiseFetchError(err: typeof error.value) {
 raiseFetchError(error.value)
 watch(error, raiseFetchError)
 
-useSeo({
+// Indexed in Japanese, English, and the languages its title is translated into.
+const editions = computed(() => contentEditions(data.value?.translations.map(item => item.language_code) ?? []))
+
+const seo = useSeo({
   title: () => (data.value ? t('seo.game.title', { name: data.value.localized_name }) : t('seo.game.titleFallback')),
   description: () => {
     const game = data.value
@@ -107,5 +115,30 @@ useSeo({
       platforms: game.platforms.map(gamePlatformLabel).join(' / ') || '—',
     })
   },
+  editions: () => editions.value,
+})
+
+// The visible trail (Games › this game) and the game itself, as structured data.
+useHead(() => {
+  const game = data.value
+  const url = seo.canonical.value
+  if (!game || !url) return { script: [] }
+  return {
+    script: [
+      jsonLdScript('game-breadcrumb', breadcrumbJsonLd([
+        { name: t('games.detail.breadcrumb'), url: seo.absoluteUrl('/games') },
+        { name: game.localized_name, url },
+      ])),
+      jsonLdScript('game-jsonld', videoGameJsonLd({
+        name: game.localized_name,
+        url,
+        image: game.cover_url,
+        platforms: game.platforms.map(gamePlatformLabel),
+        releaseDate: game.first_release_precision === 'day' ? game.first_release_date : null,
+        alternateNames: [...new Set([game.name, ...game.translations.map(item => item.name), ...game.aliases])]
+          .filter(name => name && name !== game.localized_name),
+      })),
+    ],
+  }
 })
 </script>

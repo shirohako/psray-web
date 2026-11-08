@@ -148,14 +148,14 @@ const inProgress = computed(() => props.info.status !== 'completed' && props.inf
     </p>
 
     <!-- Done: go to the profile -->
-    <NuxtLink
+    <AppLink
       v-if="info.status === 'completed'"
       :to="`/p/${encodeURIComponent(info.psnid)}`"
       class="mt-4 flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 py-2.5 text-sm font-semibold text-white shadow-sm shadow-slate-900/30 transition hover:bg-slate-800 active:bg-slate-950"
     >
       {{ $t('sync.goToProfile') }}
       <LucideIcon :icon="ArrowRight" class="size-4" />
-    </NuxtLink>
+    </AppLink>
 
     <!-- Queue overview + last-updated -->
     <hr class="mt-5 border-slate-100" />

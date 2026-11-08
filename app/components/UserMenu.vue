@@ -51,7 +51,7 @@ function isCurrentPage(to: string | { path: string }) {
 
 async function onLogout() {
   await logout()
-  await navigateTo('/')
+  await navigateTo(localizeTo('/'))
 }
 </script>
 
@@ -94,7 +94,7 @@ async function onLogout() {
           class="border-b border-slate-100 py-1"
         >
           <p class="px-3 pb-0.5 pt-1 text-[11px] font-semibold text-slate-400">{{ $t(group.labelKey) }}</p>
-          <NuxtLink
+          <AppLink
             v-for="item in group.items"
             :key="item.labelKey"
             :to="item.to"
@@ -103,7 +103,7 @@ async function onLogout() {
           >
             <LucideIcon :icon="item.icon" class="size-4 text-slate-400" />
             {{ $t(item.labelKey) }}
-          </NuxtLink>
+          </AppLink>
         </div>
 
         <div class="pt-1">
@@ -135,7 +135,7 @@ async function onLogout() {
         <section v-for="group in groups" :key="group.labelKey">
           <h3 class="px-1 pb-2 text-[11px] font-semibold tracking-wide text-slate-400">{{ $t(group.labelKey) }}</h3>
           <div class="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-            <NuxtLink
+            <AppLink
               v-for="item in group.items"
               :key="item.labelKey"
               :to="item.to"
@@ -152,7 +152,7 @@ async function onLogout() {
               </span>
               <span class="min-w-0 flex-1 truncate">{{ $t(item.labelKey) }}</span>
               <LucideIcon :icon="ChevronRight" class="size-4 shrink-0 text-slate-300" />
-            </NuxtLink>
+            </AppLink>
           </div>
         </section>
       </nav>

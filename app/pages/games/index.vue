@@ -14,7 +14,6 @@ import { TROPHY_SEARCH_MIN_LENGTH } from '~/utils/trophyLibrary'
 
 const { t } = useI18n()
 const toast = useToast()
-useSeo({ title: () => t('seo.games.title'), description: () => t('seo.games.description') })
 
 const route = useRoute()
 const router = useRouter()
@@ -42,21 +41,37 @@ const rangeEnd = computed(() => games.value.length ? rangeStart.value + games.va
 
 const chips = computed(() => filters.value.search ? [{ id: 'search', label: filters.value.search, clear: clearSearch }] : [])
 
+// 503 while the API is down, 404 past the last page: only real lists get indexed.
+const { failed } = useListResponse({ error, meta, page })
+
+useSeo({
+  title: () => (page.value > 1 ? t('seo.paged', { title: t('seo.games.title'), page: page.value }) : t('seo.games.title')),
+  description: () => t('seo.games.description'),
+  // Each page of the catalog is a list of its own; a search is a view of it.
+  canonicalQuery: () => gameLibraryRouteQuery({ filters: emptyGameLibraryFilters(), page: page.value }),
+  noindex: () => Boolean(filters.value.search) || failed.value,
+})
+
 watch(() => filters.value.search, (search) => { searchInput.value = search })
+
+type GameLibraryChange = { filters?: Partial<GameLibraryFilters>, page?: number }
+
+/** Where a change leads: the listing's own params, then the interface language. */
+function locationFor(next: GameLibraryChange) {
+  return localizeTo({ query: gameLibraryRouteQuery({ filters: { ...filters.value, ...next.filters }, page: next.page ?? 1 }) })
+}
 
 /**
  * Filter changes replace the history entry and go back to page 1; page changes
- * push a new entry so Back returns to the previous page. `lang` is kept.
+ * push a new entry so Back returns to the previous page.
  */
-function navigate(next: { filters?: Partial<GameLibraryFilters>, page?: number }) {
-  const location = {
-    query: {
-      ...(route.query.lang ? { lang: route.query.lang } : {}),
-      ...gameLibraryRouteQuery({ filters: { ...filters.value, ...next.filters }, page: next.page ?? 1 }),
-    },
-  }
+function navigate(next: GameLibraryChange) {
+  const location = locationFor(next)
   return next.page === undefined ? router.replace(location) : router.push(location)
 }
+
+// Real URLs for the pager, so crawlers can walk the catalog.
+const pageHref = (value: number) => router.resolve(locationFor({ page: value })).href
 
 function clearSearch() {
   searchInput.value = ''
@@ -139,7 +154,7 @@ function changePage(value: number) {
       <section id="game-results" class="scroll-mt-20 border-t border-slate-200" :aria-label="$t('games.results')" :aria-busy="pending">
         <div v-if="meta && !error && totalPages > 1" class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5">
           <p class="text-[11px] text-slate-400">{{ $t('games.range', { start: rangeStart, end: rangeEnd, total: meta.total }) }}</p>
-          <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
+          <Pagination :page="page" :total-pages="totalPages" :siblings="2" :href-for="pageHref" @update:page="changePage" />
         </div>
         <!-- The listing almost always spans pages, so hold the bar's place on first load -->
         <div v-else-if="pending && !meta" class="animate-skeleton-in flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5" aria-hidden="true">
@@ -179,7 +194,7 @@ function changePage(value: number) {
 
         <div v-if="meta && !error" class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-4 py-4">
           <p role="status" class="text-[11px] text-slate-400">{{ $t('games.range', { start: rangeStart, end: rangeEnd, total: meta.total }) }}</p>
-          <Pagination v-if="totalPages > 1" :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
+          <Pagination v-if="totalPages > 1" :page="page" :total-pages="totalPages" :siblings="2" :href-for="pageHref" @update:page="changePage" />
         </div>
       </section>
     </div>

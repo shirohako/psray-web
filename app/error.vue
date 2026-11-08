@@ -24,7 +24,7 @@ useSeoMeta({
 
 // `clearError` unmounts this component and navigates, so the app recovers
 // without a full reload.
-const goHome = () => clearError({ redirect: '/' })
+const goHome = () => clearError({ redirect: localizeTo('/') })
 </script>
 
 <template>

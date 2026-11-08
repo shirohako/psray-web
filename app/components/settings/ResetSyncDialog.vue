@@ -51,7 +51,7 @@ async function reset() {
 
   open.value = false
   toast.success({ title: t('settings.data.resync.done'), description: t('settings.data.resync.doneDetail') })
-  await navigateTo({ path: '/sync', query: { psnid: user.value.psnid } })
+  await navigateTo(localizeTo({ path: '/sync', query: { psnid: user.value.psnid } }))
 }
 </script>
 

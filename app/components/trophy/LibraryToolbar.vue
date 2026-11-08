@@ -18,6 +18,8 @@ const props = defineProps<{
   category: LibraryCategory
   /** Filters in effect, from the URL. */
   filters: LibraryFilters
+  /** URL of a category's listing: given it, the tabs are real (crawlable) links. */
+  categoryHref?: (category: LibraryCategory) => string
 }>()
 
 const emit = defineEmits<{
@@ -96,23 +98,44 @@ function togglePlatform(platform: string) {
       : [...selected, platform],
   })
 }
+
+/** A search lists newest first only, so the other tabs are off meanwhile. */
+const tabEnabled = (key: LibraryCategory) => !(searching.value && key !== 'new')
+
+function tabTag(key: LibraryCategory) {
+  if (!props.categoryHref) return 'button'
+  return tabEnabled(key) ? 'a' : 'span'
+}
+
+function tabAttrs(key: LibraryCategory) {
+  if (!props.categoryHref) return { type: 'button', 'aria-pressed': props.category === key, disabled: !tabEnabled(key) }
+  return tabEnabled(key)
+    ? { href: props.categoryHref(key), 'aria-current': props.category === key ? 'page' : undefined }
+    : { 'aria-disabled': 'true' }
+}
+
+function selectCategory(event: MouseEvent, key: LibraryCategory) {
+  if (!tabEnabled(key)) return
+  if (!props.categoryHref) return emit('category', key)
+  interceptClick(event, () => emit('category', key))
+}
 </script>
 
 <template>
   <section :aria-label="$t('library.advanced.title')">
     <div class="flex flex-col gap-2 p-3 sm:px-4 lg:flex-row lg:items-center">
       <nav class="grid shrink-0 grid-cols-3 rounded-md bg-slate-100 p-1 lg:w-auto" :aria-label="$t('library.browseBy')">
-        <button
+        <component
+          :is="tabTag(item.key)"
           v-for="item in categories"
           :key="item.key"
-          :aria-pressed="category === item.key"
-          :disabled="searching && item.key !== 'new'"
-          class="h-8 whitespace-nowrap rounded px-2.5 text-[11px] font-semibold transition disabled:cursor-default disabled:opacity-40 sm:px-3"
+          v-bind="tabAttrs(item.key)"
+          class="grid h-8 place-items-center whitespace-nowrap rounded px-2.5 text-[11px] font-semibold transition disabled:cursor-default disabled:opacity-40 aria-disabled:cursor-default aria-disabled:opacity-40 sm:px-3"
           :class="category === item.key ? 'bg-white text-slate-900 shadow-sm ring-1 ring-slate-200/70' : 'text-slate-500 hover:text-slate-900'"
-          @click="emit('category', item.key)"
+          @click="selectCategory($event, item.key)"
         >
           {{ $t(`library.categories.${item.key}`) }}
-        </button>
+        </component>
       </nav>
 
       <div class="flex min-w-0 flex-1 items-center gap-2">

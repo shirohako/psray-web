@@ -2,7 +2,8 @@
 import { Globe, Users, ChevronRight } from 'lucide'
 import type { SimilarTrophySet } from '~/services/trophies'
 
-defineProps<{ set: SimilarTrophySet }>()
+const props = defineProps<{ set: SimilarTrophySet }>()
+const { href } = useLangLink()
 
 // A small Twitter-style hovercard: the chip just shows the set id (the only
 // guaranteed-unique handle) + region; hovering or tapping it pops a card with
@@ -41,6 +42,13 @@ function hide() {
 function close() {
   open.value = false
 }
+/**
+ * The chip is a real link to the set (crawlable, openable in a new tab); a
+ * plain click or tap opens the card instead, which links through itself.
+ */
+function onTriggerClick(event: MouseEvent) {
+  interceptClick(event, show)
+}
 function onPointerDown(e: PointerEvent) {
   const t = e.target as Node
   if (triggerEl.value?.contains(t) || cardEl.value?.contains(t)) return
@@ -77,19 +85,21 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="inline-flex" @mouseenter="show" @mouseleave="hide">
-    <button
+    <a
       ref="triggerEl"
-      type="button"
+      :href="href(`/trophies/${props.set.id}`)"
       class="inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs leading-none transition"
       :class="open ? 'border-slate-300 bg-slate-50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'"
-      @click="show"
+      @click="onTriggerClick"
     >
       <span class="font-bold tabular-nums text-slate-800">#{{ set.id }}</span>
       <span v-if="set.region" class="inline-flex items-center gap-0.5 text-slate-400">
         <LucideIcon :icon="Globe" class="size-3" />
         <span class="font-medium tracking-wide text-slate-500">{{ set.region }}</span>
       </span>
-    </button>
+      <!-- Anchor text for the link: the chip itself only shows the id. -->
+      <span class="sr-only">{{ set.name }}</span>
+    </a>
 
     <ClientOnly>
       <Teleport to="body">
@@ -149,12 +159,12 @@ onBeforeUnmount(() => {
               <span class="inline-flex items-center gap-1 text-xs text-slate-400">
                 <LucideIcon :icon="Users" class="size-3.5" />{{ $t('trophy.similar.owners', { count: fmt(set.owners) }) }}
               </span>
-              <NuxtLink
+              <AppLink
                 :to="`/trophies/${set.id}`"
                 class="inline-flex items-center gap-0.5 rounded-md bg-slate-900 py-1 pl-2.5 pr-1.5 text-xs font-semibold text-white transition hover:bg-slate-700"
               >
                 {{ $t('common.view') }}<LucideIcon :icon="ChevronRight" class="size-3.5" />
-              </NuxtLink>
+              </AppLink>
             </div>
           </div>
         </Transition>

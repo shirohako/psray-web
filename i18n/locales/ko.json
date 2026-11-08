@@ -24,7 +24,8 @@
     "timestampsIncompleteHint": "일부 트로피에 획득 시간이 없어, 시간이 기록된 트로피만을 기준으로 합니다",
     "updated": "업데이트",
     "updatedAt": "{time} 업데이트",
-    "view": "보기"
+    "view": "보기",
+    "breadcrumb": "탐색 경로"
   },
   "markdown": {
     "help": {
@@ -83,6 +84,10 @@
     },
     "teardown": {
       "label": "휴대용 게임기 분해 애니메이션"
+    },
+    "hub": {
+      "viewAll": "모두 보기",
+      "topPlayers": "상위 플레이어"
     }
   },
   "auth": {
@@ -911,16 +916,22 @@
       "description": "PSN 트로피 포인트를 기준으로 전체 랭킹과 국가·지역별 랭킹을 확인할 수 있습니다."
     },
     "profile": {
-      "title": "{psnid} 프로필",
+      "title": "{psnid}의 PSN 트로피",
       "titleFallback": "프로필",
       "titleMissing": "{psnid} · 미등록",
       "titleBanned": "정지된 사용자",
-      "description": "{psnid}의 PSN 트로피 기록 — 획득 트로피, 마일스톤, 최근 플레이 기록."
+      "description": "{psnid}의 PSN 트로피 기록 — 획득 트로피, 마일스톤, 최근 플레이 기록.",
+      "descriptionStats": "{psnid}의 PSN 트로피: 레벨 {level}, 플래티넘 {platinum}개, 트로피 총 {total}개. 획득한 트로피, 마일스톤, 최근 플레이 기록."
     },
     "trophy": {
-      "title": "{name} 트로피",
+      "title": "{name} 트로피 목록 ({platform})",
       "titleFallback": "트로피 세트",
-      "description": "{name}({platform})의 트로피 {count}개 전체 — 획득률, 희귀도, 공략 팁."
+      "tier": "{label} {count}",
+      "tierSeparator": ", ",
+      "descCount": "{name}({platform})의 트로피 {count}개: {tiers}.",
+      "descPlatinumRate": "플래티넘 획득률 {rate}%.",
+      "descPlatinumTime": "플래티넘까지 걸린 시간(중앙값) {time}.",
+      "descTail": "획득률, 숨겨진 트로피, 공략 팁."
     },
     "login": {
       "title": "로그인",
@@ -948,7 +959,8 @@
       "title": "피드백",
       "description": "PSRay에 대한 버그 신고와 제안, 그리고 운영진의 답변입니다.",
       "detailTitle": "피드백 #{id}"
-    }
+    },
+    "paged": "{title} ({page}페이지)"
   },
   "games": {
     "title": "모든 게임",

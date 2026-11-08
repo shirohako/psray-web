@@ -183,13 +183,13 @@ function onClosed() {
         {{ $t(sent.visibility === 'public' ? 'feedback.form.sentPublic' : 'feedback.form.sentPending') }}
       </p>
       <div class="mt-6 flex flex-wrap items-center justify-center gap-2">
-        <NuxtLink
+        <AppLink
           :to="`/feedback/${sent.id}`"
           class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
           @click="close"
         >
           {{ $t('feedback.form.view') }}
-        </NuxtLink>
+        </AppLink>
         <button type="button" class="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50" @click="startOver">
           {{ $t('feedback.form.another') }}
         </button>
@@ -237,9 +237,9 @@ function onClosed() {
       <div v-if="!loggedIn" class="space-y-3 rounded-lg border border-amber-200 bg-amber-50/60 p-3">
         <p class="text-xs leading-5 text-amber-800">
           {{ $t('feedback.form.guestNotice') }}
-          <NuxtLink :to="loginLink" class="font-semibold underline underline-offset-2 hover:text-amber-950" @click="close">
+          <AppLink :to="loginLink" class="font-semibold underline underline-offset-2 hover:text-amber-950" @click="close">
             {{ $t('feedback.form.login') }}
-          </NuxtLink>
+          </AppLink>
         </p>
         <label class="block">
           <span class="mb-1.5 block text-xs font-semibold text-slate-600">{{ $t('feedback.form.guestName') }}</span>
@@ -271,7 +271,7 @@ function onClosed() {
 
     <template v-if="!sent" #footer>
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <NuxtLink
+        <AppLink
           to="/feedback"
           class="inline-flex items-center gap-1.5 rounded-md bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-700 ring-1 ring-inset ring-sky-200 transition hover:bg-sky-100 hover:text-sky-900"
           @click="close"
@@ -279,7 +279,7 @@ function onClosed() {
           <LucideIcon :icon="MessagesSquare" class="size-3.5" />
           {{ $t('feedback.form.viewAll') }}
           <LucideIcon :icon="ArrowRight" class="size-3" />
-        </NuxtLink>
+        </AppLink>
         <button
           type="submit"
           :form="formId"

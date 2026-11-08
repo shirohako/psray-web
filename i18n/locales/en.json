@@ -24,7 +24,8 @@
     "timestampsIncompleteHint": "Some trophies have no earned time, so this is based only on the ones that do",
     "updated": "Updated",
     "updatedAt": "Updated {time}",
-    "view": "View"
+    "view": "View",
+    "breadcrumb": "Breadcrumb"
   },
   "markdown": {
     "help": {
@@ -83,6 +84,10 @@
     },
     "teardown": {
       "label": "Animated teardown of a handheld game console"
+    },
+    "hub": {
+      "viewAll": "View all",
+      "topPlayers": "Top players"
     }
   },
   "auth": {
@@ -911,16 +916,22 @@
       "description": "Compare PSN trophy point rankings worldwide or by country and region."
     },
     "profile": {
-      "title": "{psnid} Profile",
+      "title": "{psnid}'s PSN Trophies",
       "titleFallback": "Profile",
       "titleMissing": "{psnid} · Not tracked yet",
       "titleBanned": "Banned player",
-      "description": "PSN trophy stats for {psnid} — earned trophies, milestones, and recent play history."
+      "description": "PSN trophy stats for {psnid} — earned trophies, milestones, and recent play history.",
+      "descriptionStats": "{psnid}'s PSN trophies: level {level}, {platinum} platinum, {total} trophies in all. Earned trophies, milestones and recent play history."
     },
     "trophy": {
-      "title": "{name} Trophies",
+      "title": "{name} Trophies ({platform})",
       "titleFallback": "Trophy set",
-      "description": "All {count} trophies for {name} ({platform}) — earn rates, rarity, and tips."
+      "tier": "{count} {label}",
+      "tierSeparator": ", ",
+      "descCount": "All {count} trophies for {name} ({platform}): {tiers}.",
+      "descPlatinumRate": "Platinum earned by {rate}% of players.",
+      "descPlatinumTime": "Median time to platinum: {time}.",
+      "descTail": "Earn rates, hidden trophies and tips."
     },
     "login": {
       "title": "Sign in",
@@ -948,7 +959,8 @@
       "title": "Feedback",
       "description": "Bug reports and suggestions for PSRay, with replies from the team.",
       "detailTitle": "Feedback #{id}"
-    }
+    },
+    "paged": "{title} – Page {page}"
   },
   "games": {
     "title": "All games",

@@ -98,16 +98,19 @@ export function usePreferences() {
   )
 
   /**
-   * `Accept-Language` for API requests, the order the API picks translations
-   * in: the trophy-language preference when enabled (primary, then fallback),
-   * then the interface language. A trophy page's `?tlang=` goes ahead of all of
-   * these, and a trophy set's own language is the API's last resort. The
-   * browser's languages play no part, like for the interface language itself.
+   * The order the API picks trophy text in for this reader: the trophy-language
+   * preference when enabled (primary, then fallback), then the interface
+   * language. A trophy page's `?tlang=` goes ahead of all of these, and a
+   * trophy set's own language is the API's last resort. The browser's languages
+   * play no part, like for the interface language itself.
    */
-  const acceptLanguage = computed(() => {
+  const trophyLanguageOrder = computed(() => {
     const { enabled, primary, secondary } = trophyLang.value
-    return toAcceptLanguage([...(enabled ? [primary, secondary] : []), interfaceTrophyLanguage()])
+    return [...new Set([...(enabled ? [primary, secondary] : []), interfaceTrophyLanguage()].filter(Boolean))]
   })
+
+  /** {@link trophyLanguageOrder} as the `Accept-Language` of API requests. */
+  const acceptLanguage = computed(() => toAcceptLanguage(trophyLanguageOrder.value))
 
   /** Hydrate from the cookie, or migrate legacy localStorage. Returns true when SSR must be replayed. */
   function load() {
@@ -173,6 +176,7 @@ export function usePreferences() {
     rateBasis,
     profileGameDensity,
     trophyDensity,
+    trophyLanguageOrder,
     acceptLanguage,
     load,
     saveTrophyLang,

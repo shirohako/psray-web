@@ -72,7 +72,7 @@ function isActive(to: string) {
           <LucideIcon :icon="Menu" class="size-6" stroke-width="1.75" />
         </button>
 
-        <NuxtLink to="/" class="flex items-center gap-2.5">
+        <AppLink to="/" class="flex items-center gap-2.5">
           <img
             v-if="appConfig.brand.logo"
             :src="appConfig.brand.logo"
@@ -88,7 +88,7 @@ function isActive(to: string) {
           <span class="text-lg font-bold tracking-tight text-slate-900">
             PS<span class="text-slate-900">Ray</span>
           </span>
-        </NuxtLink>
+        </AppLink>
       </div>
 
       <!-- Right: quick actions + auth controls -->
@@ -122,22 +122,22 @@ function isActive(to: string) {
             </button>
 
             <template #menu="{ close }">
-              <NuxtLink
+              <AppLink
                 to="/auth/login"
                 class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
                 @click="close"
               >
                 <LucideIcon :icon="LogIn" class="size-4 text-slate-400" />
                 {{ $t('nav.login') }}
-              </NuxtLink>
-              <NuxtLink
+              </AppLink>
+              <AppLink
                 to="/auth/register"
                 class="flex items-center gap-2.5 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
                 @click="close"
               >
                 <LucideIcon :icon="UserPlus" class="size-4 text-slate-400" />
                 {{ $t('nav.register') }}
-              </NuxtLink>
+              </AppLink>
             </template>
           </DropdownMenu>
 
@@ -148,13 +148,13 @@ function isActive(to: string) {
             :icon="LogIn"
             class="max-sm:hidden"
           />
-          <NuxtLink
+          <AppLink
             to="/auth/register"
             class="hidden h-7 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 text-xs font-semibold text-slate-700 shadow-sm shadow-slate-900/5 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-900 sm:inline-flex"
           >
             <LucideIcon :icon="UserPlus" class="size-3.5" stroke-width="1.75" />
             {{ $t('nav.register') }}
-          </NuxtLink>
+          </AppLink>
         </template>
       </div>
     </header>
@@ -190,7 +190,7 @@ function isActive(to: string) {
         </p>
         <ul class="space-y-1">
           <li v-for="item in menu" :key="item.to">
-            <NuxtLink
+            <AppLink
               :to="item.to"
               :title="collapsed ? $t(item.labelKey) : undefined"
               @click="mobileOpen = false"
@@ -209,7 +209,7 @@ function isActive(to: string) {
                 :class="isActive(item.to) ? 'text-white' : 'text-slate-400 group-hover:text-slate-600'"
               />
               <span class="truncate" :class="collapsed ? 'lg:hidden' : ''">{{ $t(item.labelKey) }}</span>
-            </NuxtLink>
+            </AppLink>
           </li>
         </ul>
       </nav>
@@ -229,6 +229,7 @@ function isActive(to: string) {
       <div class="mx-auto max-w-6xl p-4 pb-16 sm:p-6 sm:pb-16 lg:p-8 lg:pb-16">
         <slot />
       </div>
+      <SiteFooter />
     </main>
 
     <!-- Site-wide preferences -->

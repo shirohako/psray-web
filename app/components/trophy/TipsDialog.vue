@@ -167,10 +167,10 @@ watch(() => props.open, (value) => {
           <p class="text-sm font-semibold text-slate-800">{{ $t('trophy.tips.form.loginTitle') }}</p>
           <p class="mt-0.5 text-xs text-slate-400">{{ $t('trophy.tips.form.loginHint') }}</p>
         </div>
-        <NuxtLink :to="loginTo" class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white">
+        <AppLink :to="loginTo" class="inline-flex shrink-0 items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white">
           <LucideIcon :icon="LogIn" class="size-4" />
           {{ $t('nav.login') }}
-        </NuxtLink>
+        </AppLink>
       </div>
     </section>
 

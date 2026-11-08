@@ -47,7 +47,7 @@ const expandable = computed(() => excerpt.value !== props.tip.content.trim())
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0 flex-1">
             <h3 class="truncate text-sm font-semibold text-slate-900">
-              <NuxtLink v-if="target && tip.trophy" :to="target" class="transition hover:text-sky-600">{{ trophyName }}</NuxtLink>
+              <AppLink v-if="target && tip.trophy" :to="target" class="transition hover:text-sky-600">{{ trophyName }}</AppLink>
               <span v-else class="text-slate-400">{{ $t('me.tips.trophyGone') }}</span>
             </h3>
             <p v-if="tip.trophy_set" class="mt-0.5 truncate text-xs text-slate-500">
@@ -58,14 +58,14 @@ const expandable = computed(() => excerpt.value !== props.tip.content.trim())
 
           <!-- sm and up: the three actions as buttons -->
           <div class="hidden shrink-0 items-center gap-1 sm:flex">
-            <NuxtLink
+            <AppLink
               v-if="target"
               :to="target"
               class="inline-flex h-7 items-center gap-1 rounded-md border border-sky-200 bg-sky-50 px-2 text-xs font-semibold text-sky-700 shadow-sm transition hover:border-sky-300 hover:bg-sky-100 hover:text-sky-800"
             >
               <LucideIcon :icon="Eye" class="size-3 text-sky-500" />
               {{ $t('common.view') }}
-            </NuxtLink>
+            </AppLink>
             <button
               v-if="tip.trophy"
               type="button"
@@ -101,7 +101,7 @@ const expandable = computed(() => excerpt.value !== props.tip.content.trim())
           >
             <LucideIcon :icon="Ellipsis" class="size-4" />
             <template #menu="{ close }">
-              <NuxtLink
+              <AppLink
                 v-if="target"
                 :to="target"
                 class="flex items-center gap-2 whitespace-nowrap rounded-md py-1.5 pl-2 pr-4 text-xs font-medium text-slate-700 transition hover:bg-sky-50 hover:text-sky-700"
@@ -109,7 +109,7 @@ const expandable = computed(() => excerpt.value !== props.tip.content.trim())
               >
                 <LucideIcon :icon="Eye" class="size-3.5 text-sky-500" />
                 {{ $t('common.view') }}
-              </NuxtLink>
+              </AppLink>
               <button
                 v-if="tip.trophy"
                 type="button"

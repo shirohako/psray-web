@@ -6,11 +6,6 @@ import { LEADERBOARD_DEFAULT_REGION, leaderboardRouteQuery, parseLeaderboardQuer
 const { t } = useI18n()
 const auth = useAuth()
 
-useSeo({
-  title: () => t('seo.leaderboard.title'),
-  description: () => t('seo.leaderboard.description'),
-})
-
 // All available boards (registry). Each owns its label, icon, filters, columns
 // and fetcher — see `useRankingBoards`.
 const hiddenBoardKeys = new Set(['tips', 'contribution'])
@@ -38,7 +33,7 @@ const page = computed(() => state.value.page)
 // key is static and carries no locale: leaderboard rows are PSN IDs and
 // numbers, with no localized body text to refetch on a language switch. Add the
 // locale to the key if the backend ever starts translating anything here.
-const { data, status } = await useAsyncData('leaderboard', () =>
+const { data, status, error } = await useAsyncData('leaderboard', () =>
   board.value.fetch({ page: page.value, registeredOnly: registeredOnly.value, region: region.value }),
 { watch: [state], lazy: true })
 
@@ -49,6 +44,23 @@ const pending = useFetchPending(status)
 const rangeStart = computed(() => rows.value.length ? (page.value - 1) * (meta.value?.per_page ?? rows.value.length) + 1 : 0)
 const rangeEnd = computed(() => rows.value.length ? rangeStart.value + rows.value.length - 1 : 0)
 
+// 503 while the API is down, 404 past the last page: only real lists get indexed.
+const { failed } = useListResponse({ error, meta, page })
+
+useSeo({
+  title: () => (page.value > 1 ? t('seo.paged', { title: t('seo.leaderboard.title'), page: page.value }) : t('seo.leaderboard.title')),
+  description: () => t('seo.leaderboard.description'),
+  // Each board (and region) and each page of it is a list of its own; the
+  // registered-members filter is a view of one: `noindex`.
+  canonicalQuery: () => leaderboardRouteQuery({
+    board: board.value.key,
+    region: board.value.region ? region.value : LEADERBOARD_DEFAULT_REGION,
+    registeredOnly: false,
+    page: page.value,
+  }, defaultBoard.key),
+  noindex: () => registeredOnly.value || failed.value,
+})
+
 // The signed-in user: their row is marked, and their standing shows on every
 // page and board.
 const user = computed(() => auth.user.value)
@@ -58,13 +70,13 @@ const standingLoading = computed(() => pending.value && !meta.value)
 /**
  * Board and page changes push a history entry so Back returns to them; filter
  * changes replace it. Anything but a page change goes back to page 1. Filters
- * the target board doesn't support are left out of the URL, and anything else
- * in the query (e.g. `lang`) is kept.
+ * the target board doesn't support are left out of the URL, anything else in
+ * the query is kept, and the interface language goes last.
  */
-function navigate(next: Partial<LeaderboardQueryState>, mode: 'push' | 'replace' = 'push') {
+function locationFor(next: Partial<LeaderboardQueryState>) {
   const target = boards.find(b => b.key === (next.board ?? activeKey.value)) ?? defaultBoard
-  const { board: _board, region: _region, registered: _registered, page: _page, ...rest } = route.query
-  const location = {
+  const { board: _board, region: _region, registered: _registered, page: _page, lang: _lang, ...rest } = route.query
+  return localizeTo({
     query: {
       ...rest,
       ...leaderboardRouteQuery({
@@ -74,9 +86,17 @@ function navigate(next: Partial<LeaderboardQueryState>, mode: 'push' | 'replace'
         page: next.page ?? 1,
       }, defaultBoard.key),
     },
-  }
+  })
+}
+
+function navigate(next: Partial<LeaderboardQueryState>, mode: 'push' | 'replace' = 'push') {
+  const location = locationFor(next)
   return mode === 'push' ? router.push(location) : router.replace(location)
 }
+
+// Real URLs for the pager and the board cards, so crawlers can walk the rankings.
+const pageHref = (value: number) => router.resolve(locationFor({ page: value })).href
+const boardHref = (key: string) => router.resolve(locationFor({ board: key })).href
 
 function selectBoard(key: string) {
   if (key !== activeKey.value) navigate({ board: key })
@@ -129,7 +149,7 @@ watch(rows, () => {
       </div>
       <p class="-mt-2 text-xs leading-5 text-slate-500">{{ $t('seo.leaderboard.description') }}</p>
 
-      <LeaderboardBoardPicker :boards="boards" :active="activeKey" @select="selectBoard" />
+      <LeaderboardBoardPicker :boards="boards" :active="activeKey" :board-href="boardHref" @select="selectBoard" />
     </header>
 
     <!-- Signed-in user's standing, on every page and board -->
@@ -160,7 +180,7 @@ watch(rows, () => {
                 ? $t('leaderboard.range', { start: fmt(rangeStart), end: fmt(rangeEnd), total: fmt(meta?.total) })
                 : $t('leaderboard.totalPlayers', { count: fmt(meta?.total) }) }}
             </span>
-            <Pagination v-if="totalPages > 1" :page="page" :total-pages="totalPages" :siblings="2" jump @update:page="setPage" />
+            <Pagination v-if="totalPages > 1" :page="page" :total-pages="totalPages" :siblings="2" jump :href-for="pageHref" @update:page="setPage" />
           </div>
         </template>
       </LeaderboardTable>

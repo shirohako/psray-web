@@ -118,7 +118,7 @@ function skeletonDelay(index: number) {
       <!-- Phones: two-line rows instead of a sideways-scrolling table -->
       <ul v-if="rows.length" class="divide-y divide-slate-100 transition-opacity md:hidden" :class="{ 'opacity-50': pending }">
         <li v-for="r in rows" :key="r.user_id" :data-self-row="isSelf(r) || undefined" :class="isSelf(r) ? SELF_ROW : STRIPE_ROW">
-          <NuxtLink :to="`/p/${r.psnid}`" class="flex items-center gap-2.5 px-3 py-2.5">
+          <AppLink :to="`/p/${r.psnid}`" class="flex items-center gap-2.5 px-3 py-2.5">
             <span
               class="grid h-7 min-w-7 shrink-0 place-items-center rounded-md px-1 text-xs font-bold tabular-nums"
               :class="rankClass(r.rank)"
@@ -143,7 +143,7 @@ function skeletonDelay(index: number) {
                 </span>
               </div>
             </div>
-          </NuxtLink>
+          </AppLink>
         </li>
       </ul>
 
@@ -214,14 +214,14 @@ function skeletonDelay(index: number) {
                 >{{ r.rank }}</span>
 
                 <!-- Player -->
-                <NuxtLink v-else-if="c === 'user'" :to="`/p/${r.psnid}`" class="group flex items-center gap-3">
+                <AppLink v-else-if="c === 'user'" :to="`/p/${r.psnid}`" class="group flex items-center gap-3">
                   <img :src="r.avatar_url" :alt="r.psnid" class="size-9 shrink-0 rounded-full bg-slate-100 object-cover" :class="{ [SELF_AVATAR]: isSelf(r) }">
                   <span class="flex min-w-0 items-center gap-1.5">
                     <RegionFlag :country="r.country" class="shrink-0 text-sm" />
                     <span class="truncate font-semibold text-slate-900 group-hover:text-sky-600">{{ r.psnid }}</span>
                     <span v-if="isSelf(r)" :class="SELF_TAG">{{ $t('leaderboard.you') }}</span>
                   </span>
-                </NuxtLink>
+                </AppLink>
 
                 <!-- Trophy level -->
                 <span v-else-if="c === 'level'" class="inline-flex items-center rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold tabular-nums text-slate-700">

@@ -78,7 +78,7 @@ async function deleteAccount() {
   catch {
     // Nothing left to sign out of on the server.
   }
-  await navigateTo('/', { replace: true })
+  await navigateTo(localizeTo('/'), { replace: true })
 }
 </script>
 

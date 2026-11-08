@@ -24,7 +24,8 @@
     "timestampsIncompleteHint": "一部のトロフィーに獲得日時がないため、日時のあるトロフィーのみで算出しています",
     "updated": "更新日時",
     "updatedAt": "{time} に更新",
-    "view": "見る"
+    "view": "見る",
+    "breadcrumb": "パンくずリスト"
   },
   "markdown": {
     "help": {
@@ -83,6 +84,10 @@
     },
     "teardown": {
       "label": "携帯ゲーム機の分解アニメーション"
+    },
+    "hub": {
+      "viewAll": "すべて見る",
+      "topPlayers": "トッププレイヤー"
     }
   },
   "auth": {
@@ -911,16 +916,22 @@
       "description": "PSN のトロフィーポイントをもとに、総合ランキングと国・地域別ランキングを確認できます。"
     },
     "profile": {
-      "title": "{psnid} のプロフィール",
+      "title": "{psnid} の PSN トロフィー",
       "titleFallback": "プロフィール",
       "titleMissing": "{psnid} · 未登録",
       "titleBanned": "停止されたユーザー",
-      "description": "{psnid} の PSN トロフィー獲得状況 — 獲得トロフィー、マイルストーン、最近のプレイ記録。"
+      "description": "{psnid} の PSN トロフィー獲得状況 — 獲得トロフィー、マイルストーン、最近のプレイ記録。",
+      "descriptionStats": "{psnid} の PSN トロフィー：レベル {level}、プラチナ {platinum} 個、トロフィー総数 {total} 個。獲得したトロフィー、マイルストーン、最近のプレイ記録。"
     },
     "trophy": {
-      "title": "{name} のトロフィー",
+      "title": "{name} のトロフィー一覧（{platform}）",
       "titleFallback": "トロフィーセット",
-      "description": "{name}（{platform}）の全 {count} 個のトロフィー一覧 — 獲得率、レアリティ、攻略のヒント。"
+      "tier": "{label} {count}",
+      "tierSeparator": "・",
+      "descCount": "{name}（{platform}）の全 {count} 個のトロフィー：{tiers}。",
+      "descPlatinumRate": "プラチナ獲得率 {rate}%。",
+      "descPlatinumTime": "プラチナ取得までの時間（中央値）{time}。",
+      "descTail": "獲得率、隠しトロフィー、攻略のヒント。"
     },
     "login": {
       "title": "ログイン",
@@ -948,7 +959,8 @@
       "title": "フィードバック",
       "description": "PSRay への不具合報告や改善の提案と、運営からの返信の一覧です。",
       "detailTitle": "フィードバック #{id}"
-    }
+    },
+    "paged": "{title}（{page} ページ目）"
   },
   "games": {
     "title": "すべてのゲーム",

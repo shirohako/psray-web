@@ -28,11 +28,12 @@ const activeTabItem = computed<TabItem>(() => tabs.find(tab => tab.key === activ
 
 /**
  * Tab and page changes push a history entry so Back returns to them; a new
- * search replaces it. Anything else in the query (e.g. `lang`) is kept.
+ * search replaces it. Anything else in the query is kept, and the interface
+ * language goes last.
  */
 function navigate(next: Partial<ProfileQueryState>, mode: 'push' | 'replace' = 'push') {
-  const { tab: _tab, page: _page, q: _q, ...rest } = route.query
-  const location = {
+  const { tab: _tab, page: _page, q: _q, lang: _lang, ...rest } = route.query
+  const location = localizeTo({
     query: {
       ...rest,
       ...profileRouteQuery({
@@ -41,7 +42,7 @@ function navigate(next: Partial<ProfileQueryState>, mode: 'push' | 'replace' = '
         q: next.q ?? (next.tab ? '' : state.value.q),
       }),
     },
-  }
+  })
   return mode === 'push' ? router.push(location) : router.replace(location)
 }
 

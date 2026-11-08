@@ -40,13 +40,13 @@ function onReplied(updated: FeedbackDetail) {
 
 <template>
   <div class="mx-auto max-w-3xl space-y-5">
-    <NuxtLink
+    <AppLink
       :to="{ path: '/feedback', query: route.query.lang ? { lang: route.query.lang } : {} }"
       class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 transition hover:text-slate-900"
     >
       <LucideIcon :icon="ArrowLeft" class="size-3.5" />
       {{ $t('feedback.detail.back') }}
-    </NuxtLink>
+    </AppLink>
 
     <div v-if="resolving" class="flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-20 text-sm text-slate-400">
       <LucideIcon :icon="Loader2" class="size-5 animate-spin" />

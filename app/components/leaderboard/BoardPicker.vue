@@ -3,13 +3,20 @@ import { Check } from 'lucide'
 import type { LeaderboardBoard } from '~/composables/useRankingBoards'
 
 /** The ranking boards as selectable cards, each with its icon and description. */
-defineProps<{
+const props = defineProps<{
   boards: LeaderboardBoard[]
   /** Key of the board on screen. */
   active: string
+  /** URL of a board: given it, the cards are real (crawlable) links. */
+  boardHref?: (key: string) => string
 }>()
 
 const emit = defineEmits<{ select: [key: string] }>()
+
+function select(event: MouseEvent, key: string) {
+  if (!props.boardHref) return emit('select', key)
+  interceptClick(event, () => emit('select', key))
+}
 
 // Picker card colours per board accent, a muted pastel palette: a pale wash
 // with a border one step deeper in the same hue (no shadow or halo), and a
@@ -24,17 +31,18 @@ const ACCENTS: Record<LeaderboardBoard['accent'], { selected: string; tile: stri
 
 <template>
   <div role="tablist" :aria-label="$t('leaderboard.boards')" class="grid grid-cols-2 gap-3">
-    <button
+    <component
+      :is="boardHref ? 'a' : 'button'"
       v-for="b in boards"
       :key="b.key"
-      type="button"
+      v-bind="boardHref ? { href: boardHref(b.key) } : { type: 'button' }"
       role="tab"
       :aria-selected="b.key === active"
       class="group relative flex min-w-0 items-center gap-3 rounded-xl border px-2 py-3 text-left transition max-sm:justify-center max-sm:text-center sm:p-4"
       :class="b.key === active
         ? ACCENTS[b.accent].selected
         : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'"
-      @click="emit('select', b.key)"
+      @click="select($event, b.key)"
     >
       <!-- Corner marker on every card: filled with a check when chosen, an empty circle otherwise -->
       <span
@@ -56,6 +64,6 @@ const ACCENTS: Record<LeaderboardBoard['accent'], { selected: string; tile: stri
         >{{ $t(b.labelKey) }}</span>
         <span class="mt-0.5 block text-xs leading-5 text-slate-500 max-sm:hidden">{{ $t(b.descriptionKey) }}</span>
       </span>
-    </button>
+    </component>
   </div>
 </template>

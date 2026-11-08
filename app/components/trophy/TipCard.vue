@@ -42,7 +42,7 @@ function applyVote(next: 1 | -1 | null) {
 
 async function evaluate(choice: 1 | -1) {
   if (!loggedIn.value) {
-    await navigateTo({ path: '/auth/login', query: { redirect: route.fullPath } })
+    await navigateTo(localizeTo({ path: '/auth/login', query: { redirect: route.fullPath } }))
     return
   }
   if (!props.tip.can_vote || votePending.value) return
@@ -75,23 +75,23 @@ async function evaluate(choice: 1 | -1) {
 
 <template>
   <article class="flex gap-3 px-5 py-4">
-    <NuxtLink :to="`/p/${tip.user.psnid}`" class="shrink-0">
+    <AppLink :to="`/p/${tip.user.psnid}`" class="shrink-0">
       <img v-if="tip.user.avatar_url" :src="tip.user.avatar_url" :alt="tip.user.psnid" class="size-9 rounded-full bg-slate-100 object-cover" />
       <span v-else class="grid size-9 place-items-center rounded-full bg-slate-100 text-sm font-bold uppercase text-slate-500">
         {{ tip.user.psnid.slice(0, 1) }}
       </span>
-    </NuxtLink>
+    </AppLink>
 
     <div class="min-w-0 flex-1">
       <!-- Author -->
       <div class="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
         <RegionFlag v-if="tip.user.country" :country="tip.user.country" class="text-xs" />
-        <NuxtLink
+        <AppLink
           :to="`/p/${tip.user.psnid}`"
           class="truncate text-sm font-semibold text-slate-900 transition hover:text-slate-600"
         >
           {{ tip.user.psnid }}
-        </NuxtLink>
+        </AppLink>
         <span v-if="tip.user.trophy_level != null" class="rounded bg-slate-100 px-1.5 text-[11px] font-semibold tabular-nums text-slate-500">
           Lv {{ tip.user.trophy_level }}
         </span>

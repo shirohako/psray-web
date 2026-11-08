@@ -188,10 +188,10 @@ export function useRegisterFlow() {
   /** Done CTA → login, carrying any `?redirect=` through so it survives the sign-in. */
   function goToLogin() {
     const redirect = route.query.redirect
-    return navigateTo({
+    return navigateTo(localizeTo({
       path: '/auth/login',
       query: typeof redirect === 'string' ? { redirect } : undefined,
-    })
+    }))
   }
 
   /** The primary CTA does something different on each step. */

@@ -100,7 +100,7 @@ watch(() => props.open, (v) => {
     <!-- List -->
     <ul v-else class="divide-y divide-slate-100 transition-opacity" :class="{ 'opacity-50': pending }">
       <li v-for="p in players" :key="p.psnid">
-        <NuxtLink
+        <AppLink
           :to="`/p/${p.psnid}`"
           class="group flex items-center gap-3 px-4 py-2.5 transition hover:bg-slate-50 sm:px-5"
           @click="emit('update:open', false)"
@@ -115,7 +115,7 @@ watch(() => props.open, (v) => {
               <template #time><LocalTime :value="p.earned_at" /></template>
             </i18n-t>
           </div>
-        </NuxtLink>
+        </AppLink>
       </li>
     </ul>
 

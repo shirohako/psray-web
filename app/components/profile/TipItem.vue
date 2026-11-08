@@ -19,6 +19,19 @@ const voteGrid = computed(() => ({
 }))
 const trophyTarget = computed(() =>
   tipTrophyLink(props.tip, typeof route.params.psnid === 'string' ? route.params.psnid : undefined))
+
+// The `href` is the public set page at the trophy, which crawlers can index;
+// a plain click opens the tip with the profile's progress (`?psnid=&tips=`,
+// a personal view kept out of the index).
+const { href } = useLangLink()
+const publicHref = computed(() => (trophyTarget.value
+  ? href({ path: trophyTarget.value.path, hash: trophyTarget.value.hash })
+  : undefined))
+
+function openTip(event: MouseEvent) {
+  const target = trophyTarget.value
+  if (target) interceptClick(event, () => navigateTo(localizeTo(target)))
+}
 </script>
 
 <template>
@@ -65,13 +78,14 @@ const trophyTarget = computed(() =>
       </div>
     </div>
 
-    <NuxtLink
-      v-if="trophyTarget"
-      :to="trophyTarget"
+    <a
+      v-if="publicHref"
+      :href="publicHref"
       class="grid size-8 shrink-0 place-items-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
       :aria-label="$t('common.view')"
+      @click="openTip"
     >
       <LucideIcon :icon="ChevronRight" class="size-4" />
-    </NuxtLink>
+    </a>
   </article>
 </template>

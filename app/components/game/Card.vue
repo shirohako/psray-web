@@ -10,7 +10,7 @@ defineProps<{ game: GameBrowseItem }>()
 </script>
 
 <template>
-  <NuxtLink
+  <AppLink
     :to="`/games/${game.id}`"
     class="group flex min-w-0 flex-col rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-600"
   >
@@ -56,5 +56,5 @@ defineProps<{ game: GameBrowseItem }>()
         <GamePlatformBadges v-if="game.platforms.length" :platforms="game.platforms" :max="3" />
       </div>
     </div>
-  </NuxtLink>
+  </AppLink>
 </template>

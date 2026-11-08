@@ -1,42 +1,14 @@
 <script setup lang="ts">
 import { Check, Languages } from 'lucide'
-import { DEFAULT_LOCALE, LANG_COOKIE, type UiLocale } from '#shared/locales'
+import type { UiLocale } from '#shared/locales'
 
 /**
- * UI language menu for the top bar.
- *
- * Each entry is a real `<NuxtLink>` rather than a click handler, so every
- * language has a crawlable `href` while still navigating client-side. Picking
- * one rewrites only the `lang` query param — every other param survives,
- * including `psnid` and an explicitly chosen trophy language (`tlang`) on a
- * trophy page, and `redirect` on the login page — and `ja`, the default,
- * *removes* the param instead of writing `?lang=ja`, so each language keeps
- * exactly one canonical URL.
- *
- * The cookie is written on click purely so a later visit to a bare URL comes
- * back in the chosen language; the URL itself remains the source of truth.
- * See `middleware/i18n.global.ts` for how the change is applied.
+ * UI language menu for the top bar. Targets and the remembering cookie come
+ * from `useLanguageSwitch()`; the menu only renders once opened, so the
+ * crawlable copies of these links live in `<LanguageLinks>` (footer, pages).
  */
 const { locale, locales } = useI18n()
-const route = useRoute()
-
-const langCookie = useCookie<string | null>(LANG_COOKIE, {
-  maxAge: 60 * 60 * 24 * 365,
-  sameSite: 'lax',
-  path: '/',
-})
-
-function targetFor(code: UiLocale) {
-  const query = { ...route.query }
-  if (code === DEFAULT_LOCALE) delete query.lang
-  else query.lang = code
-  return { path: route.path, query, hash: route.hash }
-}
-
-/** Runs before NuxtLink navigates, so the middleware sees the new preference. */
-function remember(code: UiLocale) {
-  langCookie.value = code
-}
+const { targetFor, remember } = useLanguageSwitch()
 </script>
 
 <template>

@@ -53,7 +53,7 @@ export function useMyFollowToggle(tab: () => FollowDirection, list: WatchSource<
     catch (error) {
       changed.value[psnid] = !next
       if (error instanceof ApiError && error.code === 'UNAUTHENTICATED') {
-        await navigateTo({ path: '/auth/login', query: { redirect: route.fullPath } })
+        await navigateTo(localizeTo({ path: '/auth/login', query: { redirect: route.fullPath } }))
         return false
       }
       toast.error({ title: t('me.following.toggleFailed'), description: error instanceof ApiError ? error.message : undefined })

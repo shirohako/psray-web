@@ -37,12 +37,7 @@ function count(key: FollowDirection) {
 
 /** Tab changes replace the history entry and go back to page 1; page changes push one. */
 function navigate(tab: FollowDirection, page = 1) {
-  const location = {
-    query: {
-      ...(route.query.lang ? { lang: route.query.lang } : {}),
-      ...myFollowsRouteQuery({ tab, page }),
-    },
-  }
+  const location = localizeTo({ query: myFollowsRouteQuery({ tab, page }) })
   return page === 1 ? router.replace(location) : router.push(location)
 }
 
@@ -156,13 +151,13 @@ const SKELETON_WIDTHS = ['w-28', 'w-20', 'w-32', 'w-24', 'w-16', 'w-28']
           <p class="mx-auto mt-1.5 max-w-sm text-xs leading-5 text-slate-500">
             {{ $t(state.tab === 'following' ? 'me.following.emptyFollowingHint' : 'me.following.emptyFollowersHint') }}
           </p>
-          <NuxtLink
+          <AppLink
             v-if="state.tab === 'following'"
             to="/leaderboard"
             class="mt-5 inline-flex rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-700"
           >
             {{ $t('me.following.browsePlayers') }}
-          </NuxtLink>
+          </AppLink>
         </div>
 
         <div v-if="meta && !error && items.length" class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-4 py-4">

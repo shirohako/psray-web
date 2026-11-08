@@ -1,3 +1,4 @@
+import { withLang, type LinkTarget } from '#shared/langLink'
 import { DEFAULT_LOCALE, HTML_LANG, isUiLocale, type UiLocale } from '#shared/locales'
 
 /**
@@ -41,6 +42,15 @@ export function currentUiLocale(): UiLocale {
   catch {
     return DEFAULT_LOCALE
   }
+}
+
+/**
+ * `to` carrying the active interface language as `?lang=` (nothing for `ja`).
+ * Wrap every `navigateTo()` / `router.push()` target on a public page in it,
+ * the way `<AppLink>` does for links; see `#shared/langLink`.
+ */
+export function localizeTo<T extends LinkTarget>(to: T): T {
+  return withLang(to, currentUiLocale())
 }
 
 /** `$t` for the plain helpers in `utils/`. Returns the key outside a Nuxt context. */

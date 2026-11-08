@@ -66,7 +66,7 @@ function isComplete(count: number, total: number | undefined) {
     <h2 class="mb-4 text-sm font-semibold text-slate-900">{{ $t('trophy.progress.title') }}</h2>
 
     <div class="flex items-center gap-3">
-      <NuxtLink
+      <AppLink
         :to="`/p/${encodeURIComponent(progress.psnid)}`"
         class="group flex min-w-0 flex-1 items-center gap-3 rounded-lg p-1.5 transition hover:bg-slate-50"
       >
@@ -88,7 +88,7 @@ function isComplete(count: number, total: number | undefined) {
             <span>{{ $t('trophy.progress.trophiesUnit') }}</span>
           </div>
         </div>
-      </NuxtLink>
+      </AppLink>
       <TrophyProgressRing :progress="progress.progress" :bar-class="ringClass" :size="56" />
     </div>
 

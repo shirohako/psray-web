@@ -43,7 +43,7 @@ async function startSync() {
   if (submitting.value) return
   errorText.value = ''
   submitting.value = true
-  const target = { path: '/sync', query: { psnid: props.psnid } }
+  const target = localizeTo({ path: '/sync', query: { psnid: props.psnid } })
   try {
     await sync.submit(props.psnid)
     await navigateTo(target)
@@ -128,13 +128,13 @@ function syncErrorText(error: unknown) {
             <LucideIcon :icon="submitting ? Loader : RefreshCw" class="size-4" :class="{ 'animate-spin': submitting }" />
             {{ submitting ? $t('profile.missing.submitting') : $t('profile.missing.cta') }}
           </button>
-          <NuxtLink
+          <AppLink
             to="/leaderboard"
             class="inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
           >
             <LucideIcon :icon="Trophy" class="size-4 text-slate-400" />
             {{ $t('profile.missing.browse') }}
-          </NuxtLink>
+          </AppLink>
         </div>
         <p v-if="errorText" role="alert" class="mt-4 w-full max-w-md rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-sm font-medium text-rose-700">
           {{ errorText }}
@@ -142,14 +142,14 @@ function syncErrorText(error: unknown) {
         <p v-else class="mt-4 text-xs text-slate-400">{{ $t('profile.missing.hint') }}</p>
       </template>
 
-      <NuxtLink
+      <AppLink
         v-else
         to="/"
         class="animate-rise mt-9 inline-flex h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition [animation-delay:180ms] hover:border-slate-300 hover:bg-slate-50"
       >
         <LucideIcon :icon="House" class="size-4 text-slate-400" />
         {{ $t('common.backHome') }}
-      </NuxtLink>
+      </AppLink>
     </div>
   </section>
 </template>

@@ -7,6 +7,7 @@ import type { ProfileMilestone } from '~/services/profile'
 
 const props = defineProps<{ psnid: string }>()
 const { t } = useI18n()
+const { href } = useLangLink()
 
 const LIMIT = 30
 const ascending = ref(false)
@@ -138,7 +139,7 @@ function milestoneMeta(item: ProfileMilestone) {
       <a
         v-for="item in visibleMilestones"
         :key="`${item.type}-${item.index}-${item.trophy_id}`"
-        :href="`/trophies/${item.trophy_set_id}`"
+        :href="href(`/trophies/${item.trophy_set_id}`)"
         class="group relative flex gap-3 py-3"
         @click="openTrophyWithProgress($event, item.trophy_set_id, psnid)"
       >

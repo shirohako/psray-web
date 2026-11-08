@@ -5,6 +5,16 @@ import type { RecentPlayer } from '~/services/trophies'
 defineProps<{ id: number | string; players: RecentPlayer[] }>()
 
 const dialogOpen = ref(false)
+const { href } = useLangLink()
+
+/**
+ * A row is a real link to the player's profile, for crawlers and new-tab
+ * clicks. A plain click opens the row's menu instead (profile or progress on
+ * this set): the default is cancelled and the click bubbles on to the menu.
+ */
+function keepMenu(event: MouseEvent) {
+  if (isPlainClick(event)) event.preventDefault()
+}
 </script>
 
 <template>
@@ -17,28 +27,30 @@ const dialogOpen = ref(false)
 
     <ul v-else class="divide-y divide-slate-100">
       <li v-for="p in players" :key="p.psnid">
-        <TrophyPlayerMenu :id="id" :psnid="p.psnid" class="group flex cursor-pointer select-none items-center gap-2.5 px-4 py-2.5 transition hover:bg-slate-50">
-          <img :src="p.avatar_url" :alt="p.psnid" class="size-8 shrink-0 rounded-full bg-slate-100 object-cover" />
-          <div class="min-w-0 flex-1">
-            <div class="flex items-center gap-1.5">
-              <RegionFlag :country="p.country" class="text-xs" />
-              <span class="min-w-0 truncate text-sm font-semibold leading-5 text-slate-900 group-hover:text-slate-700">{{ p.psnid }}</span>
-              <LucideIcon v-if="p.earned_platinum > 0" :icon="Trophy" class="size-3.5 shrink-0 text-cyan-500" :title="$t('trophy.recentPlayers.hasPlatinum')" />
+        <TrophyPlayerMenu :id="id" :psnid="p.psnid">
+          <a :href="href(`/p/${p.psnid}`)" class="group flex cursor-pointer select-none items-center gap-2.5 px-4 py-2.5 transition hover:bg-slate-50" @click="keepMenu">
+            <img :src="p.avatar_url" :alt="p.psnid" class="size-8 shrink-0 rounded-full bg-slate-100 object-cover" />
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-1.5">
+                <RegionFlag :country="p.country" class="text-xs" />
+                <span class="min-w-0 truncate text-sm font-semibold leading-5 text-slate-900 group-hover:text-slate-700">{{ p.psnid }}</span>
+                <LucideIcon v-if="p.earned_platinum > 0" :icon="Trophy" class="size-3.5 shrink-0 text-cyan-500" :title="$t('trophy.recentPlayers.hasPlatinum')" />
+              </div>
+              <div class="mt-1 text-xs text-slate-400 tabular-nums">
+                <LocalTime :value="p.last_earned_at" />
+              </div>
             </div>
-            <div class="mt-1 text-xs text-slate-400 tabular-nums">
-              <LocalTime :value="p.last_earned_at" />
+            <div class="flex shrink-0 items-center gap-1.5">
+              <div class="h-1 w-10 overflow-hidden rounded-full bg-slate-100">
+                <div
+                  class="h-full rounded-full"
+                  :class="p.progress === 100 ? 'bg-cyan-400' : 'bg-slate-900'"
+                  :style="{ width: `${p.progress}%` }"
+                />
+              </div>
+              <span class="w-9 text-right text-xs font-semibold text-slate-600 tabular-nums">{{ p.progress }}%</span>
             </div>
-          </div>
-          <div class="flex shrink-0 items-center gap-1.5">
-            <div class="h-1 w-10 overflow-hidden rounded-full bg-slate-100">
-              <div
-                class="h-full rounded-full"
-                :class="p.progress === 100 ? 'bg-cyan-400' : 'bg-slate-900'"
-                :style="{ width: `${p.progress}%` }"
-              />
-            </div>
-            <span class="w-9 text-right text-xs font-semibold text-slate-600 tabular-nums">{{ p.progress }}%</span>
-          </div>
+          </a>
         </TrophyPlayerMenu>
       </li>
     </ul>

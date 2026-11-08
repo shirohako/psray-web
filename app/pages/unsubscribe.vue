@@ -70,9 +70,9 @@ async function setSubscribed(subscribed: boolean) {
         </span>
         <h1 class="text-xl font-bold tracking-tight text-slate-900">{{ $t('unsubscribe.invalid.title') }}</h1>
         <p class="text-sm leading-relaxed text-slate-500">{{ $t('unsubscribe.invalid.body') }}</p>
-        <NuxtLink to="/settings/notifications" class="inline-flex text-sm font-semibold text-slate-900 underline-offset-4 hover:underline">
+        <AppLink to="/settings/notifications" class="inline-flex text-sm font-semibold text-slate-900 underline-offset-4 hover:underline">
           {{ $t('unsubscribe.manage') }}
-        </NuxtLink>
+        </AppLink>
       </div>
 
       <!-- Still subscribed: confirm -->
@@ -95,9 +95,9 @@ async function setSubscribed(subscribed: boolean) {
             <LucideIcon :icon="busy ? Loader2 : BellOff" class="size-4" :class="busy && 'animate-spin'" />
             {{ $t('unsubscribe.confirm.action') }}
           </button>
-          <NuxtLink to="/settings/notifications" class="text-sm font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline">
+          <AppLink to="/settings/notifications" class="text-sm font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline">
             {{ $t('unsubscribe.manage') }}
-          </NuxtLink>
+          </AppLink>
         </div>
       </div>
 
@@ -120,9 +120,9 @@ async function setSubscribed(subscribed: boolean) {
             <LucideIcon :icon="busy ? Loader2 : Undo2" class="size-4" :class="busy && 'animate-spin'" />
             {{ $t('unsubscribe.done.undo') }}
           </button>
-          <NuxtLink to="/settings/notifications" class="text-sm font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline">
+          <AppLink to="/settings/notifications" class="text-sm font-semibold text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline">
             {{ $t('unsubscribe.manage') }}
-          </NuxtLink>
+          </AppLink>
         </div>
       </div>
     </section>

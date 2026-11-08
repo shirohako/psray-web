@@ -123,22 +123,22 @@ useSeo({
         <p class="mt-2 text-sm leading-7 text-slate-500">PSRay を安心してご利用いただくための条件と、データの取扱いをご案内します。</p>
       </div>
       <div class="grid gap-4 sm:grid-cols-2">
-        <NuxtLink to="/terms" class="group rounded-xl border border-amber-200 bg-amber-50/50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md">
+        <AppLink to="/terms" class="group rounded-xl border border-amber-200 bg-amber-50/50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-amber-300 hover:shadow-md">
           <LucideIcon :icon="FileText" class="size-5 text-amber-700" />
           <div class="mt-3 flex items-center justify-between gap-3">
             <h3 class="font-bold text-slate-900">利用規約</h3>
             <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600">→</span>
           </div>
           <p class="mt-2 text-sm leading-6 text-slate-500">アカウント、投稿、禁止事項、サービスの利用条件をご確認ください。</p>
-        </NuxtLink>
-        <NuxtLink to="/privacy" class="group rounded-xl border border-emerald-200 bg-emerald-50/50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md">
+        </AppLink>
+        <AppLink to="/privacy" class="group rounded-xl border border-emerald-200 bg-emerald-50/50 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md">
           <LucideIcon :icon="ShieldCheck" class="size-5 text-emerald-700" />
           <div class="mt-3 flex items-center justify-between gap-3">
             <h3 class="font-bold text-slate-900">プライバシーポリシー</h3>
             <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600">→</span>
           </div>
           <p class="mt-2 text-sm leading-6 text-slate-500">個人データ、PSN 公開情報、Cookie、削除申請の取扱いをご確認ください。</p>
-        </NuxtLink>
+        </AppLink>
       </div>
     </section>
 
@@ -228,14 +228,14 @@ useSeo({
         <h2 class="mt-1 text-xl font-bold tracking-tight text-slate-950">ドキュメント</h2>
       </div>
       <div class="grid gap-4 sm:grid-cols-2">
-        <NuxtLink to="/docs/markdown" class="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+        <AppLink to="/docs/markdown" class="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
           <LucideIcon :icon="FilePenLine" class="size-5 text-sky-700" />
           <div class="mt-3 flex items-center justify-between gap-3">
             <h3 class="font-bold text-slate-900">Markdown の書き方</h3>
             <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600">→</span>
           </div>
           <p class="mt-2 text-sm leading-6 text-slate-500">コメントで使える書式、画像、ネタバレ、拡張ブロックを紹介します。</p>
-        </NuxtLink>
+        </AppLink>
         <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-5">
           <LucideIcon :icon="Code2" class="size-5 text-slate-500" />
           <div class="mt-3 flex items-center justify-between gap-3">

@@ -70,7 +70,7 @@ async function onSubmit() {
 
   try {
     await auth.login({ loginId: loginId.value.trim(), password: password.value })
-    await navigateTo(redirectPath())
+    await navigateTo(localizeTo(redirectPath()))
   }
   catch (error) {
     setLoginError(error)
@@ -146,9 +146,9 @@ async function onSubmit() {
 
       <p class="text-center text-sm text-slate-500 animate-rise" style="animation-delay: 0.36s">
         {{ $t('auth.login.noAccount') }}
-        <NuxtLink to="/auth/register" class="font-semibold text-slate-900 transition hover:underline">
+        <AppLink to="/auth/register" class="font-semibold text-slate-900 transition hover:underline">
           {{ $t('auth.login.registerNow') }}
-        </NuxtLink>
+        </AppLink>
       </p>
     </div>
   </AuthShell>

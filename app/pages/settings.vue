@@ -38,7 +38,7 @@ function isActive(to: string) {
     <div class="grid gap-6 lg:grid-cols-[13rem_1fr]">
       <!-- Vertical nav on desktop; horizontal scrollable tabs on mobile -->
       <nav class="flex gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-white p-1.5 shadow-sm lg:flex-col lg:self-start">
-        <NuxtLink
+        <AppLink
           v-for="item in nav"
           :key="item.to"
           :to="item.to"
@@ -53,7 +53,7 @@ function isActive(to: string) {
             :class="isActive(item.to) ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-600'"
           />
           {{ $t(item.labelKey) }}
-        </NuxtLink>
+        </AppLink>
       </nav>
 
       <div class="min-w-0">

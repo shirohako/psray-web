@@ -1,11 +1,17 @@
 # Home page
 
-The home page is one card, the hero:
+The home page is the hero card, and below it the hub: the site's way in, for crawlers too.
 
 - **Left:** an animated teardown of a handheld game console. It loops: the console comes apart, its parts lie labelled on the table, and it goes back together.
 - **Right:** the title, a short lead and the PSN ID lookup. They animate in once on arrival.
 
 Both sides share a colour scheme, picked at random per page load from four.
+
+Below the hero, `app/components/home/Hub.vue` lists trending and newly added trophy sets and the top
+of the points board, each with a link to its full list. These are server-rendered links, so a crawler
+that lands on the homepage can reach the rest of the site (see `docs/seo.md`). A section whose request
+fails or comes back empty is left out; the page still answers 200. It shows no times, so nothing
+relative can drift between the server render and hydration.
 
 ![The four colour schemes: each one assembled, then laid out with its callouts](images/home-palettes.webp)
 
@@ -14,6 +20,7 @@ Both sides share a colour scheme, picked at random per page load from four.
 | File | What it does |
 | --- | --- |
 | `app/pages/index.vue` | The card: layout, copy, lookup form, and the copy's animations (timings live here) |
+| `app/components/home/Hub.vue` | The hub below the card: trending and new trophy sets, top players |
 | `app/components/home/Teardown.vue` | Loads the drawing, runs the loop, draws the callouts |
 | `app/composables/useTeardownPalette.ts` | Picks the colour scheme; shared by the drawing and the copy |
 | `app/utils/teardownMotion.ts` | The choreography: where every part is at any moment, and in what paint order |

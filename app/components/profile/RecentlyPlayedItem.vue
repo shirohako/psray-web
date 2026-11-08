@@ -13,6 +13,7 @@ const props = defineProps<{
   /** The profile's PSN ID, for the trophy page's progress view. */
   psnid: string
 }>()
+const { href } = useLangLink()
 
 const { profileGameDensity } = usePreferences()
 const density = computed(() => recentlyPlayedDensity[profileGameDensity.value])
@@ -24,7 +25,7 @@ const tiers = computed(() => earnedTiers(props.game))
 
 <template>
   <a
-    :href="`/trophies/${game.trophy_set_id}`"
+    :href="href(`/trophies/${game.trophy_set_id}`)"
     class="group relative isolate flex items-start overflow-hidden transition hover:bg-slate-50"
     :class="density.row"
     @click="openTrophyWithProgress($event, game.trophy_set_id, psnid)"

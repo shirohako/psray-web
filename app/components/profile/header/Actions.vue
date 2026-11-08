@@ -37,14 +37,14 @@ const followButtonSkin = 'bg-zinc-900/90 text-white hover:bg-zinc-950'
       <LucideIcon :icon="ChevronDown" class="size-3.5 text-zinc-400" />
 
       <template #menu="{ close }">
-        <NuxtLink
+        <AppLink
           :to="{ path: '/sync', query: { psnid: profile.psnid } }"
           class="flex w-full items-center gap-2 px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
           @click="close"
         >
           <LucideIcon :icon="RefreshCw" class="size-3.5 text-slate-400" />
           {{ $t('profile.actions.sync') }}
-        </NuxtLink>
+        </AppLink>
 
         <!-- Follow/unfollow only when the viewer can actually follow. -->
         <template v-if="profile.can_follow">
@@ -83,13 +83,13 @@ const followButtonSkin = 'bg-zinc-900/90 text-white hover:bg-zinc-950'
 
     <!-- sm+: inline buttons -->
     <div class="hidden items-center gap-2 sm:flex">
-      <NuxtLink
+      <AppLink
         :to="{ path: '/sync', query: { psnid: profile.psnid } }"
         :class="[actionButtonBase, syncButtonSkin]"
       >
         <LucideIcon :icon="RefreshCw" class="size-3" />
         {{ $t('profile.actions.sync') }}
-      </NuxtLink>
+      </AppLink>
 
       <!-- Follow/unfollow only when the viewer can actually follow. -->
       <template v-if="profile.can_follow">

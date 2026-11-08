@@ -37,12 +37,7 @@ const rangeEnd = computed(() => items.value.length ? rangeStart.value + items.va
 
 /** Search and sort changes replace the history entry and go back to page 1; page changes push one. */
 function navigate(next: Partial<MyTipsState>) {
-  const location = {
-    query: {
-      ...(route.query.lang ? { lang: route.query.lang } : {}),
-      ...myTipsRouteQuery({ ...state.value, page: 1, ...next }),
-    },
-  }
+  const location = localizeTo({ query: myTipsRouteQuery({ ...state.value, page: 1, ...next }) })
   return next.page === undefined ? router.replace(location) : router.push(location)
 }
 
@@ -209,9 +204,9 @@ const SORTS: { value: AuthoredTipSort; labelKey: string }[] = AUTHORED_TIP_SORTS
           <template v-else>
             <h3 class="mt-4 text-sm font-semibold text-slate-900">{{ $t('me.tips.empty') }}</h3>
             <p class="mx-auto mt-1.5 max-w-sm text-xs leading-5 text-slate-500">{{ $t('me.tips.emptyHint') }}</p>
-            <NuxtLink to="/trophies" class="mt-5 inline-flex rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-700">
+            <AppLink to="/trophies" class="mt-5 inline-flex rounded-lg bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-700">
               {{ $t('me.tips.browseTrophies') }}
-            </NuxtLink>
+            </AppLink>
           </template>
         </div>
 

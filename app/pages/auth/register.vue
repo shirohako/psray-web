@@ -107,9 +107,9 @@ const {
 
       <p v-if="step === 1" class="text-center text-sm text-slate-500 animate-rise" style="animation-delay: 0.36s">
         {{ $t('auth.register.haveAccount') }}
-        <NuxtLink to="/auth/login" class="font-semibold text-slate-900 transition hover:underline">
+        <AppLink to="/auth/login" class="font-semibold text-slate-900 transition hover:underline">
           {{ $t('auth.register.loginNow') }}
-        </NuxtLink>
+        </AppLink>
       </p>
     </div>
   </AuthShell>

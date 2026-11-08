@@ -95,7 +95,11 @@ export function formatHourInterval(
  * `Intl.DurationFormat` isn't available across our Node/Safari floor, so the
  * unit pairs come from the message catalog (`time.*`).
  */
-export function formatDuration(sec: number | null | undefined) {
+export function formatDuration(
+  sec: number | null | undefined,
+  /** For callers outside a component render, such as head getters: pass the page's `t`. */
+  translate: (key: string, named: Record<string, unknown>) => string = tr,
+) {
   if (sec == null) return '—'
   const d = Math.floor(sec / 86_400)
   const h = Math.floor((sec % 86_400) / 3600)
@@ -104,17 +108,17 @@ export function formatDuration(sec: number | null | undefined) {
   if (d >= 365) {
     const y = Math.floor(d / 365)
     const mo = Math.floor((d % 365) / 30)
-    return mo > 0 ? tr('time.yearMonth', { y, mo }) : tr('time.year', { y })
+    return mo > 0 ? translate('time.yearMonth', { y, mo }) : translate('time.year', { y })
   }
   if (d >= 30) {
     const mo = Math.floor(d / 30)
     const rest = d % 30
-    return rest > 0 ? tr('time.monthDay', { mo, d: rest }) : tr('time.month', { mo })
+    return rest > 0 ? translate('time.monthDay', { mo, d: rest }) : translate('time.month', { mo })
   }
-  if (d > 0) return tr('time.dayHour', { d, h })
-  if (h > 0) return tr('time.hourMinute', { h, m })
-  if (m > 0) return tr('time.minuteSecond', { m, s })
-  return tr('time.second', { s })
+  if (d > 0) return translate('time.dayHour', { d, h })
+  if (h > 0) return translate('time.hourMinute', { h, m })
+  if (m > 0) return translate('time.minuteSecond', { m, s })
+  return translate('time.second', { s })
 }
 
 /**

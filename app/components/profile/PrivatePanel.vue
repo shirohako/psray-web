@@ -63,13 +63,13 @@ const PREVIEW = [
       </div>
 
       <div class="mt-5 flex justify-center">
-        <NuxtLink
+        <AppLink
           :to="{ path: '/sync', query: { psnid } }"
           class="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white shadow-sm shadow-slate-900/20 transition hover:bg-slate-700 active:scale-[0.98]"
         >
           <LucideIcon :icon="RefreshCw" class="size-4" />
           {{ $t('profile.private.resync') }}
-        </NuxtLink>
+        </AppLink>
       </div>
     </div>
   </section>

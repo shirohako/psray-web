@@ -12,8 +12,6 @@ import {
 } from '~/utils/trophyLibrary'
 
 const { t } = useI18n()
-useSeo({ title: () => t('library.title'), description: () => t('library.description') })
-
 const route = useRoute()
 const router = useRouter()
 // Category, filters and page live in the URL so Back/Forward and shared links
@@ -43,25 +41,47 @@ const pending = useFetchPending(status)
 const rangeStart = computed(() => games.value.length ? ((meta.value?.page ?? page.value) - 1) * (meta.value?.per_page ?? pageSize) + 1 : 0)
 const rangeEnd = computed(() => games.value.length ? rangeStart.value + games.value.length - 1 : 0)
 
+// 503 while the API is down, 404 past the last page: only real lists get indexed.
+const { failed } = useListResponse({ error, meta, page })
+const filtered = computed(() =>
+  Object.keys(libraryRouteQuery({ category: 'trending', filters: filters.value, page: 1 })).length > 0)
+
+useSeo({
+  title: () => (page.value > 1 ? t('seo.paged', { title: t('library.title'), page: page.value }) : t('library.title')),
+  description: () => t('library.description'),
+  // Each category, and each page of it, is a list of its own: crawlable, and
+  // canonical to itself. A search or filter is a view of them: `noindex`.
+  canonicalQuery: () => libraryRouteQuery({ category: category.value, filters: emptyLibraryFilters(), page: page.value }),
+  noindex: () => filtered.value || failed.value,
+})
+
 watch(() => filters.value.search, (search) => { searchInput.value = search })
+
+type LibraryChange = { category?: LibraryCategory; filters?: Partial<LibraryFilters>; page?: number }
+
+/** Where a change leads: the listing's own params, then the interface language. */
+function locationFor(next: LibraryChange) {
+  return localizeTo({
+    query: libraryRouteQuery({
+      category: next.category ?? category.value,
+      filters: { ...filters.value, ...next.filters },
+      page: next.page ?? 1,
+    }),
+  })
+}
 
 /**
  * Filter changes replace the history entry and go back to page 1; page changes
- * push a new entry so Back returns to the previous page. `lang` is kept.
+ * push a new entry so Back returns to the previous page.
  */
-function navigate(next: { category?: LibraryCategory; filters?: Partial<LibraryFilters>; page?: number }) {
-  const location = {
-    query: {
-      ...(route.query.lang ? { lang: route.query.lang } : {}),
-      ...libraryRouteQuery({
-        category: next.category ?? category.value,
-        filters: { ...filters.value, ...next.filters },
-        page: next.page ?? 1,
-      }),
-    },
-  }
+function navigate(next: LibraryChange) {
+  const location = locationFor(next)
   return next.page === undefined ? router.replace(location) : router.push(location)
 }
+
+// Real URLs for the pager and the category tabs, so crawlers can walk the library.
+const pageHref = (value: number) => router.resolve(locationFor({ page: value })).href
+const categoryHref = (value: LibraryCategory) => router.resolve(locationFor({ category: value })).href
 
 function setFilters(value: Partial<LibraryFilters>) {
   navigate({ filters: value })
@@ -89,6 +109,7 @@ function changePage(value: number) {
         v-model:show-reference-times="showReferenceTimes"
         :category="activeCategory"
         :filters="filters"
+        :category-href="categoryHref"
         @category="navigate({ category: $event })"
         @filters="setFilters"
         @reset="reset"
@@ -97,7 +118,7 @@ function changePage(value: number) {
       <section id="library-results" class="scroll-mt-20 border-t border-slate-200" :aria-label="$t('library.results')" :aria-busy="pending">
         <div v-if="meta && !error && totalPages > 1" class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5">
           <p class="text-[11px] text-slate-400">{{ $t('library.range', { start: rangeStart, end: rangeEnd, total: meta.total }) }}</p>
-          <Pagination :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
+          <Pagination :page="page" :total-pages="totalPages" :siblings="2" :href-for="pageHref" @update:page="changePage" />
         </div>
         <!-- The listing almost always spans pages, so hold the bar's place on first load -->
         <div v-else-if="pending && !meta" class="animate-skeleton-in flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-2.5" aria-hidden="true">
@@ -142,7 +163,7 @@ function changePage(value: number) {
 
         <div v-if="meta && !error" class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-4 py-4">
           <p role="status" class="text-[11px] text-slate-400">{{ $t('library.range', { start: rangeStart, end: rangeEnd, total: meta.total }) }}</p>
-          <Pagination v-if="totalPages > 1" :page="page" :total-pages="totalPages" :siblings="2" @update:page="changePage" />
+          <Pagination v-if="totalPages > 1" :page="page" :total-pages="totalPages" :siblings="2" :href-for="pageHref" @update:page="changePage" />
         </div>
       </section>
     </div>

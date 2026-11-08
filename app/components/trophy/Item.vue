@@ -63,8 +63,15 @@ const masked = computed(() => {
 function toggleMask() {
   override.value = !masked.value
 }
-const displayName = computed(() => (masked.value ? t('trophy.item.hidden') : name.value))
-const displayDetail = computed(() => (masked.value ? '' : detail.value))
+
+// A masked trophy's text is still in the page, only blurred: search engines can
+// index hidden trophies (a common search), readers aren't spoiled by accident.
+// Clicking the blurred text reveals it, without opening the row's menu.
+function revealOnClick(event: MouseEvent) {
+  if (!masked.value) return
+  event.stopPropagation()
+  toggleMask()
+}
 function fmtRate(rate: number | string) {
   const n = Number(rate)
   return Number.isFinite(n) ? `${n.toFixed(1)}%` : '—'
@@ -120,7 +127,7 @@ const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
       <div class="relative">
         <img
           :src="trophy.icon_url"
-          :alt="displayName"
+          :alt="name"
           class="rounded-lg bg-slate-100 object-cover shadow-sm"
           :class="[density.icon, { 'blur-[3px] grayscale': masked }]"
         />
@@ -144,7 +151,14 @@ const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
 
     <div class="min-w-0 flex-1">
       <div class="flex flex-wrap items-center gap-2">
-        <h3 class="min-w-0 truncate font-semibold text-slate-900" :class="[density.title, { 'text-slate-400': masked }]">{{ displayName }}</h3>
+        <h3 class="min-w-0 truncate font-semibold text-slate-900" :class="density.title">
+          <span v-if="masked" class="sr-only">{{ $t('trophy.item.hidden') }}: </span>
+          <span
+            :class="{ 'cursor-pointer select-none text-slate-400 blur-[5px]': masked }"
+            :title="masked ? $t('trophy.item.reveal') : undefined"
+            @click="revealOnClick"
+          >{{ name }}</span>
+        </h3>
         <button
           v-if="trophy.is_hidden && !earned"
           type="button"
@@ -155,7 +169,15 @@ const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
           <LucideIcon :icon="masked ? EyeOff : Eye" class="size-3" />
         </button>
       </div>
-      <p v-if="displayDetail" class="text-slate-500" :class="density.detail">{{ displayDetail }}</p>
+      <p
+        v-if="detail"
+        class="text-slate-500"
+        :class="[density.detail, { 'cursor-pointer select-none blur-[4px]': masked }]"
+        :title="masked ? $t('trophy.item.reveal') : undefined"
+        @click="revealOnClick"
+      >
+        {{ detail }}
+      </p>
       <div
         v-if="showEarned && timestampMissing"
         class="flex max-w-full flex-wrap items-center font-medium leading-normal text-slate-400"

@@ -43,12 +43,7 @@ onMounted(() => {
 
 /** Tab and filter changes replace the history entry and go back to page 1; page changes push one. */
 function navigate(next: Partial<FeedbackListState>) {
-  const location = {
-    query: {
-      ...(route.query.lang ? { lang: route.query.lang } : {}),
-      ...feedbackRouteQuery({ ...state.value, page: 1, ...next }),
-    },
-  }
+  const location = localizeTo({ query: feedbackRouteQuery({ ...state.value, page: 1, ...next }) })
   return next.page === undefined ? router.replace(location) : router.push(location)
 }
 
@@ -126,10 +121,10 @@ function onCreated() {
         </div>
         <ul v-else-if="guestEntries.length" class="divide-y divide-slate-100">
           <li v-for="entry in guestEntries" :key="entry.id">
-            <NuxtLink :to="`/feedback/${entry.id}`" class="flex items-center justify-between gap-3 px-4 py-3 transition hover:bg-slate-50 sm:px-5">
+            <AppLink :to="`/feedback/${entry.id}`" class="flex items-center justify-between gap-3 px-4 py-3 transition hover:bg-slate-50 sm:px-5">
               <span class="min-w-0 truncate text-sm text-slate-700">{{ entry.excerpt }}</span>
               <time :datetime="entry.created_at" class="shrink-0 whitespace-nowrap text-xs tabular-nums text-slate-400">{{ fmtDateTime(entry.created_at) }}</time>
-            </NuxtLink>
+            </AppLink>
           </li>
         </ul>
         <div v-else class="px-6 py-16 text-center">

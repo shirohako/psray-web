@@ -1,20 +1,15 @@
 import { describe, expect, it } from 'vitest'
-import { canonicalContentLang, contentHreflang, uiLocaleForPsnLanguage } from '../shared/locales'
+import { canonicalContentLang, contentEditions, profileEditions, uiLocaleForPsnLanguage } from '../shared/locales'
 
-describe('trophy content language SEO mapping', () => {
-  it('preserves API language codes in trophy URLs', () => {
+describe('trophy content language params', () => {
+  it('preserves API language codes', () => {
     expect(canonicalContentLang('en-US')).toBe('en-US')
     expect(canonicalContentLang('es-419')).toBe('es-419')
   })
 
-  it('maps unsupported UN M49 regions to a supported hreflang', () => {
-    expect(contentHreflang('es-419')).toBe('es')
-    expect(contentHreflang('fr-FR')).toBe('fr-FR')
-  })
-
-  it('rejects malformed content-language params', () => {
+  it('rejects malformed values', () => {
     expect(canonicalContentLang('../en')).toBe('')
-    expect(contentHreflang('en-US-extra')).toBe('')
+    expect(canonicalContentLang('en-US-extra')).toBe('')
   })
 })
 
@@ -37,5 +32,28 @@ describe('PSN language → UI locale', () => {
     expect(uiLocaleForPsnLanguage('zh')).toBe('')
     expect(uiLocaleForPsnLanguage('金色')).toBe('')
     expect(uiLocaleForPsnLanguage(undefined)).toBe('')
+  })
+})
+
+// The backend sitemap applies the same rules (SitemapLanguages); keep the vectors in step.
+describe('editions', () => {
+  it('indexes content in Japanese and English, plus Chinese and Korean only where it exists', () => {
+    expect(contentEditions(['en-US', 'fr-FR'])).toEqual(['ja', 'en'])
+    expect(contentEditions(['ja-JP', 'en-US', 'zh-Hant', 'ko-KR'])).toEqual(['ja', 'zh-Hant', 'en', 'ko'])
+    expect(contentEditions(['zh-Hans', 'zh-Hant', 'en-GB'])).toEqual(['ja', 'zh-Hans', 'zh-Hant', 'en'])
+  })
+
+  it('falls back to the default language when a set lists none', () => {
+    expect(contentEditions([], 'zh-Hans')).toEqual(['ja', 'zh-Hans', 'en'])
+    expect(contentEditions([], null)).toEqual(['ja', 'en'])
+    expect(contentEditions([])).toEqual(['ja', 'en'])
+  })
+
+  it('adds the interfaces of a player\'s own PSN languages', () => {
+    expect(profileEditions(['ja'])).toEqual(['ja', 'en'])
+    expect(profileEditions(['zh-CN', 'zh-TW', 'en'])).toEqual(['ja', 'zh-Hans', 'zh-Hant', 'en'])
+    expect(profileEditions(['ko-KR', 'de'])).toEqual(['ja', 'en', 'ko'])
+    expect(profileEditions(null)).toEqual(['ja', 'en'])
+    expect(profileEditions('zh-TW')).toEqual(['ja', 'en'])
   })
 })

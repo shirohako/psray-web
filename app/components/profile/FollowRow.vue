@@ -30,11 +30,11 @@ function followedIso(value: string) {
     <div class="min-w-0 flex-1">
       <div class="flex min-w-0 items-center gap-1.5">
         <RegionFlag :country="person.country" class="shrink-0 text-sm" />
-        <NuxtLink
+        <AppLink
           :to="`/p/${encodeURIComponent(person.psnid)}`"
           class="truncate text-sm font-semibold text-slate-900 after:absolute after:inset-0 group-hover:text-sky-600"
           @click="emit('navigate')"
-        >{{ person.psnid }}</NuxtLink>
+        >{{ person.psnid }}</AppLink>
         <slot name="badge" />
       </div>
       <div class="mt-1 flex min-w-0 items-center gap-2">
@@ -60,11 +60,11 @@ function followedIso(value: string) {
     <div class="min-w-0 flex-1">
       <div class="flex min-w-0 items-center gap-1.5">
         <RegionFlag :country="person.country" class="shrink-0 text-sm" />
-        <NuxtLink
+        <AppLink
           :to="`/p/${encodeURIComponent(person.psnid)}`"
           class="truncate text-sm font-semibold text-slate-900 after:absolute after:inset-0 group-hover:text-sky-600"
           @click="emit('navigate')"
-        >{{ person.psnid }}</NuxtLink>
+        >{{ person.psnid }}</AppLink>
         <slot name="badge" />
       </div>
       <i18n-t keypath="profile.social.followedAt" scope="global" tag="p" class="mt-0.5 truncate text-xs text-slate-400">

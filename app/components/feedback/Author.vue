@@ -27,17 +27,17 @@ const guestName = computed(() => props.author.type === 'guest' ? props.author.na
     </template>
 
     <template v-else-if="user">
-      <NuxtLink :to="`/p/${encodeURIComponent(user.psnid)}`" class="shrink-0">
+      <AppLink :to="`/p/${encodeURIComponent(user.psnid)}`" class="shrink-0">
         <img v-if="user.avatar_url" :src="user.avatar_url" :alt="user.psnid" class="size-8 rounded-full bg-slate-100 object-cover" />
         <span v-else class="grid size-8 place-items-center rounded-full bg-slate-100 text-sm font-bold uppercase text-slate-500">
           {{ user.psnid.slice(0, 1) }}
         </span>
-      </NuxtLink>
+      </AppLink>
       <div class="flex min-w-0 flex-wrap items-center gap-x-1.5 gap-y-0.5">
         <RegionFlag v-if="user.country" :country="user.country" class="text-xs" />
-        <NuxtLink :to="`/p/${encodeURIComponent(user.psnid)}`" class="truncate text-sm font-semibold text-slate-900 transition hover:text-slate-600">
+        <AppLink :to="`/p/${encodeURIComponent(user.psnid)}`" class="truncate text-sm font-semibold text-slate-900 transition hover:text-slate-600">
           {{ user.psnid }}
-        </NuxtLink>
+        </AppLink>
         <span v-if="author.type === 'staff'" class="shrink-0 rounded bg-sky-100 px-1.5 py-px text-[10px] font-semibold text-sky-800 ring-1 ring-inset ring-sky-300/70">
           {{ $t('feedback.staffTag') }}
         </span>

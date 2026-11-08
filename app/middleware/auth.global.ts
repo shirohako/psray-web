@@ -13,16 +13,16 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 
   if (guestOnly && auth.loggedIn.value) {
-    return navigateTo(auth.user.value?.psnid ? `/p/${encodeURIComponent(auth.user.value.psnid)}` : '/')
+    return navigateTo(localizeTo(auth.user.value?.psnid ? `/p/${encodeURIComponent(auth.user.value.psnid)}` : '/'))
   }
 
   if (!requirement) return
 
   if (!auth.loggedIn.value) {
-    return navigateTo({
+    return navigateTo(localizeTo({
       path: '/auth/login',
       query: { redirect: to.fullPath },
-    })
+    }))
   }
 
   if (!auth.can(requirement)) {

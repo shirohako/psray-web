@@ -12,7 +12,6 @@ const props = defineProps<{
   guestToken?: string | null
 }>()
 
-const route = useRoute()
 const { t } = useI18n()
 const toast = useToast()
 const api = useFeedbackApi()
@@ -28,7 +27,7 @@ async function deleteFeedback() {
     await api.remove(props.feedbackId, props.guestToken)
     forgetGuestFeedback(feedbackStorage(), props.feedbackId)
     toast.success({ title: t('feedback.detail.deleted') })
-    await navigateTo({ path: '/feedback', query: route.query.lang ? { lang: route.query.lang } : {} })
+    await navigateTo(localizeTo({ path: '/feedback' }))
   }
   catch (error) {
     toast.error({ title: t('feedback.detail.deleteFailed'), description: errorText(error) })

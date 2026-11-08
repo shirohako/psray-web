@@ -24,7 +24,8 @@
     "timestampsIncompleteHint": "部分獎盃缺少獲得時間，這裡僅依據有時間紀錄的獎盃",
     "updated": "更新時間",
     "updatedAt": "更新於 {time}",
-    "view": "查看"
+    "view": "查看",
+    "breadcrumb": "麵包屑導覽"
   },
   "markdown": {
     "help": {
@@ -83,6 +84,10 @@
     },
     "teardown": {
       "label": "掌機拆解動畫"
+    },
+    "hub": {
+      "viewAll": "查看全部",
+      "topPlayers": "頂尖玩家"
     }
   },
   "auth": {
@@ -911,16 +916,22 @@
       "description": "根據 PSN 獎盃點數查看全球總榜以及國家和地區排行榜。"
     },
     "profile": {
-      "title": "{psnid} 的個人資料",
+      "title": "{psnid} 的 PSN 獎盃",
       "titleFallback": "個人資料",
       "titleMissing": "{psnid} · 尚未收錄",
       "titleBanned": "該使用者已被封禁",
-      "description": "{psnid} 的 PSN 獎盃戰績：已獲獎盃、里程碑與最近遊玩記錄。"
+      "description": "{psnid} 的 PSN 獎盃戰績：已獲獎盃、里程碑與最近遊玩記錄。",
+      "descriptionStats": "{psnid} 的 PSN 獎盃：等級 {level}，{platinum} 個白金，共 {total} 個獎盃。已獲得的獎盃、里程碑與最近遊玩記錄。"
     },
     "trophy": {
-      "title": "{name} 的獎盃",
+      "title": "{name} 獎盃列表（{platform}）",
       "titleFallback": "獎盃組",
-      "description": "{name}（{platform}）的全部 {count} 個獎盃：獲取率、稀有度與攻略心得。"
+      "tier": "{label} {count}",
+      "tierSeparator": "、",
+      "descCount": "{name}（{platform}）共 {count} 個獎盃：{tiers}。",
+      "descPlatinumRate": "白金獲得率 {rate}%。",
+      "descPlatinumTime": "白金耗時中位數 {time}。",
+      "descTail": "查看獲得率、隱藏獎盃與攻略心得。"
     },
     "login": {
       "title": "登入",
@@ -948,7 +959,8 @@
       "title": "意見回饋",
       "description": "PSRay 的問題回報、功能建議，以及管理員的回覆。",
       "detailTitle": "回饋 #{id}"
-    }
+    },
+    "paged": "{title}（第 {page} 頁）"
   },
   "games": {
     "title": "全部遊戲",

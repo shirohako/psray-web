@@ -1,48 +1,33 @@
-import {
-  DEFAULT_LOCALE,
-  OG_LOCALE,
-  UI_LOCALES,
-  canonicalContentLang,
-  canonicalLang,
-  contentHreflang,
-  isUiLocale,
-  trophyLanguageEditions,
-  trophyDefaultLanguage,
-  type UiLocale,
-} from '#shared/locales'
+import { withLang } from '#shared/langLink'
+import { DEFAULT_LOCALE, isUiLocale, type UiLocale } from '#shared/locales'
 import { resolveSeoImage, type SeoImageType } from '~/utils/seoImage'
-import { resolveSeoLocalePolicy } from '~/utils/seoLocale'
+import { resolveSeoEditions } from '~/utils/seoLocale'
 
 /**
  * Per-page SEO head: title, description, Open Graph, Twitter card, canonical,
- * and `hreflang` alternates — from one call.
+ * `hreflang` alternates and robots — from one call.
  *
  * The i18n module can't supply the alternates itself: under the `no_prefix`
- * strategy its `useLocaleHead()` emits none, and a trophy set's alternate set
- * is dynamic anyway (whatever PSN languages that particular set ships in).
+ * strategy its `useLocaleHead()` emits none, and which locales a page is
+ * indexed in depends on its content anyway.
  *
- * ## The URL contract
+ * ## The URL contract (`docs/seo.md`)
  *
- * Two params may appear in a canonical URL, and only these two:
+ * One language per URL. A page's URL in a locale is its path, then its own
+ * list params (`canonicalQuery`: already normalized, in a fixed order), then
+ * `?lang=` — with `ja`, the default, spelled as no param at all.
  *
- * - **`?lang=`** — the interface language, one of the five UI locales. `ja`,
- *   the default, is spelled as *no param at all*.
- * - **`?tlang=`** — the body-content language, where a page has content in
- *   languages the interface isn't translated into (the trophy page, whose sets
- *   ship in up to 25 PSN languages). Omitted whenever the body is already in
- *   whatever the interface language implies.
+ * A page is indexed in its **editions**: the UI locales its content exists in
+ * (`contentEditions()` / `profileEditions()`; all five by default).
  *
- * Keeping them separate is what lets a reader switch trophy text to French
- * without losing their Chinese interface. For indexing it means each
- * `hreflang` still maps to exactly one URL: the five UI locales are advertised
- * as `?lang=`, and any remaining content-only language as `?tlang=` at the
- * default interface language — no `lang × tlang` matrix is ever advertised.
+ * - Rendered in one of its editions, a page is indexable: its canonical is
+ *   itself, and it lists every edition as an `hreflang` alternate, plus
+ *   `x-default` → English.
+ * - Otherwise — `noindex`, or a locale outside its editions — it says
+ *   `noindex, follow` and nothing more: no canonical, no alternates.
  *
- * Any other param (`psnid`, `page`, …) is dropped from the canonical unless
- * named in `keepQuery`, so personalised permutations collapse onto the shared
- * public page.
- * Trophy pages override canonicalLang to the default UI and always supply the
- * served contentLang: their canonical and alternate URLs use only `?tlang=`.
+ * Any other param (`psnid`, `tlang`, filters, …) never reaches a canonical;
+ * pages that render them make themselves `noindex` instead.
  */
 
 /** A value, or a getter for one — so callers can hang SEO off pending async data. */
@@ -63,6 +48,12 @@ export interface SeoInput {
   siteNameFirst?: boolean
   /** Canonical pathname. Defaults to the current route path. */
   canonicalPath?: Source<string>
+  /**
+   * The page's own params that make it a distinct, indexable list — a library
+   * category, a page number — already normalized and in URL order. `lang`
+   * comes after them. Anything not listed here never reaches the canonical.
+   */
+  canonicalQuery?: Source<Record<string, string> | undefined>
   description?: Source<string>
   /**
    * Absolute image URL for `og:image` / `twitter:image`. Omit it — or let it
@@ -76,26 +67,8 @@ export interface SeoInput {
   imageHeight?: Source<number | undefined>
   /** MIME type for the social preview image, such as `image/png`. */
   imageType?: Source<SeoImageType | undefined>
-  /** `lang` value for the canonical URL. Defaults to the active UI locale. */
-  canonicalLang?: Source<string>
-  /**
-   * Body-content language to spell out as `?tlang=` in the canonical — pass it
-   * only when the content isn't in whatever the interface language implies,
-   * and pass what was *actually served* rather than what was requested, so a
-   * language the API fell back on canonicalizes to the real one. Empty for the
-   * common case where interface and content agree.
-   */
-  contentLang?: Source<string>
-  /**
-   * Every content language this page exists in, advertised as `?tlang=`
-   * alternates — the trophy page passes the set's `available_languages` so each
-   * PSN translation is discoverable. Entries that are already UI locales are
-   * skipped: those are advertised as `?lang=` instead.
-   */
-  altContentLangs?: Source<string[]>
-  trophyDefaultLang?: Source<string | null | undefined>
-  /** Query params to preserve in the canonical besides `lang`. Default: none. */
-  keepQuery?: string[]
+  /** UI locales this page is indexed in. Defaults to all five. */
+  editions?: Source<readonly UiLocale[] | undefined>
   noindex?: Source<boolean>
   /**
    * Marks a page as having one fixed UI-language edition. Its canonical URL
@@ -111,18 +84,15 @@ export function useSeo(input: SeoInput) {
   const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
 
   /**
-   * Absolute URL for this page in `lang`, optionally with its body in
-   * `contentLang`. Params are appended in a fixed order so the same state
-   * always spells the same URL.
+   * Absolute URL of this page in `lang`. Params are appended in a fixed order
+   * so the same state always spells the same URL.
    */
-  const urlFor = (lang: string, contentLang = '') => {
+  const urlFor = (lang: UiLocale) => {
     const params = new URLSearchParams()
-    for (const key of input.keepQuery ?? []) {
-      const value = route.query[key]
-      if (typeof value === 'string' && value) params.set(key, value)
+    for (const [key, value] of Object.entries(read(input.canonicalQuery) ?? {})) {
+      if (value) params.set(key, value)
     }
-    if (lang && lang !== DEFAULT_LOCALE) params.set('lang', lang)
-    if (contentLang) params.set('tlang', contentLang)
+    if (!input.staticLocale && lang !== DEFAULT_LOCALE) params.set('lang', lang)
     const search = params.toString()
     const path = read(input.canonicalPath) || route.path
     return `${siteUrl}${path}${search ? `?${search}` : ''}`
@@ -131,13 +101,13 @@ export function useSeo(input: SeoInput) {
   const activeLocale = computed<UiLocale>(() =>
     isUiLocale(locale.value) ? locale.value : DEFAULT_LOCALE)
 
-  const localePolicy = computed(() => resolveSeoLocalePolicy(
-    input.staticLocale,
-    read(input.canonicalLang),
-    activeLocale.value,
-  ))
+  const policy = computed(() => resolveSeoEditions({
+    staticLocale: input.staticLocale,
+    active: activeLocale.value,
+    editions: read(input.editions),
+    noindex: Boolean(read(input.noindex)),
+  }))
 
-  const currentLang = computed(() => localePolicy.value.canonicalLang)
   const title = computed(() => withSiteTitle(read(input.title)!, input.siteNameFirst))
 
   // `seo.home.title` is the site's own one-line pitch, which is exactly what
@@ -151,55 +121,18 @@ export function useSeo(input: SeoInput) {
   }, `PSRay — ${t('seo.home.title')}`))
 
   const canonical = computed(() =>
-    input.staticLocale
-      ? urlFor(DEFAULT_LOCALE)
-      : urlFor(currentLang.value, canonicalContentLang(read(input.contentLang))))
+    policy.value.indexable ? urlFor(policy.value.canonicalLocale) : null)
 
-  const alternates = computed(() => {
-    if (input.staticLocale) return []
-
-    if (input.trophyDefaultLang !== undefined) {
-      const languages = [...(read(input.altContentLangs) ?? [])]
-      const defaultLanguage = read(input.trophyDefaultLang)
-      if (!languages.length && defaultLanguage) languages.push(defaultLanguage)
-      const served = trophyDefaultLanguage(languages, defaultLanguage)
-      return [
-        { rel: 'alternate' as const, hreflang: 'x-default', href: urlFor(DEFAULT_LOCALE, served) },
-        ...trophyLanguageEditions(languages).map(edition => ({
+  const alternates = computed(() => policy.value.alternates.length
+    ? [
+        { rel: 'alternate' as const, hreflang: 'x-default', href: urlFor(policy.value.xDefault) },
+        ...policy.value.alternates.map(code => ({
           rel: 'alternate' as const,
-          hreflang: edition.hreflang,
-          href: urlFor(edition.lang, edition.contentLang),
+          hreflang: code,
+          href: urlFor(code),
         })),
       ]
-    }
-
-    const links = [
-      { rel: 'alternate' as const, hreflang: 'x-default', href: urlFor(DEFAULT_LOCALE) },
-      ...localePolicy.value.uiAlternates.map(code => ({
-        rel: 'alternate' as const,
-        hreflang: code,
-        href: urlFor(code),
-      })),
-    ]
-
-    // Languages we have content in but no interface for: advertised at the
-    // default interface language with only the body swapped.
-    const seen = new Set<string>(UI_LOCALES)
-    for (const code of read(input.altContentLangs) ?? []) {
-      const contentCode = canonicalContentLang(code)
-      const hreflang = contentHreflang(code)
-      const uiEquivalent = canonicalLang(code)
-      if (!contentCode || !hreflang || seen.has(hreflang) || seen.has(uiEquivalent)) continue
-      seen.add(hreflang)
-      links.push({
-        rel: 'alternate' as const,
-        hreflang,
-        href: urlFor(DEFAULT_LOCALE, contentCode),
-      })
-    }
-
-    return links
-  })
+    : [])
 
   useSeoMeta({
     title: () => title.value,
@@ -213,11 +146,10 @@ export function useSeo(input: SeoInput) {
     ogImageWidth: () => image.value.width,
     ogImageHeight: () => image.value.height,
     ogImageType: () => image.value.type,
-    ogUrl: () => canonical.value,
-    ogLocale: () => localePolicy.value.ogLocale,
-    ogLocaleAlternate: () => input.staticLocale
-      ? undefined
-      : UI_LOCALES.filter(code => code !== activeLocale.value).map(code => OG_LOCALE[code]),
+    // A personal view still shares as its public page.
+    ogUrl: () => canonical.value ?? urlFor(policy.value.canonicalLocale),
+    ogLocale: () => policy.value.ogLocale,
+    ogLocaleAlternate: () => (policy.value.ogAlternates.length ? policy.value.ogAlternates : undefined),
     twitterCard: 'summary_large_image',
     twitterSite: '@shionari_',
     twitterCreator: '@shionari_',
@@ -228,10 +160,22 @@ export function useSeo(input: SeoInput) {
     twitterImageWidth: () => image.value.width,
     twitterImageHeight: () => image.value.height,
     // `follow` even when noindex: these pages still link on to indexable ones.
-    robots: () => (read(input.noindex) ? 'noindex, follow' : undefined),
+    robots: () => (policy.value.indexable ? undefined : 'noindex, follow'),
   })
 
   useHead(() => ({
-    link: [{ rel: 'canonical', href: canonical.value }, ...alternates.value],
+    link: [...(canonical.value ? [{ rel: 'canonical', href: canonical.value }] : []), ...alternates.value],
   }))
+
+  return {
+    canonical,
+    urlFor,
+    /**
+     * Absolute URL of another page (`/games/1`) in this response's language,
+     * for structured data. Safe inside head getters, which unhead evaluates
+     * outside any component: the `localizeTo()` helpers are not.
+     */
+    absoluteUrl: (path: string) => `${siteUrl}${withLang(path, activeLocale.value)}`,
+    indexable: computed(() => policy.value.indexable),
+  }
 }

@@ -31,7 +31,7 @@ const agreedPrivacy = defineModel<boolean>('agreedPrivacy', { required: true })
             <LucideIcon :icon="FileText" class="size-4 text-slate-400" />
           </template>
           <template #link>
-            <NuxtLink
+            <AppLink
               to="/terms"
               target="_blank"
               rel="noopener"
@@ -39,7 +39,7 @@ const agreedPrivacy = defineModel<boolean>('agreedPrivacy', { required: true })
               @click.stop
             >
               {{ $t('auth.register.terms.termsLink') }}
-            </NuxtLink>
+            </AppLink>
           </template>
         </i18n-t>
       </span>
@@ -53,7 +53,7 @@ const agreedPrivacy = defineModel<boolean>('agreedPrivacy', { required: true })
             <LucideIcon :icon="ShieldCheck" class="size-4 text-slate-400" />
           </template>
           <template #link>
-            <NuxtLink
+            <AppLink
               to="/privacy"
               target="_blank"
               rel="noopener"
@@ -61,7 +61,7 @@ const agreedPrivacy = defineModel<boolean>('agreedPrivacy', { required: true })
               @click.stop
             >
               {{ $t('auth.register.terms.privacyLink') }}
-            </NuxtLink>
+            </AppLink>
           </template>
         </i18n-t>
       </span>

@@ -72,13 +72,13 @@ onBeforeUnmount(() => {
 function goToProfile() {
   const id = psnid.value.trim()
   if (!id) return
-  navigateTo(`/p/${encodeURIComponent(id)}`)
+  navigateTo(localizeTo(`/p/${encodeURIComponent(id)}`))
 }
 
 function goToSync() {
   const id = psnid.value.trim()
   if (!id) return
-  navigateTo(`/sync?psnid=${encodeURIComponent(id)}`)
+  navigateTo(localizeTo(`/sync?psnid=${encodeURIComponent(id)}`))
 }
 
 useSeo({
@@ -202,5 +202,8 @@ useHead(() => ({
         </div>
       </div>
     </section>
+
+    <!-- Trending and new trophy sets, top players: the site's way in for crawlers too -->
+    <HomeHub />
   </div>
 </template>

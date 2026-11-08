@@ -49,6 +49,9 @@
         <ProfileAccountCard :profile="profile" />
       </aside>
     </div>
+
+    <!-- This profile in each language it's indexed in (the footer's list is off). -->
+    <LanguageLinks v-if="profile.is_profile_public" :locales="editions" class="text-xs text-slate-400" />
   </div>
 </template>
 
@@ -57,13 +60,14 @@ import { UserCheck } from 'lucide'
 import type { Profile } from '~/services/profile'
 import { useProfiles } from '~/services/profile'
 import { ApiError } from '~/utils/ApiError'
-import { DEFAULT_LOCALE, HTML_LANG, isUiLocale } from '#shared/locales'
+import { DEFAULT_LOCALE, HTML_LANG, isUiLocale, profileEditions } from '#shared/locales'
+
+definePageMeta({ languageLinks: false })
 
 const route = useRoute()
 const { t, locale } = useI18n()
 const psnid = computed(() => String(route.params.psnid))
 const auth = useAuth()
-const siteUrl = useRuntimeConfig().public.siteUrl.replace(/\/+$/, '')
 const cardBase = useRuntimeConfig().public.cardBase.replace(/\/+$/, '')
 // Server-only: both write to the response of the page render.
 const requestEvent = import.meta.server ? useRequestEvent() : undefined
@@ -127,10 +131,10 @@ const followPending = ref(false)
 const toast = useToast()
 
 function redirectToLogin() {
-  return navigateTo({
+  return navigateTo(localizeTo({
     path: '/auth/login',
     query: { redirect: route.fullPath },
-  })
+  }))
 }
 
 /**
@@ -193,16 +197,34 @@ const canonicalProfilePath = computed(() => profile.value
   ? `/p/${encodeURIComponent(profile.value.psnid)}`
   : route.path)
 
-useSeo({
+// Indexed in Japanese, English and the player's own PSN languages: the readers
+// likely to look this PSN ID up.
+const editions = computed(() => profileEditions(profile.value?.language))
+
+// A tab, a page of it or a search inside the profile is a view of the same
+// profile, not a page of its own.
+const isSubview = computed(() => ['tab', 'page', 'q'].some(key => route.query[key] !== undefined))
+
+const seo = useSeo({
   title: () => {
     if (profile.value) return t('seo.profile.title', { psnid: profile.value.psnid })
     if (view.value === 'missing') return t('seo.profile.titleMissing', { psnid: psnid.value })
     if (view.value === 'banned') return t('seo.profile.titleBanned')
     return t('seo.profile.titleFallback')
   },
-  description: () => (profile.value
-    ? t('seo.profile.description', { psnid: profile.value.psnid })
-    : ''),
+  // A public profile's description carries its own numbers, so 41k profiles
+  // don't all share one sentence.
+  description: () => {
+    const value = profile.value
+    if (!value) return ''
+    if (!value.is_profile_public) return t('seo.profile.description', { psnid: value.psnid })
+    return t('seo.profile.descriptionStats', {
+      psnid: value.psnid,
+      level: value.trophy_level,
+      platinum: value.platinum.toLocaleString('en-US'),
+      total: (value.platinum + value.gold + value.silver + value.bronze).toLocaleString('en-US'),
+    })
+  },
   // A generated card, not the raw PSN avatar: that is a 240×240 square, which
   // every platform then stretches or shrinks to fit its 2:1 preview slot.
   // Private profiles advertise nothing and fall back to the brand card.
@@ -214,14 +236,13 @@ useSeo({
   imageHeight: 630,
   imageType: 'image/png',
   canonicalPath: () => canonicalProfilePath.value,
+  editions: () => editions.value,
   // A private profile exposes no trophy data, so there is nothing worth indexing.
-  noindex: () => !profile.value?.is_profile_public,
+  noindex: () => !profile.value?.is_profile_public || isSubview.value,
 })
 
-const canonicalProfileUrl = computed(() => {
-  const lang = isUiLocale(locale.value) ? locale.value : DEFAULT_LOCALE
-  return `${siteUrl}${canonicalProfilePath.value}${lang === DEFAULT_LOCALE ? '' : `?lang=${encodeURIComponent(lang)}`}`
-})
+const canonicalProfileUrl = computed(() =>
+  seo.canonical.value ?? seo.urlFor(isUiLocale(locale.value) ? locale.value : DEFAULT_LOCALE))
 
 // Structured data for registered members' public profiles (see `profilePageJsonLd`).
 const profileJsonLd = computed(() => profile.value

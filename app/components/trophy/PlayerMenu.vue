@@ -28,7 +28,7 @@ function choose(close: () => void) {
     <slot />
 
     <template #menu="{ close }">
-      <NuxtLink
+      <AppLink
         :to="progressLink"
         role="menuitem"
         class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-slate-700 transition hover:bg-slate-50"
@@ -36,8 +36,8 @@ function choose(close: () => void) {
       >
         <LucideIcon :icon="Trophy" class="size-4 text-slate-400" />
         {{ $t('trophy.players.viewProgress') }}
-      </NuxtLink>
-      <NuxtLink
+      </AppLink>
+      <AppLink
         :to="`/p/${psnid}`"
         role="menuitem"
         class="flex w-full items-center gap-2.5 px-3 py-2 text-left text-slate-700 transition hover:bg-slate-50"
@@ -45,7 +45,7 @@ function choose(close: () => void) {
       >
         <LucideIcon :icon="UserRound" class="size-4 text-slate-400" />
         {{ $t('trophy.players.viewProfile') }}
-      </NuxtLink>
+      </AppLink>
     </template>
   </Popover>
 </template>

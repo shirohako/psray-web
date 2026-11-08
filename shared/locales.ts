@@ -1,23 +1,22 @@
 /**
  * The single source of truth for languages across the app.
  *
- * There are **two language axes**, they are not the same size, and they move
- * independently:
+ * **One language per URL.** `?lang=` picks one of the five UI locales, and with
+ * it the language of the page's content: a trophy set's text follows the
+ * interface ({@link PSN_LANG}). The default (`ja`) is the bare URL with no param
+ * at all. Only these URLs are indexed — see `docs/seo.md` for the contract.
  *
- * 1. **UI locale** — the five languages the interface is translated into.
- *    Selected with the `?lang=` query param (Steam-style); the default (`ja`)
- *    is the bare URL with no param at all.
- * 2. **Trophy body language** — the ~25 languages PSN ships trophy text in.
- *    Selected with `?tlang=` on the trophy page, and defaulting to whatever
- *    the UI locale implies (see {@link PSN_LANG}).
+ * `?tlang=` remains as a reader's override of the trophy text (French trophy
+ * names in a Chinese interface, say). Such a page renders normally but is
+ * `noindex`: it's a personal view, not an edition.
  *
- * Separate params, because most PSN languages have no interface translation:
- * reading a set's French trophy names shouldn't drag a Chinese reader's whole
- * interface into Japanese. So `?tlang=fr-FR` swaps only the trophy text, and
- * `?lang=` stays in charge of the chrome.
+ * Which UI locales a page is worth indexing in — its **editions** — depends on
+ * whether its content exists in that language: {@link contentEditions},
+ * {@link profileEditions}. The backend sitemap applies the same rules
+ * (`psray-api/app/Services/SitemapLanguages.php`).
  *
- * Both are visible to the server, so a rendered page stays a pure function of
- * (URL, cookie) — which is all indexing needs.
+ * Everything is visible to the server, so a rendered page stays a pure function
+ * of (URL, cookie) — which is all indexing needs.
  *
  * Importable from `app/` and from Nitro alike via the `#shared` alias.
  */
@@ -115,15 +114,6 @@ export function canonicalContentLang(raw: LangParam): string {
   return /^[a-z]{2,3}(-[A-Za-z0-9]{2,4})?$/i.test(value) ? value : ''
 }
 
-/** Convert a PSN content language to a Google-supported hreflang value. */
-export function contentHreflang(raw: LangParam): string {
-  const code = canonicalContentLang(raw)
-  if (!code) return ''
-  // Google hreflang does not support the UN M49 `419` region.
-  if (code.toLowerCase() === 'es-419') return 'es'
-  return code
-}
-
 /**
  * Which of the five UI locales should render the chrome for this `?lang=` value,
  * or `''` when it names a language we have no interface for (callers then fall
@@ -163,22 +153,42 @@ export function resolveUiLocale(langParam: LangParam, cookieValue: LangParam): U
   return uiLocaleFor(langParam) || uiLocaleFor(cookieValue) || DEFAULT_LOCALE
 }
 
-/** One canonical edition per available trophy language, without a UI/content matrix. */
-export function trophyLanguageEditions(languages: string[]) {
-  const editions = new Map<string, { hreflang: string, lang: UiLocale, contentLang: string }>()
-  for (const code of languages) {
-    if (!canonicalContentLang(code)) continue
-    const lang = DEFAULT_LOCALE
-    const hreflang = contentHreflang(code)
-    editions.set(hreflang, { hreflang, lang, contentLang: code })
-  }
-  return [...editions.values()]
+/** Keeps the UI order, whatever order `locales` came in. */
+const inUiOrder = (locales: Iterable<UiLocale>): UiLocale[] => {
+  const wanted = new Set(locales)
+  return UI_LOCALES.filter(code => wanted.has(code))
 }
 
-/** Mirrors TranslationResolver.pick for the default Japanese interface. */
-export function trophyDefaultLanguage(languages: string[], defaultLanguage?: string | null): string {
-  return languages.find(code => code === 'ja-JP')
-    || languages.find(code => code.split('-')[0] === 'ja')
-    || (defaultLanguage && (!languages.length || languages.includes(defaultLanguage)) ? defaultLanguage : '')
-    || languages[0] || ''
+/**
+ * The UI locales a trophy set or game is worth indexing in: Japanese (the bare
+ * URL) and English (the `x-default`) always, plus Chinese and Korean only when
+ * the content itself exists in them. A Korean interface around English trophy
+ * text translates the boilerplate, not the page — Google treats such pages as
+ * duplicates, so they stay `noindex`.
+ *
+ * `codes` are the content's languages (a set's official translations, a game's
+ * translated titles); an empty list falls back to `defaultLanguage`.
+ */
+export function contentEditions(codes: readonly string[], defaultLanguage?: string | null): UiLocale[] {
+  const languages = codes.length ? codes : defaultLanguage ? [defaultLanguage] : []
+  const editions = new Set<UiLocale>(['ja', 'en'])
+  for (const code of languages) {
+    const locale = uiLocaleForPsnLanguage(code)
+    if (locale) editions.add(locale)
+  }
+  return inUiOrder(editions)
+}
+
+/**
+ * The UI locales a profile is worth indexing in: Japanese and English, plus the
+ * interfaces of the player's own PSN languages (`user.language`, e.g.
+ * `["zh-CN","zh-TW","en"]`) — the readers likely to search for that PSN ID.
+ */
+export function profileEditions(languages: unknown): UiLocale[] {
+  const editions = new Set<UiLocale>(['ja', 'en'])
+  for (const code of Array.isArray(languages) ? languages : []) {
+    const locale = typeof code === 'string' ? uiLocaleForPsnLanguage(code) : ''
+    if (locale) editions.add(locale)
+  }
+  return inUiOrder(editions)
 }

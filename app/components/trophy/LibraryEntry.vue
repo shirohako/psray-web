@@ -24,7 +24,7 @@ function isoDate(value: string) {
 </script>
 
 <template>
-  <NuxtLink
+  <AppLink
     :to="`/trophies/${game.id}`"
     class="library-entry group"
     :class="{ 'is-card': view === 'grid', 'no-reference-times': !showReferenceTimes }"
@@ -140,7 +140,7 @@ function isoDate(value: string) {
     </div>
 
     <LucideIcon :icon="ChevronRight" class="entry-arrow size-3.5 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600" />
-  </NuxtLink>
+  </AppLink>
 </template>
 
 <style scoped>

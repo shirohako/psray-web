@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import type { IconNode } from 'lucide'
+import AppLink from '~/components/AppLink.vue'
 
 /**
  * Animated sweep button. At rest it shows `label`; on hover a staggered sweep
- * wipes across and reveals `hoverLabel`. Renders as a `<NuxtLink>` when `to` is
+ * wipes across and reveals `hoverLabel`. Renders as an `<AppLink>` when `to` is
  * set, otherwise a plain `<button>`. Extra classes/attrs land on the root
  * element, so size or hide it from the call site (e.g. `class="max-sm:hidden"`).
  */
@@ -30,7 +31,6 @@ const variants = {
   purple: { shape: 'rounded-full', origin: 'origin-bottom', last: 'group-hover:scale-x-100', colors: ['bg-purple-200', 'bg-purple-400', 'bg-purple-600'] },
 } as const
 
-const NuxtLink = resolveComponent('NuxtLink')
 const reveal = computed(() => props.hoverLabel || props.label)
 
 // Three layered sweep spans with staggered enter/leave durations.
@@ -47,7 +47,7 @@ const sweep = computed(() => {
 
 <template>
   <component
-    :is="to ? NuxtLink : 'button'"
+    :is="to ? AppLink : 'button'"
     :to="to || undefined"
     :type="to ? undefined : 'button'"
     class="group relative z-0 inline-flex h-7 cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-slate-950 px-2.5 text-xs font-semibold text-white"
