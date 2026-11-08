@@ -8,6 +8,7 @@
     "generate": "nuxt generate",
     "generate:flags": "node scripts/generate-flags.mjs",
     "generate:icons": "node scripts/generate-icons.mjs",
+    "generate:teardown": "node scripts/generate-teardown.mjs",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "check:locales": "node scripts/check-locales.mjs",

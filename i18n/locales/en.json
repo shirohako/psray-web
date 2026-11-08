@@ -74,7 +74,15 @@
     },
     "hero": {
       "title": "Your PSN gaming assistant",
-      "lead": "PSRay brings each player’s PlayStation trophy progress together in a clear, easy-to-read view. Just enter your PSN ID to create your own PSN gaming profile, where you can see your earned trophies and recently played games at a glance."
+      "lead": "PSRay brings each player’s PlayStation {progress} together in a clear, easy-to-read view. Just enter your {psnId} to create your own PSN gaming profile, where you can see your earned trophies and recently played games {glance}.",
+      "marks": {
+        "progress": "trophy progress",
+        "psnId": "PSN ID",
+        "glance": "at a glance"
+      }
+    },
+    "teardown": {
+      "label": "Animated teardown of a handheld game console"
     }
   },
   "auth": {

@@ -1,0 +1,65 @@
+{
+  "dependencies": "../../../node_modules",
+  "modelScripts": [
+    "model.js"
+  ],
+  "drawings": [
+    {
+      "id": "handheld",
+      "title": "Handheld game console",
+      "description": "Concept teardown of a handheld game console. Every dimension and the internal layout are invented for illustration.",
+      "initialView": "exploded",
+      "parts": [
+        {
+          "id": "back-shell",
+          "name": "Back shell"
+        },
+        {
+          "id": "battery",
+          "name": "Battery"
+        },
+        {
+          "id": "game-card",
+          "name": "Game card"
+        },
+        {
+          "id": "mainboard",
+          "name": "Mainboard"
+        },
+        {
+          "id": "fan",
+          "name": "Cooling fan"
+        },
+        {
+          "id": "display",
+          "name": "Display"
+        },
+        {
+          "id": "front-shell",
+          "name": "Front shell"
+        },
+        {
+          "id": "dpad",
+          "name": "D-pad"
+        },
+        {
+          "id": "face-buttons",
+          "name": "Face buttons"
+        },
+        {
+          "id": "menu-buttons",
+          "name": "Menu buttons"
+        },
+        {
+          "id": "stick-l",
+          "name": "Left stick"
+        },
+        {
+          "id": "stick-r",
+          "name": "Right stick"
+        }
+      ],
+      "parameters": []
+    }
+  ]
+}

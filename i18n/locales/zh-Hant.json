@@ -74,7 +74,15 @@
     },
     "hero": {
       "title": "你的 PSN 遊戲助手",
-      "lead": "PSRay 以清晰易讀的方式整理每位玩家的 PlayStation 獎盃進度。只要輸入 PSN ID，即可建立專屬的 PSN 遊戲資料頁，一目了然地查看已獲得的獎盃和最近玩過的遊戲。"
+      "lead": "PSRay 以清晰易讀的方式整理每位玩家的 PlayStation {progress}。只要輸入 {psnId}，即可建立專屬的 PSN 遊戲資料頁，{glance}地查看已獲得的獎盃和最近玩過的遊戲。",
+      "marks": {
+        "progress": "獎盃進度",
+        "psnId": "PSN ID",
+        "glance": "一目了然"
+      }
+    },
+    "teardown": {
+      "label": "掌機拆解動畫"
     }
   },
   "auth": {

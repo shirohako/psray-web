@@ -20,6 +20,11 @@ by, or operated by Sony Interactive Entertainment Inc.
 
 The backend lives in a separate repository; this app talks to it over HTTP.
 
+## Docs
+
+- [`docs/api.md`](docs/api.md): the request layer for the PSRay API
+- [`docs/home.md`](docs/home.md): the home page, its console teardown animation and how to change it
+
 ## Getting started
 
 ```bash

@@ -238,6 +238,150 @@
   }
 }
 
+/* Home page hero, once on arrival: the title's words (characters, in CJK)
+   rise out of a blur one after another while the logo wiggles, the lead is
+   revealed top to bottom behind a soft edge, the form follows,
+   highlighters sweep over the key phrases in turn, then a ring pulses out of
+   the lookup field. Each phrase has its own highlighter (`--mark-bg`, its
+   text `--mark-fg`) and the ring its accent (`--hero-accent`), all from the
+   console drawing's palette, so they start when the page adds `.is-marked`,
+   once that is picked. When the sweep is done (`.is-swept`), hovering a
+   phrase fills its highlighter from the bottom up, and a hop runs along the
+   title's letters (`.is-hopping`, timed by the page): once to finish the
+   arrival, then on each hover. The
+   letters' delays come inline: `--in` for the entrance, `--hop` for the hop. */
+@keyframes hero-wiggle {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20% {
+    transform: rotate(-12deg);
+  }
+  40% {
+    transform: rotate(9deg);
+  }
+  60% {
+    transform: rotate(-5deg);
+  }
+  80% {
+    transform: rotate(2deg);
+  }
+}
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+/* The lead seen through a mask three times its height: opaque top third,
+   soft middle, clear bottom third, slid up from the clear end to the opaque one. */
+@keyframes hero-reveal {
+  from {
+    -webkit-mask-image: linear-gradient(to bottom, #000 33.3%, transparent 66.7%);
+    mask-image: linear-gradient(to bottom, #000 33.3%, transparent 66.7%);
+    -webkit-mask-size: 100% 300%;
+    mask-size: 100% 300%;
+    -webkit-mask-position: 0 100%;
+    mask-position: 0 100%;
+    transform: translateY(6px);
+  }
+  to {
+    -webkit-mask-image: linear-gradient(to bottom, #000 33.3%, transparent 66.7%);
+    mask-image: linear-gradient(to bottom, #000 33.3%, transparent 66.7%);
+    -webkit-mask-size: 100% 300%;
+    mask-size: 100% 300%;
+    -webkit-mask-position: 0 0;
+    mask-position: 0 0;
+    transform: none;
+  }
+}
+
+@keyframes hero-hop {
+  0%,
+  100% {
+    transform: none;
+  }
+  30% {
+    transform: translateY(-0.32em);
+  }
+  55% {
+    transform: none;
+  }
+  72% {
+    transform: translateY(-0.06em);
+  }
+}
+
+@keyframes hero-ring {
+  from {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--hero-accent) 70%, transparent);
+  }
+  to {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+@layer components {
+  /* The phrase takes its highlighter's ink as the sweep passes over it. */
+  .hero-mark {
+    background: linear-gradient(var(--mark-bg), var(--mark-bg)) no-repeat 0 100% / 0 0.45em;
+    color: var(--color-slate-700);
+    font-weight: 500;
+    transition:
+      background-size 0.7s cubic-bezier(0.65, 0, 0.35, 1) var(--mark-delay, 0s),
+      color 0.5s ease calc(var(--mark-delay, 0s) + 0.25s);
+  }
+  .is-marked .hero-mark {
+    background-size: 100% 0.45em;
+    color: var(--mark-fg);
+  }
+  .is-swept .hero-mark {
+    transition-duration: 0.3s;
+    transition-delay: 0s;
+  }
+  .is-swept .hero-mark:hover {
+    background-size: 100% 100%;
+  }
+  .hero-letter {
+    animation: hero-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--in, 0s) backwards;
+  }
+  /* The entrance is long over: dropped, so ending a hop cannot replay it. */
+  .is-swept .hero-letter {
+    animation: none;
+  }
+  .is-swept .is-hopping .hero-letter {
+    animation: hero-hop 0.5s ease-in-out var(--hop, 0s);
+  }
+  .is-marked .hero-ring {
+    animation: hero-ring 1.2s cubic-bezier(0.22, 1, 0.36, 1) 2.4s;
+  }
+}
+
+@layer utilities {
+  /* Delay with an inline `animation-delay` (the shorthand here would reset a
+     utility class's); `backwards` keeps each piece hidden until its turn. */
+  .animate-hero-in {
+    animation: hero-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  }
+  .animate-hero-reveal {
+    animation: hero-reveal 1.1s cubic-bezier(0.33, 1, 0.68, 1) 0.35s backwards;
+  }
+  .animate-hero-logo {
+    animation:
+      hero-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards,
+      hero-wiggle 0.8s ease-in-out 0.45s;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html,
   html[data-scroll='smooth'] {
@@ -249,8 +393,18 @@
   .animate-admin-progress,
   .animate-filter-in,
   .animate-skeleton-in,
+  .animate-hero-in,
+  .animate-hero-reveal,
+  .animate-hero-logo,
+  .hero-letter,
+  .is-swept .is-hopping .hero-letter,
+  .is-marked .hero-ring,
   .skeleton {
     animation: none;
+  }
+
+  .hero-mark {
+    transition: none;
   }
 }
 
