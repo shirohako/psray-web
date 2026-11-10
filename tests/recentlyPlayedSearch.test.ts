@@ -2,18 +2,19 @@ import { describe, expect, it } from 'vitest'
 import { recentlyPlayedPath, validateRecentlyPlayedSearch } from '~/utils/recentlyPlayedSearch'
 
 describe('recently played search', () => {
-  it('accepts up to three effective whitespace-delimited keywords', () => {
+  it('accepts any number of effective whitespace-delimited keywords', () => {
     expect(validateRecentlyPlayedSearch('  final   fantasy vii  ')).toEqual({
       query: 'final   fantasy vii',
       error: null,
     })
+    expect(validateRecentlyPlayedSearch('A Space for the Unbound').error).toBeNull()
   })
 
   it('counts Chinese characters as keyword characters', () => {
     expect(validateRecentlyPlayedSearch('最终 幻想')).toEqual({ query: '最终 幻想', error: null })
   })
 
-  it('ignores short words when counting effective keywords', () => {
+  it('accepts short words alongside effective keywords', () => {
     expect(validateRecentlyPlayedSearch('a final of fantasy')).toEqual({
       query: 'a final of fantasy',
       error: null,
@@ -24,8 +25,7 @@ describe('recently played search', () => {
     expect(validateRecentlyPlayedSearch('a b c').error).toBe('noValidKeywords')
   })
 
-  it('rejects more than three effective keywords and input over 100 characters', () => {
-    expect(validateRecentlyPlayedSearch('one two three four').error).toBe('tooManyKeywords')
+  it('rejects input over 100 characters', () => {
     expect(validateRecentlyPlayedSearch('游'.repeat(101)).error).toBe('tooLong')
   })
 

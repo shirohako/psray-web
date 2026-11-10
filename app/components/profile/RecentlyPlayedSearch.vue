@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Search, X } from 'lucide'
 import {
-  RECENTLY_PLAYED_SEARCH_MAX_KEYWORDS,
   RECENTLY_PLAYED_SEARCH_MAX_LENGTH,
   RECENTLY_PLAYED_SEARCH_MIN_KEYWORD_LENGTH,
   validateRecentlyPlayedSearch,
@@ -85,7 +84,6 @@ watch(searchInput, () => {
     <p v-if="searchError" class="mt-1.5 text-xs text-red-600" role="alert">
       {{ $t(`profile.recent.searchErrors.${searchError}`, {
         min: RECENTLY_PLAYED_SEARCH_MIN_KEYWORD_LENGTH,
-        max: RECENTLY_PLAYED_SEARCH_MAX_KEYWORDS,
         length: RECENTLY_PLAYED_SEARCH_MAX_LENGTH,
       }) }}
     </p>

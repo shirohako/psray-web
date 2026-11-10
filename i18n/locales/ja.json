@@ -578,8 +578,7 @@
       "clearSearch": "検索をクリア",
       "searchErrors": {
         "tooLong": "検索テキストは {length} 文字以内で入力してください。",
-        "noValidKeywords": "{min} 文字以上のキーワードを1つ以上入力してください。",
-        "tooManyKeywords": "有効なキーワードは {max} 個以内で入力してください。"
+        "noValidKeywords": "{min} 文字以上のキーワードを1つ以上入力してください。"
       },
       "noResults": "条件に一致する最近プレイしたゲームはありません。",
       "invalidSearch": "検索条件が無効です。キーワードのルールを確認してください。",

@@ -578,8 +578,7 @@
       "clearSearch": "검색 지우기",
       "searchErrors": {
         "tooLong": "검색어는 {length}자를 초과할 수 없습니다.",
-        "noValidKeywords": "{min}자 이상의 키워드를 하나 이상 입력해 주세요.",
-        "tooManyKeywords": "유효한 키워드는 최대 {max}개까지 입력할 수 있습니다."
+        "noValidKeywords": "{min}자 이상의 키워드를 하나 이상 입력해 주세요."
       },
       "noResults": "검색 조건과 일치하는 최근 플레이 게임이 없습니다.",
       "invalidSearch": "검색 조건이 올바르지 않습니다. 키워드 규칙을 확인해 주세요.",

@@ -1,8 +1,7 @@
 export const RECENTLY_PLAYED_SEARCH_MAX_LENGTH = 100
 export const RECENTLY_PLAYED_SEARCH_MIN_KEYWORD_LENGTH = 2
-export const RECENTLY_PLAYED_SEARCH_MAX_KEYWORDS = 3
 
-export type RecentlyPlayedSearchError = 'tooLong' | 'noValidKeywords' | 'tooManyKeywords'
+export type RecentlyPlayedSearchError = 'tooLong' | 'noValidKeywords'
 
 export interface RecentlyPlayedSearchResult {
   query: string
@@ -27,9 +26,6 @@ export function validateRecentlyPlayedSearch(input: string): RecentlyPlayedSearc
     .filter(keyword => Array.from(keyword).length >= RECENTLY_PLAYED_SEARCH_MIN_KEYWORD_LENGTH)
 
   if (!effectiveKeywords.length) return { query, error: 'noValidKeywords' }
-  if (effectiveKeywords.length > RECENTLY_PLAYED_SEARCH_MAX_KEYWORDS) {
-    return { query, error: 'tooManyKeywords' }
-  }
 
   return { query, error: null }
 }

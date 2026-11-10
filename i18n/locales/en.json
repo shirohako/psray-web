@@ -578,8 +578,7 @@
       "clearSearch": "Clear search",
       "searchErrors": {
         "tooLong": "Search text cannot exceed {length} characters.",
-        "noValidKeywords": "Enter at least one keyword containing {min} or more characters.",
-        "tooManyKeywords": "Use no more than {max} valid keywords."
+        "noValidKeywords": "Enter at least one keyword containing {min} or more characters."
       },
       "noResults": "No recently played games match this search.",
       "invalidSearch": "The search was rejected. Check the keyword rules and try again.",

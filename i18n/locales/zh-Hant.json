@@ -578,8 +578,7 @@
       "clearSearch": "清除搜尋",
       "searchErrors": {
         "tooLong": "搜尋內容不能超過 {length} 個字元。",
-        "noValidKeywords": "請至少輸入一個不少於 {min} 個字元的關鍵詞。",
-        "tooManyKeywords": "有效關鍵詞不能超過 {max} 個。"
+        "noValidKeywords": "請至少輸入一個不少於 {min} 個字元的關鍵詞。"
       },
       "noResults": "找不到符合條件的最近遊玩遊戲。",
       "invalidSearch": "搜尋條件不符合要求，請檢查關鍵詞後重試。",
