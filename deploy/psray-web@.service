@@ -25,6 +25,8 @@ Environment=PORT=%i
 Environment=NUXT_PUBLIC_API_BASE=https://api.psray.net
 Environment=NUXT_PUBLIC_SITE_URL=https://psray.net
 Environment=NUXT_PUBLIC_CARD_BASE=https://api.psray.net
+Environment=NUXT_PUBLIC_UMAMI_SCRIPT_URL=https://aurora.cdcat.net/script.js
+Environment=NUXT_PUBLIC_UMAMI_WEBSITE_ID=9a15c38b-a0dc-496d-99dd-94ba53b0bae8
 ExecStart=/usr/bin/node /var/www/psray-web-releases/slot-%i/server/index.mjs
 Restart=always
 RestartSec=3
