@@ -94,8 +94,11 @@ preflight() {
     command -v curl >/dev/null || die "需要 curl 做健康检查"
 
     install -d -o "$APP_USER" -g "$APP_USER" "$RELEASES"
+}
 
-    # 单元文件随仓库走，有变化才装
+# 单元文件随仓库走，有变化才装。必须在 git merge 之后调用，否则装的是合并前的旧版本，
+# 本次合并带来的单元改动（如新增 Environment=）要到下一次部署才生效
+install_unit() {
     if ! cmp -s "$APP_DIR/deploy/$UNIT" "/etc/systemd/system/$UNIT"; then
         install -m 644 "$APP_DIR/deploy/$UNIT" "/etc/systemd/system/$UNIT"
         systemctl daemon-reload
@@ -202,6 +205,7 @@ main() {
             || die "slot-$target 没有指向可用的版本，无法回滚"
         echo "当前：$(basename "$(readlink -f "$RELEASES/slot-$active" 2>/dev/null || echo '?')")（:$active）"
         echo "回滚到：$(basename "$(readlink -f "$RELEASES/slot-$target")")（:$target）"
+        install_unit
         switch_to "$target" "$active"
         printf '\n\033[1;32m✓ 已回滚到 %s\033[0m\n' "$(basename "$(readlink -f "$RELEASES/slot-$target")")"
         exit 0
@@ -231,6 +235,7 @@ main() {
         git merge --ff-only --quiet '@{u}'
     fi
     chown -R "$APP_USER:$APP_USER" "$APP_DIR"
+    install_unit
 
     # 首次部署：线上还是迁移前的单实例服务，直接跑源码目录里的 .output，构建一清空它就是 500。
     # 先把这份 .output 存为版本、在空闲端口跑起来并切过去，再开始构建；它也是第一次部署后的回滚目标。
