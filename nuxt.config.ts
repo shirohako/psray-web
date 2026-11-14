@@ -46,6 +46,13 @@ export default defineNuxtConfig({
       sitemapUrl: 'https://psray.net/sitemap.xml',
       // Backend-generated social images. Override with NUXT_PUBLIC_CARD_BASE.
       cardBase: 'https://api.psray.net',
+      // Umami analytics; see app/plugins/umami.client.ts. Empty by default so
+      // only an environment that sets both NUXT_PUBLIC_UMAMI_SCRIPT_URL and
+      // NUXT_PUBLIC_UMAMI_WEBSITE_ID reports anything.
+      umami: {
+        scriptUrl: '',
+        websiteId: '',
+      },
     },
   },
 

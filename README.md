@@ -42,6 +42,8 @@ pnpm dev               # http://localhost:3630 (or NUXT_PORT)
 | `NUXT_PUBLIC_API_BASE` | Origin of the PSRay API, without a path prefix. Defaults to `http://localhost:8000`; production is `https://api.psray.net` |
 | `NUXT_PUBLIC_SITE_URL` | Absolute origin, no trailing slash. Canonical / hreflang / OG URLs are built from it. Defaults to `https://psray.net`; set it to your local origin when testing local metadata |
 | `NUXT_PUBLIC_CARD_BASE` | Origin serving backend-generated OG images, without a path prefix. Defaults to `https://api.psray.net` |
+| `NUXT_PUBLIC_UMAMI_SCRIPT_URL` | Umami tracker script, e.g. `https://aurora.cdcat.net/script.js`. Analytics stay off unless this and the website id are both set |
+| `NUXT_PUBLIC_UMAMI_WEBSITE_ID` | Umami website id. Each environment (test, production) gets its own |
 | `NUXT_PORT` | Dev/preview port |
 
 ## Deployment
