@@ -32,6 +32,7 @@ const sourceLabel = (source: string) => SOURCES[source] ?? source
       :seed="game.id"
       :cover="game.cover_url"
       :cover-color="game.cover_color"
+      :alt="game.localized_name"
       class="h-24 sm:h-32"
     />
 

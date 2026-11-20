@@ -16,7 +16,7 @@ const src = computed(() => `/flags/4x3/${props.country.toLowerCase()}.svg?v=1`)
   <img
     v-if="valid"
     :src="src"
-    :alt="country"
+    :alt="regionName(country)"
     width="4"
     height="3"
     loading="lazy"

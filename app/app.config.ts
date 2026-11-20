@@ -30,7 +30,7 @@ export default defineAppConfig({
    * social-login toggles, etc. Everything here is public, client-safe branding.
    */
   auth: {
-    /** Background image for the left showcase panel. */
+    /** Background image for the left showcase panel. Its alt text is `auth.imageAlt` in the locales: rewrite it when changing the image. */
     image: 'https://i2.abyss.moe/i/2026/06/07/6a24c0096dc63.jpg',
     /**
      * One is picked at random on each page load for the glass panel.

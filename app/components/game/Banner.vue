@@ -23,6 +23,8 @@ const props = defineProps<{
   cover: string | null
   /** The cover's dominant colour (`#rrggbb`) if the API provides it. */
   coverColor?: string | null
+  /** The game's name, as the banner art's alt text. */
+  alt: string
 }>()
 
 const failed = ref(false)
@@ -49,7 +51,7 @@ const palette = computed<ArtPalette>(() => {
     <img
       v-if="src && !failed"
       :src="src"
-      alt=""
+      :alt="alt"
       class="absolute inset-0 size-full object-cover"
       @error="failed = true"
     >

@@ -24,7 +24,7 @@ function host(url: string) {
 <template>
   <div v-if="images.length" class="flex flex-wrap gap-2">
     <a
-      v-for="url in images"
+      v-for="(url, index) in images"
       :key="url"
       :href="url"
       target="_blank"
@@ -35,7 +35,7 @@ function host(url: string) {
       <img
         v-if="!failed[url]"
         :src="url"
-        alt=""
+        :alt="$t('feedback.imageAlt', { n: index + 1 })"
         loading="lazy"
         referrerpolicy="no-referrer"
         class="size-full object-cover"

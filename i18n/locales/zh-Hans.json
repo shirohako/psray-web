@@ -91,6 +91,7 @@
     }
   },
   "auth": {
+    "imageAlt": "身穿白色外套的灰发少女向前伸手的插画",
     "field": {
       "code": "验证码",
       "codePlaceholder": "6 位验证码",
@@ -1110,6 +1111,7 @@
     "deletedUser": "已注销的用户",
     "staffReplied": "官方已回复",
     "images": "图片",
+    "imageAlt": "附件图片 {n}",
     "replies": "回复",
     "types": {
       "bug": "Bug",

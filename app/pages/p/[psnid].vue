@@ -231,6 +231,7 @@ const seo = useSeo({
   image: () => (profile.value?.is_profile_public
     ? `${cardBase}/card/profile/${encodeURIComponent(profile.value.psnid.toLowerCase())}.png?v=3`
     : undefined),
+  imageAlt: () => (profile.value?.is_profile_public ? t('card.alt', { name: profile.value.psnid }) : undefined),
   // Dimensions of the backend-generated card.
   imageWidth: 1200,
   imageHeight: 630,

@@ -128,7 +128,7 @@ useHead(() => ({
             <img
               v-if="appConfig.brand.logo"
               :src="appConfig.brand.logo"
-              alt=""
+              alt="PSRay"
               class="size-9 shrink-0 animate-hero-logo object-contain"
             />
             <span v-else class="grid size-9 shrink-0 animate-hero-logo place-items-center rounded-lg bg-slate-900 text-white shadow-sm shadow-slate-900/20">

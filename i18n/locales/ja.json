@@ -91,6 +91,7 @@
     }
   },
   "auth": {
+    "imageAlt": "白いジャケットを着た灰色の髪の少女が、こちらへ手を伸ばすイラスト",
     "field": {
       "code": "認証コード",
       "codePlaceholder": "6 桁のコード",
@@ -1110,6 +1111,7 @@
     "deletedUser": "退会したユーザー",
     "staffReplied": "公式返信あり",
     "images": "画像",
+    "imageAlt": "添付画像 {n}",
     "replies": "返信",
     "types": {
       "bug": "不具合",

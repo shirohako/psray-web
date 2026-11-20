@@ -76,7 +76,7 @@ const groups = computed(() => {
                  full slot width. -->
             <img
               :src="g.cover"
-              :alt="g.platforms.join(' / ')"
+              :alt="`${trophySetSeoName(g.sets[0]!.name, g.platforms)} (${seoPlatforms(g.platforms)})`"
               class="rounded-md object-contain shadow-sm ring-1 ring-black/5"
               :class="g.platforms.length === 1 && g.platforms[0] === 'PS5' ? 'max-w-14' : 'max-w-full'"
             />

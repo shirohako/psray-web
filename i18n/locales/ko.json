@@ -91,6 +91,7 @@
     }
   },
   "auth": {
+    "imageAlt": "흰 재킷을 입은 회색 머리 소녀가 앞으로 손을 뻗는 일러스트",
     "field": {
       "code": "인증 코드",
       "codePlaceholder": "6자리 코드",
@@ -1110,6 +1111,7 @@
     "deletedUser": "탈퇴한 사용자",
     "staffReplied": "공식 답변 있음",
     "images": "이미지",
+    "imageAlt": "첨부 이미지 {n}",
     "replies": "답변",
     "types": {
       "bug": "버그",

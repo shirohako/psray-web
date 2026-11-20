@@ -19,7 +19,7 @@ onMounted(() => {
     <!-- Background image with a slow ambient zoom -->
     <img
       :src="appConfig.auth.image"
-      alt=""
+      :alt="$t('auth.imageAlt')"
       class="absolute inset-0 size-full origin-center animate-kenburns object-cover"
     />
 

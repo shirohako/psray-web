@@ -91,6 +91,7 @@
     }
   },
   "auth": {
+    "imageAlt": "Illustration of a grey-haired girl in a white jacket reaching towards the viewer",
     "field": {
       "code": "Verification code",
       "codePlaceholder": "6-digit code",
@@ -1110,6 +1111,7 @@
     "deletedUser": "Deleted user",
     "staffReplied": "Official reply",
     "images": "Images",
+    "imageAlt": "Attached image {n}",
     "replies": "Replies",
     "types": {
       "bug": "Bug",

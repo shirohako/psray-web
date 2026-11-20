@@ -346,6 +346,7 @@ const seo = useSeo({
   // The set icon is a 512×512 square; the generated card is already 2:1, so no
   // platform has to crop the cover art to make it fit.
   image: () => (data.value ? `${cardBase}/card/trophies/${id.value}.png?v=3` : undefined),
+  imageAlt: () => (data.value ? t('card.alt', { name: seoName.value }) : undefined),
   // Dimensions of the backend-generated card.
   imageWidth: 1200,
   imageHeight: 630,
