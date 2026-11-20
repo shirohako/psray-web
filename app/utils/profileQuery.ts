@@ -1,6 +1,6 @@
-export type ProfileTab = 'recent' | 'trophies' | 'milestones'
+export type ProfileTab = 'recent' | 'trophies' | 'series' | 'milestones'
 
-export const PROFILE_TABS: readonly ProfileTab[] = ['recent', 'trophies', 'milestones']
+export const PROFILE_TABS: readonly ProfileTab[] = ['recent', 'trophies', 'series', 'milestones']
 
 export interface ProfileQueryState {
   tab: ProfileTab

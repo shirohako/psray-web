@@ -34,6 +34,7 @@
     }
   },
   "nav": {
+    "series": "Series",
     "trophies": "Trophy library",
     "games": "Games",
     "about": "About PSRay",
@@ -477,8 +478,22 @@
     }
   },
   "profile": {
+    "series": {
+      "all": "All",
+      "sortLabel": "Sort",
+      "sort": {
+        "recent": "Recently played",
+        "progress": "Completion",
+        "name": "Name"
+      },
+      "summary": "{n} series",
+      "empty": "No games from a series played yet.",
+      "emptyFiltered": "No series match this filter.",
+      "loadFailed": "Couldn't load series."
+    },
     "qrTitle": "Profile QR code",
     "tabs": {
+      "series": "Series",
       "recent": "Recently played",
       "trophies": "Earned trophies",
       "milestones": "Milestones"
@@ -898,6 +913,13 @@
     "failed": "Something went wrong. Please try again later."
   },
   "seo": {
+    "series": {
+      "title": "Game series",
+      "description": "Browse game series on PSRay: each series lists its works as stages, and each stage gathers the trophy sets of its platforms, regions and remakes.",
+      "detailTitle": "{name}",
+      "detailTitleFallback": "Game series",
+      "detailDescription": "{name}: {stages} stages and {sets} trophy sets. See the platform and region versions in each stage, and a player's progress through the series."
+    },
     "games": {
       "title": "All games",
       "description": "Every game on PSRay: release dates by platform, titles in each language, and the PSN trophy sets for each."
@@ -1247,6 +1269,76 @@
       "actions": "Actions",
       "deleteTitle": "Delete tip",
       "deleteBody": "Delete your tip on “{trophy}”? This can’t be undone, and other players’ ratings of it are deleted too."
+    }
+  },
+  "series": {
+    "title": "Game series",
+    "description": "Each series lists its works in stages; a stage gathers the trophy sets of every platform, region and remake.",
+    "search": "Search a series or a game in it…",
+    "searchSubmit": "Search",
+    "clearSearch": "Clear search",
+    "searchMinLength": "Enter at least {count} characters",
+    "results": "Series",
+    "range": "Showing {start}–{end} of {total} series",
+    "empty": "No matching series",
+    "emptyHint": "Try another keyword, or the name of a game in the series.",
+    "loadError": "Couldn't load the series",
+    "loadErrorHint": "Please try again later.",
+    "reset": "Clear search",
+    "sort": {
+      "label": "Sort",
+      "popular": "Popular",
+      "recent": "Latest release",
+      "name": "Name"
+    },
+    "stageCount": "no stages | {n} stage | {n} stages",
+    "sideCount": "no spin-offs | {n} spin-off | {n} spin-offs",
+    "trophySetCount": "no trophy sets | {n} trophy set | {n} trophy sets",
+    "players": "about {count} players",
+    "progress": "{done}/{total} cleared",
+    "state": {
+      "complete": "100%",
+      "platinum": "Platinum",
+      "started": "In progress",
+      "none": "Not played"
+    },
+    "status": {
+      "complete": "Fully cleared",
+      "partial": "Partly cleared",
+      "started": "In progress",
+      "none": "Not started"
+    },
+    "detail": {
+      "breadcrumb": "Series",
+      "eyebrow": "Game series",
+      "tierTotals": "One version of each stage",
+      "stage": "Stage {n}",
+      "versions": "no versions | {n} version | {n} versions",
+      "showMore": "Show {n} more version | Show {n} more versions",
+      "showLess": "Show less",
+      "side": "Spin-offs",
+      "sideHint": "Set in the same world; not needed for a full clear",
+      "owners": "{count} owners",
+      "completionRate": "{rate} completed",
+      "unplayed": "Not played",
+      "edit": "Edit series",
+      "stagesTitle": "Stages"
+    },
+    "viewer": {
+      "label": "View a player's progress",
+      "placeholder": "PSN ID",
+      "submit": "View",
+      "clear": "Back to guest view",
+      "mine": "My progress",
+      "done": "{done} of {total} stages cleared",
+      "notFound": "PSRay has no data for {psnid} yet. They may not have synced.",
+      "private": "{psnid}'s profile is private, so their progress is hidden."
+    },
+    "membership": {
+      "title": "Series",
+      "stage": "Stage {n}",
+      "side": "Spin-off",
+      "of": "{n} stages"
     }
   }
 }

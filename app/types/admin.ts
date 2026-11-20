@@ -476,3 +476,87 @@ export interface SystemSettingsResponse {
 export interface SystemSettingsUpdate extends SystemSettingsResponse {
   changed: string[]
 }
+
+// ── Series ───────────────────────────────────────────────────────────────────
+
+export type AdminSeriesStatus = 'draft' | 'published' | 'hidden'
+export type AdminSeriesReviewReason = 'large' | 'overlap' | 'new_stage'
+
+/** `GET /admin/series` row and `PATCH /admin/series/{id}` result. */
+export interface AdminSeriesSummary {
+  id: number
+  name: string
+  status: AdminSeriesStatus
+  source: 'igdb' | 'manual'
+  igdb_collection_id: number | null
+  auto_update: boolean
+  needs_review: boolean
+  review_reason: AdminSeriesReviewReason | null
+  covers: string[]
+  stage_count: number
+  side_count: number
+  trophy_set_count: number
+  popularity: number
+  first_year: number | null
+  last_year: number | null
+  /** Bumped by every full save; sent back with the next one. */
+  revision: number
+  admin_edited_at: string | null
+  created_at: string | null
+  updated_at: string | null
+}
+
+/** A trophy set as the series editor shows it. */
+export interface AdminSeriesSet {
+  id: number
+  np_communication_id: string
+  name: string
+  platform: string[]
+  region: string | null
+  icon_url: string | null
+  defined_trophies: Record<string, number> | null
+  owners: number
+  game_id: number | null
+}
+
+export interface AdminSeriesStage {
+  id: number
+  position: number
+  kind: 'main' | 'side'
+  label: string | null
+  game_id: number | null
+  game_name: string | null
+  igdb_root_id: number | null
+  release_date: string | null
+  source: 'auto' | 'manual'
+  entries: { source: 'auto' | 'manual'; trophy_set: AdminSeriesSet }[]
+}
+
+/** `GET /admin/series/{id}`. */
+export interface AdminSeriesDetail extends AdminSeriesSummary {
+  description: string | null
+  cover_url: string | null
+  merged_into_id: number | null
+  translations: { language_code: string; name: string }[]
+  stages: AdminSeriesStage[]
+  exclusions: { trophy_set_id: number | null; game_id: number | null }[]
+}
+
+export interface AdminSeriesSuggestion {
+  trophy_set: AdminSeriesSet
+  /** The stage holding its siblings or look-alikes; `null` for excluded sets. */
+  stage_id: number | null
+}
+
+/** `GET /admin/series/{id}/suggestions`. */
+export interface AdminSeriesSuggestions {
+  same_game: AdminSeriesSuggestion[]
+  similar_name: AdminSeriesSuggestion[]
+  excluded: AdminSeriesSuggestion[]
+}
+
+/** `GET /admin/series/search`. */
+export interface AdminSeriesSearch {
+  trophy_sets: AdminSeriesSet[]
+  games: { id: number; name: string | null; first_release_date: string | null; trophy_sets: AdminSeriesSet[] }[]
+}

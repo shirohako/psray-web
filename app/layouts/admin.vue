@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   LayoutDashboard,
+  Layers,
   ListTodo,
   Clock,
   TriangleAlert,
@@ -60,6 +61,7 @@ const groups = [
     label: '内容管理',
     items: [
       { name: '奖杯组', to: '/admin/trophy-sets', icon: Trophy },
+      { name: '系列', to: '/admin/series', icon: Layers },
       { name: '奖杯 Tip', to: '/admin/tips', icon: Lightbulb },
     ],
   },

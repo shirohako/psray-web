@@ -35,29 +35,33 @@
     <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
       <GameReleases :releases="data.releases" :platforms="data.platforms" class="lg:col-span-2" />
 
-      <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="game-names-heading">
-        <h2 id="game-names-heading" class="border-b border-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-900">
-          {{ $t('games.detail.names') }}
-        </h2>
-        <dl class="divide-y divide-slate-100">
-          <div class="px-4 py-2.5">
-            <dt class="text-[11px] text-slate-400">{{ $t('games.detail.commonName') }}</dt>
-            <dd class="mt-0.5 text-sm text-slate-800">{{ data.name }}</dd>
+      <div class="space-y-6">
+        <SeriesMembershipCard v-if="data.series?.length" :series="data.series" />
+
+        <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm" aria-labelledby="game-names-heading">
+          <h2 id="game-names-heading" class="border-b border-slate-100 px-4 py-2.5 text-sm font-semibold text-slate-900">
+            {{ $t('games.detail.names') }}
+          </h2>
+          <dl class="divide-y divide-slate-100">
+            <div class="px-4 py-2.5">
+              <dt class="text-[11px] text-slate-400">{{ $t('games.detail.commonName') }}</dt>
+              <dd class="mt-0.5 text-sm text-slate-800">{{ data.name }}</dd>
+            </div>
+            <div v-for="translation in data.translations" :key="translation.language_code" class="px-4 py-2.5">
+              <dt class="text-[11px] text-slate-400">{{ langLabel(translation.language_code) }}</dt>
+              <dd class="mt-0.5 text-sm text-slate-800" :lang="translation.language_code">{{ translation.name }}</dd>
+            </div>
+          </dl>
+          <div v-if="data.aliases.length" class="border-t border-slate-100 px-4 py-3">
+            <h3 class="text-[11px] text-slate-400">{{ $t('games.detail.aliases') }}</h3>
+            <ul class="mt-1.5 flex flex-wrap gap-1.5">
+              <li v-for="alias in data.aliases" :key="alias" class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-xs text-slate-600">
+                {{ alias }}
+              </li>
+            </ul>
           </div>
-          <div v-for="translation in data.translations" :key="translation.language_code" class="px-4 py-2.5">
-            <dt class="text-[11px] text-slate-400">{{ langLabel(translation.language_code) }}</dt>
-            <dd class="mt-0.5 text-sm text-slate-800" :lang="translation.language_code">{{ translation.name }}</dd>
-          </div>
-        </dl>
-        <div v-if="data.aliases.length" class="border-t border-slate-100 px-4 py-3">
-          <h3 class="text-[11px] text-slate-400">{{ $t('games.detail.aliases') }}</h3>
-          <ul class="mt-1.5 flex flex-wrap gap-1.5">
-            <li v-for="alias in data.aliases" :key="alias" class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-xs text-slate-600">
-              {{ alias }}
-            </li>
-          </ul>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
 
     <!-- This game in each language it's indexed in (the footer's list is off). -->

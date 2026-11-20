@@ -66,6 +66,8 @@
 
         <TrophyGameCard v-if="data.game" :game="data.game" />
 
+        <SeriesMembershipCard v-if="data.series?.length" :series="data.series" />
+
         <TrophyStatistics :trophy-set="data.trophy_set" />
 
         <TrophySimilarSets v-if="data.similar_trophy_sets?.length" :sets="data.similar_trophy_sets" :current-set="data.trophy_set" />

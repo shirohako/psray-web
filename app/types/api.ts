@@ -31,6 +31,9 @@ export type ErrorCode =
   | 'PSN_PROFILE_FAILED'
   // Feedback: missing, or pending / hidden and the viewer isn't its author.
   | 'FEEDBACK_NOT_FOUND'
+  // Series: missing or unpublished; the admin editor's save lost a race (stale revision).
+  | 'SERIES_NOT_FOUND'
+  | 'SERIES_CONFLICT'
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {})
 

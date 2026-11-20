@@ -34,6 +34,7 @@
     }
   },
   "nav": {
+    "series": "系列",
     "trophies": "獎盃庫",
     "games": "遊戲",
     "about": "關於 PSRay",
@@ -477,8 +478,22 @@
     }
   },
   "profile": {
+    "series": {
+      "all": "全部",
+      "sortLabel": "排序",
+      "sort": {
+        "recent": "最近玩過",
+        "progress": "完成度",
+        "name": "名稱"
+      },
+      "summary": "共 {n} 個系列",
+      "empty": "還沒有玩過任何系列中的遊戲。",
+      "emptyFiltered": "沒有符合條件的系列。",
+      "loadFailed": "系列載入失敗。"
+    },
     "qrTitle": "個人資料 QR 碼",
     "tabs": {
+      "series": "系列",
       "recent": "最近玩過",
       "trophies": "獲得的獎盃",
       "milestones": "里程碑"
@@ -898,6 +913,13 @@
     "failed": "操作失敗，請稍後再試。"
   },
   "seo": {
+    "series": {
+      "title": "遊戲系列",
+      "description": "按系列瀏覽 PSRay 收錄的遊戲：每個系列依作品排成階段，階段中收錄不同平台、地區與重製版的獎盃組。",
+      "detailTitle": "{name}",
+      "detailTitleFallback": "遊戲系列",
+      "detailDescription": "{name}：共 {stages} 個階段、{sets} 個獎盃組。查看每個階段收錄的平台與地區版本，以及玩家的系列進度。"
+    },
     "games": {
       "title": "全部遊戲",
       "description": "瀏覽 PSRay 收錄的遊戲：各平台的發售日期、多語言名稱與對應的 PSN 獎盃組。"
@@ -1247,6 +1269,76 @@
       "actions": "操作",
       "deleteTitle": "刪除留言",
       "deleteBody": "確定刪除你在「{trophy}」下的留言嗎？刪除後無法復原，其他玩家對它的評價也會一併刪除。"
+    }
+  },
+  "series": {
+    "title": "遊戲系列",
+    "description": "同一系列的作品依階段排列，每個階段收錄不同平台、地區與重製版的獎盃組。",
+    "search": "搜尋系列名稱或其中的遊戲名稱…",
+    "searchSubmit": "搜尋",
+    "clearSearch": "清除搜尋",
+    "searchMinLength": "請至少輸入 {count} 個字元",
+    "results": "系列列表",
+    "range": "顯示第 {start}–{end} 項，共 {total} 個系列",
+    "empty": "找不到符合的系列",
+    "emptyHint": "換個關鍵字試試，也可以搜尋系列中某款遊戲的名稱。",
+    "loadError": "系列列表載入失敗",
+    "loadErrorHint": "請稍後再試。",
+    "reset": "清除搜尋",
+    "sort": {
+      "label": "排序",
+      "popular": "熱門",
+      "recent": "最近有新作",
+      "name": "名稱"
+    },
+    "stageCount": "{n} 個階段",
+    "sideCount": "{n} 部外傳",
+    "trophySetCount": "{n} 個獎盃組",
+    "players": "約 {count} 名玩家",
+    "progress": "已完成 {done}/{total}",
+    "state": {
+      "complete": "100%",
+      "platinum": "白金",
+      "started": "進行中",
+      "none": "未玩"
+    },
+    "status": {
+      "complete": "全制霸",
+      "partial": "部分完成",
+      "started": "進行中",
+      "none": "未開始"
+    },
+    "detail": {
+      "breadcrumb": "系列",
+      "eyebrow": "遊戲系列",
+      "tierTotals": "每個階段各玩一版",
+      "stage": "第 {n} 階段",
+      "versions": "{n} 個版本",
+      "showMore": "展開其餘 {n} 個版本",
+      "showLess": "收合",
+      "side": "外傳",
+      "sideHint": "同一世界觀的衍生作品，不計入全制霸",
+      "owners": "{count} 人擁有",
+      "completionRate": "完成率 {rate}",
+      "unplayed": "未玩",
+      "edit": "編輯系列",
+      "stagesTitle": "階段"
+    },
+    "viewer": {
+      "label": "查看玩家進度",
+      "placeholder": "輸入 PSN ID",
+      "submit": "查看",
+      "clear": "以訪客身分查看",
+      "mine": "查看我的進度",
+      "done": "已完成 {done} / {total} 個階段",
+      "notFound": "站內還沒有 {psnid} 的資料，可能尚未同步。",
+      "private": "{psnid} 的資料未公開，無法查看進度。"
+    },
+    "membership": {
+      "title": "所屬系列",
+      "stage": "第 {n} 階段",
+      "side": "外傳",
+      "of": "共 {n} 個階段"
     }
   }
 }

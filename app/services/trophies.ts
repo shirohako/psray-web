@@ -6,6 +6,7 @@
  * so its setup calls `useApiFetch<TrophySetDetail>('/trophies/:id')` directly.
  */
 
+import type { SeriesMembership } from '~/services/series'
 import type { GameBrowseItem } from '~/services/games'
 
 export type TrophyType = 'platinum' | 'gold' | 'silver' | 'bronze'
@@ -265,6 +266,8 @@ export interface TrophySetDetail {
   similar_trophy_sets?: SimilarTrophySet[]
   /** The game this set belongs to; `null` when it isn't linked to one. */
   game?: GameBrowseItem | null
+  /** Published series the set is part of, with its stage. */
+  series?: SeriesMembership[]
   viewer_progress: ViewerProgress | null
 }
 

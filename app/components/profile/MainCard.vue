@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Check, ChevronDown, Gamepad2, Milestone, Trophy, type IconNode } from 'lucide'
+import { Check, ChevronDown, Gamepad2, Layers, Milestone, Trophy, type IconNode } from 'lucide'
 import { parseProfileQuery, profileRouteQuery, type ProfileQueryState, type ProfileTab } from '~/utils/profileQuery'
 
 const props = defineProps<{ psnid: string }>()
@@ -10,6 +10,7 @@ type TabKey = ProfileTab
 const tabs: { key: TabKey; labelKey: string; icon: IconNode }[] = [
   { key: 'recent', labelKey: 'profile.tabs.recent', icon: Gamepad2 },
   { key: 'trophies', labelKey: 'profile.tabs.trophies', icon: Trophy },
+  { key: 'series', labelKey: 'profile.tabs.series', icon: Layers },
   { key: 'milestones', labelKey: 'profile.tabs.milestones', icon: Milestone },
 ]
 type TabItem = (typeof tabs)[number]
@@ -125,6 +126,12 @@ function selectTab(tab: TabKey) {
       />
       <ProfileEarnedTrophies
         v-else-if="activeTab === 'trophies'"
+        :psnid="props.psnid"
+        :page="state.page"
+        @update:page="navigate({ page: $event })"
+      />
+      <ProfileSeries
+        v-else-if="activeTab === 'series'"
         :psnid="props.psnid"
         :page="state.page"
         @update:page="navigate({ page: $event })"

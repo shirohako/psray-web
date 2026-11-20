@@ -8,6 +8,7 @@
  * regions) or none at all, and its releases cover every platform IGDB lists,
  * not only PlayStation.
  */
+import type { SeriesMembership } from '~/services/series'
 import type { TrophyBrowseItem } from '~/services/trophies'
 
 /** How much of a release date is known; coarser dates are stored as the first day of the period. */
@@ -91,4 +92,6 @@ export interface GameDetail extends GameBrowseItem {
   links: { source: string, url: string }[]
   /** Linked trophy sets, most played first — the same items as `GET /trophies`. */
   trophy_sets: TrophyBrowseItem[]
+  /** Published series the game's trophy sets are part of. */
+  series?: SeriesMembership[]
 }
