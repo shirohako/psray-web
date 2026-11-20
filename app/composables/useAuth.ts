@@ -70,7 +70,8 @@ export function useAuth() {
       return null
     }
 
-    // `useCookie` needs the Nuxt instance, which SSR loses after an `await`.
+    // `useCookie` needs the Nuxt instance, which SSR loses after an `await`, so
+    // both cookie writes below run through `runWithContext`.
     const nuxtApp = useNuxtApp()
     try {
       const session = await useAuthApi().me()
@@ -83,7 +84,10 @@ export function useAuth() {
     }
     catch (error) {
       if (error instanceof ApiError && error.code === 'UNAUTHENTICATED') {
-        clearToken()
+        // An expired or revoked token. Without the context, `clearToken()`
+        // throws here during SSR: the stale cookie is never cleared, and the
+        // auth middleware's call turns every protected page into a 500.
+        nuxtApp.runWithContext(() => clearToken())
         clearState()
         return null
       }
