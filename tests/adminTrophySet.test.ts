@@ -6,6 +6,11 @@ import {
   fieldState,
   formatRegion,
   isHttpsUrl,
+  manualLanguageOptions,
+  manualPayload,
+  manualProblems,
+  manualProgress,
+  manualTexts,
   overrideChanges,
   overrideCounts,
   overrideSummary,
@@ -111,5 +116,56 @@ describe('region tags', () => {
     expect(TROPHY_SET_REGIONS.map(tag => tag.code).sort()).toEqual([...legacy].sort())
     // Every region has flags except the Asia store, which draws a globe.
     expect(TROPHY_SET_REGIONS.filter(tag => tag.kind === 'region' && !tag.flags?.length).map(tag => tag.code)).toEqual(['AS'])
+  })
+})
+
+describe('manual translations', () => {
+  const original = detail({
+    groups: [{ id: 3, psn_group_id: 'default', name: 'Guardian', detail: '', icon_url: '', defined_trophies: null }],
+    trophies: [
+      { id: 41, psn_trophy_id: 0, psn_group_id: 'default', type: 'gold', name: 'First Light', detail: 'Dawn', icon_url: '', is_hidden: false },
+      { id: 42, psn_trophy_id: 1, psn_group_id: 'default', type: 'bronze', name: 'Second Wind', detail: 'Again', icon_url: '', is_hidden: false },
+    ],
+  })
+  const translation = {
+    language_code: 'zh-Hans', name: '守护者', detail: null, taken_over: false, updated_at: null,
+    groups: [], trophies: [{ id: 41, name: '第一缕光', detail: null }],
+  }
+
+  it('drafts every entry, empty where untranslated', () => {
+    const texts = manualTexts(original, translation)
+    expect(texts[textKey('set', 0, 'name')]).toBe('守护者')
+    expect(texts[textKey('trophy', 41, 'name')]).toBe('第一缕光')
+    expect(texts[textKey('trophy', 41, 'detail')]).toBe('')
+    expect(texts[textKey('trophy', 42, 'name')]).toBe('')
+    expect(texts[textKey('group', 3, 'name')]).toBe('')
+    expect(manualTexts(original, null)[textKey('set', 0, 'name')]).toBe('')
+  })
+
+  it('sends only named entries and counts progress like the API', () => {
+    const draft = { ...manualTexts(original, translation), [textKey('trophy', 42, 'name')]: ' 再起之风 ', [textKey('trophy', 42, 'detail')]: ' ' }
+    expect(manualPayload(original, draft)).toEqual({
+      name: '守护者',
+      groups: [],
+      trophies: [{ id: 41, name: '第一缕光', detail: null }, { id: 42, name: '再起之风', detail: null }],
+    })
+    expect(manualProgress(original, draft)).toEqual({ translated: 3, total: 4 })
+  })
+
+  it('flags an empty title and descriptions without a name', () => {
+    const draft = { ...manualTexts(original, null), [textKey('trophy', 42, 'detail')]: '只有描述' }
+    expect(manualProblems(draft)).toEqual([textKey('set', 0, 'name'), textKey('trophy', 42, 'name')])
+  })
+
+  it('offers languages PSN lacks, common ones first', () => {
+    const options = manualLanguageOptions(detail({
+      default_language: 'ja-JP',
+      languages: [{ language_code: '', psn_language: 'ja-JP', is_default: true }, { language_code: 'zh-Hant', psn_language: 'zh-Hant', is_default: false }],
+      manual_translations: [{ language_code: 'zh-Hans', name: '守护者', translated: 1, total: 4, taken_over: false, updated_at: null }],
+    }))
+    expect(options.slice(0, 5).map(o => [o.code, o.state])).toEqual([
+      ['zh-Hans', 'manual'], ['zh-Hant', 'official'], ['en-US', 'free'], ['ja-JP', 'official'], ['ko-KR', 'free'],
+    ])
+    expect(new Set(options.map(o => o.code)).size).toBe(options.length)
   })
 })

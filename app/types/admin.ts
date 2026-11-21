@@ -458,12 +458,42 @@ export interface AdminTrophyRow {
   is_hidden: boolean
 }
 /** `GET /trophy-sets/{id}`; list rows carry everything but the fields below. Texts are in `language`. */
+/** One manual (unofficial) translation as the editor's tabs show it. */
+export interface AdminManualTranslationSummary {
+  language_code: string
+  name: string
+  /** Title, groups and trophies with a translated name, out of `total`. */
+  translated: number
+  total: number
+  /** PSN now has an official translation in this language; the front pages use that one instead. */
+  taken_over: boolean
+  updated_at: string | null
+}
+export interface AdminManualTranslationRow {
+  id: number
+  name: string
+  detail: string | null
+}
+/** `GET|PUT /trophy-sets/{id}/manual-translations/{language}`; only translated groups / trophies are listed. */
+export interface AdminManualTranslation {
+  language_code: string
+  name: string
+  detail: string | null
+  taken_over: boolean
+  updated_at: string | null
+  groups: AdminManualTranslationRow[]
+  trophies: AdminManualTranslationRow[]
+  /** Every manual translation's progress, returned by PUT. */
+  manual_translations?: AdminManualTranslationSummary[]
+}
 export interface AdminTrophySetDetail extends AdminTrophySet {
   detail?: string | null
   default_language?: string | null
   /** `''` is the default language. */
   language?: string
   languages?: { language_code: string, psn_language: string | null, is_default: boolean }[]
+  /** Languages PSN lacks, translated by hand (docs/api/admin/trophy-sets/manual-translations.md). */
+  manual_translations?: AdminManualTranslationSummary[]
   game?: { id: number, name: string, cover_url: string | null } | null
   groups?: AdminTrophyGroupRow[]
   trophies?: AdminTrophyRow[]

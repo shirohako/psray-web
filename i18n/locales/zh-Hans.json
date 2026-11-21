@@ -285,7 +285,12 @@
       "available": "支持 {badge} 种语言",
       "pickerTitle": "选择显示语言",
       "pickerHint": "选择奖杯名称与描述的显示语言。",
-      "default": "默认"
+      "default": "默认",
+      "unofficial": "非官方",
+      "unofficialLong": "非官方翻译",
+      "unofficialNote": "非官方翻译由本站整理，PSN 出了官方翻译后会自动改用官方的。",
+      "unofficialNotice": "PSN 没有{language}，这是本站整理的翻译；没翻译的条目显示原文（{original}）。",
+      "showOriginal": "看官方原文"
     },
     "item": {
       "hidden": "隐藏奖杯",

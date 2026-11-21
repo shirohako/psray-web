@@ -285,7 +285,12 @@
       "available": "支援 {badge} 種語言",
       "pickerTitle": "選擇顯示語言",
       "pickerHint": "選擇獎盃名稱與描述的顯示語言。",
-      "default": "預設"
+      "default": "預設",
+      "unofficial": "非官方",
+      "unofficialLong": "非官方翻譯",
+      "unofficialNote": "非官方翻譯由本站整理，PSN 推出官方翻譯後會自動改用官方版本。",
+      "unofficialNotice": "PSN 沒有{language}，這是本站整理的翻譯；尚未翻譯的項目顯示原文（{original}）。",
+      "showOriginal": "看官方原文"
     },
     "item": {
       "hidden": "隱藏獎盃",

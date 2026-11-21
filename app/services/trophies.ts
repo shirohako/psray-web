@@ -58,7 +58,7 @@ export interface AvailableLanguage {
   /** PSN language code, e.g. `zh-Hant`. */
   language_code: string
   is_default: boolean
-  /** Translation origin, e.g. `official`. */
+  /** `official` (PSN) or `manual` (made on this site for a language PSN lacks; shown as unofficial). */
   source: string
   /** The set's title in this language. */
   name: string

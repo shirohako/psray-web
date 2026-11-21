@@ -6,7 +6,7 @@ import type { AdminTrophySetDetail, AdminTrophySetRefresh, AdminTrophySetRowChan
 
 /**
  * Drawer body for one trophy set: what it is, where it stands (game link,
- * region tags, manual edits, translations), the result of a PSN refresh, and its artwork
+ * region tags, manual edits, official and unofficial translations), the result of a PSN refresh, and its artwork
  * with dead Sony CDN images marked. The actions (edit, refresh) live in
  * AdminTrophySetDrawerFooter. `detail` is the list row until the full item loads.
  */
@@ -150,6 +150,25 @@ const TYPE_RING: Record<string, string> = {
             <span class="text-slate-900">{{ detail.languages!.length }} 种语言</span>
             <span class="admin-count">默认 {{ adminLanguageName(detail.default_language) }}</span>
           </template>
+        </dd>
+      </div>
+      <div class="flex gap-3 border-t border-slate-100 py-2.5">
+        <dt class="w-20 shrink-0 text-slate-500">非官方翻译</dt>
+        <dd class="flex min-w-0 flex-1 flex-wrap items-center gap-1.5">
+          <span v-if="!loaded" class="text-slate-400">加载中…</span>
+          <template v-else-if="detail.manual_translations?.length">
+            <span
+              v-for="t in detail.manual_translations"
+              :key="t.language_code"
+              class="inline-flex items-center gap-1 rounded-full px-2 py-px text-[11px] font-semibold"
+              :class="t.taken_over ? 'bg-slate-100 text-slate-500' : 'border border-dashed border-violet-200 bg-violet-50 text-violet-700'"
+              :title="t.taken_over ? 'PSN 已有官方翻译，前台不再使用这份' : `已翻译 ${t.translated} / ${t.total}`"
+            >
+              {{ adminLanguageName(t.language_code) }}
+              <span class="tabular-nums font-normal">{{ t.taken_over ? '已被官方接管' : `${t.translated}/${t.total}` }}</span>
+            </span>
+          </template>
+          <span v-else class="text-slate-400">没有</span>
         </dd>
       </div>
       <div class="flex gap-3 border-t border-slate-100 py-2.5">

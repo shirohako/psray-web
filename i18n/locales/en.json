@@ -285,7 +285,12 @@
       "available": "{badge} language | {badge} languages",
       "pickerTitle": "Choose display language",
       "pickerHint": "Pick the language for trophy names and descriptions.",
-      "default": "Default"
+      "default": "Default",
+      "unofficial": "Unofficial",
+      "unofficialLong": "Unofficial translation",
+      "unofficialNote": "Unofficial translations are maintained by this site and are replaced automatically once PSN adds an official one.",
+      "unofficialNotice": "PSN has no {language} text for this set, so this translation is maintained by this site. Untranslated entries are shown in the original ({original}).",
+      "showOriginal": "Show original"
     },
     "item": {
       "hidden": "Hidden trophy",

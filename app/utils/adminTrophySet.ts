@@ -1,4 +1,5 @@
-import type { AdminOverrideField, AdminOverrideTarget, AdminTrophySetDetail, AdminTrophySetOverride } from '~/types/admin'
+import type { AdminManualTranslation, AdminOverrideField, AdminOverrideTarget, AdminTrophySetDetail, AdminTrophySetOverride } from '~/types/admin'
+import { TROPHY_LANGUAGE_CODES } from '~/utils/trophy'
 
 /**
  * The trophy-set editor's draft: every editable text (and icon) of one
@@ -226,3 +227,78 @@ export function sortRegion(codes: readonly string[]): string[] {
 
 /** The stored string for a set of codes, as the front pages show it; `null` when empty. */
 export const formatRegion = (codes: readonly string[]) => sortRegion(codes).join(',') || null
+
+// ── Manual (unofficial) translations ────────────────────────────────────────
+
+/**
+ * Draft of a manual translation, keyed like the override draft
+ * (`target:id:field`): the set title plus every group's and trophy's name and
+ * description, '' where nothing is translated yet. `detail` is the
+ * default-language detail, whose groups and trophies are the originals.
+ */
+export function manualTexts(detail: AdminTrophySetDetail, translation: AdminManualTranslation | null): Record<TextKey, string> {
+  const texts: Record<string, string> = { [textKey('set', 0, 'name')]: translation?.name ?? '' }
+  const groups = new Map((translation?.groups ?? []).map(row => [row.id, row]))
+  const trophies = new Map((translation?.trophies ?? []).map(row => [row.id, row]))
+  for (const group of detail.groups ?? []) {
+    texts[textKey('group', group.id, 'name')] = groups.get(group.id)?.name ?? ''
+    texts[textKey('group', group.id, 'detail')] = groups.get(group.id)?.detail ?? ''
+  }
+  for (const trophy of detail.trophies ?? []) {
+    texts[textKey('trophy', trophy.id, 'name')] = trophies.get(trophy.id)?.name ?? ''
+    texts[textKey('trophy', trophy.id, 'detail')] = trophies.get(trophy.id)?.detail ?? ''
+  }
+  return texts as Record<TextKey, string>
+}
+
+/** Body of `PUT /trophy-sets/{id}/manual-translations/{language}`: the title and the entries that have a name. */
+export function manualPayload(detail: AdminTrophySetDetail, draft: Record<TextKey, string>) {
+  const row = (target: 'group' | 'trophy', id: number) => ({
+    id,
+    name: (draft[textKey(target, id, 'name')] ?? '').trim(),
+    detail: (draft[textKey(target, id, 'detail')] ?? '').trim() || null,
+  })
+  return {
+    name: (draft[textKey('set', 0, 'name')] ?? '').trim(),
+    groups: (detail.groups ?? []).map(group => row('group', group.id)).filter(r => r.name),
+    trophies: (detail.trophies ?? []).map(trophy => row('trophy', trophy.id)).filter(r => r.name),
+  }
+}
+
+/** Title, groups and trophies with a name, out of all of them (as the API counts). */
+export function manualProgress(detail: AdminTrophySetDetail, draft: Record<TextKey, string>) {
+  const keys = [
+    textKey('set', 0, 'name'),
+    ...(detail.groups ?? []).map(group => textKey('group', group.id, 'name')),
+    ...(detail.trophies ?? []).map(trophy => textKey('trophy', trophy.id, 'name')),
+  ]
+  return { translated: keys.filter(key => (draft[key] ?? '').trim()).length, total: keys.length }
+}
+
+/** Name fields that block saving: an empty title, or a description without a name. */
+export function manualProblems(draft: Record<TextKey, string>): TextKey[] {
+  return (Object.keys(draft) as TextKey[]).filter((key) => {
+    if (!key.endsWith(':name') || (draft[key] ?? '').trim()) return false
+    return key === textKey('set', 0, 'name') || !!(draft[key.replace(/:name$/, ':detail') as TextKey] ?? '').trim()
+  })
+}
+
+/** Languages offered first when adding a translation. */
+const COMMON_LANGUAGES = ['zh-Hans', 'zh-Hant', 'en-US', 'ja-JP', 'ko-KR']
+
+/**
+ * What the 「添加翻译」 picker offers: every PSN trophy language, common ones
+ * first. Languages PSN already has (the default included) can't be picked;
+ * ones with a manual translation open it instead.
+ */
+export function manualLanguageOptions(detail: AdminTrophySetDetail) {
+  const official = new Set((detail.languages ?? []).map(l => l.psn_language ?? l.language_code).filter(Boolean))
+  if (detail.default_language) official.add(detail.default_language)
+  const manual = new Set((detail.manual_translations ?? []).map(t => t.language_code))
+  const codes = [...COMMON_LANGUAGES, ...TROPHY_LANGUAGE_CODES.filter(code => !COMMON_LANGUAGES.includes(code))]
+  return codes.map(code => ({
+    code,
+    label: adminLanguageName(code),
+    state: official.has(code) ? 'official' as const : manual.has(code) ? 'manual' as const : 'free' as const,
+  }))
+}

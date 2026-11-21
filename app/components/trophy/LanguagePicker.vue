@@ -41,6 +41,10 @@ watch(open, (v) => {
 function isActive(code: string) {
   return code === pendingCode.value || (!pendingCode.value && code === props.current)
 }
+
+// Translations made on this site for languages PSN lacks (`source: manual`) are marked as unofficial.
+const isUnofficial = (code: string) => props.languages.find(l => l.language_code === code)?.source === 'manual'
+const hasUnofficial = computed(() => props.languages.some(l => l.source === 'manual'))
 </script>
 
 <template>
@@ -52,6 +56,9 @@ function isActive(code: string) {
   >
     <LucideIcon :icon="loading ? Loader2 : Languages" class="size-4 text-slate-400" :class="{ 'animate-spin': loading }" />
     <span>{{ langNameEn(current) }}</span>
+    <span v-if="isUnofficial(current)" class="rounded-full border border-dashed border-violet-200 bg-violet-50 px-1.5 text-[10px] font-semibold leading-4 text-violet-700">
+      {{ $t('trophy.lang.unofficial') }}
+    </span>
     <LucideIcon :icon="ChevronDown" class="size-3.5 text-slate-400" />
   </button>
 
@@ -107,6 +114,12 @@ function isActive(code: string) {
               >
                 {{ $t('trophy.lang.default') }}
               </span>
+              <span
+                v-if="l.source === 'manual'"
+                class="shrink-0 rounded-full border border-dashed border-violet-200 bg-violet-50 px-1.5 py-0.5 text-[10px] font-medium leading-none text-violet-700"
+              >
+                {{ $t('trophy.lang.unofficialLong') }}
+              </span>
             </span>
             <span class="mt-1 flex items-center gap-1.5 text-xs text-slate-400">
               <span class="inline-flex shrink-0 items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[10px] font-medium leading-none text-slate-500">
@@ -119,5 +132,8 @@ function isActive(code: string) {
         </button>
       </li>
     </ul>
+    <p v-if="hasUnofficial" class="px-5 pb-4 text-xs text-slate-400">
+      {{ $t('trophy.lang.unofficialNote') }}
+    </p>
   </Dialog>
 </template>

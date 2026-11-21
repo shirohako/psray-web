@@ -285,7 +285,12 @@
       "available": "{badge} 言語に対応",
       "pickerTitle": "表示言語を選択",
       "pickerHint": "トロフィー名と説明を表示する言語を選びます。",
-      "default": "既定"
+      "default": "既定",
+      "unofficial": "非公式",
+      "unofficialLong": "非公式翻訳",
+      "unofficialNote": "非公式翻訳は当サイトで用意したものです。PSN に公式の翻訳が追加されると自動で公式に切り替わります。",
+      "unofficialNotice": "PSN に{language}がないため、当サイトで用意した翻訳を表示しています。未翻訳の項目は原文（{original}）で表示されます。",
+      "showOriginal": "原文を表示"
     },
     "item": {
       "hidden": "隠しトロフィー",
