@@ -30,6 +30,10 @@ const props = withDefaults(
     /** Detail fields the generic data view skips, e.g. ones a
         `#detail-actions` slot renders itself. */
     detailOmit?: string[]
+    /** Open this page for a clicked row instead of the detail drawer. */
+    rowTo?: (row: any) => string
+    /** Skip the generic field list under `#detail-actions` (the slot shows everything). */
+    hideDetailData?: boolean
   }>(),
   { idKey: 'id' },
 )
@@ -85,6 +89,7 @@ function page(value: number) {
   router.replace({ query: { ...route.query, page: String(value) } })
 }
 async function show(row: any) {
+  if (props.rowTo) return navigateTo(props.rowTo(row))
   selected.value = row
   detail.value = row
   detailOpen.value = true
@@ -426,7 +431,20 @@ defineExpose({ refresh, changed })
               detailOpen = false
             }
           "
-        /><AdminDataView :value="detailData" /></div
+        /><AdminDataView v-if="!hideDetailData" :value="detailData" /></div
+      ><template v-if="selected && $slots['detail-footer']" #footer
+        ><slot
+          name="detail-footer"
+          :row="selected"
+          :detail="detail"
+          :refresh="changed"
+          :reload="refresh"
+          :close="
+            () => {
+              detailOpen = false
+            }
+          "
+      /></template
     ></Drawer>
   </section>
 </template>

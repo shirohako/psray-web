@@ -416,16 +416,62 @@ export interface AdminTrophySet {
   defined_trophies: TrophyCountsRecord | null
   has_trophy_groups: boolean
   owners: number
+  game_id: number | null
+  /** The game link was set (or cleared) by an admin; automatic matching leaves it alone. */
+  game_link_manual: boolean
   created_at: string | null
   updated_at: string | null
 }
-/** `GET /trophy-sets/{id}`; list rows carry everything but the fields below. */
+export type AdminOverrideTarget = 'set' | 'group' | 'trophy'
+export type AdminOverrideField = 'name' | 'detail' | 'icon_url'
+/** A manual edit kept on top of PSN data; `upstream_value` is PSN's latest value. */
+export interface AdminTrophySetOverride {
+  target: AdminOverrideTarget
+  /** 0 for the set itself, otherwise the group / trophy `id`. */
+  target_id: number
+  field: AdminOverrideField
+  /** `''` is the default language. */
+  language_code: string
+  value: string
+  upstream_value: string | null
+  user_id: number | null
+  updated_at: string | null
+}
+export interface AdminTrophyGroupRow {
+  id: number
+  psn_group_id: string
+  name: string | null
+  detail: string | null
+  icon_url: string | null
+  defined_trophies: TrophyCountsRecord | null
+}
+export interface AdminTrophyRow {
+  id: number
+  psn_trophy_id: number
+  psn_group_id: string
+  type: string
+  name: string | null
+  detail?: string | null
+  icon_url: string | null
+  is_hidden: boolean
+}
+/** `GET /trophy-sets/{id}`; list rows carry everything but the fields below. Texts are in `language`. */
 export interface AdminTrophySetDetail extends AdminTrophySet {
   detail?: string | null
   default_language?: string | null
-  game_id?: number | null
-  groups?: { id: number, psn_group_id: string, name: string, detail: string, icon_url: string | null, defined_trophies: TrophyCountsRecord | null }[]
-  trophies?: { id: number, psn_trophy_id: number, psn_group_id: string, type: string, name: string, icon_url: string | null, is_hidden: boolean }[]
+  /** `''` is the default language. */
+  language?: string
+  languages?: { language_code: string, psn_language: string | null, is_default: boolean }[]
+  game?: { id: number, name: string, cover_url: string | null } | null
+  groups?: AdminTrophyGroupRow[]
+  trophies?: AdminTrophyRow[]
+  overrides?: AdminTrophySetOverride[]
+}
+/** `PUT /trophy-sets/{id}/overrides`. */
+export interface AdminTrophySetOverrideResult {
+  saved: number
+  reverted: number
+  trophy_set: AdminTrophySetDetail
 }
 export interface AdminTrophySetRowChanges {
   added: number
@@ -435,6 +481,8 @@ export interface AdminTrophySetRowChanges {
 /** `POST /trophy-sets/{id}/refresh`. */
 export interface AdminTrophySetRefresh {
   changes: { trophy_set: string[], groups: AdminTrophySetRowChanges, trophies: AdminTrophySetRowChanges }
+  /** Fields PSN changed that stay as the manual value. */
+  overridden?: Pick<AdminTrophySetOverride, 'target' | 'target_id' | 'field' | 'language_code' | 'value' | 'upstream_value'>[]
   localization_queued: boolean
   trophy_set: AdminTrophySetDetail
 }
@@ -569,4 +617,83 @@ export interface AdminSeriesSuggestions {
 export interface AdminSeriesSearch {
   trophy_sets: AdminSeriesSet[]
   games: { id: number; name: string | null; first_release_date: string | null; trophy_sets: AdminSeriesSet[] }[]
+}
+
+// ── Games ────────────────────────────────────────────────────────────────────
+
+export type AdminReleasePrecision = 'day' | 'month' | 'quarter' | 'year'
+/** Fields IGDB refreshes write; a field an admin changed is locked against them. */
+export type AdminGameLockedField = 'releases' | 'first_release_date' | 'summary' | 'aliases'
+
+export interface AdminGameRelease {
+  platform: string
+  region: string
+  release_date: string | null
+  date_precision: AdminReleasePrecision
+  status: string | null
+}
+
+/** `GET /games` row. */
+export interface AdminGameSummary {
+  id: number
+  name: string
+  cover_url: string | null
+  first_release_date: string | null
+  first_release_precision: AdminReleasePrecision | null
+  platforms: string[]
+  trophy_set_count: number
+  locked_fields: AdminGameLockedField[]
+  igdb_id: string | null
+  created_by_user_id: number | null
+  updated_at: string | null
+}
+
+export interface AdminGameTrophySet {
+  id: number
+  np_communication_id: string
+  name: string
+  icon_url: string | null
+  platform: string[]
+  owners: number
+  game_link_manual: boolean
+}
+
+/** `GET /games/{id}`. */
+export interface AdminGameDetail {
+  id: number
+  name: string
+  summary: string | null
+  cover_url: string | null
+  first_release_date: string | null
+  first_release_precision: AdminReleasePrecision | null
+  platforms: string[]
+  translations: { language_code: string, name: string, summary: string | null }[]
+  aliases: string[]
+  releases: AdminGameRelease[]
+  sources: { source: string, external_id: string, url: string | null, synced_at: string | null }[]
+  locked_fields: AdminGameLockedField[]
+  revision: number
+  created_by_user_id: number | null
+  created_at: string | null
+  updated_at: string | null
+  trophy_sets: AdminGameTrophySet[]
+  /** What IGDB has now, to compare locked fields with; `null` before the first refresh. */
+  igdb: { summary: string | null, aliases: string[], releases: AdminGameRelease[] } | null
+}
+
+export interface AdminPlatform {
+  code: string
+  name: string
+  abbreviation: string | null
+}
+
+/** `GET /games/igdb/search` row. */
+export interface AdminIgdbSearchResult {
+  igdb_id: number
+  name: string
+  url: string | null
+  first_release_date: string | null
+  cover_url: string | null
+  platforms: string[]
+  imported_game_id: number | null
 }

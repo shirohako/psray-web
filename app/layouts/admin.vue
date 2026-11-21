@@ -20,6 +20,7 @@ import {
   Lightbulb,
   ShieldCheck,
   Trophy,
+  Gamepad2,
   X,
 } from 'lucide'
 import { adminDate } from '~/utils/admin'
@@ -60,6 +61,7 @@ const groups = [
   {
     label: '内容管理',
     items: [
+      { name: '游戏', to: '/admin/games', icon: Gamepad2 },
       { name: '奖杯组', to: '/admin/trophy-sets', icon: Trophy },
       { name: '系列', to: '/admin/series', icon: Layers },
       { name: '奖杯 Tip', to: '/admin/tips', icon: Lightbulb },
