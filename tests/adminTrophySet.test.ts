@@ -4,18 +4,22 @@ import {
   combinedState,
   emptyNames,
   fieldState,
+  formatRegion,
   isHttpsUrl,
   overrideChanges,
   overrideCounts,
   overrideSummary,
+  parseRegion,
+  sortRegion,
   textKey,
   textsFromDetail,
+  TROPHY_SET_REGIONS,
 } from '~/utils/adminTrophySet'
 
 const detail = (overrides: Partial<AdminTrophySetDetail> = {}): AdminTrophySetDetail => ({
   id: 1, np_communication_id: 'NPWR00001_00', name: 'Guardian (Manual)', icon_url: 'https://img.example/set.png',
   platform: ['PS4'], version: '01.00', np_service_name: 'trophy', defined_trophies: null, has_trophy_groups: false,
-  owners: 7, game_id: null, game_link_manual: false, created_at: null, updated_at: null,
+  owners: 7, region: null, game_id: null, game_link_manual: false, created_at: null, updated_at: null,
   detail: 'Detail', default_language: 'en-US', language: '',
   groups: [{ id: 3, psn_group_id: 'default', name: 'Guardian', detail: '', icon_url: 'https://cdn/g.png', defined_trophies: null }],
   trophies: [
@@ -83,5 +87,29 @@ describe('trophy set override draft', () => {
     ]
     expect(overrideSummary(overrides)).toEqual(['标题', '图标', '默认语言 1 项', '繁体中文 1 项', '分组 / 奖杯图标 1 个'])
     expect(overrideSummary([])).toEqual([])
+  })
+})
+
+describe('region tags', () => {
+  it('parses the stored string', () => {
+    expect(parseRegion('AS,JP,D')).toEqual(['AS', 'JP', 'D'])
+    expect(parseRegion(' EU , NA ')).toEqual(['EU', 'NA'])
+    expect(parseRegion(null)).toEqual([])
+    expect(parseRegion('')).toEqual([])
+  })
+
+  it('orders codes as the API stores them: regions alphabetically, then editions', () => {
+    expect(sortRegion(['D', 'JP', 'AS'])).toEqual(['AS', 'JP', 'D'])
+    expect(sortRegion(['BDL', 'P', 'NA', 'EU', 'NA'])).toEqual(['EU', 'NA', 'P', 'BDL'])
+    expect(sortRegion(['XX', 'JP'])).toEqual(['JP'])
+    expect(formatRegion(['JP', 'D'])).toBe('JP,D')
+    expect(formatRegion([])).toBeNull()
+  })
+
+  it('covers every code found in the legacy data', () => {
+    const legacy = ['EU', 'NA', 'JP', 'AS', 'KR', 'CN', 'HK', 'P', 'D', 'ORIG', 'DE', 'AU', 'RU', 'BR', 'TW', 'ES', 'BDL', 'NZ', 'SA']
+    expect(TROPHY_SET_REGIONS.map(tag => tag.code).sort()).toEqual([...legacy].sort())
+    // Every region has flags except the Asia store, which draws a globe.
+    expect(TROPHY_SET_REGIONS.filter(tag => tag.kind === 'region' && !tag.flags?.length).map(tag => tag.code)).toEqual(['AS'])
   })
 })

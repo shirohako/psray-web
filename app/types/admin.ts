@@ -416,6 +416,8 @@ export interface AdminTrophySet {
   defined_trophies: TrophyCountsRecord | null
   has_trophy_groups: boolean
   owners: number
+  /** Region & edition tags, comma-joined codes such as `AS,JP,D` (TROPHY_SET_REGIONS); `null` when unset. */
+  region: string | null
   game_id: number | null
   /** The game link was set (or cleared) by an admin; automatic matching leaves it alone. */
   game_link_manual: boolean

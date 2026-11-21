@@ -6,11 +6,14 @@ import {
   combinedState,
   emptyNames,
   fieldState,
+  formatRegion,
   isHttpsUrl,
   overrideChanges,
   overrideCounts,
   overrideFor,
+  parseRegion,
   psnValue,
+  sortRegion,
   textKey,
   textsFromDetail,
   TROPHY_TYPE_DOT,
@@ -19,10 +22,11 @@ import {
 } from '~/utils/adminTrophySet'
 
 /**
- * Edit one trophy set's texts (per language) and icons, and the game it
- * belongs to. PSN data keeps syncing underneath: what an admin changes is
- * stored as an override and put back after every sync, everything else
- * follows PSN (docs/api/admin/trophy-sets/README.md#人工修改优先).
+ * Edit one trophy set's texts (per language) and icons, its region & edition
+ * tags, and the game it belongs to. PSN data keeps syncing underneath: what an
+ * admin changes is stored as an override and put back after every sync,
+ * everything else follows PSN (docs/api/admin/trophy-sets/README.md#人工修改优先).
+ * The region tags aren't PSN data; they are saved with the texts.
  * The platform is not editable.
  */
 definePageMeta({ layout: 'admin', auth: { roles: 'admin' } })
@@ -34,6 +38,8 @@ const id = computed(() => Number(route.params.id))
 const detail = ref<AdminTrophySetDetail | null>(null)
 const saved = ref<Record<TextKey, string>>({} as Record<TextKey, string>)
 const draft = ref<Record<TextKey, string>>({} as Record<TextKey, string>)
+const savedRegion = ref<string[]>([])
+const region = ref<string[]>([])
 const language = ref('')
 const loading = ref(false)
 const loadError = ref<any>(null)
@@ -43,6 +49,8 @@ function seed(next: AdminTrophySetDetail) {
   language.value = next.language ?? ''
   saved.value = textsFromDetail(next)
   draft.value = { ...saved.value }
+  savedRegion.value = sortRegion(parseRegion(next.region))
+  region.value = [...savedRegion.value]
 }
 async function load(lang = language.value) {
   loading.value = true
@@ -61,7 +69,8 @@ watch(id, () => load(''))
 const isDefault = computed(() => !language.value)
 const isSquare = computed(() => detail.value?.platform.includes('PS5') ?? false)
 const changes = computed(() => detail.value ? overrideChanges(detail.value, saved.value, draft.value) : [])
-const dirty = computed(() => changes.value.length > 0)
+const regionDirty = computed(() => formatRegion(region.value) !== formatRegion(savedRegion.value))
+const dirty = computed(() => changes.value.length > 0 || regionDirty.value)
 const changedKeys = computed(() => (Object.keys(draft.value) as TextKey[]).filter(key => draft.value[key] !== saved.value[key]))
 const missingNames = computed(() => emptyNames(draft.value).filter(key => changedKeys.value.includes(key)))
 const badIcons = computed(() => changes.value.filter(c => c.field === 'icon_url' && c.value !== null && !isHttpsUrl(c.value)).length)
@@ -83,10 +92,13 @@ const tabs = computed(() => (detail.value?.languages ?? [{ language_code: '', ps
   label: l.is_default ? `默认（${adminLanguageName(l.psn_language)}）` : adminLanguageName(l.language_code),
   count: counts.value[l.language_code] ?? 0,
 })))
-function switchLanguage(code: string) {
+// Region tags don't depend on the language, so a pending change to them survives the switch.
+async function switchLanguage(code: string) {
   if (code === language.value) return
-  if (dirty.value && !window.confirm('切换语言会丢弃这个语言下未保存的修改，继续吗？')) return
-  load(code)
+  if (changes.value.length && !window.confirm('切换语言会丢弃这个语言下未保存的修改，继续吗？')) return
+  const pendingRegion = region.value
+  await load(code)
+  region.value = pendingRegion
 }
 
 // ── Rows ────────────────────────────────────────────────────────────────────
@@ -143,19 +155,33 @@ function editIcon(key: TextKey) {
 // ── Save ────────────────────────────────────────────────────────────────────
 const saving = ref(false)
 const saveError = ref<any>(null)
-const savedNotice = ref<{ saved: number, reverted: number } | null>(null)
+const savedNotice = ref<{ saved: number, reverted: number, region: boolean } | null>(null)
+// Region tags and texts are two requests; the region goes first and, once saved,
+// stops counting as a change even if saving the texts then fails.
 async function save() {
   if (!detail.value || !canSave.value) return
   saving.value = true
   saveError.value = null
+  const notice = { saved: 0, reverted: 0, region: false }
   try {
-    const result = await api.write<AdminTrophySetOverrideResult>(
-      `/trophy-sets/${id.value}/overrides`,
-      { language: language.value || null, changes: changes.value },
-      'put',
-    )
-    seed(result.trophy_set)
-    savedNotice.value = { saved: result.saved, reverted: result.reverted }
+    if (regionDirty.value) {
+      const next = await api.write<AdminTrophySetDetail>(`/trophy-sets/${id.value}/region`, { region: sortRegion(region.value) }, 'put')
+      detail.value = { ...detail.value, region: next.region }
+      savedRegion.value = sortRegion(parseRegion(next.region))
+      region.value = [...savedRegion.value]
+      notice.region = true
+    }
+    if (changes.value.length) {
+      const result = await api.write<AdminTrophySetOverrideResult>(
+        `/trophy-sets/${id.value}/overrides`,
+        { language: language.value || null, changes: changes.value },
+        'put',
+      )
+      seed(result.trophy_set)
+      notice.saved = result.saved
+      notice.reverted = result.reverted
+    }
+    savedNotice.value = notice
     refreshResult.value = null
   } catch (e) {
     saveError.value = e
@@ -165,6 +191,7 @@ async function save() {
 }
 function discard() {
   draft.value = { ...saved.value }
+  region.value = [...savedRegion.value]
 }
 function onKey(event: KeyboardEvent) {
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
@@ -239,7 +266,8 @@ const refreshChanged = computed(() => {
         <LucideIcon :icon="CircleCheck" class="size-3.5" />已保存
         <span v-if="savedNotice.saved" class="rounded-full bg-amber-50 px-2 py-px font-semibold text-amber-700">{{ savedNotice.saved }} 项人工修改</span>
         <span v-if="savedNotice.reverted" class="rounded-full bg-slate-100 px-2 py-px font-semibold text-slate-600">{{ savedNotice.reverted }} 项恢复跟随 PSN</span>
-        <span class="text-slate-500">PSN 同步后会保留人工修改</span>
+        <span v-if="savedNotice.region" class="rounded-full bg-slate-100 px-2 py-px font-semibold text-slate-600">地区与版本已更新</span>
+        <span v-if="savedNotice.saved" class="text-slate-500">PSN 同步后会保留人工修改</span>
       </p>
     </Transition>
     <div v-if="refreshResult && !dirty" class="flex flex-wrap items-center gap-2 text-xs text-emerald-700">
@@ -293,6 +321,7 @@ const refreshChanged = computed(() => {
             @restore="restoreKey(textKey('set', 0, 'detail'))"
             @cancel="cancelKey(textKey('set', 0, 'detail'))"
           />
+          <AdminTrophySetRegionField v-model="region" :saved="savedRegion" />
         </div>
       </div>
 
@@ -384,9 +413,10 @@ const refreshChanged = computed(() => {
       <div v-if="dirty" class="sticky bottom-4 z-20 mx-auto flex max-w-3xl flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-lg shadow-slate-900/10 backdrop-blur">
         <p class="flex flex-1 flex-wrap items-center gap-1.5 text-[13px] text-slate-700">
           <span>未保存的修改</span>
-          <span class="rounded-full bg-slate-100 px-2 py-px text-[11px] font-semibold text-slate-600">{{ tabs.find(t => t.code === language)?.label }}</span>
+          <span v-if="changes.length" class="rounded-full bg-slate-100 px-2 py-px text-[11px] font-semibold text-slate-600">{{ tabs.find(t => t.code === language)?.label }}</span>
           <span v-if="changes.some(c => c.value !== null)" class="rounded-full bg-amber-50 px-2 py-px text-[11px] font-semibold text-amber-700">{{ changes.filter(c => c.value !== null).length }} 项保存后锁定</span>
           <span v-if="changes.some(c => c.value === null)" class="rounded-full bg-slate-100 px-2 py-px text-[11px] font-semibold text-slate-600">{{ changes.filter(c => c.value === null).length }} 项恢复 PSN</span>
+          <span v-if="regionDirty" class="rounded-full bg-slate-100 px-2 py-px text-[11px] font-semibold text-slate-600">地区与版本</span>
           <span v-if="missingNames.length" class="text-xs text-red-600">名称不能为空</span>
           <span v-if="badIcons" class="text-xs text-red-600">图标必须是 https 地址</span>
         </p>

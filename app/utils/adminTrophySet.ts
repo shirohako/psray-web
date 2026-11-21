@@ -165,3 +165,64 @@ export function adminLanguageName(code: string | null | undefined): string {
 
 /** Only `https://` addresses are accepted for icons. */
 export const isHttpsUrl = (value: string) => /^https:\/\/\S+$/.test(value.trim()) && value.trim().length <= 255
+
+// ── Region & edition tags (trophy_set.region) ───────────────────────────────
+
+export interface RegionTag {
+  code: string
+  label: string
+  hint?: string
+  kind: 'region' | 'edition'
+  /** Flags drawn for a region: one country (or the EU), or two stacked for North America. The Asia store and editions draw their own SVG. */
+  flags?: string[]
+}
+
+/**
+ * The only values a trophy set's region tag can take: PSN store regions and
+ * editions. Mirrors App\Support\TrophySetRegion (docs/api/admin/trophy-sets/region.md);
+ * change both together.
+ */
+export const TROPHY_SET_REGIONS: readonly RegionTag[] = [
+  { code: 'NA', label: '北美', kind: 'region', flags: ['us', 'ca'] },
+  { code: 'EU', label: '欧洲', kind: 'region', flags: ['eu'] },
+  { code: 'JP', label: '日本', kind: 'region', flags: ['jp'] },
+  { code: 'AS', label: '亚洲', hint: '港台、东南亚', kind: 'region' },
+  { code: 'KR', label: '韩国', kind: 'region', flags: ['kr'] },
+  { code: 'CN', label: '中国大陆', hint: '国行', kind: 'region', flags: ['cn'] },
+  { code: 'HK', label: '香港', kind: 'region', flags: ['hk'] },
+  { code: 'TW', label: '台湾', kind: 'region', flags: ['tw'] },
+  { code: 'DE', label: '德国', kind: 'region', flags: ['de'] },
+  { code: 'AU', label: '澳大利亚', kind: 'region', flags: ['au'] },
+  { code: 'NZ', label: '新西兰', kind: 'region', flags: ['nz'] },
+  { code: 'RU', label: '俄罗斯', kind: 'region', flags: ['ru'] },
+  { code: 'BR', label: '巴西', kind: 'region', flags: ['br'] },
+  { code: 'ES', label: '西班牙', kind: 'region', flags: ['es'] },
+  { code: 'SA', label: '沙特阿拉伯', kind: 'region', flags: ['sa'] },
+  { code: 'P', label: '实体版', hint: '光盘 / 卡带', kind: 'edition' },
+  { code: 'D', label: '数字版', hint: '商店下载', kind: 'edition' },
+  { code: 'ORIG', label: '原版', hint: '区别于重制、新版', kind: 'edition' },
+  { code: 'BDL', label: '合集版', hint: '合集 / 同捆', kind: 'edition' },
+]
+
+export const regionTag = (code: string) => TROPHY_SET_REGIONS.find(tag => tag.code === code)
+
+/** `"AS,JP,D"` → `['AS', 'JP', 'D']`; `[]` when unset. */
+export function parseRegion(value: string | null | undefined): string[] {
+  return (value ?? '').split(',').map(code => code.trim()).filter(Boolean)
+}
+
+/**
+ * Codes in the order the API stores them: regions alphabetically, then editions
+ * in catalogue order (`['D', 'JP', 'AS']` → `['AS', 'JP', 'D']`). Unknown codes and
+ * duplicates are dropped.
+ */
+export function sortRegion(codes: readonly string[]): string[] {
+  const known = TROPHY_SET_REGIONS.filter(tag => codes.includes(tag.code))
+  return [
+    ...known.filter(tag => tag.kind === 'region').map(tag => tag.code).sort(),
+    ...known.filter(tag => tag.kind === 'edition').map(tag => tag.code),
+  ]
+}
+
+/** The stored string for a set of codes, as the front pages show it; `null` when empty. */
+export const formatRegion = (codes: readonly string[]) => sortRegion(codes).join(',') || null

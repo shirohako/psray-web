@@ -6,7 +6,7 @@ import type { AdminTrophySetDetail, AdminTrophySetRefresh, AdminTrophySetRowChan
 
 /**
  * Drawer body for one trophy set: what it is, where it stands (game link,
- * manual edits, translations), the result of a PSN refresh, and its artwork
+ * region tags, manual edits, translations), the result of a PSN refresh, and its artwork
  * with dead Sony CDN images marked. The actions (edit, refresh) live in
  * AdminTrophySetDrawerFooter. `detail` is the list row until the full item loads.
  */
@@ -125,6 +125,10 @@ const TYPE_RING: Record<string, string> = {
           </span>
           <span v-else-if="detail.game_id" class="rounded-full bg-slate-100 px-2 py-px text-[11px] font-semibold text-slate-600">自动匹配</span>
         </dd>
+      </div>
+      <div class="flex gap-3 border-t border-slate-100 py-2.5">
+        <dt class="w-20 shrink-0 text-slate-500">地区与版本</dt>
+        <dd class="min-w-0 flex-1"><AdminTrophySetRegionTags :region="detail.region" /></dd>
       </div>
       <div class="flex gap-3 border-t border-slate-100 py-2.5">
         <dt class="w-20 shrink-0 text-slate-500">人工修改</dt>

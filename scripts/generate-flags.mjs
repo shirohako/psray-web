@@ -5,8 +5,12 @@ import { fileURLToPath } from 'node:url'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const regionsSource = await readFile(join(root, 'app/utils/regions.ts'), 'utf8')
+// Flags that aren't PSN countries but are drawn elsewhere: `eu` for the trophy-set
+// region tags (AdminTrophySetRegionIcon).
+const EXTRA_FLAGS = ['eu']
 const countryCodes = [...regionsSource.matchAll(/code: '([A-Z]{2})'/g)]
   .map(match => match[1].toLowerCase())
+  .concat(EXTRA_FLAGS)
 
 const require = createRequire(import.meta.url)
 const iconSetPath = require.resolve('@iconify-json/flag/icons.json')
@@ -33,4 +37,4 @@ for (const code of countryCodes) {
   await writeFile(join(outputDir, `${code}.svg`), svg)
 }
 
-console.log(`Generated ${countryCodes.length} PSN flags in public/flags/4x3`)
+console.log(`Generated ${countryCodes.length} flags in public/flags/4x3`)

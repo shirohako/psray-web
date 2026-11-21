@@ -7,9 +7,7 @@
 const props = defineProps<{ country: string }>()
 
 const valid = computed(() => /^[A-Za-z]{2}$/.test(props.country))
-// Bump the query version only when regenerating flags with visibly new artwork;
-// flag responses otherwise carry a one-year immutable cache lifetime.
-const src = computed(() => `/flags/4x3/${props.country.toLowerCase()}.svg?v=1`)
+const src = computed(() => flagSrc(props.country))
 </script>
 
 <template>
