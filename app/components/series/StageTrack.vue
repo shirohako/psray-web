@@ -30,7 +30,8 @@ const segments = computed(() => props.stages.map((stage, index) => ({
   key: index,
   fill: FILL[stage.state],
   width: stage.state === 'complete' || stage.state === 'platinum' ? 100 : stage.state === 'started' ? Math.max(8, stage.best ?? 0) : 0,
-  title: [stage.name, t(`series.state.${stage.state}`)].filter(Boolean).join(' · '),
+  // Name and state on separate lines of the tooltip.
+  title: [stage.name, t(`series.state.${stage.state}`)].filter(Boolean).join('\n'),
 })))
 </script>
 

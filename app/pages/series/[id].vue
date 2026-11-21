@@ -54,7 +54,7 @@ import { ChevronRight } from 'lucide'
 import type { SeriesDetail } from '~/services/series'
 import { contentEditions } from '#shared/locales'
 import { breadcrumbJsonLd, jsonLdScript } from '~/utils/structuredData'
-import { entryProgressMap, mainStages, sideStages, stageStateMap } from '~/utils/series'
+import { entryProgressMap, mainStages, seriesCardUrl, sideStages, stageStateMap } from '~/utils/series'
 
 definePageMeta({ path: '/series/:id(\\d+)', languageLinks: false })
 
@@ -63,11 +63,16 @@ const router = useRouter()
 const { t } = useI18n()
 const id = computed(() => String(route.params.id))
 
-// A player's progress is driven by `?psnid=`, like the trophy set page.
+// A player's progress is driven by `?psnid=`, like the trophy set page. Without
+// one, a signed-in reader sees their own — fetched, but not written into the URL,
+// so the page stays the same shareable, indexable page.
 const psnid = computed(() => (typeof route.query.psnid === 'string' ? route.query.psnid.trim() : ''))
+const { user } = useAuth()
+const ownPsnid = computed(() => user.value?.psnid ?? '')
+const shownPsnid = computed(() => psnid.value || ownPsnid.value)
 
 const { data, status, error } = await useApiFetch<SeriesDetail>(() => `/series/${id.value}`, {
-  query: computed(() => ({ psnid: psnid.value || undefined })),
+  query: computed(() => ({ psnid: shownPsnid.value || undefined })),
   lazy: true,
 })
 const pending = useFetchPending(status)
@@ -93,20 +98,35 @@ const viewerPsnid = computed(() => (viewer.value?.found && viewer.value.is_publi
 const progress = computed(() => entryProgressMap(viewer.value))
 const states = computed(() => stageStateMap(viewer.value))
 
-/** Show a player's progress (or the guest view for ''), keeping the rest of the query. */
+/**
+ * Show a player's progress, keeping the rest of the query. '' — or the reader's
+ * own PSN ID — drops `?psnid=`, which brings back the reader's own progress (or
+ * the plain page for a guest).
+ */
 function viewPlayer(value: string) {
   const { psnid: _psnid, ...rest } = route.query
-  router.push(localizeTo({ query: value ? { ...rest, psnid: value } : rest }))
+  const own = value.toLowerCase() === ownPsnid.value.toLowerCase()
+  router.push(localizeTo({ query: value && !own ? { ...rest, psnid: value } : rest }))
 }
 
 // Indexed in Japanese, English, and the languages its name is translated into (as in the sitemap).
 const editions = computed(() => contentEditions(data.value?.languages ?? []))
+
+const cardBase = useRuntimeConfig().public.cardBase
+// Until the series has a card of its own, the brand card stands in (see `resolveSeoImage`).
+const cardImage = computed(() => (data.value ? seriesCardUrl(cardBase, data.value, 'jpg') : null))
 
 const seo = useSeo({
   title: () => (data.value ? t('seo.series.detailTitle', { name: data.value.localized_name }) : t('seo.series.detailTitleFallback')),
   description: () => (data.value
     ? t('seo.series.detailDescription', { name: data.value.localized_name, stages: data.value.stage_count, sets: data.value.trophy_set_count })
     : ''),
+  image: () => cardImage.value ?? undefined,
+  imageAlt: () => (cardImage.value && data.value ? t('card.alt', { name: data.value.name }) : undefined),
+  // Dimensions of the backend-generated card.
+  imageWidth: 1200,
+  imageHeight: 630,
+  imageType: 'image/jpeg',
   editions: () => editions.value,
   // One player's progress is a personal view of the page, not a page of its own.
   noindex: () => Boolean(psnid.value),

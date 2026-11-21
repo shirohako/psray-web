@@ -36,6 +36,8 @@ export interface SeriesItem {
   popularity: number
   first_year: number | null
   last_year: number | null
+  /** Version of the generated share card, `null` until one exists; see `seriesCardUrl()`. */
+  card: string | null
 }
 
 /** `GET /series` item: the signed-in viewer's own progress, `null` when anonymous or unplayed. */

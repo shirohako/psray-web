@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronDown } from 'lucide'
+import { Calendar, ChevronDown, Layers } from 'lucide'
 import type { SeriesEntryProgress, SeriesStage, StageState } from '~/services/series'
 import { orderStageEntries, visibleEntryCount } from '~/utils/series'
 
@@ -45,19 +45,26 @@ watch(() => props.psnid, () => { open.value = false })
     </div>
 
     <article class="mb-4 min-w-0 flex-1 overflow-hidden rounded-lg border bg-white shadow-sm" :class="isSide ? 'border-dashed border-slate-300' : 'border-slate-200'">
-      <header class="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-slate-100 px-4 py-2.5">
-        <span class="text-[11px] font-semibold tracking-wide text-slate-400">
-          {{ isSide ? $t('series.detail.side') : $t('series.detail.stage', { n: stage.number }) }}
-        </span>
-        <h3 class="min-w-0 text-sm font-semibold text-slate-900">{{ stage.name }}</h3>
-        <span class="text-xs text-slate-400 tabular-nums">
-          <template v-if="year">{{ year }} · </template>{{ $t('series.detail.versions', stage.entries.length) }}
-        </span>
-        <span
-          v-if="state"
-          class="ml-auto inline-flex h-5 items-center rounded-full px-2 text-[11px] font-semibold ring-1 ring-inset"
-          :class="CHIP[state.state]"
-        >{{ $t(`series.state.${state.state}`) }}</span>
+      <header class="flex flex-wrap items-center gap-x-4 gap-y-2 border-b border-slate-100 px-4 py-2.5">
+        <div class="min-w-0 flex-1">
+          <p class="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+            {{ isSide ? $t('series.detail.side') : $t('series.detail.stage', { n: stage.number }) }}
+          </p>
+          <h3 class="mt-0.5 text-sm font-semibold text-slate-900">{{ stage.name }}</h3>
+        </div>
+        <div class="flex shrink-0 items-center gap-4 text-xs text-slate-500 tabular-nums">
+          <span v-if="year" class="inline-flex items-center gap-1.5">
+            <LucideIcon :icon="Calendar" class="size-3.5 text-slate-400" />{{ year }}
+          </span>
+          <span class="inline-flex items-center gap-1.5">
+            <LucideIcon :icon="Layers" class="size-3.5 text-slate-400" />{{ $t('series.detail.versions', stage.entries.length) }}
+          </span>
+          <span
+            v-if="state"
+            class="inline-flex h-5 items-center rounded-full px-2 text-[11px] font-semibold ring-1 ring-inset"
+            :class="CHIP[state.state]"
+          >{{ $t(`series.state.${state.state}`) }}</span>
+        </div>
       </header>
 
       <div class="divide-y divide-slate-100">

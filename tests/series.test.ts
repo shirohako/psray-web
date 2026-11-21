@@ -6,6 +6,7 @@ import {
   orderStageEntries,
   parseSeriesLibraryQuery,
   seriesBrowsePath,
+  seriesCardUrl,
   seriesLibraryRouteQuery,
   seriesPercent,
   seriesYears,
@@ -107,5 +108,18 @@ describe('profile series tab', () => {
   it('is a tab of its own that keeps its page in the URL', () => {
     expect(parseProfileQuery({ tab: 'series', page: '2' })).toEqual({ tab: 'series', page: 2, q: '' })
     expect(profileRouteQuery({ tab: 'series', page: 2, q: '' })).toEqual({ tab: 'series', page: '2' })
+  })
+})
+
+describe('seriesCardUrl', () => {
+  it('points at the versioned card in the asked format', () => {
+    expect(seriesCardUrl('https://api.psray.net/', { id: 52, card: '5e87062fc1d9' }, 'webp'))
+      .toBe('https://api.psray.net/card/series/52.webp?v=5e87062fc1d9')
+    expect(seriesCardUrl('https://api.psray.net', { id: 52, card: '5e87062fc1d9' }, 'jpg'))
+      .toBe('https://api.psray.net/card/series/52.jpg?v=5e87062fc1d9')
+  })
+
+  it('has nothing to point at before a card exists', () => {
+    expect(seriesCardUrl('https://api.psray.net', { id: 52, card: null }, 'jpg')).toBeNull()
   })
 })

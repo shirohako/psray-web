@@ -21,9 +21,9 @@ defineProps<{ series: SeriesMembership[] }>()
           <p class="line-clamp-2 text-sm font-semibold leading-5 text-slate-900 group-hover:text-sky-700" :lang="item.display_language ?? undefined">
             {{ item.localized_name }}
           </p>
-          <p class="mt-0.5 text-xs text-slate-500 tabular-nums">
-            <span class="font-medium text-slate-700">{{ item.stage_kind === 'side' ? $t('series.membership.side') : $t('series.membership.stage', { n: item.stage_number }) }}</span>
-            · {{ $t('series.membership.of', { n: item.stage_count }) }}
+          <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 tabular-nums">
+            <span class="inline-flex h-5 items-center rounded bg-slate-100 px-1.5 text-[11px] font-semibold text-slate-600">{{ item.stage_kind === 'side' ? $t('series.membership.side') : $t('series.membership.stage', { n: item.stage_number }) }}</span>
+            <span>{{ $t('series.membership.of', { n: item.stage_count }) }}</span>
           </p>
         </div>
         <LucideIcon :icon="ChevronRight" class="size-4 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600" />

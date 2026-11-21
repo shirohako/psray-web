@@ -69,6 +69,15 @@ export function seriesCover(series: Pick<SeriesItem, 'cover_url' | 'covers'>): s
   return series.cover_url ?? series.covers[series.covers.length - 1] ?? null
 }
 
+/**
+ * The series' generated share card, or `null` before one exists: `jpg` is the
+ * 1200×630 og:image, `webp` the 800×420 copy the list uses as its cover. The
+ * version makes the URL change with the card, past the 6h image cache.
+ */
+export function seriesCardUrl(cardBase: string, series: Pick<SeriesItem, 'id' | 'card'>, format: 'jpg' | 'webp'): string | null {
+  return series.card ? `${cardBase.replace(/\/+$/, '')}/card/series/${series.id}.${format}?v=${encodeURIComponent(series.card)}` : null
+}
+
 export const mainStages = (stages: SeriesStage[]) => stages.filter(stage => stage.kind === 'main')
 export const sideStages = (stages: SeriesStage[]) => stages.filter(stage => stage.kind === 'side')
 
