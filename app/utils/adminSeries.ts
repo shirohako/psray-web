@@ -24,10 +24,11 @@ export const SERIES_SORT_OPTIONS = [
   { value: 'name', label: '名称' },
 ]
 
+/** Why automatic grouping asked an admin to look at a series, as a short title. */
 export const SERIES_REVIEW_LABELS: Record<string, string> = {
-  large: '阶段数过多，可能是发行品牌合集',
-  overlap: '大部分阶段也在另一个更大的系列里',
-  new_stage: '自动归类追加了新阶段，排在末尾，请确认位置',
+  large: '阶段太多，可能不是一个系列',
+  overlap: '可能和更大的系列重复',
+  new_stage: '自动归类追加了新阶段',
 }
 
 /** Languages the series name can be translated into, in the order the editor lists them. */

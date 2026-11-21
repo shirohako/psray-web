@@ -532,11 +532,21 @@ export interface AdminSeriesStage {
   entries: { source: 'auto' | 'manual'; trophy_set: AdminSeriesSet }[]
 }
 
+/**
+ * What a review flag is based on, worked out from the current data:
+ * `overlap` lists the series that contain most of this one's works (empty once
+ * the flag is out of date); `large` carries the stage limit it went over.
+ */
+export type AdminSeriesReviewDetail =
+  | { works: number; containers: { id: number; name: string; works: number; shared: number }[] }
+  | { threshold: number }
+
 /** `GET /admin/series/{id}`. */
 export interface AdminSeriesDetail extends AdminSeriesSummary {
   description: string | null
   cover_url: string | null
   merged_into_id: number | null
+  review_detail: AdminSeriesReviewDetail | null
   translations: { language_code: string; name: string }[]
   stages: AdminSeriesStage[]
   exclusions: { trophy_set_id: number | null; game_id: number | null }[]

@@ -8,7 +8,6 @@ import {
   draftSignature,
   savePayload,
   SERIES_LANGUAGES,
-  SERIES_REVIEW_LABELS,
   SERIES_STATUS_OPTIONS,
   type DraftMeta,
   type DraftStage,
@@ -225,11 +224,9 @@ async function destroy() {
     <div v-if="series.merged_into_id" class="rounded-lg border border-slate-200 bg-slate-50 p-3 text-[13px] text-slate-700">
       这个系列已合并进 <NuxtLink :to="`/admin/series/${series.merged_into_id}`" class="font-medium underline">#{{ series.merged_into_id }}</NuxtLink>，已下架。
     </div>
-    <div v-if="series.needs_review" class="flex flex-wrap items-center gap-3 rounded-lg border border-amber-200 bg-amber-50/70 p-3 text-[13px] text-amber-900">
-      <LucideIcon :icon="TriangleAlert" class="size-4 shrink-0" />
-      <span class="flex-1">待审核：{{ series.review_reason ? SERIES_REVIEW_LABELS[series.review_reason] : '自动归类标记' }}。系列照常显示；保存后会自动清掉这个标记。</span>
-      <button type="button" class="admin-button" :disabled="busy" @click="markReviewed"><LucideIcon :icon="CircleCheck" class="size-3.5" />标为已审核</button>
-    </div>
+    <AdminSeriesReviewNotice v-if="series.needs_review" :series="series">
+      <button type="button" class="admin-button shrink-0" :disabled="busy" @click="markReviewed"><LucideIcon :icon="CircleCheck" class="size-3.5" />标为已审核</button>
+    </AdminSeriesReviewNotice>
     <div v-if="detectLog" class="rounded-lg border border-slate-200 bg-white p-3 text-[13px] text-slate-700">
       <p class="mb-1 font-medium text-slate-900">按 IGDB 重新归类完成</p>
       <ul class="list-disc space-y-0.5 pl-5 text-xs text-slate-600"><li v-for="line in detectLog" :key="line">{{ line }}</li></ul>

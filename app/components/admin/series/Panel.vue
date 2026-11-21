@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { CircleCheck, Eye, EyeOff, Lock, LockOpen, PencilLine } from 'lucide'
 import type { AdminSeriesDetail, AdminSeriesSummary } from '~/types/admin'
-import { SERIES_REVIEW_LABELS } from '~/utils/adminSeries'
 
 /**
  * Quick actions in the series list's detail drawer: publish / take down,
@@ -47,9 +46,7 @@ async function patch(body: Partial<Pick<AdminSeriesSummary, 'status' | 'auto_upd
         <LucideIcon :icon="CircleCheck" class="size-3.5" />标为已审核
       </button>
     </div>
-    <p v-if="detail.needs_review && detail.review_reason" class="rounded-md border border-amber-200 bg-amber-50/70 px-3 py-2 text-xs text-amber-900">
-      待审核：{{ SERIES_REVIEW_LABELS[detail.review_reason] }}
-    </p>
+    <AdminSeriesReviewNotice v-if="detail.needs_review" :series="detail" />
     <AdminError :error="error" />
   </div>
 </template>
