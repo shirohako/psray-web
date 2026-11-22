@@ -136,7 +136,7 @@ useHead(() => {
       jsonLdScript('game-jsonld', videoGameJsonLd({
         name: game.localized_name,
         url,
-        image: game.cover_url,
+        image: game.cover?.url ?? null,
         platforms: game.platforms.map(gamePlatformLabel),
         releaseDate: game.first_release_precision === 'day' ? game.first_release_date : null,
         alternateNames: [...new Set([game.name, ...game.translations.map(item => item.name), ...game.aliases])]

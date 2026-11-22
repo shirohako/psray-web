@@ -101,7 +101,7 @@ function openImport() {
       ><button type="button" class="admin-button" @click="createOpen = true; createName = ''"><LucideIcon :icon="Plus" class="size-3.5" />新建游戏</button></template
     ><template #cell-name="{ row }"
       ><span class="flex min-w-56 max-w-md items-center gap-2.5"
-        ><img v-if="row.cover_url" :src="row.cover_url" alt="" class="h-10 w-[30px] shrink-0 rounded object-cover ring-1 ring-slate-200" loading="lazy" /><span v-else class="h-10 w-[30px] shrink-0 rounded bg-slate-100" /><span class="min-w-0"
+        ><img v-if="row.cover" :src="row.cover.url" alt="" class="h-10 w-[30px] shrink-0 rounded object-cover ring-1 ring-slate-200" loading="lazy" /><span v-else class="h-10 w-[30px] shrink-0 rounded bg-slate-100" /><span class="min-w-0"
           ><NuxtLink :to="`/admin/games/${row.id}`" class="block truncate font-medium text-slate-900 hover:underline" @click.stop>{{ row.name }}</NuxtLink
           ><span class="mt-0.5 flex items-center gap-1.5"
             ><span v-if="row.igdb_id" class="admin-count font-mono">IGDB {{ row.igdb_id }}</span

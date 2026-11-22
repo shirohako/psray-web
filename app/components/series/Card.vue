@@ -14,7 +14,7 @@ const props = defineProps<{ series: SeriesBrowseItem }>()
 const cardBase = useRuntimeConfig().public.cardBase
 const card = computed(() => seriesCardUrl(cardBase, props.series, 'webp'))
 const tiles = computed(() => {
-  const covers = props.series.cover_url ? [props.series.cover_url] : props.series.covers
+  const covers = props.series.cover ? [props.series.cover.url] : props.series.covers
   return covers.slice(0, 4)
 })
 const years = computed(() => seriesYears(props.series))

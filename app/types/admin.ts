@@ -2,6 +2,7 @@
  * Shapes of the admin API (`/admin/*`). Option lists, labels and formatting
  * for the console live in `~/utils/admin`.
  */
+import type { MediaImage } from '~/types/media'
 
 // ── Generic list pages (AdminCollection) ─────────────────────────────────────
 
@@ -337,7 +338,7 @@ export interface AdminFeedbackReply {
   psnid: string | null
   avatar_url: string | null
   content: string
-  image_urls: string[]
+  images: MediaImage[]
   ip_address: string | null
   created_at: string
 }
@@ -352,7 +353,7 @@ export interface AdminFeedbackDetail {
   psnid: string | null
   guest_name: string | null
   content: string
-  image_urls: string[]
+  images: MediaImage[]
   reply_count: number
   has_staff_reply: boolean
   awaiting_reply: boolean
@@ -436,6 +437,8 @@ export interface AdminTrophySetOverride {
   language_code: string
   value: string
   upstream_value: string | null
+  /** The uploaded image of an icon override; `null` for text overrides. */
+  media: MediaImage | null
   user_id: number | null
   updated_at: string | null
 }
@@ -494,7 +497,7 @@ export interface AdminTrophySetDetail extends AdminTrophySet {
   languages?: { language_code: string, psn_language: string | null, is_default: boolean }[]
   /** Languages PSN lacks, translated by hand (docs/api/admin/trophy-sets/manual-translations.md). */
   manual_translations?: AdminManualTranslationSummary[]
-  game?: { id: number, name: string, cover_url: string | null } | null
+  game?: { id: number, name: string, cover: MediaImage | null } | null
   groups?: AdminTrophyGroupRow[]
   trophies?: AdminTrophyRow[]
   overrides?: AdminTrophySetOverride[]
@@ -566,6 +569,8 @@ export type AdminSeriesReviewReason = 'large' | 'overlap' | 'new_stage'
 export interface AdminSeriesSummary {
   id: number
   name: string
+  /** 16:9 cover set by an admin; `null` means the stage icons are used. */
+  cover: MediaImage | null
   status: AdminSeriesStatus
   source: 'igdb' | 'manual'
   igdb_collection_id: number | null
@@ -624,7 +629,6 @@ export type AdminSeriesReviewDetail =
 /** `GET /admin/series/{id}`. */
 export interface AdminSeriesDetail extends AdminSeriesSummary {
   description: string | null
-  cover_url: string | null
   merged_into_id: number | null
   review_detail: AdminSeriesReviewDetail | null
   translations: { language_code: string; name: string }[]
@@ -669,7 +673,7 @@ export interface AdminGameRelease {
 export interface AdminGameSummary {
   id: number
   name: string
-  cover_url: string | null
+  cover: MediaImage | null
   first_release_date: string | null
   first_release_precision: AdminReleasePrecision | null
   platforms: string[]
@@ -695,7 +699,12 @@ export interface AdminGameDetail {
   id: number
   name: string
   summary: string | null
-  cover_url: string | null
+  /** Falls back to the IGDB original (`id: null`) until it is copied locally. */
+  cover: MediaImage | null
+  /** Where the local cover came from; `null` while there is none yet. */
+  cover_source: 'igdb' | 'upload' | 'url' | 'legacy' | null
+  /** The IGDB original; refreshes keep it current. */
+  cover_source_url: string | null
   first_release_date: string | null
   first_release_precision: AdminReleasePrecision | null
   platforms: string[]

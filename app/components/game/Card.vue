@@ -15,7 +15,7 @@ defineProps<{ game: GameBrowseItem }>()
     class="group flex min-w-0 flex-col rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-600"
   >
     <GameCover
-      :src="game.cover_url"
+      :image="game.cover"
       :alt="game.localized_name"
       :seed="game.id"
       :lang="game.display_language ?? undefined"

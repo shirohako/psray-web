@@ -7,7 +7,7 @@ defineEmits<{ toggleFollow: [] }>()
 
 // Banner image: per-user custom banner, else the global default from `app.config.ts`.
 const appConfig = useAppConfig()
-const bannerImage = computed(() => props.profile.banner_url || appConfig.profile.defaultBanner)
+const bannerImage = computed(() => props.profile.banner?.url || appConfig.profile.defaultBanner)
 </script>
 
 <template>

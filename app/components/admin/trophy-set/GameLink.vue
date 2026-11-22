@@ -54,7 +54,7 @@ function handBack() {
     </header>
     <div class="flex flex-wrap items-center gap-3 px-4 py-3">
       <template v-if="detail.game">
-        <img v-if="detail.game.cover_url" :src="detail.game.cover_url" alt="" class="h-12 w-9 shrink-0 rounded object-cover ring-1 ring-slate-200" />
+        <img v-if="detail.game.cover" :src="detail.game.cover.url" alt="" class="h-12 w-9 shrink-0 rounded object-cover ring-1 ring-slate-200" />
         <span v-else class="grid h-12 w-9 shrink-0 place-items-center rounded bg-slate-100 text-slate-400"><LucideIcon :icon="Gamepad2" class="size-4" /></span>
         <span class="min-w-0 flex-1">
           <NuxtLink :to="`/admin/games/${detail.game.id}`" class="block truncate text-[13px] font-semibold text-slate-900 hover:underline">{{ detail.game.name }}</NuxtLink>

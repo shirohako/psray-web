@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { MediaImage } from '~/types/media'
+
 /**
  * A game's portrait (3:4) cover. The slot keeps its shape while the image
  * loads (skeleton). When there is none or it fails, a cover is drawn instead
@@ -6,10 +8,11 @@
  * grid of uncovered games still reads as a shelf of games.
  *
  * Size it from the parent with a width class; the height follows the ratio and
- * the drawn title scales with the width (container units).
+ * the drawn title scales with the width (container units). `sizes` tells the
+ * browser that width so it can pick from the cover's `srcset`.
  */
-const props = defineProps<{
-  src: string | null
+const props = withDefaults(defineProps<{
+  image: MediaImage | null
   alt: string
   /** Picks the drawn cover; pass the game id so it is the same in every language. Defaults to `alt`. */
   seed?: number | string
@@ -17,7 +20,11 @@ const props = defineProps<{
   lang?: string
   /** Small thumbnails: the drawn cover without the name. */
   compact?: boolean
-}>()
+  /** Rendered width, for picking a variant from `srcset`. */
+  sizes?: string
+}>(), { seed: undefined, lang: undefined, sizes: '160px' })
+
+const src = computed(() => props.image?.url ?? null)
 
 const loaded = ref(false)
 const failed = ref(false)
@@ -31,7 +38,7 @@ function syncImageState() {
   else failed.value = true
 }
 
-watch(() => props.src, async () => {
+watch(src, async () => {
   loaded.value = false
   failed.value = false
   await nextTick()
@@ -40,17 +47,20 @@ watch(() => props.src, async () => {
 
 onMounted(syncImageState)
 
-const showImage = computed(() => Boolean(props.src) && !failed.value)
+const showImage = computed(() => Boolean(src.value) && !failed.value)
 const art = computed(() => coverArt(props.seed ?? props.alt))
 </script>
 
 <template>
   <div class="relative aspect-3/4 overflow-hidden rounded-md bg-slate-100 ring-1 ring-black/5">
-    <div v-if="showImage && !loaded" class="skeleton absolute inset-0" />
+    <!-- While loading: the cover's own average colour when the API knows it, else the shimmer -->
+    <div v-if="showImage && !loaded" class="absolute inset-0" :class="image?.color ? '' : 'skeleton'" :style="image?.color ? { backgroundColor: image.color } : undefined" />
     <img
       v-if="showImage"
       ref="img"
       :src="src!"
+      :srcset="image?.srcset ?? undefined"
+      :sizes="image?.srcset ? sizes : undefined"
       :alt="alt"
       loading="lazy"
       decoding="async"

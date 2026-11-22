@@ -67,7 +67,7 @@ watch(open, (value) => {
       <p v-else-if="query.trim() && !results.length" class="py-6 text-center text-xs text-slate-400">没有找到游戏</p>
       <ul v-else class="divide-y divide-slate-100">
         <li v-for="game in results" :key="game.id" class="flex items-center gap-3 py-2">
-          <img v-if="game.cover_url" :src="game.cover_url" alt="" class="h-12 w-9 shrink-0 rounded object-cover" loading="lazy" />
+          <img v-if="game.cover" :src="game.cover.url" alt="" class="h-12 w-9 shrink-0 rounded object-cover" loading="lazy" />
           <span v-else class="h-12 w-9 shrink-0 rounded bg-slate-100" />
           <span class="min-w-0 flex-1">
             <span class="block truncate text-[13px] font-medium text-slate-900">{{ game.name }}</span>

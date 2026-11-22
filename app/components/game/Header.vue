@@ -30,8 +30,8 @@ const sourceLabel = (source: string) => SOURCES[source] ?? source
     <GameBanner
       :src="game.banner_url ?? null"
       :seed="game.id"
-      :cover="game.cover_url"
-      :cover-color="game.cover_color"
+      :cover="game.cover?.url ?? null"
+      :cover-color="game.cover?.color"
       :alt="game.localized_name"
       class="h-24 sm:h-32"
     />
@@ -39,7 +39,7 @@ const sourceLabel = (source: string) => SOURCES[source] ?? source
     <div class="flex flex-col gap-5 px-5 pb-5 sm:flex-row sm:px-6 sm:pb-6">
       <!-- relative: the banner above is positioned, so without its own stacking the overlapping cover would paint underneath it -->
       <div class="relative z-10 -mt-16 w-32 shrink-0 self-center rounded-lg bg-white p-1 shadow-lg shadow-slate-900/15 sm:-mt-20 sm:w-40 sm:self-start">
-        <GameCover :src="game.cover_url" :alt="game.localized_name" :seed="game.id" :lang="game.display_language ?? undefined" />
+        <GameCover :image="game.cover" :alt="game.localized_name" :seed="game.id" :lang="game.display_language ?? undefined" sizes="(min-width: 640px) 160px, 128px" />
       </div>
 
       <div class="min-w-0 flex-1 sm:pt-4">

@@ -42,7 +42,7 @@ const filters = computed<AdminFilter[]>(() => [
   { key: 'to', label: '结束时间', type: 'datetime-local' },
 ])
 // Rendered by the panel itself; the generic field list below it keeps the rest.
-const detailOmit = ['content', 'image_urls', 'replies', 'context', 'user', 'user_agent', 'notifies_author', 'author', 'psnid', 'guest_name', 'ip_address', 'reviewed_by', 'reviewed_at']
+const detailOmit = ['content', 'images', 'replies', 'context', 'user', 'user_agent', 'notifies_author', 'author', 'psnid', 'guest_name', 'ip_address', 'reviewed_by', 'reviewed_at']
 const VISIBILITY_TONE: Record<string, string> = {
   pending: 'bg-amber-50 text-amber-700 ring-amber-200',
   public: 'bg-emerald-50 text-emerald-700 ring-emerald-200',

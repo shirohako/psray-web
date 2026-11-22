@@ -9,6 +9,7 @@
  * full clear; `side` stages are spin-offs that don't.
  */
 import type { TrophyBrowseItem } from '~/services/trophies'
+import type { MediaImage } from '~/types/media'
 
 /** How far a player got in one stage. */
 export type StageState = 'complete' | 'platinum' | 'started' | 'none'
@@ -26,8 +27,8 @@ export interface SeriesItem {
   /** Name picked from `lang` / `Accept-Language`; always show this one. */
   localized_name: string
   display_language: string | null
-  /** Cover chosen by an admin; usually `null`, then use `covers`. */
-  cover_url: string | null
+  /** 16:9 cover chosen by an admin; usually `null`, then use `covers`. */
+  cover: MediaImage | null
   /** Up to four stage icons, in stage order (PS5 art is square, older art landscape). */
   covers: string[]
   stage_count: number

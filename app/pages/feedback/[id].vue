@@ -80,7 +80,7 @@ function onReplied(updated: FeedbackDetail) {
         </div>
         <FeedbackTags class="mt-3" :type="feedback.type" :status="feedback.status" :visibility="feedback.visibility" />
         <FeedbackText class="mt-3" :text="feedback.content" />
-        <FeedbackImages v-if="feedback.image_urls.length" class="mt-3" :urls="feedback.image_urls" />
+        <FeedbackImages v-if="feedback.images.length" class="mt-3" :images="feedback.images" />
 
         <div v-if="feedback.viewer.can_delete" class="mt-4 border-t border-slate-100 pt-3">
           <FeedbackDeleteButton :feedback-id="feedback.id" :guest-token="guestToken" />
@@ -110,7 +110,7 @@ function onReplied(updated: FeedbackDetail) {
               <time :datetime="reply.created_at" class="shrink-0 whitespace-nowrap pt-1.5 text-xs tabular-nums text-slate-400">{{ fmtDateTime(reply.created_at) }}</time>
             </div>
             <FeedbackText class="mt-2.5" :text="reply.content" />
-            <FeedbackImages v-if="reply.image_urls.length" class="mt-3" :urls="reply.image_urls" />
+            <FeedbackImages v-if="reply.images.length" class="mt-3" :images="reply.images" />
           </li>
         </ol>
       </section>

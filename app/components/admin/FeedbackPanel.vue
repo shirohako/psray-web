@@ -204,7 +204,7 @@ function deleteFeedback() {
       </header>
       <div class="space-y-3 p-4">
         <FeedbackText :text="detail.content" />
-        <FeedbackImages :urls="detail.image_urls" />
+        <FeedbackImages :images="detail.images" />
       </div>
     </section>
 
@@ -233,7 +233,7 @@ function deleteFeedback() {
             </span>
           </div>
           <FeedbackText :text="item.content" />
-          <FeedbackImages :urls="item.image_urls" />
+          <FeedbackImages :images="item.images" />
         </li>
       </ol>
     </section>

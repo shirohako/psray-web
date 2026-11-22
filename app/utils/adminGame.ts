@@ -115,7 +115,7 @@ export function draftFromGame(game: AdminGameDetail): GameDraft {
   const pinned = game.locked_fields.includes('first_release_date')
   return {
     name: game.name,
-    coverUrl: game.cover_url ?? '',
+    coverUrl: game.cover?.url ?? '',
     summary: game.summary ?? '',
     translations: Object.fromEntries(game.translations.map(t => [t.language_code, { name: t.name, summary: t.summary }])),
     aliases: [...game.aliases],

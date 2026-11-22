@@ -12,7 +12,7 @@ defineProps<{ game: GameBrowseItem }>()
       {{ $t('trophy.game.title') }}
     </h2>
     <AppLink :to="`/games/${game.id}`" class="group flex items-center gap-3 px-4 py-3 transition hover:bg-slate-50">
-      <GameCover :src="game.cover_url" :alt="game.localized_name" :seed="game.id" :lang="game.display_language ?? undefined" compact class="w-12 shrink-0" />
+      <GameCover :image="game.cover" :alt="game.localized_name" :seed="game.id" :lang="game.display_language ?? undefined" compact sizes="48px" class="w-12 shrink-0" />
       <div class="min-w-0 flex-1">
         <p class="line-clamp-2 text-sm font-semibold leading-5 text-slate-900 group-hover:text-sky-700" :lang="game.display_language ?? undefined">
           {{ game.localized_name }}

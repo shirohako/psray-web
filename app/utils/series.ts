@@ -65,8 +65,8 @@ export function seriesYears(series: Pick<SeriesItem, 'first_year' | 'last_year'>
 }
 
 /** The cover to lead with: an admin's pick, else the newest stage's icon. */
-export function seriesCover(series: Pick<SeriesItem, 'cover_url' | 'covers'>): string | null {
-  return series.cover_url ?? series.covers[series.covers.length - 1] ?? null
+export function seriesCover(series: Pick<SeriesItem, 'cover' | 'covers'>): string | null {
+  return series.cover?.url ?? series.covers[series.covers.length - 1] ?? null
 }
 
 /**

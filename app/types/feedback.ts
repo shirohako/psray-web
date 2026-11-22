@@ -1,3 +1,5 @@
+import type { MediaImage } from '~/types/media'
+
 export type FeedbackType = 'bug' | 'suggestion' | 'other'
 
 /** Maintained by staff: open → in_progress → done, or declined. */
@@ -32,8 +34,8 @@ export interface FeedbackItem {
   visibility: FeedbackVisibility
   /** Plain text; render as text, never as HTML or Markdown. */
   content: string
-  /** External https image links, at most four. */
-  image_urls: string[]
+  /** Screenshots, at most four. */
+  images: MediaImage[]
   author: FeedbackAuthor
   reply_count: number
   has_staff_reply: boolean
@@ -47,7 +49,7 @@ export interface FeedbackReply {
   is_staff: boolean
   author: FeedbackAuthor
   content: string
-  image_urls: string[]
+  images: MediaImage[]
   created_at: string
 }
 

@@ -10,6 +10,7 @@
  */
 import type { SeriesMembership } from '~/services/series'
 import type { TrophyBrowseItem } from '~/services/trophies'
+import type { MediaImage } from '~/types/media'
 
 /** How much of a release date is known; coarser dates are stored as the first day of the period. */
 export type ReleaseDatePrecision = 'day' | 'month' | 'quarter' | 'year'
@@ -33,7 +34,7 @@ export interface GameBrowseItem {
   /** Language of `localized_name`; `null` when it is the base `name`. */
   display_language: string | null
   /** Portrait (≈3:4) cover art. */
-  cover_url: string | null
+  cover: MediaImage | null
   /** Earliest release (`YYYY-MM-DD`); `null` while unannounced. */
   first_release_date: string | null
   first_release_precision: ReleaseDatePrecision | null
@@ -76,11 +77,6 @@ export interface GameDetail extends GameBrowseItem {
    * yet; until it is (and for games without one) the page draws a banner.
    */
   banner_url?: string | null
-  /**
-   * The cover's dominant colour (`#rrggbb`), for tinting the drawn banner. Not
-   * sent by the API yet; until it is, the page reads it from the cover image.
-   */
-  cover_color?: string | null
   summary: string | null
   /** Summary in `display_language`, falling back to `summary`. */
   localized_summary: string | null

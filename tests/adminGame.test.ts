@@ -14,7 +14,7 @@ import {
 } from '~/utils/adminGame'
 
 const game = (overrides: Partial<AdminGameDetail> = {}): AdminGameDetail => ({
-  id: 12, name: 'Elden Ring', summary: 'From IGDB', cover_url: null,
+  id: 12, name: 'Elden Ring', summary: 'From IGDB', cover: null, cover_source: null, cover_source_url: null,
   first_release_date: '2022-02-25', first_release_precision: 'day', platforms: ['PS5', 'PC'],
   translations: [{ language_code: 'ja-JP', name: 'エルデンリング', summary: null }],
   aliases: ['ER'],

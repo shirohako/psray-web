@@ -19,8 +19,8 @@ defineProps<{ item: FeedbackItem }>()
 
     <div class="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-slate-400">
       <FeedbackTags :type="item.type" :status="item.status" :visibility="item.visibility" />
-      <span v-if="item.image_urls.length" class="inline-flex items-center gap-1 tabular-nums" :title="$t('feedback.images')">
-        <LucideIcon :icon="Image" class="size-3.5" />{{ item.image_urls.length }}
+      <span v-if="item.images.length" class="inline-flex items-center gap-1 tabular-nums" :title="$t('feedback.images')">
+        <LucideIcon :icon="Image" class="size-3.5" />{{ item.images.length }}
       </span>
       <AppLink :to="`/feedback/${item.id}`" class="inline-flex items-center gap-1 tabular-nums transition hover:text-slate-700" :title="$t('feedback.replies')">
         <LucideIcon :icon="MessageSquare" class="size-3.5" />{{ item.reply_count }}

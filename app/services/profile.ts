@@ -8,6 +8,7 @@
 
 import type { Rarity, TrophyType } from '~/services/trophies'
 import type { ProfileRecentTip } from '~/types/tip'
+import type { MediaImage } from '~/types/media'
 
 export type ApiDate = number | string
 
@@ -21,8 +22,8 @@ export interface Profile {
   country: string
   language: string[]
   avatar_url: string
-  /** Custom profile banner image URL; `null` if the user hasn't set one. */
-  banner_url: string | null
+  /** Profile banner (9:2); `null` if the user hasn't set one. */
+  banner: MediaImage | null
   about_me: string
   is_plus: boolean
 

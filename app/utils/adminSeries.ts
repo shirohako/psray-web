@@ -76,7 +76,7 @@ export function draftFromDetail(detail: AdminSeriesDetail): { meta: DraftMeta; s
       description: detail.description ?? '',
       status: detail.status,
       autoUpdate: detail.auto_update,
-      coverUrl: detail.cover_url ?? '',
+      coverUrl: detail.cover?.url ?? '',
       translations: Object.fromEntries(detail.translations.map(t => [t.language_code, t.name])),
     },
     stages: detail.stages.map(stageFromDetail),
