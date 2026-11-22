@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const updatedAt = '2026年8月12日'
+const updatedAt = '2026-08-12'
 const toc = [
   { id: 'application', label: '適用・定義' },
   { id: 'account', label: 'アカウント' },
@@ -26,6 +26,7 @@ useSeo({
     title="利用規約"
     lead="この利用規約は、PSRay が提供するウェブサイトおよび関連機能をご利用いただく際の条件を定めるものです。ご利用前に内容をご確認ください。"
     :updated-at="updatedAt"
+    locale="ja"
     :items="toc"
     narrow
   >

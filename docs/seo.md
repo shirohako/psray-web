@@ -39,7 +39,7 @@ duplicates.
 | --- | --- |
 | Trophy set, game | `ja`, `en`, plus `zh-Hans` / `zh-Hant` / `ko` when the set has that official translation (games: a translated title) — `contentEditions()` |
 | Profile | `ja`, `en`, plus the interfaces of the player's own PSN languages (`user.language`) — `profileEditions()` |
-| Everything else | All five; `/about`, `/privacy`, `/terms` are Japanese only (`staticLocale`) |
+| Everything else | All five; `/privacy`, `/terms` are Japanese only (`staticLocale`) |
 
 A page rendered outside its editions is `noindex, follow`. The same rules drive the `hreflang`
 alternates, the page's language links and the backend sitemap (`SitemapLanguages.php`); keep the

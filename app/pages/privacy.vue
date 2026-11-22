@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const updatedAt = '2026年8月12日'
+const updatedAt = '2026-08-12'
 const toc = [
   { id: 'operator', label: '基本方針' },
   { id: 'data', label: '取得する情報' },
@@ -26,6 +26,7 @@ useSeo({
     title="プライバシーポリシー"
     lead="PSRay運営は、サービスの提供に必要な情報を適切に取り扱い、何を取得し、なぜ利用するのかを分かりやすくお伝えするよう努めます。"
     :updated-at="updatedAt"
+    locale="ja"
     :items="toc"
     narrow
   >

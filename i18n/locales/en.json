@@ -1352,5 +1352,150 @@
       "side": "Spin-off",
       "of": "{n} stages"
     }
+  },
+  "about": {
+    "seoTitle": "About PSRay",
+    "seoDescription": "An overview of PSRay: how PSN data is collected and updated, how to request removal or hiding, the Terms of Service and Privacy Policy, who runs the site, documentation and frequently asked questions.",
+    "title": "Play. Collect. Look back.",
+    "lead": "PSRay is a community service for finding and organizing PlayStation trophy data and sharing tips with other players. This page explains how the data shown here is handled and how the site is run.",
+    "toc": {
+      "about": "About PSRay",
+      "policies": "Terms & privacy",
+      "data": "About the data",
+      "removal": "Removal & hiding",
+      "contact": "Operator & contact",
+      "docs": "Documentation",
+      "faq": "FAQ",
+      "openSource": "Open source"
+    },
+    "intro": {
+      "title": "About PSRay",
+      "mission": "PSRay brings profiles, earned trophies, recently played games and leaderboards together in an easy-to-read form, and aims to be a place where players share tips for every trophy.",
+      "ai": "PSRay is built with the help of AI tools such as Claude and GPT.",
+      "disclaimer": "PSRay is an independent service run by an individual. It is not affiliated with, endorsed by or officially connected to Sony Interactive Entertainment Inc., PlayStation or any of their affiliates. PlayStation and related names and trademarks belong to their respective owners."
+    },
+    "policies": {
+      "title": "Terms & privacy",
+      "lead": "The conditions for using PSRay with peace of mind, and how your data is handled.",
+      "japaneseOnly": "Japanese only",
+      "terms": {
+        "title": "Terms of Service",
+        "body": "Rules for accounts, posts, prohibited conduct and use of the service."
+      },
+      "privacy": {
+        "title": "Privacy Policy",
+        "body": "How personal data, public PSN information, cookies and removal requests are handled."
+      }
+    },
+    "data": {
+      "title": "About the data we show",
+      "collection": {
+        "title": "How data is collected",
+        "body": "PSRay collects the player profiles, games, trophies and trophy progress that are publicly visible on PlayStation Network. It also shows content users post to PSRay directly, such as tips."
+      },
+      "updates": {
+        "title": "How data is updated",
+        "body": "PSRay’s data is updated by reading information from PSN. Depending on when PSN reflects changes, what you see here may lag behind."
+      },
+      "notice": "Changing your PSN privacy settings doesn’t necessarily update or remove information PSRay has already stored right away. If you don’t want to be listed, use the hiding request below."
+    },
+    "removal": {
+      "title": "Removing or hiding data",
+      "lead": "Hiding public PSN data and deleting an account you registered on PSRay are separate procedures.",
+      "steps": {
+        "request": {
+          "title": "Send a request",
+          "body": "Email us the PSN ID concerned and which procedure you’d like."
+        },
+        "verify": {
+          "title": "Verify ownership",
+          "body": "We confirm you own the account in a safe way, for example by asking you to add a temporary code to your PSN About Me."
+        },
+        "hide": {
+          "title": "Hide the profile",
+          "body": "Once verified, we stop showing it publicly and prevent normal syncs from adding it again."
+        }
+      },
+      "password": {
+        "title": "Never send us your PSN password",
+        "body": "The PSRay team will never ask for your PSN password, verification codes or security questions."
+      },
+      "cta": "Request hiding",
+      "mailSubject": "Data removal request"
+    },
+    "contact": {
+      "title": "Operator & contact",
+      "maintenance": {
+        "title": "Maintenance",
+        "body": "PSRay is still under active development, and some features will be rolled out over time. Maintenance and feature updates are announced on the operator’s Twitter (X) account.",
+        "link": "Visit the operator’s Twitter (X)"
+      },
+      "bugs": {
+        "title": "Bugs & data corrections",
+        "body": "To report a bug or incorrect data, include the page URL, the PSN ID and details. Please send reports to the operator’s Twitter (X) account."
+      }
+    },
+    "docs": {
+      "title": "Documentation",
+      "markdown": {
+        "title": "Writing Markdown",
+        "body": "Formatting, images, spoilers and extended blocks you can use in tips."
+      },
+      "api": {
+        "title": "API documentation",
+        "body": "We’re preparing the specification, authentication, terms of use and rate limits.",
+        "badge": "Coming soon"
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "official": {
+          "question": "Is PSRay an official PlayStation service?",
+          "answer": "No. PSRay is an independently run community service. It is not endorsed by, affiliated with or operated by Sony Interactive Entertainment Inc. or its affiliates."
+        },
+        "account": {
+          "question": "Do I need an account to use PSRay?",
+          "answer": "No. You don’t need a PSRay account to view public profiles, trophy data, leaderboards or tips. Posting tips and some community features require signing up."
+        },
+        "notFound": {
+          "question": "I searched for a player but can’t find them.",
+          "answer": "They may not have been synced to PSRay yet, or their PSN privacy settings may prevent us from reading their data. Check the spelling of the PSN ID, then try updating from the sync page."
+        },
+        "outdated": {
+          "question": "Trophies or profile details aren’t up to date.",
+          "answer": "PSRay’s data isn’t real-time. Sync processing, caching and the time PSN takes to reflect changes can all cause delays. Please wait a while, then sync again."
+        },
+        "private": {
+          "question": "Will information I made private on PSN still be shown?",
+          "answer": "PSRay may keep information that was public when it was collected. Changing your privacy settings may not immediately affect data that’s already stored. If you want it removed, please use the data hiding request."
+        },
+        "relisting": {
+          "question": "Can a profile be listed again after it’s removed?",
+          "answer": "For hiding requests where ownership has been verified, we hide the existing public profile and make sure normal sync actions don’t make the same account public again."
+        },
+        "report": {
+          "question": "Where can I report incorrect data or bugs?",
+          "answer": "Email us with the PSN ID, the URL of the page concerned, a description of the problem and, if possible, the steps to reproduce it. Please don’t send confidential information or passwords."
+        },
+        "tips": {
+          "question": "Can anyone post trophy tips?",
+          "answer": "Users who have registered on PSRay and meet the required conditions can post. Posts are subject to the Terms of Service and community rules. See the guide for details on writing Markdown."
+        },
+        "api": {
+          "question": "Is there a PSRay API?",
+          "answer": "A developer API is in preparation. We plan to release it once the specification, terms of use, authentication and rate limits are in place."
+        }
+      }
+    },
+    "openSource": {
+      "title": "Thanks to open source",
+      "lead": "PSRay is made possible by the following open source projects."
+    }
+  },
+  "staticPage": {
+    "updatedAt": "Last updated: {date}",
+    "toc": "Contents",
+    "tocLabel": "On this page"
   }
 }

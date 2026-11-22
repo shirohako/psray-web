@@ -1352,5 +1352,150 @@
       "side": "外傳",
       "of": "共 {n} 個階段"
     }
+  },
+  "about": {
+    "seoTitle": "關於 PSRay",
+    "seoDescription": "介紹 PSRay 的服務概況、PSN 資料的取得與更新、刪除與隱藏申請方式、使用條款與隱私權政策、營運資訊、文件以及常見問題。",
+    "title": "遊玩。收集。回顧。",
+    "lead": "PSRay 是一個用於查詢、整理 PlayStation 獎盃資訊，並與其他玩家分享攻略的社群服務。本頁說明站內資料的處理方式與營運方針。",
+    "toc": {
+      "about": "關於 PSRay",
+      "policies": "條款與隱私",
+      "data": "關於資料",
+      "removal": "刪除與隱藏",
+      "contact": "營運與聯絡",
+      "docs": "文件",
+      "faq": "常見問題",
+      "openSource": "開源專案"
+    },
+    "intro": {
+      "title": "關於 PSRay",
+      "mission": "我們將個人資料、已獲得的獎盃、最近遊玩的遊戲、排行榜等資訊整理得清楚易讀，並希望成為一個能依獎盃分享攻略的地方。",
+      "ai": "PSRay 在製作過程中借助了 Claude、GPT 等 AI 工具。",
+      "disclaimer": "PSRay 是由個人營運的獨立服務，與 Sony Interactive Entertainment Inc.、PlayStation 及其關係企業並無合作、認可或任何官方關係。PlayStation 及相關名稱、商標歸各自權利人所有。"
+    },
+    "policies": {
+      "title": "使用條款與隱私權政策",
+      "lead": "說明安心使用 PSRay 的條件，以及我們如何處理資料。",
+      "japaneseOnly": "僅提供日文",
+      "terms": {
+        "title": "使用條款",
+        "body": "請查看關於帳號、投稿、禁止事項及服務使用條件的規定。"
+      },
+      "privacy": {
+        "title": "隱私權政策",
+        "body": "請查看個人資料、PSN 公開資訊、Cookie 及刪除申請的處理方式。"
+      }
+    },
+    "data": {
+      "title": "關於站內資料",
+      "collection": {
+        "title": "資料的取得",
+        "body": "我們取得 PlayStation Network 上公開的玩家個人資料、遊戲、獎盃及獲得狀況，也會顯示使用者直接發佈到 PSRay 的內容，例如留言。"
+      },
+      "updates": {
+        "title": "資料的更新",
+        "body": "PSRay 的資料透過從 PSN 讀取資訊來更新。受 PSN 端的同步狀況影響，顯示內容可能會有延遲。"
+      },
+      "notice": "即使變更了 PSN 的隱私設定，PSRay 已儲存的資訊也不一定會立即更新或刪除。若不希望被收錄，請使用下方的隱藏申請。"
+    },
+    "removal": {
+      "title": "資料的刪除與隱藏",
+      "lead": "隱藏公開的 PSN 資料，與刪除你在 PSRay 註冊的帳號，是兩項不同的手續。",
+      "steps": {
+        "request": {
+          "title": "提出申請",
+          "body": "請透過電子郵件告知對應的 PSN ID 以及希望辦理的手續。"
+        },
+        "verify": {
+          "title": "確認擁有者",
+          "body": "我們會以安全的方式確認，例如請你在 PSN 個人簡介中暫時填入一段確認文字。"
+        },
+        "hide": {
+          "title": "設為隱藏",
+          "body": "確認後停止公開顯示，並防止透過一般同步再次收錄。"
+        }
+      },
+      "password": {
+        "title": "請勿傳送你的 PSN 密碼",
+        "body": "PSRay 營運方絕不會要求你提供 PSN 密碼、驗證碼或安全提問的答案。"
+      },
+      "cta": "申請隱藏",
+      "mailSubject": "資料刪除申請"
+    },
+    "contact": {
+      "title": "營運與聯絡",
+      "maintenance": {
+        "title": "維護",
+        "body": "PSRay 仍在持續開發中，部分功能將陸續推出。維護與功能更新的通知會在營運者的 Twitter (X) 帳號上隨時發佈。",
+        "link": "查看營運者的 Twitter (X)"
+      },
+      "bugs": {
+        "title": "問題回報與資料更正",
+        "body": "回報問題或資料錯誤時，請附上對應頁面的 URL、PSN ID 與詳細情況，並傳送至營運者的 Twitter (X) 帳號。"
+      }
+    },
+    "docs": {
+      "title": "文件",
+      "markdown": {
+        "title": "Markdown 寫法",
+        "body": "介紹留言中可以使用的格式、圖片、劇透與擴充區塊。"
+      },
+      "api": {
+        "title": "API 文件",
+        "body": "我們正在整理 API 規格、驗證方式、使用條件與速率限制。",
+        "badge": "準備中"
+      }
+    },
+    "faq": {
+      "title": "常見問題",
+      "items": {
+        "official": {
+          "question": "PSRay 是 PlayStation 的官方服務嗎？",
+          "answer": "不是。PSRay 是獨立營運的社群服務，未獲得 Sony Interactive Entertainment Inc. 及其關係企業的認可，也不與其合作或由其營運。"
+        },
+        "account": {
+          "question": "瀏覽 PSRay 需要帳號嗎？",
+          "answer": "不需要。瀏覽公開的個人資料、獎盃資訊、排行榜與留言都不需要 PSRay 帳號。發表留言與使用部分社群功能需要註冊。"
+        },
+        "notFound": {
+          "question": "搜尋玩家卻找不到。",
+          "answer": "可能該玩家尚未同步到 PSRay，或因 PSN 端的隱私設定而無法取得資訊。請確認 PSN ID 的拼寫後，在同步頁面嘗試更新。"
+        },
+        "outdated": {
+          "question": "獎盃或個人資料不是最新的。",
+          "answer": "PSRay 的資料並非即時更新。同步處理、快取以及 PSN 端的同步狀況都可能造成延遲。請稍候片刻後再次同步。"
+        },
+        "private": {
+          "question": "在 PSN 上設為不公開的資訊也會顯示嗎？",
+          "answer": "PSRay 可能保留了取得時處於公開狀態的資訊。變更隱私設定後，已儲存的資料不一定會立即反映。如需刪除，請使用資料隱藏申請。"
+        },
+        "relisting": {
+          "question": "刪除後還會被重新收錄嗎？",
+          "answer": "對於已完成擁有者確認的隱藏申請，我們會隱藏現有的公開資料，並確保同一帳號不會因一般同步操作而再次公開。"
+        },
+        "report": {
+          "question": "資料錯誤或問題可以在哪裡回報？",
+          "answer": "請透過電子郵件告知 PSN ID、對應頁面的 URL、問題內容，如有可能請附上重現步驟。請勿傳送機密資訊或密碼。"
+        },
+        "tips": {
+          "question": "任何人都可以發佈獎盃攻略嗎？",
+          "answer": "在 PSRay 註冊並符合相應使用條件的使用者即可發佈。發佈內容須遵守使用條款與社群規則。Markdown 的詳細寫法請參閱指南。"
+        },
+        "api": {
+          "question": "可以使用 PSRay 的 API 嗎？",
+          "answer": "針對開發者的 API 正在準備中。我們預計在完善 API 規格、使用條件、驗證方式與速率限制後公開。"
+        }
+      }
+    },
+    "openSource": {
+      "title": "感謝開源",
+      "lead": "PSRay 的運作有賴以下開源專案的支持。"
+    }
+  },
+  "staticPage": {
+    "updatedAt": "最後更新：{date}",
+    "toc": "目錄",
+    "tocLabel": "頁面目錄"
   }
 }
