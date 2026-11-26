@@ -1,74 +1,28 @@
-# PSRay Web
+# PSRay
 
-The Nuxt 4 frontend for **[psray.net](https://psray.net)** — a community site that
-pulls a PlayStation player's trophy data into one readable profile: earned
-trophies, recently played games, milestones, leaderboards, and player-written
-trophy tips.
+**[psray.net](https://psray.net)** is a community site for PlayStation players. Create your own public PSN profile page, with your trophy progress, recently played games, milestones and rankings in one place. Players also share tips for individual trophies, so the next person chasing a platinum has some help.
 
-PSRay is an independent community project. It is not affiliated with, endorsed
-by, or operated by Sony Interactive Entertainment Inc.
+You don't need an account to look around. Profiles, trophy lists, leaderboards and tips are all public.
 
-## Stack
+> PSRay is an independent project run by an individual. It is not affiliated with, endorsed by or operated by Sony Interactive Entertainment Inc. PlayStation and related names are trademarks of their respective owners.
 
-- **[Nuxt 4](https://nuxt.com)** (Vue 3, SSR via Nitro)
-- **Tailwind CSS 4** via `@tailwindcss/vite`
-- **[@nuxtjs/i18n](https://i18n.nuxtjs.org)** — five UI locales, `ja` default
-- **[@psray/markdown-editor](https://www.npmjs.com/package/@psray/markdown-editor)** — the tip editor and syntax guide
-- `lucide`, `qrcode`
-- **Vitest** for unit tests
-- **pnpm** (see `packageManager` in `package.json`)
+## Features
 
-The backend lives in a separate repository; this app talks to it over HTTP.
+- **Profiles:** your trophy totals and ranks, recently played games, milestones and a year of activity. Share it with a card or a QR code, or look up any other player by PSN ID.
+- **Trophy lists:** every trophy with its earn rate, completion statistics, player rankings, and names in each language PSN offers.
+- **Trophy tips:** write tips for any trophy in Markdown, and vote for the ones that helped you.
+- **Browse:** search trophy lists, games and game series.
+- **Leaderboards:** rankings by PSN points, site-wide or by region, plus the most helpful tip writers.
+- **Five languages:** English, Japanese, Korean, Traditional Chinese and Simplified Chinese.
 
-## Docs
+## Your data
 
-- [`docs/api.md`](docs/api.md): the request layer for the PSRay API
-- [`docs/home.md`](docs/home.md): the home page, its console teardown animation and how to change it
+PSRay only shows what is public on PlayStation Network, plus what people post on PSRay itself. Updates aren't instant, since PSN can take a while to show new trophies. If you'd rather not be listed, you can ask for your profile to be hidden; see the [About page](https://psray.net/about). PSRay will never ask for your PSN password.
 
-## Getting started
+## Reporting problems and contributing
 
-```bash
-pnpm install
-cp .env.example .env   # then point it at the API you want to develop against
-pnpm dev               # http://localhost:3630 (or NUXT_PORT)
-```
+This repository contains the PSRay website. Bug reports, ideas and pull requests are welcome.
 
-### Environment
-
-`.env` is gitignored; `.env.example` is the template.
-
-| Variable | Meaning |
-| --- | --- |
-| `NUXT_PUBLIC_API_BASE` | Origin of the PSRay API, without a path prefix. Defaults to `http://localhost:8000`; production is `https://api.psray.net` |
-| `NUXT_PUBLIC_SITE_URL` | Absolute origin, no trailing slash. Canonical / hreflang / OG URLs are built from it. Defaults to `https://psray.net`; set it to your local origin when testing local metadata |
-| `NUXT_PUBLIC_CARD_BASE` | Origin serving backend-generated OG images, without a path prefix. Defaults to `https://api.psray.net` |
-| `NUXT_PUBLIC_UMAMI_SCRIPT_URL` | Umami tracker script, e.g. `https://aurora.cdcat.net/script.js`. Analytics stay off unless this and the website id are both set |
-| `NUXT_PUBLIC_UMAMI_WEBSITE_ID` | Umami website id. Each environment (test, production) gets its own |
-| `NUXT_PORT` | Dev/preview port |
-
-## Deployment
-
-Profile and trophy OG images are generated and updated by the backend. The frontend
-links directly to `${NUXT_PUBLIC_CARD_BASE}/card/profile/<lowercase-psnid>.png`
-and `${NUXT_PUBLIC_CARD_BASE}/card/trophies/<id>.png`; it has no card rendering routes
-or render cache. Trailing slashes are removed from the configured origin.
-Set `NUXT_PUBLIC_CARD_BASE=https://api.dev.psray.net` to use development cards.
-The static brand image remains the fallback for pages without a card.
-
-`pnpm build` produces a Nitro server bundle in `.output/`; run it with
-`node .output/server/index.mjs` behind your process manager of choice, with the
-env vars above set. Production must explicitly set
-`NUXT_PUBLIC_SITE_URL=https://psray.net`; the matching default is a safeguard
-against publishing localhost canonical or social-card URLs if deployment
-configuration is accidentally omitted. `nitro.compressPublicAssets`
-precompresses the flag SVGs, so serve `public/` assets with content negotiation
-enabled.
-
-Production updates go through `sudo scripts/deploy.sh` (`--force` rebuilds without new
-commits, `--rollback` switches back to the previous release). Don't run production from
-`.output` directly: `pnpm build` empties it first, which used to take the site down for
-the length of the build. The script copies each build to `/var/www/psray-web-releases/`
-and switches blue/green between `psray-web@3630` and `psray-web@3631`
-([`deploy/psray-web@.service`](deploy/psray-web@.service)) by rewriting the nginx
-upstream include, so the switch is seamless. One-time nginx setup and details:
-psray-api `docs/deploy.md`, "psray-web 无缝更新".
+- **Bugs or wrong data:** [open an issue](https://github.com/shirohako/psray-web/issues/new) with the page URL, the PSN ID if it's about a player, what happened and how to reproduce it. Issues are public, so don't post passwords or personal details. You can also use the [feedback board](https://psray.net/feedback) on the site.
+- **Feature ideas:** open an issue first, so we can agree on the approach before any code is written.
+- **Pull requests:** keep each one focused, add screenshots for visual changes, and if you change any text on the site, update all five language files. Setup notes are in [docs/development.md](docs/development.md).
