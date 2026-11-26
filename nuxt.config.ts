@@ -77,10 +77,12 @@ export default defineNuxtConfig({
         scriptUrl: '',
         websiteId: '',
       },
-      // Footer build stamp; see buildCommit() above. `time` is an ISO string in UTC.
+      // Footer build stamp; see buildCommit() above. `time` is an ISO string in UTC,
+      // `repo` the repository the chips link to (NUXT_PUBLIC_BUILD_REPO).
       build: {
         commit: buildCommit(),
         time: new Date().toISOString(),
+        repo: 'https://github.com/shirohako/psray-web',
       },
     },
   },
