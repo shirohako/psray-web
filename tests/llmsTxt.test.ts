@@ -18,6 +18,7 @@ describe('llms.txt', () => {
     expect(text).toContain('[Trophy lists](https://psray.net/trophies.md?lang=en)')
     expect(text).toContain('[Terms of service](https://psray.net/terms.md)')
     expect(text).toContain('https://psray.net/trophies/{id}.md')
+    expect(text).toContain('[API documentation](https://psray.net/docs/api.md?lang=en)')
     expect(text).toContain('[Sitemap](https://psray.net/sitemap.xml)')
   })
 })

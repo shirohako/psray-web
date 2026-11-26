@@ -34,6 +34,7 @@
     }
   },
   "footer": {
+    "api": "API 文档",
     "buildCommit": "构建提交",
     "buildDate": "构建日期（UTC）"
   },
@@ -1447,8 +1448,7 @@
       },
       "api": {
         "title": "API 文档",
-        "body": "我们正在整理接口规范、认证方式、使用条件和速率限制。",
-        "badge": "准备中"
+        "body": "读取奖杯组、玩家资料、游戏和系列数据的接口说明与示例，可以在页面上直接试用。"
       }
     },
     "faq": {
@@ -1488,7 +1488,7 @@
         },
         "api": {
           "question": "可以使用 PSRay 的 API 吗？",
-          "answer": "面向开发者的 API 正在准备中。我们计划在完善接口规范、使用条件、认证方式和速率限制后公开。"
+          "answer": "可以。读取奖杯组、玩家资料、游戏和系列的公开接口不需要 API Key，用法见 API 文档。请缓存结果，避免高频请求。"
         }
       }
     },
@@ -1501,5 +1501,227 @@
     "updatedAt": "最后更新：{date}",
     "toc": "目录",
     "tocLabel": "页面目录"
+  },
+  "apiDocs": {
+    "seoTitle": "API 文档",
+    "seoDescription": "PSRay 公开 API 的使用说明：读取奖杯组、玩家资料、游戏和系列数据的接口、参数、响应字段和示例，并可在页面上直接试用。",
+    "lead": "用简单的 HTTP 请求读取 PSRay 的奖杯组、玩家资料、游戏和系列数据。本页列出最常用的公开只读接口，每个接口都可以直接在页面上试用。",
+    "chips": {
+      "readOnly": "只读",
+      "noKey": "无需 API Key",
+      "cors": "支持跨域"
+    },
+    "nav": {
+      "label": "API 文档目录",
+      "overview": "概览",
+      "reference": "参考"
+    },
+    "groups": {
+      "trophies": "奖杯组",
+      "profile": "玩家",
+      "games": "游戏",
+      "series": "系列"
+    },
+    "sections": {
+      "introduction": "介绍",
+      "responses": "响应格式",
+      "languages": "展示语言",
+      "errors": "错误码",
+      "usage": "使用须知"
+    },
+    "intro": {
+      "quickStart": "快速开始",
+      "points": {
+        "noPrefix": "路径直接接在 Base URL 后面，没有 {prefix} 前缀。",
+        "noAuth": "本页的接口都是 GET 请求，不需要登录，也不需要 API Key。",
+        "json": "响应是 UTF-8 编码的 JSON。",
+        "cors": "允许任意来源跨域请求，可以直接在浏览器里调用。"
+      }
+    },
+    "responses": {
+      "success": "请求成功时，结果在 {data} 里。列表接口另有 {meta}，包含页码、每页条数、总数和总页数；页码超过末页时返回空数组，不会报错。",
+      "failure": "请求失败时，返回相应的 HTTP 状态码和 {error} 对象。{code} 是固定的错误码，程序里请按它判断；{message} 是英文说明；参数校验失败时，{details} 会逐项列出原因。",
+      "requestId": "每个响应都带 {header} 响应头，错误响应里还有同样的 {field}。反馈问题时请附上它，方便我们查找日志。",
+      "time": "时间字段是 UTC 的 ISO 8601 字符串，例如 {example}。",
+      "list": "列表",
+      "error": "错误"
+    },
+    "languages": {
+      "body": "奖杯组标题、奖杯名称、游戏和系列名称都有多种语言。接口按以下顺序决定使用哪种语言：",
+      "steps": {
+        "query": "查询参数 {lang}，例如 {example}",
+        "header": "请求头 {header}，按权重从高到低匹配",
+        "fallback": "都没有或都匹配不上时，使用该条目的默认语言"
+      },
+      "normalize": "中文会按地区归入 PSN 的语言变体：{tw} 视为 {hant}，{cn} 视为 {hans}。",
+      "field": "响应中的 {field} 是实际使用的语言。{name} 始终是原名，界面上请显示 {localized}。"
+    },
+    "errors": {
+      "body": "所有错误使用相同的格式，按 {code} 区分即可。下表是本页接口可能返回的错误码。",
+      "codes": {
+        "notFound": "路径不存在，或 ID 不是数字",
+        "trophySetNotFound": "奖杯组不存在",
+        "userNotFound": "站内没有这名玩家（从未同步过，或已注销）",
+        "userBanned": "这名玩家已被永久停用",
+        "gameNotFound": "游戏不存在",
+        "seriesNotFound": "系列不存在或尚未发布",
+        "methodNotAllowed": "请求方法不对，本页接口只接受 GET",
+        "validationFailed": "参数不合法，原因见 error.details",
+        "internal": "服务器内部错误，请稍后重试"
+      }
+    },
+    "usage": {
+      "items": {
+        "cache": "请缓存结果，避免高频轮询或批量抓取。目前没有设置限流，但滥用的来源可能会被限制访问。",
+        "fields": "响应以后可能增加字段，请忽略不认识的字段。本页没有列出的字段可能调整，不建议依赖。",
+        "data": "数据来自 PSN 公开的奖杯信息，由 PSRay 定期同步，可能有延迟。玩家把资料设为私密后，我们不会公开其奖杯数据。",
+        "feedback": "遇到问题或有建议，欢迎在{link}告诉我们。"
+      },
+      "feedbackLink": "用户反馈",
+      "stability": "接口仍在完善中，变更会同步更新到本页。"
+    },
+    "endpoint": {
+      "public": "公开",
+      "paginated": "分页",
+      "params": "请求参数",
+      "fields": "常用字段",
+      "fieldsNote": "只列出常用字段，完整结构见响应示例。",
+      "errors": "错误",
+      "allErrors": "全部错误码",
+      "columns": {
+        "name": "参数",
+        "location": "位置",
+        "description": "说明"
+      },
+      "location": {
+        "path": "路径",
+        "query": "查询"
+      },
+      "required": "必填",
+      "default": "默认",
+      "example": "响应示例",
+      "tryIt": "在线试用",
+      "tryThis": "在线试用这个接口"
+    },
+    "endpoints": {
+      "trophiesBrowse": {
+        "title": "浏览奖杯组",
+        "description": "分页列出奖杯组，可以按标题搜索，按平台或有无白金筛选，并按最新入库、近期热门或参与人数排序。"
+      },
+      "trophiesShow": {
+        "title": "奖杯组详情",
+        "description": "返回单个奖杯组的完整信息：分组与全部奖杯、可用语言、最近的玩家、所属游戏和系列。传入 psnid 时，还会附带这名玩家的公开进度。"
+      },
+      "profileShow": {
+        "title": "玩家资料",
+        "description": "返回玩家的个人资料：奖杯等级、各等级奖杯数、排名、近一年的奖杯日历和最近发表的留言。资料未公开的玩家同样返回 200，但 is_profile_public 为 false，calendar 为 null。"
+      },
+      "gamesBrowse": {
+        "title": "浏览游戏",
+        "description": "分页列出游戏，按首发日期从新到旧排列，可以按名称或别名搜索，按平台筛选。"
+      },
+      "gamesShow": {
+        "title": "游戏详情",
+        "description": "返回单款游戏的简介、别名、各平台和地区的发售日期、外部链接，以及关联的奖杯组和所属系列。"
+      },
+      "seriesBrowse": {
+        "title": "浏览系列",
+        "description": "分页列出游戏系列，可以按系列名或其中作品的标题搜索，按热度、最近新作或名称排序。"
+      },
+      "seriesShow": {
+        "title": "系列详情",
+        "description": "按顺序返回系列中的各部作品（主线和外传）及其奖杯组。传入 psnid 时，还会附带这名玩家在系列中的进度。"
+      }
+    },
+    "params": {
+      "page": "页码，从 1 开始",
+      "perPage": "每页条数，1 到 {max}",
+      "lang": "展示语言，例如 zh-Hans、ja、en，见「展示语言」",
+      "langTips": "最近留言中奖杯和奖杯组名称的展示语言",
+      "qTrophies": "搜索关键词，匹配原名、各语言官方译名和 NPWR 编号；纯数字或 #数字 按 ID 精确匹配。搜索时按相关度排序，忽略 sort",
+      "qGames": "搜索关键词，匹配名称、各语言名称和别名（例如 FF7R）",
+      "qSeries": "搜索关键词，匹配系列名，也匹配系列中奖杯组的标题",
+      "sortTrophies": "排序：newest 按入库时间，trending 按近 7 天玩家数，popular 按累计玩家数",
+      "sortSeries": "排序：popular 按热度，recent 按最新作年份，name 按名称",
+      "platformTrophies": "按平台筛选，可多选",
+      "platformGames": "按平台筛选，可多选，例如 PS5、PS4、PC、SWITCH",
+      "hasPlatinum": "true 只返回有白金的奖杯组，false 只返回没有白金的",
+      "trophySetId": "奖杯组 ID（站内的数字 ID，不是 NPWR 编号）",
+      "gameId": "游戏 ID",
+      "seriesId": "系列 ID",
+      "psnidPath": "玩家的 PSN 在线 ID，不区分大小写",
+      "psnidProgress": "附带这名玩家在该奖杯组的进度（仅限资料公开的玩家）",
+      "psnidSeries": "附带这名玩家在该系列的进度（仅限资料公开的玩家）"
+    },
+    "fields": {
+      "names": "原名，以及按展示语言选出的名称（界面上显示后者）",
+      "trophySetId": "奖杯组 ID",
+      "npwr": "PSN 的奖杯组编号，例如 NPWR11556_00",
+      "platform": "平台，例如 PS5、PS4",
+      "icon": "奖杯组图标地址",
+      "definedTrophies": "各等级的奖杯数：bronze、silver、gold、platinum",
+      "owners": "参与的公开玩家数",
+      "rates": "白金率和完成率（百分比），可能为 null",
+      "medianTime": "完成耗时的中位数（秒）",
+      "trophySet": "奖杯组本身，字段与列表项基本相同",
+      "displayLanguage": "本次使用的展示语言",
+      "availableLanguages": "可用语言及对应标题，包括非官方翻译",
+      "groups": "奖杯分组：本体和各个追加内容",
+      "trophies": "分组中的奖杯：等级、名称、说明、图标、获得率、稀有度",
+      "recentPlayers": "最近获得奖杯的公开玩家，最多 10 人",
+      "game": "所属游戏，结构同游戏列表项；没有关联时为 null",
+      "seriesList": "所属系列",
+      "viewerProgress": "psnid 对应玩家的进度；找不到或资料未公开时为 null",
+      "psnid": "PSN 在线 ID",
+      "avatar": "头像地址",
+      "country": "国家或地区代码，例如 JP",
+      "level": "奖杯等级，以及升到下一级的进度（0 到 100）",
+      "tierCounts": "各等级的奖杯数",
+      "points": "奖杯点数",
+      "rank": "全站排名和地区排名；不参与排名时为 null",
+      "isPublic": "资料是否公开",
+      "calendar": "近一年每天获得的奖杯数，每项包含 date 和 count；资料未公开时为 null",
+      "recentTips": "最近发表的 5 条留言；未在本站注册的玩家为 null",
+      "gameId": "游戏 ID",
+      "cover": "封面图，包含地址、尺寸和主色；可能为 null",
+      "releaseDate": "首发日期；未定档时为 null",
+      "platforms": "发售过的平台，每项包含 code、name、abbreviation",
+      "trophySetCount": "关联的奖杯组数量",
+      "summary": "简介，以及按展示语言选出的简介",
+      "aliases": "别名，例如缩写或旧名",
+      "releases": "各平台、各地区的发售日期",
+      "links": "外部数据库中的页面，例如 IGDB",
+      "trophySets": "关联的奖杯组，结构同浏览奖杯组的列表项",
+      "seriesId": "系列 ID",
+      "covers": "最多 4 张代表作图标，可以拼成封面",
+      "stageCounts": "主线作品数和外传数",
+      "seriesTrophySetCount": "系列中的奖杯组总数",
+      "popularity": "热度，即主线各作玩家数之和",
+      "years": "主线首作和最新作的发售年份",
+      "description": "系列简介",
+      "tierTotals": "主线各作（每作取玩家最多的版本）的奖杯总数，按等级统计",
+      "stages": "按顺序排列的作品，kind 为 main（主线）或 side（外传）",
+      "entries": "该作品对应的奖杯组，例如不同平台的版本",
+      "viewer": "psnid 对应玩家在系列中的进度；未传 psnid 时为 null"
+    },
+    "tryIt": {
+      "hint": "直接从你的浏览器请求 {host}，不会带上你的登录信息。",
+      "send": "发送请求",
+      "sending": "请求中…",
+      "cancel": "取消",
+      "multiple": "多个值用逗号分隔",
+      "tree": "树形",
+      "raw": "原始",
+      "showMore": "展开其余 {count} 项",
+      "networkError": "请求没有成功发出或没有收到响应。请检查网络后重试。",
+      "missing": "请先填写路径参数：{names}",
+      "empty": "填好参数后点击「发送请求」，响应会显示在这里。",
+      "expand": "展开",
+      "collapse": "折叠"
+    },
+    "copy": {
+      "button": "复制",
+      "code": "代码"
+    }
   }
 }

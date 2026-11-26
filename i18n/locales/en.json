@@ -34,6 +34,7 @@
     }
   },
   "footer": {
+    "api": "API docs",
     "buildCommit": "Build commit",
     "buildDate": "Build date (UTC)"
   },
@@ -1447,8 +1448,7 @@
       },
       "api": {
         "title": "API documentation",
-        "body": "We’re preparing the specification, authentication, terms of use and rate limits.",
-        "badge": "Coming soon"
+        "body": "Endpoints and samples for reading trophy sets, profiles, games and series, with a console to try them."
       }
     },
     "faq": {
@@ -1488,7 +1488,7 @@
         },
         "api": {
           "question": "Is there a PSRay API?",
-          "answer": "A developer API is in preparation. We plan to release it once the specification, terms of use, authentication and rate limits are in place."
+          "answer": "Yes. The public endpoints for trophy sets, player profiles, games and series need no API key; see the API documentation for how to use them. Please cache results and avoid frequent requests."
         }
       }
     },
@@ -1501,5 +1501,227 @@
     "updatedAt": "Last updated: {date}",
     "toc": "Contents",
     "tocLabel": "On this page"
+  },
+  "apiDocs": {
+    "seoTitle": "API documentation",
+    "seoDescription": "How to use the public PSRay API: endpoints, parameters, response fields and samples for trophy sets, player profiles, games and series, with a console to try each request.",
+    "lead": "Read PSRay's trophy sets, player profiles, games and series with plain HTTP requests. This page covers the most common public, read-only endpoints, and you can try each one right here.",
+    "chips": {
+      "readOnly": "Read-only",
+      "noKey": "No API key",
+      "cors": "CORS enabled"
+    },
+    "nav": {
+      "label": "API documentation contents",
+      "overview": "Overview",
+      "reference": "Reference"
+    },
+    "groups": {
+      "trophies": "Trophy sets",
+      "profile": "Players",
+      "games": "Games",
+      "series": "Series"
+    },
+    "sections": {
+      "introduction": "Introduction",
+      "responses": "Response format",
+      "languages": "Display language",
+      "errors": "Error codes",
+      "usage": "Usage notes"
+    },
+    "intro": {
+      "quickStart": "Quick start",
+      "points": {
+        "noPrefix": "Paths follow the base URL directly; there is no {prefix} prefix.",
+        "noAuth": "Every endpoint on this page is a GET request that needs neither a login nor an API key.",
+        "json": "Responses are UTF-8 encoded JSON.",
+        "cors": "Cross-origin requests are allowed from any origin, so you can call the API straight from a browser."
+      }
+    },
+    "responses": {
+      "success": "On success the result is in {data}. List endpoints also return {meta} with the page number, page size, total count and total pages. Asking for a page past the end returns an empty array, not an error.",
+      "failure": "On failure you get the matching HTTP status and an {error} object. {code} is a stable error code, so branch on it in your code. {message} is an English description, and when parameter validation fails, {details} gives the reason for each field.",
+      "requestId": "Every response carries an {header} header, and error responses repeat it as {field}. Include it when you report a problem so we can find the request in our logs.",
+      "time": "Timestamps are ISO 8601 strings in UTC, for example {example}.",
+      "list": "List",
+      "error": "Error"
+    },
+    "languages": {
+      "body": "Trophy set titles, trophy names, game names and series names come in several languages. The API picks the display language in this order:",
+      "steps": {
+        "query": "The {lang} query parameter, for example {example}",
+        "header": "The {header} request header, highest weight first",
+        "fallback": "If neither is given or nothing matches, the item's default language"
+      },
+      "normalize": "Chinese is mapped to PSN's language variants by region: {tw} is treated as {hant}, and {cn} as {hans}.",
+      "field": "{field} in the response tells you which language was used. {name} is always the original title; show {localized} in your interface."
+    },
+    "errors": {
+      "body": "All errors share one format, so you can tell them apart by {code}. These are the codes the endpoints on this page can return.",
+      "codes": {
+        "notFound": "The path does not exist, or an ID is not a number",
+        "trophySetNotFound": "The trophy set does not exist",
+        "userNotFound": "PSRay has no such player (never synced, or the account was deleted)",
+        "userBanned": "The player has been permanently suspended",
+        "gameNotFound": "The game does not exist",
+        "seriesNotFound": "The series does not exist or is not published yet",
+        "methodNotAllowed": "Wrong request method; the endpoints on this page accept GET only",
+        "validationFailed": "Invalid parameters; error.details explains why",
+        "internal": "Internal server error; please try again later"
+      }
+    },
+    "usage": {
+      "items": {
+        "cache": "Please cache results and avoid frequent polling or bulk scraping. There is no rate limit today, but abusive sources may be blocked.",
+        "fields": "Responses may gain new fields over time, so ignore the ones you don't recognise. Fields not listed on this page may change; don't rely on them.",
+        "data": "The data is PSN's public trophy information, synced by PSRay at intervals, so it can lag behind. Players who set their profile to private don't have their trophy data published.",
+        "feedback": "Found a problem or have a suggestion? Let us know on the {link} board."
+      },
+      "feedbackLink": "Feedback",
+      "stability": "The API is still evolving; changes will be reflected on this page."
+    },
+    "endpoint": {
+      "public": "Public",
+      "paginated": "Paginated",
+      "params": "Parameters",
+      "fields": "Common fields",
+      "fieldsNote": "Only the most-used fields are listed; see the sample response for the full shape.",
+      "errors": "Errors",
+      "allErrors": "All error codes",
+      "columns": {
+        "name": "Parameter",
+        "location": "In",
+        "description": "Description"
+      },
+      "location": {
+        "path": "Path",
+        "query": "Query"
+      },
+      "required": "Required",
+      "default": "Default",
+      "example": "Sample response",
+      "tryIt": "Try it",
+      "tryThis": "Try this endpoint"
+    },
+    "endpoints": {
+      "trophiesBrowse": {
+        "title": "Browse trophy sets",
+        "description": "Lists trophy sets page by page. Search by title, filter by platform or by whether there is a platinum, and sort by newest, trending or most players."
+      },
+      "trophiesShow": {
+        "title": "Trophy set details",
+        "description": "Returns everything about one trophy set: its groups and all trophies, available languages, recent players, and the game and series it belongs to. Pass psnid to add that player's public progress."
+      },
+      "profileShow": {
+        "title": "Player profile",
+        "description": "Returns a player's profile: trophy level, trophy counts by type, rankings, a trophy calendar for the past year and their latest comments. Private profiles still return 200, with is_profile_public set to false and calendar set to null."
+      },
+      "gamesBrowse": {
+        "title": "Browse games",
+        "description": "Lists games page by page, newest first release first. Search by name or alias and filter by platform."
+      },
+      "gamesShow": {
+        "title": "Game details",
+        "description": "Returns a game's summary, aliases, release dates per platform and region, external links, and its trophy sets and series."
+      },
+      "seriesBrowse": {
+        "title": "Browse series",
+        "description": "Lists game series page by page. Search by series name or the titles of its games, and sort by popularity, latest release or name."
+      },
+      "seriesShow": {
+        "title": "Series details",
+        "description": "Returns the series' games in order, main entries and spin-offs alike, each with its trophy sets. Pass psnid to add that player's progress through the series."
+      }
+    },
+    "params": {
+      "page": "Page number, starting at 1",
+      "perPage": "Items per page, 1 to {max}",
+      "lang": "Display language, for example zh-Hans, ja or en; see Display language",
+      "langTips": "Display language for trophy and trophy set names in the latest comments",
+      "qTrophies": "Search terms, matched against the original title, every official localized title and the NPWR ID; a bare number or #number matches the ID exactly. Results are sorted by relevance and sort is ignored",
+      "qGames": "Search terms, matched against the name, localized names and aliases (such as FF7R)",
+      "qSeries": "Search terms, matched against the series name and the titles of its trophy sets",
+      "sortTrophies": "Order: newest by date added, trending by players in the last 7 days, popular by total players",
+      "sortSeries": "Order: popular by popularity, recent by latest release year, name by name",
+      "platformTrophies": "Filter by platform; accepts several",
+      "platformGames": "Filter by platform; accepts several, for example PS5, PS4, PC, SWITCH",
+      "hasPlatinum": "true returns only trophy sets with a platinum, false only those without",
+      "trophySetId": "Trophy set ID (PSRay's numeric ID, not the NPWR ID)",
+      "gameId": "Game ID",
+      "seriesId": "Series ID",
+      "psnidPath": "The player's PSN Online ID, case-insensitive",
+      "psnidProgress": "Adds this player's progress on the trophy set (public profiles only)",
+      "psnidSeries": "Adds this player's progress through the series (public profiles only)"
+    },
+    "fields": {
+      "names": "Original title, and the title picked for the display language (show the latter)",
+      "trophySetId": "Trophy set ID",
+      "npwr": "PSN trophy set ID, for example NPWR11556_00",
+      "platform": "Platforms, for example PS5, PS4",
+      "icon": "Trophy set icon URL",
+      "definedTrophies": "Trophy count per type: bronze, silver, gold, platinum",
+      "owners": "Number of public players",
+      "rates": "Platinum and completion rates in percent; may be null",
+      "medianTime": "Median time to complete, in seconds",
+      "trophySet": "The trophy set itself, with much the same fields as a list item",
+      "displayLanguage": "The display language used for this response",
+      "availableLanguages": "Available languages and their titles, unofficial translations included",
+      "groups": "Trophy groups: the base game and each add-on",
+      "trophies": "Trophies in the group: type, name, description, icon, earn rate and rarity",
+      "recentPlayers": "Public players who earned trophies most recently, up to 10",
+      "game": "The game, shaped like a game list item; null when not linked",
+      "seriesList": "Series it belongs to",
+      "viewerProgress": "Progress of the player given as psnid; null when not found or private",
+      "psnid": "PSN Online ID",
+      "avatar": "Avatar URL",
+      "country": "Country or region code, for example JP",
+      "level": "Trophy level, and progress to the next level (0 to 100)",
+      "tierCounts": "Trophy count per type",
+      "points": "Trophy points",
+      "rank": "Global and regional rank; null when not ranked",
+      "isPublic": "Whether the profile is public",
+      "calendar": "Trophies earned per day over the past year, each with date and count; null when private",
+      "recentTips": "The 5 latest comments; null for players who haven't signed up on PSRay",
+      "gameId": "Game ID",
+      "cover": "Cover image with URL, size and main colour; may be null",
+      "releaseDate": "First release date; null when not yet announced",
+      "platforms": "Platforms it was released on, each with code, name and abbreviation",
+      "trophySetCount": "Number of linked trophy sets",
+      "summary": "Summary, and the summary picked for the display language",
+      "aliases": "Aliases, such as abbreviations or former titles",
+      "releases": "Release dates per platform and region",
+      "links": "Pages on external databases such as IGDB",
+      "trophySets": "Linked trophy sets, shaped like Browse trophy sets items",
+      "seriesId": "Series ID",
+      "covers": "Up to 4 icons of key entries, for building a cover",
+      "stageCounts": "Number of main entries and spin-offs",
+      "seriesTrophySetCount": "Total number of trophy sets in the series",
+      "popularity": "Popularity: the sum of players across the main entries",
+      "years": "Release years of the first and latest main entries",
+      "description": "Series description",
+      "tierTotals": "Trophy totals per type across the main entries (the most-played version of each)",
+      "stages": "Entries in order; kind is main or side",
+      "entries": "Trophy sets for the entry, such as versions for different platforms",
+      "viewer": "Progress through the series of the player given as psnid; null when psnid is omitted"
+    },
+    "tryIt": {
+      "hint": "Requests go straight from your browser to {host}, without your login.",
+      "send": "Send",
+      "sending": "Sending…",
+      "cancel": "Cancel",
+      "multiple": "Separate multiple values with commas",
+      "tree": "Tree",
+      "raw": "Raw",
+      "showMore": "Show {count} more",
+      "networkError": "The request could not be sent or got no response. Check your connection and try again.",
+      "missing": "Fill in the path parameters first: {names}",
+      "empty": "Fill in the parameters and press Send to see the response here.",
+      "expand": "Expand",
+      "collapse": "Collapse"
+    },
+    "copy": {
+      "button": "Copy",
+      "code": "Code"
+    }
   }
 }

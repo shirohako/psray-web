@@ -34,6 +34,7 @@
     }
   },
   "footer": {
+    "api": "API 文件",
     "buildCommit": "建置提交",
     "buildDate": "建置日期（UTC）"
   },
@@ -1447,8 +1448,7 @@
       },
       "api": {
         "title": "API 文件",
-        "body": "我們正在整理 API 規格、驗證方式、使用條件與速率限制。",
-        "badge": "準備中"
+        "body": "讀取獎盃組、玩家資料、遊戲和系列資料的介面說明與範例，可以在頁面上直接試用。"
       }
     },
     "faq": {
@@ -1488,7 +1488,7 @@
         },
         "api": {
           "question": "可以使用 PSRay 的 API 嗎？",
-          "answer": "針對開發者的 API 正在準備中。我們預計在完善 API 規格、使用條件、驗證方式與速率限制後公開。"
+          "answer": "可以。讀取獎盃組、玩家資料、遊戲和系列的公開介面不需要 API Key，用法請見 API 文件。請快取結果，避免高頻請求。"
         }
       }
     },
@@ -1501,5 +1501,227 @@
     "updatedAt": "最後更新：{date}",
     "toc": "目錄",
     "tocLabel": "頁面目錄"
+  },
+  "apiDocs": {
+    "seoTitle": "API 文件",
+    "seoDescription": "PSRay 公開 API 的使用說明：讀取獎盃組、玩家資料、遊戲和系列資料的介面、參數、回應欄位和範例，並可在頁面上直接試用。",
+    "lead": "用簡單的 HTTP 請求讀取 PSRay 的獎盃組、玩家資料、遊戲和系列資料。本頁列出最常用的公開唯讀介面，每個介面都可以直接在頁面上試用。",
+    "chips": {
+      "readOnly": "唯讀",
+      "noKey": "無需 API Key",
+      "cors": "支援跨域"
+    },
+    "nav": {
+      "label": "API 文件目錄",
+      "overview": "概覽",
+      "reference": "參考"
+    },
+    "groups": {
+      "trophies": "獎盃組",
+      "profile": "玩家",
+      "games": "遊戲",
+      "series": "系列"
+    },
+    "sections": {
+      "introduction": "介紹",
+      "responses": "回應格式",
+      "languages": "顯示語言",
+      "errors": "錯誤碼",
+      "usage": "使用須知"
+    },
+    "intro": {
+      "quickStart": "快速開始",
+      "points": {
+        "noPrefix": "路徑直接接在 Base URL 後面，沒有 {prefix} 前綴。",
+        "noAuth": "本頁的介面都是 GET 請求，不需要登入，也不需要 API Key。",
+        "json": "回應是 UTF-8 編碼的 JSON。",
+        "cors": "允許任意來源的跨域請求，可以直接在瀏覽器裡呼叫。"
+      }
+    },
+    "responses": {
+      "success": "請求成功時，結果在 {data} 裡。列表介面另有 {meta}，包含頁碼、每頁筆數、總數和總頁數；頁碼超過最後一頁時回傳空陣列，不會報錯。",
+      "failure": "請求失敗時，回傳對應的 HTTP 狀態碼和 {error} 物件。{code} 是固定的錯誤碼，程式中請依它判斷；{message} 是英文說明；參數驗證失敗時，{details} 會逐項列出原因。",
+      "requestId": "每個回應都帶有 {header} 回應標頭，錯誤回應中也有相同的 {field}。回報問題時請附上它，方便我們查找日誌。",
+      "time": "時間欄位是 UTC 的 ISO 8601 字串，例如 {example}。",
+      "list": "列表",
+      "error": "錯誤"
+    },
+    "languages": {
+      "body": "獎盃組標題、獎盃名稱、遊戲和系列名稱都有多種語言。介面依下列順序決定使用哪種語言：",
+      "steps": {
+        "query": "查詢參數 {lang}，例如 {example}",
+        "header": "請求標頭 {header}，依權重由高到低比對",
+        "fallback": "都沒有或都比對不到時，使用該項目的預設語言"
+      },
+      "normalize": "中文會依地區歸入 PSN 的語言變體：{tw} 視為 {hant}，{cn} 視為 {hans}。",
+      "field": "回應中的 {field} 是實際使用的語言。{name} 始終是原名，介面上請顯示 {localized}。"
+    },
+    "errors": {
+      "body": "所有錯誤使用相同的格式，依 {code} 區分即可。下表是本頁介面可能回傳的錯誤碼。",
+      "codes": {
+        "notFound": "路徑不存在，或 ID 不是數字",
+        "trophySetNotFound": "獎盃組不存在",
+        "userNotFound": "站內沒有這名玩家（從未同步過，或已註銷）",
+        "userBanned": "這名玩家已被永久停用",
+        "gameNotFound": "遊戲不存在",
+        "seriesNotFound": "系列不存在或尚未發布",
+        "methodNotAllowed": "請求方法不對，本頁介面只接受 GET",
+        "validationFailed": "參數不合法，原因見 error.details",
+        "internal": "伺服器內部錯誤，請稍後重試"
+      }
+    },
+    "usage": {
+      "items": {
+        "cache": "請快取結果，避免高頻輪詢或批次抓取。目前沒有設定流量限制，但濫用的來源可能會被限制存取。",
+        "fields": "回應日後可能增加欄位，請忽略不認得的欄位。本頁沒有列出的欄位可能調整，不建議依賴。",
+        "data": "資料來自 PSN 公開的獎盃資訊，由 PSRay 定期同步，可能有延遲。玩家將資料設為私密後，我們不會公開其獎盃資料。",
+        "feedback": "遇到問題或有建議，歡迎在{link}告訴我們。"
+      },
+      "feedbackLink": "意見回饋",
+      "stability": "介面仍在完善中，變更會同步更新到本頁。"
+    },
+    "endpoint": {
+      "public": "公開",
+      "paginated": "分頁",
+      "params": "請求參數",
+      "fields": "常用欄位",
+      "fieldsNote": "只列出常用欄位，完整結構請見回應範例。",
+      "errors": "錯誤",
+      "allErrors": "全部錯誤碼",
+      "columns": {
+        "name": "參數",
+        "location": "位置",
+        "description": "說明"
+      },
+      "location": {
+        "path": "路徑",
+        "query": "查詢"
+      },
+      "required": "必填",
+      "default": "預設",
+      "example": "回應範例",
+      "tryIt": "線上試用",
+      "tryThis": "線上試用這個介面"
+    },
+    "endpoints": {
+      "trophiesBrowse": {
+        "title": "瀏覽獎盃組",
+        "description": "分頁列出獎盃組，可以依標題搜尋，依平台或有無白金篩選，並依最新收錄、近期熱門或參與人數排序。"
+      },
+      "trophiesShow": {
+        "title": "獎盃組詳情",
+        "description": "回傳單一獎盃組的完整資訊：分組與全部獎盃、可用語言、最近的玩家、所屬遊戲和系列。傳入 psnid 時，還會附帶這名玩家的公開進度。"
+      },
+      "profileShow": {
+        "title": "玩家資料",
+        "description": "回傳玩家的個人資料：獎盃等級、各等級獎盃數、排名、近一年的獎盃日曆和最近發表的留言。資料未公開的玩家同樣回傳 200，但 is_profile_public 為 false，calendar 為 null。"
+      },
+      "gamesBrowse": {
+        "title": "瀏覽遊戲",
+        "description": "分頁列出遊戲，依首發日期由新到舊排列，可以依名稱或別名搜尋，依平台篩選。"
+      },
+      "gamesShow": {
+        "title": "遊戲詳情",
+        "description": "回傳單款遊戲的簡介、別名、各平台和地區的發售日期、外部連結，以及關聯的獎盃組和所屬系列。"
+      },
+      "seriesBrowse": {
+        "title": "瀏覽系列",
+        "description": "分頁列出遊戲系列，可以依系列名或其中作品的標題搜尋，依熱度、最近新作或名稱排序。"
+      },
+      "seriesShow": {
+        "title": "系列詳情",
+        "description": "依順序回傳系列中的各部作品（主線和外傳）及其獎盃組。傳入 psnid 時，還會附帶這名玩家在系列中的進度。"
+      }
+    },
+    "params": {
+      "page": "頁碼，從 1 開始",
+      "perPage": "每頁筆數，1 到 {max}",
+      "lang": "顯示語言，例如 zh-Hant、ja、en，見「顯示語言」",
+      "langTips": "最近留言中獎盃和獎盃組名稱的顯示語言",
+      "qTrophies": "搜尋關鍵字，比對原名、各語言官方譯名和 NPWR 編號；純數字或 #數字 依 ID 精確比對。搜尋時依相關度排序，忽略 sort",
+      "qGames": "搜尋關鍵字，比對名稱、各語言名稱和別名（例如 FF7R）",
+      "qSeries": "搜尋關鍵字，比對系列名，也比對系列中獎盃組的標題",
+      "sortTrophies": "排序：newest 依收錄時間，trending 依近 7 天玩家數，popular 依累計玩家數",
+      "sortSeries": "排序：popular 依熱度，recent 依最新作年份，name 依名稱",
+      "platformTrophies": "依平台篩選，可複選",
+      "platformGames": "依平台篩選，可複選，例如 PS5、PS4、PC、SWITCH",
+      "hasPlatinum": "true 只回傳有白金的獎盃組，false 只回傳沒有白金的",
+      "trophySetId": "獎盃組 ID（站內的數字 ID，不是 NPWR 編號）",
+      "gameId": "遊戲 ID",
+      "seriesId": "系列 ID",
+      "psnidPath": "玩家的 PSN 線上 ID，不區分大小寫",
+      "psnidProgress": "附帶這名玩家在該獎盃組的進度（僅限資料公開的玩家）",
+      "psnidSeries": "附帶這名玩家在該系列的進度（僅限資料公開的玩家）"
+    },
+    "fields": {
+      "names": "原名，以及依顯示語言選出的名稱（介面上顯示後者）",
+      "trophySetId": "獎盃組 ID",
+      "npwr": "PSN 的獎盃組編號，例如 NPWR11556_00",
+      "platform": "平台，例如 PS5、PS4",
+      "icon": "獎盃組圖示網址",
+      "definedTrophies": "各等級的獎盃數：bronze、silver、gold、platinum",
+      "owners": "參與的公開玩家數",
+      "rates": "白金率和完成率（百分比），可能為 null",
+      "medianTime": "完成耗時的中位數（秒）",
+      "trophySet": "獎盃組本身，欄位與列表項目大致相同",
+      "displayLanguage": "本次使用的顯示語言",
+      "availableLanguages": "可用語言及對應標題，包括非官方翻譯",
+      "groups": "獎盃分組：本體和各個追加內容",
+      "trophies": "分組中的獎盃：等級、名稱、說明、圖示、獲得率、稀有度",
+      "recentPlayers": "最近獲得獎盃的公開玩家，最多 10 人",
+      "game": "所屬遊戲，結構同遊戲列表項目；沒有關聯時為 null",
+      "seriesList": "所屬系列",
+      "viewerProgress": "psnid 對應玩家的進度；找不到或資料未公開時為 null",
+      "psnid": "PSN 線上 ID",
+      "avatar": "頭像網址",
+      "country": "國家或地區代碼，例如 JP",
+      "level": "獎盃等級，以及升到下一級的進度（0 到 100）",
+      "tierCounts": "各等級的獎盃數",
+      "points": "獎盃點數",
+      "rank": "全站排名和地區排名；不參與排名時為 null",
+      "isPublic": "資料是否公開",
+      "calendar": "近一年每天獲得的獎盃數，每項包含 date 和 count；資料未公開時為 null",
+      "recentTips": "最近發表的 5 則留言；未在本站註冊的玩家為 null",
+      "gameId": "遊戲 ID",
+      "cover": "封面圖，包含網址、尺寸和主色；可能為 null",
+      "releaseDate": "首發日期；未定檔時為 null",
+      "platforms": "發售過的平台，每項包含 code、name、abbreviation",
+      "trophySetCount": "關聯的獎盃組數量",
+      "summary": "簡介，以及依顯示語言選出的簡介",
+      "aliases": "別名，例如縮寫或舊名",
+      "releases": "各平台、各地區的發售日期",
+      "links": "外部資料庫中的頁面，例如 IGDB",
+      "trophySets": "關聯的獎盃組，結構同瀏覽獎盃組的列表項目",
+      "seriesId": "系列 ID",
+      "covers": "最多 4 張代表作圖示，可以拼成封面",
+      "stageCounts": "主線作品數和外傳數",
+      "seriesTrophySetCount": "系列中的獎盃組總數",
+      "popularity": "熱度，即主線各作玩家數之和",
+      "years": "主線首作和最新作的發售年份",
+      "description": "系列簡介",
+      "tierTotals": "主線各作（每作取玩家最多的版本）的獎盃總數，依等級統計",
+      "stages": "依順序排列的作品，kind 為 main（主線）或 side（外傳）",
+      "entries": "該作品對應的獎盃組，例如不同平台的版本",
+      "viewer": "psnid 對應玩家在系列中的進度；未傳 psnid 時為 null"
+    },
+    "tryIt": {
+      "hint": "直接從你的瀏覽器請求 {host}，不會帶上你的登入資訊。",
+      "send": "送出請求",
+      "sending": "請求中…",
+      "cancel": "取消",
+      "multiple": "多個值以逗號分隔",
+      "tree": "樹狀",
+      "raw": "原始",
+      "showMore": "展開其餘 {count} 項",
+      "networkError": "請求沒有成功送出或沒有收到回應。請檢查網路後重試。",
+      "missing": "請先填寫路徑參數：{names}",
+      "empty": "填好參數後點擊「送出請求」，回應會顯示在這裡。",
+      "expand": "展開",
+      "collapse": "收合"
+    },
+    "copy": {
+      "button": "複製",
+      "code": "程式碼"
+    }
   }
 }

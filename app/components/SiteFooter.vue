@@ -22,6 +22,7 @@ const sections = [
   { labelKey: 'nav.games', to: '/games' },
   { labelKey: 'nav.leaderboard', to: '/leaderboard' },
   { labelKey: 'nav.about', to: '/about' },
+  { labelKey: 'footer.api', to: '/docs/api' },
   { labelKey: 'auth.register.terms.termsLink', to: '/terms' },
   { labelKey: 'auth.register.terms.privacyLink', to: '/privacy' },
 ]

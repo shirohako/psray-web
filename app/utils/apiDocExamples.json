@@ -1,0 +1,589 @@
+{
+  "trophiesBrowse": {
+    "data": [
+      {
+        "id": 29439,
+        "np_communication_id": "NPWR24321_00",
+        "name": "Horizon Zero Dawn™ Remastered",
+        "default_language": "en-US",
+        "platform": [
+          "PS5"
+        ],
+        "icon_url": "https://psnobj.prod.dl.playstation.net/psnobj/NPWR24321_00/96674236-573c-422c-9754-0357cfde931d.png",
+        "defined_trophies": {
+          "bronze": 65,
+          "silver": 11,
+          "gold": 2,
+          "platinum": 1
+        },
+        "owners": 4134,
+        "completed_players": 669,
+        "platinum_achievers": 1534,
+        "recent_players": 26,
+        "average_progress": 42,
+        "average_completion_time": 4165628,
+        "median_completion_time": 1461384,
+        "p10_completion_time": 444815,
+        "fastest_completion_time": 8290,
+        "median_platinum_time": 1513724,
+        "difficult_trophy_count": 11,
+        "translation_count": 19,
+        "created_at": "2024-10-15T16:57:06.000000Z",
+        "updated_at": "2026-11-20T00:15:10.000000Z",
+        "localized_name": "Horizon Zero Dawn™ Remastered",
+        "display_language": "en-US",
+        "available_languages": [
+          {
+            "language_code": "en-US",
+            "is_default": true,
+            "source": "official",
+            "name": "Horizon Zero Dawn™ Remastered"
+          },
+          {
+            "language_code": "ja-JP",
+            "is_default": false,
+            "source": "official",
+            "name": "Horizon Zero Dawn™ Remastered"
+          }
+        ],
+        "platinum_rate": 37.1,
+        "completion_rate": 16.2
+      }
+    ],
+    "meta": {
+      "page": 1,
+      "per_page": 1,
+      "total": 35,
+      "total_pages": 35
+    }
+  },
+  "gamesBrowse": {
+    "data": [
+      {
+        "id": 12334,
+        "name": "Horizon Zero Dawn Remastered",
+        "localized_name": "Horizon Zero Dawn Remastered",
+        "display_language": null,
+        "cover": {
+          "id": null,
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co8vsm.jpg",
+          "width": null,
+          "height": null,
+          "color": null,
+          "srcset": null
+        },
+        "first_release_date": "2024-10-31",
+        "first_release_precision": "day",
+        "platforms": [
+          {
+            "code": "PS5",
+            "name": "PlayStation 5",
+            "abbreviation": "PS5"
+          }
+        ],
+        "trophy_set_count": 1
+      }
+    ],
+    "meta": {
+      "page": 1,
+      "per_page": 1,
+      "total": 21,
+      "total_pages": 21
+    }
+  },
+  "seriesBrowse": {
+    "data": [
+      {
+        "id": 860,
+        "name": "Horizon",
+        "localized_name": "Horizon",
+        "display_language": null,
+        "cover": null,
+        "covers": [
+          "https://image.api.playstation.com/trophy/np/NPWR11556_00_005122C6D8E4545DAC325B8E748CBE7180ED11F3E7/F24674E946809EB0A2E214DB490149851BCEC0EC.PNG",
+          "https://psnobj.prod.dl.playstation.net/psnobj/NPWR21008_00/2b1ab462-7ee0-4415-81d8-bf2632f03850.png",
+          "https://psnobj.prod.dl.playstation.net/psnobj/NPWR27777_00/a858c347-f4c0-4e6b-8b88-e2b9167d3055.png",
+          "https://psnobj.prod.dl.playstation.net/psnobj/NPWR37082_00/ab7daeb9-8cdf-4164-ae7b-ed7913a72ac2.png"
+        ],
+        "stage_count": 4,
+        "side_count": 0,
+        "trophy_set_count": 8,
+        "popularity": 55199,
+        "first_year": 2017,
+        "last_year": 2024,
+        "card": "c5e7a74811f8",
+        "viewer_progress": null
+      }
+    ],
+    "meta": {
+      "page": 1,
+      "per_page": 1,
+      "total": 5,
+      "total_pages": 5
+    }
+  },
+  "trophiesShow": {
+    "data": {
+      "trophy_set": {
+        "id": 5059,
+        "np_communication_id": "NPWR11556_00",
+        "version": "01.02",
+        "platform": [
+          "PS4"
+        ],
+        "name": "Horizon Zero Dawn",
+        "detail": "Horizon Zero Dawn trophies",
+        "icon_url": "https://image.api.playstation.com/trophy/np/NPWR11556_00_005122C6D8E4545DAC325B8E748CBE7180ED11F3E7/F24674E946809EB0A2E214DB490149851BCEC0EC.PNG",
+        "has_trophy_groups": true,
+        "np_service_name": "trophy",
+        "defined_trophies": {
+          "bronze": 65,
+          "silver": 11,
+          "gold": 2,
+          "platinum": 1
+        },
+        "default_language": "en-US",
+        "owners": 30142,
+        "recent_players": 7,
+        "average_progress": 64,
+        "completed_players": 5911,
+        "platinum_achievers": 18847,
+        "game_id": 6679,
+        "region": null,
+        "created_at": "2022-12-31T16:00:00.000000Z",
+        "updated_at": "2026-11-20T00:10:52.000000Z",
+        "average_completion_time": 42067747,
+        "median_completion_time": 17864400,
+        "p10_completion_time": 1094939,
+        "fastest_completion_time": 223327,
+        "median_platinum_time": 7741552,
+        "difficult_trophy_count": 8,
+        "translation_count": 19
+      },
+      "display_language": "en-US",
+      "available_languages": [
+        {
+          "language_code": "ar-AE",
+          "is_default": false,
+          "source": "official",
+          "name": "‏Horizon فجرٌ جديد"
+        },
+        {
+          "language_code": "da-DK",
+          "is_default": false,
+          "source": "official",
+          "name": "Horizon Zero Dawn"
+        }
+      ],
+      "groups": [
+        {
+          "id": 6687,
+          "psn_group_id": "default",
+          "name": "Horizon Zero Dawn",
+          "detail": "Horizon Zero Dawn trophies",
+          "localized_name": "Horizon Zero Dawn",
+          "localized_detail": "Horizon Zero Dawn trophies",
+          "icon_url": "https://image.api.playstation.com/trophy/np/NPWR11556_00_005122C6D8E4545DAC325B8E748CBE7180ED11F3E7/F24674E946809EB0A2E214DB490149851BCEC0EC.PNG",
+          "defined_trophies": {
+            "bronze": 48,
+            "silver": 5,
+            "gold": 2,
+            "platinum": 1
+          },
+          "trophies": [
+            {
+              "id": 163185,
+              "trophy_group_id": 6687,
+              "type": "platinum",
+              "np_communication_id": "NPWR11556_00",
+              "psn_group_id": "default",
+              "psn_trophy_id": 0,
+              "name": "All trophies obtained",
+              "detail": "Obtained all Horizon Zero Dawn trophies.",
+              "icon_url": "https://image.api.playstation.com/trophy/np/NPWR11556_00_005122C6D8E4545DAC325B8E748CBE7180ED11F3E7/1E6115EB5EA2E026D9A157BE27A44DFBBE329C7C.PNG",
+              "is_hidden": false,
+              "psn_earned_rate": "5.3",
+              "psray_rate": 62.5,
+              "earned_count": 18847,
+              "rarity": "COMMON",
+              "tip_count": 0,
+              "localized_name": "All trophies obtained",
+              "localized_detail": "Obtained all Horizon Zero Dawn trophies."
+            }
+          ]
+        }
+      ],
+      "recent_players": [
+        {
+          "psnid": "abyssmoe",
+          "avatar_url": "https://api.dev.psray.net/media/avatar/hr/01m824wbtnacwx2qnhk3a8qphr/sm.webp",
+          "country": "HK",
+          "progress": 30,
+          "earned_platinum": 0,
+          "last_earned_at": "2021-04-21T19:40:46.000000Z"
+        }
+      ],
+      "similar_trophy_sets": [],
+      "game": {
+        "id": 6679,
+        "name": "Horizon Zero Dawn",
+        "localized_name": "Horizon Zero Dawn",
+        "display_language": null,
+        "cover": {
+          "id": null,
+          "url": "https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co2una.jpg",
+          "width": null,
+          "height": null,
+          "color": null,
+          "srcset": null
+        },
+        "first_release_date": "2017-02-28",
+        "first_release_precision": "day",
+        "platforms": [
+          {
+            "code": "PS4",
+            "name": "PlayStation 4",
+            "abbreviation": "PS4"
+          }
+        ],
+        "trophy_set_count": 1
+      },
+      "series": [
+        {
+          "id": 860,
+          "name": "Horizon",
+          "localized_name": "Horizon",
+          "display_language": null,
+          "cover": null,
+          "covers": [
+            "https://image.api.playstation.com/trophy/np/NPWR11556_00_005122C6D8E4545DAC325B8E748CBE7180ED11F3E7/F24674E946809EB0A2E214DB490149851BCEC0EC.PNG",
+            "https://psnobj.prod.dl.playstation.net/psnobj/NPWR21008_00/2b1ab462-7ee0-4415-81d8-bf2632f03850.png",
+            "https://psnobj.prod.dl.playstation.net/psnobj/NPWR27777_00/a858c347-f4c0-4e6b-8b88-e2b9167d3055.png",
+            "https://psnobj.prod.dl.playstation.net/psnobj/NPWR37082_00/ab7daeb9-8cdf-4164-ae7b-ed7913a72ac2.png"
+          ],
+          "stage_count": 4,
+          "side_count": 0,
+          "trophy_set_count": 8,
+          "popularity": 55199,
+          "first_year": 2017,
+          "last_year": 2024,
+          "card": "c5e7a74811f8",
+          "stage_number": 1,
+          "stage_kind": "main"
+        }
+      ],
+      "viewer_progress": null
+    }
+  },
+  "profileShow": {
+    "data": {
+      "id": 1,
+      "role": "admin",
+      "psnid": "abyssmoe",
+      "account_id": "1848172946608790926",
+      "status": 1,
+      "country": "HK",
+      "language": [
+        "zh-CN",
+        "ja"
+      ],
+      "avatar_url": "https://api.dev.psray.net/media/avatar/hr/01m824wbtnacwx2qnhk3a8qphr/sm.webp",
+      "about_me": "May you find your worth in the waking world.",
+      "is_plus": false,
+      "played_game_count": 181,
+      "completed_game_count": 156,
+      "abandoned_game_count": 11,
+      "trophy_level": 444,
+      "progress": 97,
+      "platinum": 153,
+      "gold": 573,
+      "silver": 1359,
+      "bronze": 4828,
+      "points": 210660,
+      "rank": 19378,
+      "server_rank": 2649,
+      "follower_count": 5,
+      "following_count": 9,
+      "first_trophy_at": "2018-07-07T14:59:21.000000Z",
+      "last_trophy_at": "2026-10-05T13:17:09.000000Z",
+      "is_profile_public": true,
+      "is_rankable": true,
+      "tip_count": 2,
+      "tip_vote_count": 0,
+      "page_view_count": 89,
+      "sync_interval": 1440,
+      "sync_next_at": "2027-01-19T18:11:10.000000Z",
+      "last_synced_at": "2026-11-20T18:11:10.000000Z",
+      "registered_at": "2022-09-09T21:13:28.000000Z",
+      "created_at": null,
+      "updated_at": "2026-11-22T17:29:24.000000Z",
+      "can_follow": false,
+      "banner": {
+        "id": "01m824wdd0nzdytf32v0jmt650",
+        "url": "https://api.dev.psray.net/media/banner/50/01m824wdd0nzdytf32v0jmt650/lg.webp",
+        "width": 2048,
+        "height": 455,
+        "color": "#483d35",
+        "srcset": "https://api.dev.psray.net/media/banner/50/01m824wdd0nzdytf32v0jmt650/sm.webp 1440w, https://api.dev.psray.net/media/banner/50/01m824wdd0nzdytf32v0jmt650/lg.webp 2048w"
+      },
+      "is_following": false,
+      "is_follower": false,
+      "calendar": [
+        {
+          "date": "2025-01-24",
+          "count": 11
+        },
+        {
+          "date": "2025-01-25",
+          "count": 4
+        }
+      ],
+      "recent_tips": [
+        {
+          "id": 45,
+          "trophy_id": 143739,
+          "user_id": 1,
+          "language": "ja",
+          "has_spoiler": false,
+          "missable": null,
+          "vote_up_count": 0,
+          "vote_down_count": 0,
+          "content": "::: checklist 必殺技\n…",
+          "content_type": "markdown",
+          "created_at": "2024-09-16T17:01:12.000000Z",
+          "updated_at": "2026-08-14T16:10:02.000000Z",
+          "trophy_set_id": 4404,
+          "trophy_set": {
+            "id": 4404,
+            "name": "うたわれるもの 二人の白皇",
+            "display_language": "ja-JP",
+            "icon_url": "https://image.api.playstation.com/trophy/np/NPWR10330_00_000D5E47E59040943750D0813739DB7D7E481F5C0C/4B7719284069838D0C2F23BAA767B12464775B06.PNG",
+            "platform": [
+              "PS3",
+              "PSVITA",
+              "PS4"
+            ]
+          },
+          "trophy": {
+            "id": 143739,
+            "name": "協必百景",
+            "icon_url": "https://image.api.playstation.com/trophy/np/NPWR10330_00_000D5E47E59040943750D0813739DB7D7E481F5C0C/8E71750B2AADBABE6B7339FCC50B979EB624169A.PNG",
+            "type": "silver",
+            "display_language": "ja-JP"
+          }
+        }
+      ]
+    }
+  },
+  "gamesShow": {
+    "data": {
+      "id": 6679,
+      "name": "Horizon Zero Dawn",
+      "localized_name": "Horizon Zero Dawn",
+      "display_language": null,
+      "cover": {
+        "id": null,
+        "url": "https://images.igdb.com/igdb/image/upload/t_cover_big_2x/co2una.jpg",
+        "width": null,
+        "height": null,
+        "color": null,
+        "srcset": null
+      },
+      "first_release_date": "2017-02-28",
+      "first_release_precision": "day",
+      "platforms": [
+        {
+          "code": "PS4",
+          "name": "PlayStation 4",
+          "abbreviation": "PS4"
+        }
+      ],
+      "trophy_set_count": 1,
+      "summary": null,
+      "localized_summary": null,
+      "translations": [],
+      "aliases": [],
+      "releases": [
+        {
+          "platform": "PS4",
+          "region": "NA",
+          "release_date": "2017-02-28",
+          "date_precision": "day",
+          "status": null
+        },
+        {
+          "platform": "PS4",
+          "region": "EU",
+          "release_date": "2017-03-01",
+          "date_precision": "day",
+          "status": null
+        }
+      ],
+      "links": [
+        {
+          "source": "igdb",
+          "url": "https://www.igdb.com/games/horizon-zero-dawn"
+        }
+      ],
+      "trophy_sets": [
+        {
+          "id": 5059,
+          "np_communication_id": "NPWR11556_00",
+          "name": "Horizon Zero Dawn",
+          "default_language": "en-US",
+          "platform": [
+            "PS4"
+          ],
+          "icon_url": "https://image.api.playstation.com/trophy/np/NPWR11556_00_005122C6D8E4545DAC325B8E748CBE7180ED11F3E7/F24674E946809EB0A2E214DB490149851BCEC0EC.PNG",
+          "defined_trophies": {
+            "bronze": 65,
+            "silver": 11,
+            "gold": 2,
+            "platinum": 1
+          },
+          "owners": 30142,
+          "completed_players": 5911,
+          "platinum_achievers": 18847,
+          "recent_players": 7,
+          "average_progress": 64,
+          "average_completion_time": 42067747,
+          "median_completion_time": 17864400,
+          "p10_completion_time": 1094939,
+          "fastest_completion_time": 223327,
+          "median_platinum_time": 7741552,
+          "difficult_trophy_count": 8,
+          "translation_count": 19,
+          "created_at": "2022-12-31T16:00:00.000000Z",
+          "updated_at": "2026-11-20T00:10:52.000000Z",
+          "localized_name": "Horizon Zero Dawn",
+          "display_language": "en-US",
+          "available_languages": [
+            {
+              "language_code": "en-US",
+              "is_default": true,
+              "source": "official",
+              "name": "Horizon Zero Dawn"
+            },
+            {
+              "language_code": "ja-JP",
+              "is_default": false,
+              "source": "official",
+              "name": "Horizon Zero Dawn"
+            }
+          ],
+          "platinum_rate": 62.5,
+          "completion_rate": 19.6
+        }
+      ],
+      "series": [
+        {
+          "id": 860,
+          "name": "Horizon",
+          "localized_name": "Horizon",
+          "display_language": null,
+          "cover": null,
+          "covers": [
+            "https://image.api.playstation.com/trophy/np/NPWR11556_00_005122C6D8E4545DAC325B8E748CBE7180ED11F3E7/F24674E946809EB0A2E214DB490149851BCEC0EC.PNG",
+            "https://psnobj.prod.dl.playstation.net/psnobj/NPWR21008_00/2b1ab462-7ee0-4415-81d8-bf2632f03850.png",
+            "https://psnobj.prod.dl.playstation.net/psnobj/NPWR27777_00/a858c347-f4c0-4e6b-8b88-e2b9167d3055.png",
+            "https://psnobj.prod.dl.playstation.net/psnobj/NPWR37082_00/ab7daeb9-8cdf-4164-ae7b-ed7913a72ac2.png"
+          ],
+          "stage_count": 4,
+          "side_count": 0,
+          "trophy_set_count": 8,
+          "popularity": 55199,
+          "first_year": 2017,
+          "last_year": 2024,
+          "card": "c5e7a74811f8",
+          "stage_number": 1,
+          "stage_kind": "main"
+        }
+      ]
+    }
+  },
+  "seriesShow": {
+    "data": {
+      "id": 860,
+      "name": "Horizon",
+      "localized_name": "Horizon",
+      "display_language": null,
+      "cover": null,
+      "covers": [
+        "https://image.api.playstation.com/trophy/np/NPWR11556_00_005122C6D8E4545DAC325B8E748CBE7180ED11F3E7/F24674E946809EB0A2E214DB490149851BCEC0EC.PNG",
+        "https://psnobj.prod.dl.playstation.net/psnobj/NPWR21008_00/2b1ab462-7ee0-4415-81d8-bf2632f03850.png",
+        "https://psnobj.prod.dl.playstation.net/psnobj/NPWR27777_00/a858c347-f4c0-4e6b-8b88-e2b9167d3055.png",
+        "https://psnobj.prod.dl.playstation.net/psnobj/NPWR37082_00/ab7daeb9-8cdf-4164-ae7b-ed7913a72ac2.png"
+      ],
+      "stage_count": 4,
+      "side_count": 0,
+      "trophy_set_count": 8,
+      "popularity": 55199,
+      "first_year": 2017,
+      "last_year": 2024,
+      "description": null,
+      "languages": [],
+      "tier_totals": {
+        "platinum": 4,
+        "gold": 15,
+        "silver": 40,
+        "bronze": 160
+      },
+      "stages": [
+        {
+          "id": 3313,
+          "kind": "main",
+          "number": 1,
+          "name": "Horizon Zero Dawn",
+          "release_date": "2017-02-28",
+          "entries": [
+            {
+              "id": 5059,
+              "np_communication_id": "NPWR11556_00",
+              "name": "Horizon Zero Dawn",
+              "localized_name": "Horizon Zero Dawn",
+              "display_language": "en-US",
+              "default_language": "en-US",
+              "platform": [
+                "PS4"
+              ],
+              "region": null,
+              "icon_url": "https://image.api.playstation.com/trophy/np/NPWR11556_00_005122C6D8E4545DAC325B8E748CBE7180ED11F3E7/F24674E946809EB0A2E214DB490149851BCEC0EC.PNG",
+              "defined_trophies": {
+                "bronze": 65,
+                "silver": 11,
+                "gold": 2,
+                "platinum": 1
+              },
+              "owners": 30142,
+              "completed_players": 5911,
+              "platinum_rate": 62.5,
+              "completion_rate": 19.6,
+              "game_id": 6679
+            }
+          ]
+        }
+      ],
+      "viewer": null
+    }
+  },
+  "notFound": {
+    "error": {
+      "code": "TROPHY_SET_NOT_FOUND",
+      "message": "Trophy set not found."
+    },
+    "request_id": "01a21813-3f47-7265-bfc1-9bab0725ff8c"
+  },
+  "validation": {
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "The given data was invalid.",
+      "details": [
+        {
+          "field": "per_page",
+          "message": "The per page field must not be greater than 100."
+        }
+      ]
+    },
+    "request_id": "01a21813-3f47-7265-bfc1-9bab0725ff8c"
+  }
+}

@@ -223,14 +223,14 @@ useSeo({
           </div>
           <p class="mt-2 text-sm leading-6 text-slate-500">{{ t('about.docs.markdown.body') }}</p>
         </AppLink>
-        <div class="rounded-xl border border-dashed border-slate-300 bg-slate-50/70 p-5">
-          <LucideIcon :icon="Code2" class="size-5 text-slate-500" />
+        <AppLink to="/docs/api" class="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md">
+          <LucideIcon :icon="Code2" class="size-5 text-sky-700" />
           <div class="mt-3 flex items-center justify-between gap-3">
-            <h3 class="font-bold text-slate-700">{{ t('about.docs.api.title') }}</h3>
-            <span class="shrink-0 rounded-full bg-slate-200 px-2.5 py-1 text-[10px] font-bold text-slate-600">{{ t('about.docs.api.badge') }}</span>
+            <h3 class="font-bold text-slate-900">{{ t('about.docs.api.title') }}</h3>
+            <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600" aria-hidden="true">→</span>
           </div>
           <p class="mt-2 text-sm leading-6 text-slate-500">{{ t('about.docs.api.body') }}</p>
-        </div>
+        </AppLink>
       </div>
     </section>
 

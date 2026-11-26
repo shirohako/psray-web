@@ -72,7 +72,7 @@ describe('Markdown URLs', () => {
   it('only converts public pages', () => {
     for (const path of ['/settings', '/settings/profile', '/me/tips', '/auth/login', '/admin', '/sync', '/sitemap.xml', '/flags/4x3/jp.svg', '/_nuxt/x', '/__nuxt_error'])
       expect(isConvertiblePath(path), path).toBe(false)
-    for (const path of ['/', '/meta', '/trophies/42972', '/p/abyssmoe', '/docs/markdown'])
+    for (const path of ['/', '/meta', '/trophies/42972', '/p/abyssmoe', '/docs/markdown', '/docs/api'])
       expect(isConvertiblePath(path), path).toBe(true)
   })
 })

@@ -39,46 +39,7 @@ const updatedLabel = computed(() => {
   return label('staticPage.updatedAt', { date })
 })
 
-const activeId = ref(props.items[0]?.id ?? '')
-let frame: number | undefined
-
-function updateActiveSection() {
-  frame = undefined
-  const activationLine = 132
-  let current = props.items[0]?.id ?? ''
-
-  for (const item of props.items) {
-    const section = document.getElementById(item.id)
-    if (!section) continue
-    if (section.getBoundingClientRect().top <= activationLine) current = item.id
-    else break
-  }
-
-  // The final section can be shorter than the viewport and never cross the
-  // activation line. Treat reaching the document end as viewing that section.
-  if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) {
-    current = props.items.at(-1)?.id ?? current
-  }
-
-  activeId.value = current
-}
-
-function scheduleUpdate() {
-  if (frame !== undefined) return
-  frame = window.requestAnimationFrame(updateActiveSection)
-}
-
-onMounted(() => {
-  updateActiveSection()
-  window.addEventListener('scroll', scheduleUpdate, { passive: true })
-  window.addEventListener('resize', scheduleUpdate)
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('scroll', scheduleUpdate)
-  window.removeEventListener('resize', scheduleUpdate)
-  if (frame !== undefined) window.cancelAnimationFrame(frame)
-})
+const activeId = useActiveSection(() => props.items.map(item => item.id))
 </script>
 
 <template>

@@ -37,6 +37,7 @@ export function llmsText(options: { siteUrl: string, sitemapUrl: string }): stri
     '## Optional',
     '',
     `- [Markdown syntax for tips](${md('/docs/markdown', '?lang=en')})`,
+    `- [API documentation](${md('/docs/api', '?lang=en')}): public read-only endpoints for trophy sets, profiles, games and series`,
     `- [Feedback board](${md('/feedback', '?lang=en')})`,
     `- [Terms of service](${md('/terms')}): Japanese only`,
     `- [Privacy policy](${md('/privacy')}): Japanese only`,
