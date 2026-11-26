@@ -30,35 +30,43 @@ function isActive(to: string) {
 
 <template>
   <div class="space-y-6">
-    <header>
-      <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ $t('settings.heading') }}</h1>
-      <p class="mt-1.5 text-sm text-slate-500">{{ $t('settings.subheading') }}</p>
-    </header>
+    <div class="space-y-4">
+      <header>
+        <h1 class="text-2xl font-bold tracking-tight text-slate-900">{{ $t('settings.heading') }}</h1>
+        <p class="mt-1.5 text-sm text-slate-500">{{ $t('settings.subheading') }}</p>
+      </header>
 
-    <div class="grid gap-6 lg:grid-cols-[13rem_1fr]">
-      <!-- Vertical nav on desktop; horizontal scrollable tabs on mobile -->
-      <nav class="flex gap-1 overflow-x-auto rounded-lg border border-slate-200 bg-white p-1.5 shadow-sm lg:flex-col lg:self-start">
+      <!-- Tabs under the title at every width; they scroll sideways when the labels don't fit.
+           The baseline is an inset shadow, so the active underline paints over it without
+           overflowing the scroll box. -->
+      <nav class="flex gap-6 overflow-x-auto shadow-[inset_0_-1px_0_var(--color-slate-200)]">
         <AppLink
           v-for="item in nav"
           :key="item.to"
           :to="item.to"
-          class="group inline-flex shrink-0 items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition"
+          :aria-current="isActive(item.to) ? 'page' : undefined"
+          class="group relative inline-flex shrink-0 items-center gap-2 px-1 pb-3 pt-1 text-sm transition-colors"
           :class="isActive(item.to)
-            ? 'bg-slate-100 text-slate-900'
-            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'"
+            ? 'font-semibold text-slate-900'
+            : 'font-medium text-slate-500 hover:text-slate-900'"
         >
           <LucideIcon
             :icon="item.icon"
-            class="size-4 shrink-0"
+            class="size-4 shrink-0 transition-colors"
             :class="isActive(item.to) ? 'text-slate-900' : 'text-slate-400 group-hover:text-slate-600'"
           />
           {{ $t(item.labelKey) }}
+          <span
+            aria-hidden="true"
+            class="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-slate-900 transition duration-200 motion-reduce:transition-none"
+            :class="isActive(item.to) ? 'scale-x-100 opacity-100' : 'scale-x-50 opacity-0'"
+          />
         </AppLink>
       </nav>
+    </div>
 
-      <div class="min-w-0">
-        <NuxtPage />
-      </div>
+    <div class="min-w-0">
+      <NuxtPage />
     </div>
   </div>
 </template>
