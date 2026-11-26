@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { House, Menu, Gamepad2, Layers, LibraryBig, Trophy, LogIn, UserPlus, User, Settings, Compass, type IconNode } from 'lucide'
+import { House, Menu, Gamepad2, Layers, LibraryBig, Trophy, LogIn, UserPlus, User, Settings, Compass, Wrench, type IconNode } from 'lucide'
 
 const route = useRoute()
 const appConfig = useAppConfig()
@@ -48,6 +48,7 @@ const menu: MenuItem[] = [
   { labelKey: 'nav.games', to: '/games', icon: LibraryBig },
   { labelKey: 'nav.series', to: '/series', icon: Layers },
   { labelKey: 'nav.leaderboard', to: '/leaderboard', icon: Trophy },
+  { labelKey: 'nav.tools', to: '/tools', icon: Wrench },
   { labelKey: 'nav.about', to: '/about', icon: Compass },
 ]
 

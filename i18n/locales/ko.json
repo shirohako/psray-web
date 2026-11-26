@@ -45,6 +45,7 @@
     "about": "PSRay 소개",
     "home": "홈",
     "leaderboard": "랭킹",
+    "tools": "도구",
     "login": "로그인",
     "register": "회원가입",
     "sectionLabel": "내비게이션",
@@ -923,6 +924,14 @@
     "failed": "처리하지 못했습니다. 잠시 후 다시 시도해 주세요."
   },
   "seo": {
+    "tools": {
+      "title": "도구",
+      "description": "PSRay가 플레이어를 위해 만든 작은 도구 모음입니다. 티어표 만들기 등 모두 브라우저에서 동작합니다."
+    },
+    "tierlist": {
+      "title": "티어표 만들기",
+      "description": "게임을 검색하거나 이미지를 올려 S부터 F까지 각 등급으로 끌어 놓고, 나만의 티어표를 만들어 이미지로 저장하세요. 데이터는 브라우저에만 저장됩니다."
+    },
     "series": {
       "title": "게임 시리즈",
       "description": "PSRay에 수록된 게임을 시리즈별로 둘러보세요. 시리즈는 작품별 스테이지로 나뉘고, 스테이지에는 플랫폼·지역·리메이크판 트로피 세트가 모여 있습니다.",
@@ -1726,6 +1735,136 @@
     "copy": {
       "button": "복사",
       "code": "코드"
+    }
+  },
+  "tools": {
+    "title": "도구",
+    "description": "플레이어를 위한 작은 도구 모음입니다. 모두 브라우저에서 동작합니다.",
+    "tags": {
+      "local": "기기에 저장",
+      "export": "이미지 저장"
+    },
+    "items": {
+      "tierlist": {
+        "name": "티어표",
+        "description": "게임을 검색하거나 이미지를 올려 등급별로 순위를 매기고, 한 장의 이미지로 내보냅니다."
+      }
+    }
+  },
+  "tierlist": {
+    "title": "티어표",
+    "description": "게임을 검색하거나 이미지를 올려 각 등급으로 끌어 놓으세요. 모든 데이터는 이 기기에만 저장되며 업로드되지 않습니다.",
+    "actions": {
+      "lists": "내 티어표",
+      "reset": "초기화",
+      "export": "이미지 내보내기"
+    },
+    "defaultTitle": "내 티어표",
+    "newTitle": "새 티어표",
+    "copyTitle": "{title} (사본)",
+    "untitled": "제목 없는 티어표",
+    "untitledRow": "제목 없음",
+    "newRow": "새 등급",
+    "titleLabel": "티어표 제목",
+    "savedLocally": "이 기기에 자동 저장됨",
+    "rowCount": "등급 {n}개",
+    "placedCount": "배치 {n}개",
+    "pool": "미배치",
+    "poolEmpty": "게임을 검색하거나 이미지를 올리면 먼저 여기에 놓입니다.",
+    "addRow": "등급 추가",
+    "storageFull": "브라우저 저장 공간이 가득 차서 최근 변경 사항을 저장하지 못했습니다.",
+    "limits": {
+      "items": "티어표 하나에는 최대 {count}개까지 넣을 수 있습니다.",
+      "rows": "등급은 최대 {count}개입니다.",
+      "lists": "티어표는 최대 {count}개까지 저장할 수 있습니다."
+    },
+    "row": {
+      "settings": "‘{name}’ 등급 편집",
+      "settingsShort": "이 등급 편집",
+      "drag": "끌어서 순서 변경",
+      "name": "이름",
+      "color": "색상",
+      "customColor": "색상 직접 지정",
+      "moveUp": "위로 이동",
+      "moveDown": "아래로 이동",
+      "insertAbove": "위에 등급 추가",
+      "insertBelow": "아래에 등급 추가",
+      "clear": "이 등급 비우기 (미배치로 되돌리기)",
+      "remove": "이 등급 삭제"
+    },
+    "item": {
+      "menu": "‘{name}’ 이동 또는 삭제",
+      "moveTo": "이동할 등급",
+      "backToPool": "미배치로 되돌리기",
+      "openGame": "게임 페이지 열기",
+      "remove": "티어표에서 삭제"
+    },
+    "source": {
+      "title": "항목 추가",
+      "searchTab": "게임 검색",
+      "imagesTab": "내 이미지",
+      "searchPlaceholder": "게임 검색 (예: Elden Ring)",
+      "searchHint": "{count}자 이상 입력하면 게임을 검색합니다.",
+      "searchEmpty": "검색 결과가 없습니다.",
+      "searchError": "검색하지 못했습니다. 잠시 후 다시 시도해 주세요.",
+      "loadMore": "더 보기",
+      "added": "이미 추가됨",
+      "add": "‘{name}’ 미배치에 추가",
+      "hint": "원하는 등급으로 끌어 놓거나, 클릭해서 미배치에 추가하세요.",
+      "upload": "이미지를 끌어 놓거나 클릭해서 업로드",
+      "uploading": "이미지 처리 중…",
+      "uploadHint": "이 기기에만 저장됩니다",
+      "imagesEmpty": "아직 올린 이미지가 없습니다. 올린 이미지는 모든 티어표에서 쓸 수 있습니다."
+    },
+    "upload": {
+      "notImage": "‘{name}’은(는) 이미지가 아닙니다.",
+      "tooLarge": "‘{name}’이(가) 20MB를 넘습니다.",
+      "failed": "‘{name}’을(를) 읽을 수 없습니다.",
+      "done": "이미지 {n}개를 추가했습니다"
+    },
+    "images": {
+      "delete": "이미지 ‘{name}’ 삭제",
+      "deleteShort": "삭제",
+      "deleteTitle": "이미지 삭제",
+      "deleteBody": "이 기기에서 이미지를 삭제합니다. 이 이미지를 쓰는 티어표에서도 함께 빠집니다.",
+      "deleteConfirm": "삭제",
+      "deleteFailed": "이미지를 삭제하지 못했습니다."
+    },
+    "reset": {
+      "title": "티어표 초기화",
+      "body": "배치한 항목을 모두 미배치로 되돌립니다. 등급과 항목은 그대로 남습니다.",
+      "confirm": "초기화"
+    },
+    "lists": {
+      "title": "내 티어표",
+      "current": "현재",
+      "items": "항목 {n}개",
+      "duplicate": "복제",
+      "duplicateNamed": "‘{title}’ 복제",
+      "delete": "삭제",
+      "deleteNamed": "‘{title}’ 삭제",
+      "create": "새로 만들기",
+      "hint": "티어표는 이 기기의 브라우저에 저장됩니다. 다른 기기에서는 볼 수 없고, 브라우저 데이터를 지우면 사라집니다.",
+      "deleteTitle": "티어표 삭제",
+      "deleteBody": "‘{title}’을(를) 삭제할까요? 되돌릴 수 없습니다."
+    },
+    "export": {
+      "title": "이미지 내보내기",
+      "background": "배경",
+      "light": "밝게",
+      "dark": "어둡게",
+      "showTitle": "제목 표시",
+      "showNames": "이름 표시",
+      "watermark": "PSRay 워터마크",
+      "local": "이미지는 브라우저에서 만들어지며 서버로 보내지지 않습니다.",
+      "copy": "복사",
+      "copied": "이미지를 복사했습니다",
+      "copyFailed": "이 브라우저는 이미지 복사를 지원하지 않습니다. 다운로드를 이용해 주세요.",
+      "download": "PNG 다운로드",
+      "rendering": "만드는 중…",
+      "failed": "이미지를 만들지 못했습니다. 다시 시도해 주세요.",
+      "missing": "이미지 {n}개를 불러오지 못해 대체 이미지로 표시했습니다.",
+      "preview": "내보내기 미리보기"
     }
   }
 }

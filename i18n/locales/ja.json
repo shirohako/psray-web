@@ -45,6 +45,7 @@
     "about": "PSRay について",
     "home": "ホーム",
     "leaderboard": "ランキング",
+    "tools": "ツール",
     "login": "ログイン",
     "register": "新規登録",
     "sectionLabel": "ナビゲーション",
@@ -923,6 +924,14 @@
     "failed": "処理に失敗しました。しばらくしてからもう一度お試しください。"
   },
   "seo": {
+    "tools": {
+      "title": "ツール",
+      "description": "PSRay のプレイヤー向けツール集です。Tier 表メーカーなど、すべてブラウザ上で動きます。"
+    },
+    "tierlist": {
+      "title": "Tier 表メーカー",
+      "description": "ゲームを検索するか画像をアップロードして、S から F までの段にドラッグ。自分だけの Tier 表を作って画像で保存できます。データはブラウザにだけ保存されます。"
+    },
     "series": {
       "title": "ゲームシリーズ",
       "description": "PSRay に収録されたゲームをシリーズ単位で表示します。各シリーズは作品ごとのステージに分かれ、ステージにはプラットフォーム・地域・リメイク版のトロフィーセットがまとまっています。",
@@ -1726,6 +1735,136 @@
     "copy": {
       "button": "コピー",
       "code": "コード"
+    }
+  },
+  "tools": {
+    "title": "ツール",
+    "description": "プレイヤー向けの小さなツール集です。すべてブラウザ上で動きます。",
+    "tags": {
+      "local": "端末に保存",
+      "export": "画像で保存"
+    },
+    "items": {
+      "tierlist": {
+        "name": "Tier 表",
+        "description": "ゲームを検索するか画像をアップロードして段ごとにランク付けし、1 枚の画像として書き出せます。"
+      }
+    }
+  },
+  "tierlist": {
+    "title": "Tier 表",
+    "description": "ゲームを検索するか画像をアップロードして、各段にドラッグしてランク付けします。データはこの端末にだけ保存され、アップロードはされません。",
+    "actions": {
+      "lists": "マイ Tier 表",
+      "reset": "リセット",
+      "export": "画像を書き出す"
+    },
+    "defaultTitle": "マイ Tier 表",
+    "newTitle": "新しい Tier 表",
+    "copyTitle": "{title}（コピー）",
+    "untitled": "無題の Tier 表",
+    "untitledRow": "無題",
+    "newRow": "新規",
+    "titleLabel": "Tier 表のタイトル",
+    "savedLocally": "この端末に自動保存",
+    "rowCount": "{n} 段",
+    "placedCount": "配置済み {n}",
+    "pool": "未配置",
+    "poolEmpty": "ゲームを検索するか画像をアップロードすると、まずここに並びます。",
+    "addRow": "段を追加",
+    "storageFull": "ブラウザの保存容量がいっぱいのため、直近の変更を保存できませんでした。",
+    "limits": {
+      "items": "1 つの Tier 表に入れられるのは {count} 件までです。",
+      "rows": "段は {count} 段までです。",
+      "lists": "保存できる Tier 表は {count} 件までです。"
+    },
+    "row": {
+      "settings": "段「{name}」を編集",
+      "settingsShort": "この段を編集",
+      "drag": "ドラッグで並べ替え",
+      "name": "名前",
+      "color": "色",
+      "customColor": "色を指定",
+      "moveUp": "上へ移動",
+      "moveDown": "下へ移動",
+      "insertAbove": "上に段を挿入",
+      "insertBelow": "下に段を挿入",
+      "clear": "この段を空にする（未配置に戻す）",
+      "remove": "この段を削除"
+    },
+    "item": {
+      "menu": "「{name}」を移動または削除",
+      "moveTo": "移動先",
+      "backToPool": "未配置に戻す",
+      "openGame": "ゲームのページを開く",
+      "remove": "Tier 表から削除"
+    },
+    "source": {
+      "title": "素材を追加",
+      "searchTab": "ゲームを検索",
+      "imagesTab": "マイ画像",
+      "searchPlaceholder": "ゲームを検索（例：Elden Ring）",
+      "searchHint": "{count} 文字以上入力するとゲームを検索します。",
+      "searchEmpty": "該当するゲームが見つかりませんでした。",
+      "searchError": "検索に失敗しました。しばらくしてからもう一度お試しください。",
+      "loadMore": "さらに読み込む",
+      "added": "追加済み",
+      "add": "「{name}」を未配置に追加",
+      "hint": "好きな段にドラッグするか、クリックで未配置に追加します。",
+      "upload": "画像をドロップ、またはクリックしてアップロード",
+      "uploading": "画像を処理しています…",
+      "uploadHint": "この端末にだけ保存されます",
+      "imagesEmpty": "まだ画像がありません。アップロードした画像はすべての Tier 表で使えます。"
+    },
+    "upload": {
+      "notImage": "「{name}」は画像ではありません。",
+      "tooLarge": "「{name}」は 20 MB を超えています。",
+      "failed": "「{name}」を読み込めませんでした。",
+      "done": "画像を {n} 枚追加しました"
+    },
+    "images": {
+      "delete": "画像「{name}」を削除",
+      "deleteShort": "削除",
+      "deleteTitle": "画像を削除",
+      "deleteBody": "この画像を端末から削除します。使っている Tier 表からも取り除かれます。",
+      "deleteConfirm": "削除",
+      "deleteFailed": "画像を削除できませんでした。"
+    },
+    "reset": {
+      "title": "Tier 表をリセット",
+      "body": "配置済みの項目をすべて未配置に戻します。段と項目はそのまま残ります。",
+      "confirm": "リセット"
+    },
+    "lists": {
+      "title": "マイ Tier 表",
+      "current": "表示中",
+      "items": "{n} 件",
+      "duplicate": "複製",
+      "duplicateNamed": "「{title}」を複製",
+      "delete": "削除",
+      "deleteNamed": "「{title}」を削除",
+      "create": "新しく作る",
+      "hint": "Tier 表はこの端末のブラウザに保存されます。ほかの端末からは見られず、ブラウザのデータを消すと消えます。",
+      "deleteTitle": "Tier 表を削除",
+      "deleteBody": "「{title}」を削除しますか？元に戻せません。"
+    },
+    "export": {
+      "title": "画像を書き出す",
+      "background": "背景",
+      "light": "ライト",
+      "dark": "ダーク",
+      "showTitle": "タイトルを表示",
+      "showNames": "名前を表示",
+      "watermark": "PSRay の透かし",
+      "local": "画像はブラウザ内で作られ、サーバーには送られません。",
+      "copy": "コピー",
+      "copied": "画像をコピーしました",
+      "copyFailed": "このブラウザは画像のコピーに対応していません。ダウンロードをお使いください。",
+      "download": "PNG を保存",
+      "rendering": "作成中…",
+      "failed": "画像を作成できませんでした。もう一度お試しください。",
+      "missing": "{n} 枚の画像を読み込めなかったため、代わりの図で表示しています。",
+      "preview": "書き出しプレビュー"
     }
   }
 }

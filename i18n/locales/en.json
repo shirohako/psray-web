@@ -45,6 +45,7 @@
     "about": "About PSRay",
     "home": "Home",
     "leaderboard": "Leaderboard",
+    "tools": "Tools",
     "login": "Sign in",
     "register": "Sign up",
     "sectionLabel": "Navigation",
@@ -923,6 +924,14 @@
     "failed": "Something went wrong. Please try again later."
   },
   "seo": {
+    "tools": {
+      "title": "Tools",
+      "description": "Small tools from PSRay for players, like a tier list maker. Everything runs in your browser."
+    },
+    "tierlist": {
+      "title": "Tier list maker",
+      "description": "Search for games or upload images, drag them into tiers from S to F, and save your tier list as an image. Your lists stay in your browser."
+    },
     "series": {
       "title": "Game series",
       "description": "Browse game series on PSRay: each series lists its works as stages, and each stage gathers the trophy sets of its platforms, regions and remakes.",
@@ -1726,6 +1735,136 @@
     "copy": {
       "button": "Copy",
       "code": "Code"
+    }
+  },
+  "tools": {
+    "title": "Tools",
+    "description": "Small tools for players. Everything runs in your browser.",
+    "tags": {
+      "local": "Saved on your device",
+      "export": "Image export"
+    },
+    "items": {
+      "tierlist": {
+        "name": "Tier list",
+        "description": "Search for games or upload images, rank them in tiers, then export the list as one image."
+      }
+    }
+  },
+  "tierlist": {
+    "title": "Tier list",
+    "description": "Search for games or upload images and drag them into tiers. Everything is saved on this device and never uploaded.",
+    "actions": {
+      "lists": "My lists",
+      "reset": "Reset",
+      "export": "Export image"
+    },
+    "defaultTitle": "My tier list",
+    "newTitle": "New tier list",
+    "copyTitle": "{title} (copy)",
+    "untitled": "Untitled tier list",
+    "untitledRow": "Untitled",
+    "newRow": "New",
+    "titleLabel": "Tier list title",
+    "savedLocally": "Saved on this device",
+    "rowCount": "{n} row | {n} rows",
+    "placedCount": "{n} ranked",
+    "pool": "Unranked",
+    "poolEmpty": "Search for games or upload images. They land here first.",
+    "addRow": "Add a row",
+    "storageFull": "Your browser's storage is full, so the latest changes weren't saved.",
+    "limits": {
+      "items": "A tier list holds up to {count} items.",
+      "rows": "A tier list has at most {count} rows.",
+      "lists": "You can keep up to {count} tier lists."
+    },
+    "row": {
+      "settings": "Edit tier {name}",
+      "settingsShort": "Edit row",
+      "drag": "Drag to reorder",
+      "name": "Name",
+      "color": "Colour",
+      "customColor": "Custom colour",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "insertAbove": "Insert a row above",
+      "insertBelow": "Insert a row below",
+      "clear": "Clear row (back to unranked)",
+      "remove": "Delete row"
+    },
+    "item": {
+      "menu": "Move or remove {name}",
+      "moveTo": "Move to",
+      "backToPool": "Back to unranked",
+      "openGame": "Open game page",
+      "remove": "Remove from list"
+    },
+    "source": {
+      "title": "Add items",
+      "searchTab": "Search games",
+      "imagesTab": "My images",
+      "searchPlaceholder": "Search games, e.g. Elden Ring",
+      "searchHint": "Type at least {count} characters to search for games.",
+      "searchEmpty": "No games found.",
+      "searchError": "Search failed. Please try again in a moment.",
+      "loadMore": "Load more",
+      "added": "Already in the list",
+      "add": "Add {name} to unranked",
+      "hint": "Drag onto any row, or click to add to unranked.",
+      "upload": "Drop or click to upload images",
+      "uploading": "Processing images…",
+      "uploadHint": "Stored on this device only",
+      "imagesEmpty": "No images yet. Images you upload can be used in every tier list."
+    },
+    "upload": {
+      "notImage": "{name} isn't an image.",
+      "tooLarge": "{name} is larger than 20 MB.",
+      "failed": "Couldn't read {name}.",
+      "done": "Added {n} image | Added {n} images"
+    },
+    "images": {
+      "delete": "Delete image {name}",
+      "deleteShort": "Delete",
+      "deleteTitle": "Delete image",
+      "deleteBody": "Deletes this image from this device. Tier lists that use it lose it too.",
+      "deleteConfirm": "Delete",
+      "deleteFailed": "Couldn't delete the image."
+    },
+    "reset": {
+      "title": "Reset tier list",
+      "body": "Moves every ranked item back to unranked. Rows and items stay.",
+      "confirm": "Reset"
+    },
+    "lists": {
+      "title": "My tier lists",
+      "current": "Open",
+      "items": "{n} item | {n} items",
+      "duplicate": "Duplicate",
+      "duplicateNamed": "Duplicate {title}",
+      "delete": "Delete",
+      "deleteNamed": "Delete {title}",
+      "create": "New tier list",
+      "hint": "Tier lists are saved in this browser on this device. Other devices can't see them, and clearing your browser data deletes them.",
+      "deleteTitle": "Delete tier list",
+      "deleteBody": "Delete “{title}”? This can't be undone."
+    },
+    "export": {
+      "title": "Export image",
+      "background": "Background",
+      "light": "Light",
+      "dark": "Dark",
+      "showTitle": "Show title",
+      "showNames": "Show names",
+      "watermark": "PSRay watermark",
+      "local": "The image is made in your browser and never sent to a server.",
+      "copy": "Copy",
+      "copied": "Image copied",
+      "copyFailed": "This browser can't copy images. Please download instead.",
+      "download": "Download PNG",
+      "rendering": "Rendering…",
+      "failed": "Couldn't create the image. Please try again.",
+      "missing": "{n} image couldn't be loaded and was replaced by a placeholder. | {n} images couldn't be loaded and were replaced by placeholders.",
+      "preview": "Export preview"
     }
   }
 }

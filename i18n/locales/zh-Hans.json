@@ -45,6 +45,7 @@
     "about": "关于 PSRay",
     "home": "首页",
     "leaderboard": "排行榜",
+    "tools": "工具",
     "login": "登录",
     "register": "注册",
     "sectionLabel": "导航",
@@ -923,6 +924,14 @@
     "failed": "操作失败，请稍后再试。"
   },
   "seo": {
+    "tools": {
+      "title": "工具",
+      "description": "PSRay 为玩家准备的小工具，比如 Tier 榜单制作。全部在你的浏览器里运行。"
+    },
+    "tierlist": {
+      "title": "Tier 榜单制作",
+      "description": "搜索游戏或上传图片，拖进 S 到 F 各个等级，做出自己的 Tier 榜单并导出成图片。数据只保存在你的浏览器里。"
+    },
     "series": {
       "title": "游戏系列",
       "description": "按系列浏览 PSRay 收录的游戏：每个系列按作品排成阶段，阶段里收录不同平台、地区和重制版的奖杯组。",
@@ -1726,6 +1735,136 @@
     "copy": {
       "button": "复制",
       "code": "代码"
+    }
+  },
+  "tools": {
+    "title": "工具",
+    "description": "给玩家准备的小工具，全部在你的浏览器里运行。",
+    "tags": {
+      "local": "保存在本机",
+      "export": "导出图片"
+    },
+    "items": {
+      "tierlist": {
+        "name": "Tier 榜单",
+        "description": "搜索游戏或上传图片，拖进各个等级排名，再导出成一张图片。"
+      }
+    }
+  },
+  "tierlist": {
+    "title": "Tier 榜单",
+    "description": "搜索游戏或上传图片，拖进各个等级排名。全部保存在这台设备上，不会上传。",
+    "actions": {
+      "lists": "我的榜单",
+      "reset": "重置",
+      "export": "导出图片"
+    },
+    "defaultTitle": "我的 Tier 榜单",
+    "newTitle": "新的 Tier 榜单",
+    "copyTitle": "{title}（副本）",
+    "untitled": "未命名榜单",
+    "untitledRow": "未命名",
+    "newRow": "新",
+    "titleLabel": "榜单标题",
+    "savedLocally": "已自动保存在本机",
+    "rowCount": "{n} 行",
+    "placedCount": "已排列 {n}",
+    "pool": "待排列",
+    "poolEmpty": "搜索游戏或上传图片，它们会先放在这里。",
+    "addRow": "添加一行",
+    "storageFull": "浏览器存储空间已满，最近的修改没有保存。",
+    "limits": {
+      "items": "一份榜单最多放 {count} 项。",
+      "rows": "最多 {count} 行。",
+      "lists": "最多保存 {count} 份榜单。"
+    },
+    "row": {
+      "settings": "编辑等级「{name}」",
+      "settingsShort": "编辑这一行",
+      "drag": "拖动调整顺序",
+      "name": "名称",
+      "color": "颜色",
+      "customColor": "自定义颜色",
+      "moveUp": "上移",
+      "moveDown": "下移",
+      "insertAbove": "在上方插入一行",
+      "insertBelow": "在下方插入一行",
+      "clear": "清空这一行（放回待排列）",
+      "remove": "删除这一行"
+    },
+    "item": {
+      "menu": "移动或删除「{name}」",
+      "moveTo": "移到",
+      "backToPool": "移回待排列",
+      "openGame": "打开游戏页面",
+      "remove": "从榜单删除"
+    },
+    "source": {
+      "title": "添加素材",
+      "searchTab": "搜索游戏",
+      "imagesTab": "我的图片",
+      "searchPlaceholder": "搜索游戏，例如 Elden Ring",
+      "searchHint": "输入至少 {count} 个字搜索游戏。",
+      "searchEmpty": "没有找到相关游戏。",
+      "searchError": "搜索失败，请稍后再试。",
+      "loadMore": "加载更多",
+      "added": "已在榜单里",
+      "add": "把「{name}」放进待排列",
+      "hint": "拖到任意一行，或点一下放进待排列。",
+      "upload": "拖入或点击上传图片",
+      "uploading": "正在处理图片…",
+      "uploadHint": "只保存在这台设备里",
+      "imagesEmpty": "还没有上传过图片。上传的图片所有榜单都能用。"
+    },
+    "upload": {
+      "notImage": "「{name}」不是图片。",
+      "tooLarge": "「{name}」超过 20 MB。",
+      "failed": "无法读取「{name}」。",
+      "done": "已添加 {n} 张图片"
+    },
+    "images": {
+      "delete": "删除图片「{name}」",
+      "deleteShort": "删除",
+      "deleteTitle": "删除图片",
+      "deleteBody": "从这台设备删除这张图片。用到它的榜单里也会一起移除。",
+      "deleteConfirm": "删除",
+      "deleteFailed": "图片删除失败。"
+    },
+    "reset": {
+      "title": "重置榜单",
+      "body": "把所有已排列的项目移回待排列。行和项目都会保留。",
+      "confirm": "重置"
+    },
+    "lists": {
+      "title": "我的榜单",
+      "current": "当前",
+      "items": "{n} 项",
+      "duplicate": "复制",
+      "duplicateNamed": "复制「{title}」",
+      "delete": "删除",
+      "deleteNamed": "删除「{title}」",
+      "create": "新建榜单",
+      "hint": "榜单保存在这台设备的浏览器里。换设备或清除浏览器数据后就看不到了。",
+      "deleteTitle": "删除榜单",
+      "deleteBody": "删除「{title}」？这一步无法撤销。"
+    },
+    "export": {
+      "title": "导出图片",
+      "background": "背景",
+      "light": "浅色",
+      "dark": "深色",
+      "showTitle": "显示标题",
+      "showNames": "显示名称",
+      "watermark": "PSRay 水印",
+      "local": "图片在你的浏览器里生成，不经过服务器。",
+      "copy": "复制",
+      "copied": "图片已复制",
+      "copyFailed": "这个浏览器不支持复制图片，请改用下载。",
+      "download": "下载 PNG",
+      "rendering": "生成中…",
+      "failed": "图片生成失败，请重试。",
+      "missing": "{n} 张图片没能加载，已用占位图代替。",
+      "preview": "导出预览"
     }
   }
 }
