@@ -18,9 +18,10 @@ function rate(value: number | null) {
   return value === null ? '—' : `${value.toFixed(1)}%`
 }
 
-function isoDate(value: string) {
-  return value.slice(0, 10)
-}
+// Date part of the set's first sync. Old migrated rows can lack it; rendering
+// must not depend on it (a null here once took down every game page listing
+// such a set).
+const createdDate = computed(() => props.game.created_at?.slice(0, 10) ?? null)
 </script>
 
 <template>
@@ -53,8 +54,8 @@ function isoDate(value: string) {
         <span class="text-[10px] text-slate-400">{{ game.np_communication_id }}</span>
       </div>
       <div class="entry-meta mt-1 flex flex-wrap gap-x-2 text-[9px] leading-4 text-slate-400">
-        <time :datetime="game.created_at" class="inline-flex items-center gap-1">
-          <LucideIcon :icon="Clock3" class="size-3" />{{ isoDate(game.created_at) }}
+        <time v-if="createdDate" :datetime="game.created_at ?? undefined" class="inline-flex items-center gap-1">
+          <LucideIcon :icon="Clock3" class="size-3" />{{ createdDate }}
         </time>
         <span v-if="game.translation_count > 0" class="inline-flex items-center gap-1" :title="languageNames">
           <LucideIcon :icon="Languages" class="size-3" />{{ game.translation_count }}

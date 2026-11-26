@@ -97,7 +97,8 @@ export interface TrophyBrowseItem {
   difficult_trophy_count: number
   /** Official translations excluding the default language. */
   translation_count: number
-  created_at: string
+  /** `null` for a handful of rows migrated in June 2026 without one. */
+  created_at: string | null
   updated_at: string
 }
 
@@ -175,7 +176,8 @@ export interface TrophySetDetailInfo {
   difficult_trophy_count: number
   /** Official translations excluding the default language. */
   translation_count: number
-  created_at: string
+  /** `null` for a handful of rows migrated in June 2026 without one. */
+  created_at: string | null
   updated_at: string
 }
 
