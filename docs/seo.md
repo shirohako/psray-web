@@ -102,6 +102,51 @@ alone decides which edition it lands on.
   facts the page shows.
 - The homepage links into the site below the hero (`components/home/Hub.vue`, see `docs/home.md`).
 
+## Markdown for agents
+
+Every public page is also served as Markdown, for AI agents and other tools. This works the same way as Cloudflare's [Markdown for Agents](https://developers.cloudflare.com/fundamentals/reference/markdown-for-agents/), but we run it ourselves, so keep Cloudflare's own switch off.
+
+**How to ask for it.** There are two ways:
+
+- Send `Accept: text/markdown`. A `q=0` turns it off, and `*/*` doesn't count.
+- Append `.md` to the path, for example `/trophies/42972.md?lang=en`. The home page is `/index.md`.
+
+HTML pages also carry `<link rel="alternate" type="text/markdown">`, from `useSeo`. `/llms.txt` (`shared/llmsTxt.ts`) indexes the site for agents.
+
+**Where the code is:**
+
+- `server/plugins/markdown-for-agents.ts` converts the rendered page in Nitro's `render:response` hook. Error pages go through the same hook.
+- `server/middleware/markdown-for-agents.ts` handles the two kinds of request:
+  - For `.md` URLs it fetches the page internally and relays the response. Redirects keep their `.md` form.
+  - For Accept requests it adds `text/html;q=0.01` to the Accept header. Without it, Nuxt answers a 404 from curl with JSON instead of rendering `error.vue`.
+- Private paths (`isPrivatePath` in `shared/sitemap.ts`) and files are never converted.
+
+**What the response looks like:**
+
+- Headers:
+  - `Content-Type: text/markdown; charset=utf-8`
+  - `Vary: Accept`. HTML responses of convertible pages carry it too.
+  - `x-markdown-tokens`: an estimate, UTF-8 bytes / 4.
+  - `Content-Signal: ai-train=yes, search=yes, ai-input=yes`, unless the response already has one.
+  - `X-Robots-Tag`, copied from the page's robots meta.
+  - For `.md` URLs, `Link: rel=canonical` pointing back at the page.
+- Length, encoding and validator headers are dropped.
+- The body is YAML front matter, then the content, then the page's JSON-LD in a single ```` ```json ```` block.
+
+**What counts as content.** The conversion is generic (`shared/htmlToMarkdown.ts`, rules in `shared/htmlPrune.ts`):
+
+- It reads `<main>`, without the site footer.
+- It drops buttons and widget roles, forms, `aria-hidden` and `hidden` elements, and anything Tailwind hides at desktop width (so the mobile copy of a list goes).
+- It drops images whose alt text is already written next to them.
+- It turns card links into one link on the card's title.
+
+When a page loses meaning in Markdown, fix its markup for assistive tech instead of adding a rule. An `sr-only` label, or a heading around an accordion toggle, helps both screen readers and agents. Trophy tips are not included, because they only render in client-side dialogs.
+
+```bash
+curl -sD- -H 'Accept: text/markdown' 'http://127.0.0.1:3630/trophies/42972' | head -30
+curl -s 'http://127.0.0.1:3630/trophies/42972.md?lang=en' | head -30
+```
+
 ## Checking a change
 
 ```bash

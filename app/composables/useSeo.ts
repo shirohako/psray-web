@@ -1,5 +1,6 @@
 import { withLang } from '#shared/langLink'
 import { DEFAULT_LOCALE, isUiLocale, type UiLocale } from '#shared/locales'
+import { toMarkdownUrl } from '#shared/markdownAgents'
 import { resolveSeoImage, type SeoImageType } from '~/utils/seoImage'
 import { resolveSeoEditions } from '~/utils/seoLocale'
 
@@ -164,7 +165,16 @@ export function useSeo(input: SeoInput) {
   })
 
   useHead(() => ({
-    link: [...(canonical.value ? [{ rel: 'canonical', href: canonical.value }] : []), ...alternates.value],
+    link: [
+      ...(canonical.value
+        ? [
+            { rel: 'canonical' as const, href: canonical.value },
+            // The same page as Markdown, for agents (shared/markdownAgents.ts).
+            { rel: 'alternate' as const, type: 'text/markdown', href: toMarkdownUrl(canonical.value) },
+          ]
+        : []),
+      ...alternates.value,
+    ],
   }))
 
   return {

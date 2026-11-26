@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { robotsText, sitemapUrl } from '../shared/sitemap'
+import { isPrivatePath, robotsText, sitemapUrl } from '../shared/sitemap'
 
 describe('sitemap discovery', () => {
   it('keeps private routes excluded, shuts out SEO-tool crawlers and advertises the index', () => {
@@ -21,5 +21,15 @@ describe('sitemap discovery', () => {
       '',
     ].join('\n'))
     expect(() => sitemapUrl('javascript:alert(1)')).toThrow()
+  })
+})
+
+describe('private paths', () => {
+  it('match by whole path segment', () => {
+    expect(isPrivatePath('/settings')).toBe(true)
+    expect(isPrivatePath('/settings/profile')).toBe(true)
+    expect(isPrivatePath('/me/tips')).toBe(true)
+    expect(isPrivatePath('/meta')).toBe(false)
+    expect(isPrivatePath('/trophies')).toBe(false)
   })
 })

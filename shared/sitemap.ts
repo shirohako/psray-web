@@ -4,7 +4,17 @@ export function sitemapUrl(value: string): string {
   return url.href
 }
 
-const PRIVATE_PATHS = ['/admin', '/settings', '/me', '/sync', '/auth']
+/** Account, tooling and auth areas: kept out of crawlers and the Markdown view. */
+export const PRIVATE_PATHS = ['/admin', '/settings', '/me', '/sync', '/auth'] as const
+
+/**
+ * Whether a pathname lies in one of the private areas, matched by whole path
+ * segment (`/me/tips` is private, `/meta` is not). robots.txt's own prefix
+ * rules are broader, which errs the safe way.
+ */
+export function isPrivatePath(pathname: string): boolean {
+  return PRIVATE_PATHS.some(path => pathname === path || pathname.startsWith(`${path}/`))
+}
 
 /**
  * SEO-tool crawlers: tens of thousands of SSR renders a day between them and

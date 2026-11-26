@@ -75,6 +75,11 @@ describe('other old-site URLs', () => {
     expect(isLegacyCandidate('/p/abyssmoe')).toBe(false)
     expect(isLegacyCandidate('/trophies')).toBe(false)
   })
+
+  it('leaves Markdown URLs to the Markdown middleware, which redirects them itself', () => {
+    expect(legacyRedirect('/trophies/1.md', '')).toBeNull()
+    expect(legacyRedirect('/trophy/636711.md', '')).toBeNull()
+  })
 })
 
 describe('trailing slashes', () => {
