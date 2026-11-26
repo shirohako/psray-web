@@ -5,7 +5,7 @@ import {
   emptyNames,
   fieldState,
   formatRegion,
-  isHttpsUrl,
+  isValidIconUrl,
   manualLanguageOptions,
   manualPayload,
   manualProblems,
@@ -80,8 +80,8 @@ describe('trophy set override draft', () => {
     expect(combinedState(['free'])).toBe('free')
     expect(overrideCounts(detail().overrides!)).toEqual({ '': 2, 'zh-Hant': 1 })
     expect(emptyNames({ [textKey('set', 0, 'name')]: ' ', [textKey('set', 0, 'detail')]: '' } as any)).toEqual([textKey('set', 0, 'name')])
-    expect(isHttpsUrl('https://img.example/a.png')).toBe(true)
-    expect(isHttpsUrl('http://img.example/a.png')).toBe(false)
+    expect(isValidIconUrl('https://img.example/a.png')).toBe(true)
+    expect(isValidIconUrl('http://img.example/a.png')).toBe(false)
   })
 
   it('summarises manual edits for the drawer', () => {

@@ -9,7 +9,7 @@ import {
   GAME_PRECISION_OPTIONS,
   GAME_REGION_OPTIONS,
   GAME_STATUS_LABELS,
-  regionName,
+  releaseRegionLabel,
   type DraftRelease,
 } from '~/utils/adminGame'
 
@@ -111,7 +111,7 @@ const igdbDiffers = computed(() => {
       <ul v-if="showIgdb" class="mt-2 flex flex-wrap gap-1.5">
         <li v-for="(release, i) in igdb" :key="i" class="inline-flex h-6 items-center gap-1.5 rounded-md bg-slate-50 px-2 text-xs text-slate-600">
           <span class="font-semibold text-slate-800">{{ release.platform }}</span>
-          <span>{{ regionName(release.region) }}</span>
+          <span>{{ releaseRegionLabel(release.region) }}</span>
           <span class="tabular-nums">{{ formatAdminReleaseDate(release.release_date, release.date_precision) }}</span>
           <span v-if="release.status" class="text-slate-400">{{ GAME_STATUS_LABELS[release.status] ?? release.status }}</span>
         </li>

@@ -254,4 +254,8 @@ export function formatAdminReleaseDate(date: string | null | undefined, precisio
   }
 }
 
-export const regionName = (code: string) => GAME_REGION_OPTIONS.find(o => o.value === code)?.label ?? code
+/**
+ * Release region code (WW, NA, EU …) → its admin label. Not profile's
+ * `regionName`, which maps country codes and would read NA as Namibia.
+ */
+export const releaseRegionLabel = (code: string) => GAME_REGION_OPTIONS.find(o => o.value === code)?.label ?? code

@@ -7,7 +7,7 @@ import {
   emptyNames,
   fieldState,
   formatRegion,
-  isHttpsUrl,
+  isValidIconUrl,
   overrideChanges,
   overrideCounts,
   overrideFor,
@@ -113,7 +113,7 @@ function onTranslationCreated(translation: AdminManualTranslation) {
 const dirty = computed(() => changes.value.length > 0 || regionDirty.value || manualDirty.value)
 const changedKeys = computed(() => (Object.keys(draft.value) as TextKey[]).filter(key => draft.value[key] !== saved.value[key]))
 const missingNames = computed(() => emptyNames(draft.value).filter(key => changedKeys.value.includes(key)))
-const badIcons = computed(() => changes.value.filter(c => c.field === 'icon_url' && c.value !== null && !isHttpsUrl(c.value)).length)
+const badIcons = computed(() => changes.value.filter(c => c.field === 'icon_url' && c.value !== null && !isValidIconUrl(c.value)).length)
 const canSave = computed(() => dirty.value && !saving.value && !missingNames.value.length && !badIcons.value && (!manualDirty.value || !!manualEditor.value?.canSave))
 
 const state = (key: TextKey) => detail.value ? fieldState(detail.value, saved.value, draft.value, key) : 'free'
@@ -188,7 +188,7 @@ const iconKey = ref<TextKey | null>(null)
 const iconOpen = computed({ get: () => iconKey.value !== null, set: (v) => { if (!v) iconKey.value = null } })
 const iconInvalid = (key: TextKey) => {
   const value = draft.value[key] ?? ''
-  return value !== saved.value[key] && value.trim() !== psn(key).trim() && !isHttpsUrl(value)
+  return value !== saved.value[key] && value.trim() !== psn(key).trim() && !isValidIconUrl(value)
 }
 function editIcon(key: TextKey) {
   if (isDefault.value && key in draft.value) iconKey.value = key

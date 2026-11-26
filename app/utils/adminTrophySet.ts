@@ -164,8 +164,12 @@ export function adminLanguageName(code: string | null | undefined): string {
   }
 }
 
-/** Only `https://` addresses are accepted for icons. */
-export const isHttpsUrl = (value: string) => /^https:\/\/\S+$/.test(value.trim()) && value.trim().length <= 255
+/**
+ * An icon URL the API accepts: `https://` and at most 255 characters (the
+ * `icon_url` column). Named apart from feedback's `isHttpsUrl`, which Nuxt
+ * auto-imports under that name.
+ */
+export const isValidIconUrl = (value: string) => /^https:\/\/\S+$/.test(value.trim()) && value.trim().length <= 255
 
 // ── Region & edition tags (trophy_set.region) ───────────────────────────────
 
