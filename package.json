@@ -15,6 +15,11 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@fontsource-variable/noto-sans": "^5.3.0",
+    "@fontsource-variable/noto-sans-jp": "^5.3.1",
+    "@fontsource-variable/noto-sans-kr": "^5.3.1",
+    "@fontsource-variable/noto-sans-sc": "^5.3.1",
+    "@fontsource-variable/noto-sans-tc": "^5.3.1",
     "@nuxtjs/i18n": "^10.6.0",
     "@psray/markdown-editor": "^0.2.1",
     "@tailwindcss/vite": "^4.3.3",

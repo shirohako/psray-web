@@ -10,10 +10,10 @@
         <AppLink :to="crumb.path" class="min-w-0 shrink truncate transition hover:text-slate-900">{{ crumb.name }}</AppLink>
         <LucideIcon :icon="ChevronRight" class="size-3 shrink-0" />
       </template>
-      <span class="truncate text-slate-600" aria-current="page" :lang="data.display_language">{{ displayName }}</span>
+      <span class="truncate text-slate-600" aria-current="page" :lang="contentLanguage">{{ displayName }}</span>
     </nav>
 
-    <TrophyBanner :trophy-set="data.trophy_set" :display-name="displayName" :lang="data.display_language" />
+    <TrophyBanner :trophy-set="data.trophy_set" :display-name="displayName" :lang="contentLanguage" />
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
       <!-- Main: grouped trophy list -->
@@ -34,7 +34,7 @@
             :has-viewer="hasViewer"
           />
 
-          <TrophyListCollapse ref="trophyList" v-model:expanded="trophyListExpanded" :collapsible="visibleTrophyCount > 6" :lang="data.display_language">
+          <TrophyListCollapse ref="trophyList" v-model:expanded="trophyListExpanded" :collapsible="visibleTrophyCount > 6" :lang="contentLanguage">
             <TrophyGroupSection
               v-for="group in sortedGroups"
               :key="group.id"
@@ -302,6 +302,9 @@ const displayName = computed(() => {
     ?.find(l => l.language_code === detail.display_language)
   return match?.name || detail.trophy_set.name
 })
+
+/** `lang` for the set's own text: the served language, unless the title plainly reads as another. */
+const contentLanguage = computed(() => contentLang(data.value?.display_language, displayName.value))
 
 const editions = computed(() =>
   contentEditions(languageCodes.value, data.value?.trophy_set.default_language))

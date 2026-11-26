@@ -181,8 +181,8 @@ function psnEarnedRate(item: RecentTrophy) {
 
         <!-- Name + detail + earned time -->
         <div class="min-w-0 flex-1">
-          <h3 class="truncate font-semibold text-slate-900">{{ item.trophy.name }}</h3>
-          <p v-if="item.trophy.detail" class="mt-0.5 line-clamp-1 text-xs text-slate-500">
+          <h3 class="truncate font-semibold text-slate-900" :lang="contentLang(item.trophy.display_language, item.trophy.name)">{{ item.trophy.name }}</h3>
+          <p v-if="item.trophy.detail" class="mt-0.5 line-clamp-1 text-xs text-slate-500" :lang="contentLang(item.trophy.display_language, item.trophy.name, item.trophy.detail)">
             {{ item.trophy.detail }}
           </p>
           <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-400">

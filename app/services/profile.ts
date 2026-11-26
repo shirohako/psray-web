@@ -202,6 +202,8 @@ export interface RecentTrophy {
     psn_trophy_id: number
     name: string
     detail: string
+    /** The set's default language, which `name` and `detail` are in. */
+    display_language?: string | null
     icon_url: string
     is_hidden: boolean
     /** PSN official earn rate, %. */

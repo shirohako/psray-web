@@ -6,6 +6,143 @@
    The .markdown-* component layer itself ships with the package. */
 @source "../../../node_modules/@psray/markdown-editor/dist";
 
+/* ---------- Fonts ----------
+   One typeface for every language. Noto Sans covers Latin, Greek and Cyrillic;
+   the Noto Sans CJK superfamily (Source Han Sans) covers Han, kana and Hangul.
+   Its JP, SC, TC and KR families are one design and differ only in the regional
+   forms of shared Han characters (直 骨 角 今 …), so a Simplified Chinese trophy
+   on a Japanese page still reads as the same typeface.
+
+   Fallback is per character, so the order of the CJK families decides which
+   regional form a shared character takes. Every element carrying a `lang`
+   re-declares `--font-sans` with its own order and descendants inherit it:
+   <html lang> sets the page default, content tagged with its own language
+   (see utils/contentLang.ts) overrides it. A custom property is resolved where
+   it is declared, which is why each rule spells the whole stack out instead of
+   swapping one variable underneath.
+
+   The faces are the self-hosted fontsource packages listed in nuxt.config
+   `css`, sliced by unicode-range so a page fetches only the slices its text
+   uses. Google Fonts isn't an option: it is unreachable from mainland China. */
+@theme {
+  --font-sans: "Noto Sans Variable", "Noto Sans JP Variable", "Noto Sans SC Variable", "Noto Sans TC Variable", "Noto Sans KR Variable", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Noto Sans goes first so Latin letters and digits use it, but that also hands
+   it the punctuation Latin and CJK share. In Japanese and Chinese text those
+   marks belong to the CJK font: Noto Sans sits … on the baseline where CJK
+   centres it, and Chinese —— and “” are full-width. These faces borrow just
+   those code points from slices the CJK packages already ship (the same files,
+   so nothing extra is downloaded). ‘’ stays with Noto Sans because it doubles
+   as the apostrophe in names like Marvel’s. */
+@font-face {
+  font-family: "CJK Punct JP";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../../node_modules/@fontsource-variable/noto-sans-jp/files/noto-sans-jp-113-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+2026;
+}
+@font-face {
+  font-family: "CJK Punct JP";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../../node_modules/@fontsource-variable/noto-sans-jp/files/noto-sans-jp-74-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+2025;
+}
+@font-face {
+  font-family: "CJK Punct SC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../../node_modules/@fontsource-variable/noto-sans-sc/files/noto-sans-sc-114-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+2026;
+}
+@font-face {
+  font-family: "CJK Punct SC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../../node_modules/@fontsource-variable/noto-sans-sc/files/noto-sans-sc-117-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+201C-201D;
+}
+@font-face {
+  font-family: "CJK Punct SC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../../node_modules/@fontsource-variable/noto-sans-sc/files/noto-sans-sc-119-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+2014;
+}
+@font-face {
+  font-family: "CJK Punct TC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../../node_modules/@fontsource-variable/noto-sans-tc/files/noto-sans-tc-119-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+2026;
+}
+@font-face {
+  font-family: "CJK Punct TC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../../node_modules/@fontsource-variable/noto-sans-tc/files/noto-sans-tc-116-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+201C-201D;
+}
+@font-face {
+  font-family: "CJK Punct TC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../../../node_modules/@fontsource-variable/noto-sans-tc/files/noto-sans-tc-123-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+2014;
+}
+
+@layer base {
+  :root {
+    --font-latin: "Noto Sans Variable";
+    --font-tail: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-cjk-ja: "Noto Sans JP Variable", "Noto Sans SC Variable", "Noto Sans TC Variable", "Noto Sans KR Variable";
+    --font-cjk-sc: "Noto Sans SC Variable", "Noto Sans TC Variable", "Noto Sans JP Variable", "Noto Sans KR Variable";
+    --font-cjk-tc: "Noto Sans TC Variable", "Noto Sans SC Variable", "Noto Sans JP Variable", "Noto Sans KR Variable";
+    --font-cjk-ko: "Noto Sans KR Variable", "Noto Sans JP Variable", "Noto Sans SC Variable", "Noto Sans TC Variable";
+    /* The UI language's order, for text tagged with a non-CJK language. */
+    --font-cjk-ui: var(--font-cjk-ja);
+  }
+  html:lang(zh) {
+    --font-cjk-ui: var(--font-cjk-sc);
+  }
+  html:is(:lang(zh-Hant), :lang(zh-TW), :lang(zh-HK), :lang(zh-MO)) {
+    --font-cjk-ui: var(--font-cjk-tc);
+  }
+  html:lang(ko) {
+    --font-cjk-ui: var(--font-cjk-ko);
+  }
+
+  /* Any other language (en-US, fr-FR, …): Latin punctuation, and Han in the
+     page's order. utils/contentLang.ts already retags text with kana or Hangul,
+     so what reaches this rule is a kanji-only title nobody can attribute. */
+  [lang] {
+    --font-sans: var(--font-latin), var(--font-cjk-ui), var(--font-tail);
+    font-family: var(--font-sans);
+  }
+  [lang]:lang(ja) {
+    --font-sans: "CJK Punct JP", var(--font-latin), var(--font-cjk-ja), var(--font-tail);
+  }
+  [lang]:lang(zh) {
+    --font-sans: "CJK Punct SC", var(--font-latin), var(--font-cjk-sc), var(--font-tail);
+  }
+  /* After the zh rule: same specificity, so this one wins for Traditional. */
+  [lang]:is(:lang(zh-Hant), :lang(zh-TW), :lang(zh-HK), :lang(zh-MO)) {
+    --font-sans: "CJK Punct TC", var(--font-latin), var(--font-cjk-tc), var(--font-tail);
+  }
+  [lang]:lang(ko) {
+    --font-sans: var(--font-latin), var(--font-cjk-ko), var(--font-tail);
+  }
+}
+
 /* Tailwind v4 Preflight resets <button> to the default cursor; restore the
    pointer for enabled buttons (and role="button") app-wide. */
 @layer base {

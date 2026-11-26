@@ -5,6 +5,8 @@ import type { Trophy as TrophyData } from '~/services/trophies'
 const props = defineProps<{
   trophy: TrophyData
   open: boolean
+  /** The set's display language. The dialog is teleported out of the page's `lang` wrapper, so it tags its own text. */
+  displayLanguage?: string
 }>()
 const emit = defineEmits<{
   'update:open': [v: boolean]
@@ -13,6 +15,7 @@ const emit = defineEmits<{
 
 const name = computed(() => props.trophy.localized_name || props.trophy.name)
 const detail = computed(() => props.trophy.localized_detail || props.trophy.detail)
+const textLang = computed(() => contentLang(props.displayLanguage, name.value, detail.value))
 const rarity = computed(() => rarityMeta(props.trophy.rarity))
 function fmtRate(rate: number | string) {
   const n = Number(rate)
@@ -50,7 +53,7 @@ const TYPE_LABEL: Record<TrophyData['type'], string> = {
           </span>
         </div>
         <div class="min-w-0 flex-1">
-          <h3 class="font-semibold text-slate-900">{{ name }}</h3>
+          <h3 class="font-semibold text-slate-900" :lang="textLang">{{ name }}</h3>
           <div class="mt-2 flex flex-wrap items-center gap-1.5">
             <span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
               {{ $t(TYPE_LABEL[trophy.type]) }}
@@ -69,7 +72,7 @@ const TYPE_LABEL: Record<TrophyData['type'], string> = {
       </div>
 
       <!-- Detail -->
-      <p v-if="detail" class="mt-4 text-sm leading-relaxed text-slate-600">{{ detail }}</p>
+      <p v-if="detail" class="mt-4 text-sm leading-relaxed text-slate-600" :lang="textLang">{{ detail }}</p>
 
       <!-- Stats -->
       <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-slate-100 pt-4 text-sm">

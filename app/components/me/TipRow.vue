@@ -47,11 +47,11 @@ const expandable = computed(() => excerpt.value !== props.tip.content.trim())
         <div class="flex items-start justify-between gap-3">
           <div class="min-w-0 flex-1">
             <h3 class="truncate text-sm font-semibold text-slate-900">
-              <AppLink v-if="target && tip.trophy" :to="target" class="transition hover:text-sky-600">{{ trophyName }}</AppLink>
+              <AppLink v-if="target && tip.trophy" :to="target" class="transition hover:text-sky-600" :lang="contentLang(tip.trophy.display_language, trophyName)">{{ trophyName }}</AppLink>
               <span v-else class="text-slate-400">{{ $t('me.tips.trophyGone') }}</span>
             </h3>
             <p v-if="tip.trophy_set" class="mt-0.5 truncate text-xs text-slate-500">
-              {{ tip.trophy_set.name }}
+              <span :lang="contentLang(tip.trophy_set.display_language, tip.trophy_set.name)">{{ tip.trophy_set.name }}</span>
               <span v-if="tip.trophy_set.platform.length" class="text-slate-400">· {{ tip.trophy_set.platform.join(' / ') }}</span>
             </p>
           </div>
@@ -147,9 +147,9 @@ const expandable = computed(() => excerpt.value !== props.tip.content.trim())
           :id="`tip-${tip.id}-body`"
           class="mt-2 rounded-lg border border-slate-100 bg-slate-50/70 px-3.5 py-3"
         >
-          <RichContent :content="tip.content" :format="tip.content_type" />
+          <RichContent :content="tip.content" :format="tip.content_type" :lang="tipLang(tip.language)" />
         </div>
-        <p v-else :id="`tip-${tip.id}-body`" class="mt-2 line-clamp-3 break-words text-sm leading-6 text-slate-600">{{ excerpt }}</p>
+        <p v-else :id="`tip-${tip.id}-body`" class="mt-2 line-clamp-3 break-words text-sm leading-6 text-slate-600" :lang="tipLang(tip.language)">{{ excerpt }}</p>
         <button
           v-if="expandable"
           type="button"

@@ -18,7 +18,7 @@ defineProps<{ series: SeriesMembership[] }>()
       <AppLink v-for="item in series" :key="item.id" :to="`/series/${item.id}`" class="group flex items-center gap-3 px-4 py-3 transition hover:bg-slate-50">
         <SeriesCoverStack :covers="item.covers" size="sm" />
         <div class="min-w-0 flex-1">
-          <p class="line-clamp-2 text-sm font-semibold leading-5 text-slate-900 group-hover:text-sky-700" :lang="item.display_language ?? undefined">
+          <p class="line-clamp-2 text-sm font-semibold leading-5 text-slate-900 group-hover:text-sky-700" :lang="contentLang(item.display_language, item.localized_name)">
             {{ item.localized_name }}
           </p>
           <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 tabular-nums">

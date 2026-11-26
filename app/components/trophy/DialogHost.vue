@@ -95,6 +95,7 @@ defineExpose({ open })
       v-if="detailMounted && selected"
       v-model:open="detailOpen"
       :trophy="selected"
+      :display-language="displayLanguage"
       @closed="detailMounted = false"
     />
     <LazyTrophyEarnersDialog

@@ -45,6 +45,8 @@ export interface TipAuthor {
 export interface TipTrophy {
   id: number
   name: string
+  /** Language `name` is in: the translation's, or the set's default when untranslated. */
+  display_language?: string | null
   detail?: string | null
   icon_url: string
   type: TrophyType
@@ -54,6 +56,8 @@ export interface TipTrophy {
 export interface TipTrophySet {
   id: number
   name: string
+  /** Language `name` is in. */
+  display_language?: string | null
   icon_url: string
   platform: string[]
 }

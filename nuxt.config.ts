@@ -15,7 +15,15 @@ export default defineNuxtConfig({
     '/flags/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
   },
   // Module id, not a path relative to this file — Nuxt 4.5 warns on the latter.
-  css: ['~/assets/css/main.css'],
+  // Self-hosted fonts (see the Fonts section of main.css for why these five).
+  css: [
+    '@fontsource-variable/noto-sans',
+    '@fontsource-variable/noto-sans-jp',
+    '@fontsource-variable/noto-sans-sc',
+    '@fontsource-variable/noto-sans-tc',
+    '@fontsource-variable/noto-sans-kr',
+    '~/assets/css/main.css',
+  ],
   devtools: { enabled: true },
   app: {
     head: {

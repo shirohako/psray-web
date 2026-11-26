@@ -44,7 +44,7 @@ function open(event: MouseEvent) {
     </div>
 
     <div class="min-w-0 flex-1 space-y-1">
-      <p class="truncate text-sm font-medium text-slate-900 transition-colors group-hover:text-sky-700" :lang="entry.display_language">
+      <p class="truncate text-sm font-medium text-slate-900 transition-colors group-hover:text-sky-700" :lang="contentLang(entry.display_language, entry.localized_name)">
         {{ entry.localized_name }}
       </p>
       <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">

@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<{
 
 const route = useRoute()
 const trophyName = computed(() => props.tip.trophy?.name || `#${props.tip.trophy_id}`)
+const trophyLang = computed(() => props.tip.trophy ? contentLang(props.tip.trophy.display_language, trophyName.value) : undefined)
 const edited = computed(() => isTipEdited(props.tip))
 const voteDigits = computed(() => Math.max(
   String(props.tip.vote_up_count).length,
@@ -61,7 +62,7 @@ function openTip(event: MouseEvent) {
     </div>
 
     <div class="min-w-0 flex-1">
-      <h3 class="truncate text-sm font-semibold text-slate-900">{{ trophyName }}</h3>
+      <h3 class="truncate text-sm font-semibold text-slate-900" :lang="trophyLang">{{ trophyName }}</h3>
       <div class="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-400">
         <LocalTime class="tabular-nums" :value="tip.updated_at" />
         <span v-if="edited && !compact" class="font-medium text-slate-500">{{ $t('trophy.tips.edited') }}</span>

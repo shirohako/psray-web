@@ -18,14 +18,14 @@ defineProps<{ game: GameBrowseItem }>()
       :image="game.cover"
       :alt="game.localized_name"
       :seed="game.id"
-      :lang="game.display_language ?? undefined"
+      :lang="contentLang(game.display_language, game.localized_name)"
       class="transition duration-200 group-hover:-translate-y-0.5 group-hover:shadow-lg group-hover:shadow-slate-900/10"
     />
 
     <div class="mt-2 min-w-0">
       <h3
         class="truncate text-[13px] font-semibold leading-5 text-slate-800 transition-colors group-hover:text-sky-700"
-        :lang="game.display_language ?? undefined"
+        :lang="contentLang(game.display_language, game.localized_name)"
         :title="game.localized_name"
       >
         {{ game.localized_name }}

@@ -23,7 +23,7 @@ const summary = computed(() => t('series.viewer.done', { done: props.series.prog
     <div class="flex min-w-0 flex-1 items-center gap-3.5">
       <SeriesCoverStack :covers="series.covers" size="sm" />
       <div class="min-w-0 flex-1">
-        <p class="truncate text-sm font-semibold text-slate-900 transition-colors group-hover:text-sky-700" :lang="series.display_language ?? undefined">
+        <p class="truncate text-sm font-semibold text-slate-900 transition-colors group-hover:text-sky-700" :lang="contentLang(series.display_language, series.localized_name)">
           {{ series.localized_name }}
         </p>
         <p class="mt-0.5 flex flex-wrap items-center gap-x-2 text-xs text-slate-400 tabular-nums">

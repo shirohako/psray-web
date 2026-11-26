@@ -81,7 +81,7 @@ const picked = computed(() => Boolean(props.psnid) && props.psnid.toLowerCase() 
             <LucideIcon :icon="PencilLine" class="size-3.5" />{{ $t('series.detail.edit') }}
           </AppLink>
         </div>
-        <h1 class="mt-1.5 text-2xl font-bold leading-tight text-slate-900 text-balance" :lang="series.display_language ?? undefined">{{ series.localized_name }}</h1>
+        <h1 class="mt-1.5 text-2xl font-bold leading-tight text-slate-900 text-balance" :lang="contentLang(series.display_language, series.localized_name)">{{ series.localized_name }}</h1>
         <p v-if="showOriginal" class="mt-1 text-sm text-slate-500">{{ series.name }}</p>
 
         <dl class="mt-4 divide-y divide-slate-100 border-y border-slate-100 text-[13px]">

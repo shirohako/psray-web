@@ -19,6 +19,7 @@ const { profileGameDensity } = usePreferences()
 const density = computed(() => recentlyPlayedDensity[profileGameDensity.value])
 
 const name = computed(() => props.game.trophy_set.localized_name || props.game.trophy_set.name)
+const nameLang = computed(() => contentLang(props.game.trophy_set.display_language ?? props.game.trophy_set.default_language, name.value))
 const platforms = computed(() => platformList(props.game.trophy_set.platform))
 const tiers = computed(() => earnedTiers(props.game))
 </script>
@@ -69,7 +70,7 @@ const tiers = computed(() => earnedTiers(props.game))
 
     <div class="flex min-w-0 flex-1 flex-col" :class="density.content">
       <!-- Title -->
-      <h3 class="truncate font-semibold text-slate-900" :class="density.title">{{ name }}</h3>
+      <h3 class="truncate font-semibold text-slate-900" :class="density.title" :lang="nameLang">{{ name }}</h3>
 
       <!-- Platform + region + per-tier earned counts -->
       <div class="flex flex-wrap items-center gap-x-2 gap-y-1">

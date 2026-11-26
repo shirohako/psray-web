@@ -36,6 +36,7 @@ function isoDate(value: string) {
       <h3
         class="line-clamp-2 text-[13px] font-semibold leading-5 text-slate-800 transition group-hover:text-sky-700"
         :title="game.localized_name === game.name ? undefined : game.name"
+        :lang="contentLang(game.display_language, game.localized_name)"
       >
         {{ game.localized_name }}
       </h3>

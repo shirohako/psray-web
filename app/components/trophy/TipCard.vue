@@ -110,7 +110,7 @@ async function evaluate(choice: 1 | -1) {
         <LucideIcon :icon="EyeOff" class="size-4" />
         {{ $t('trophy.tips.spoiler') }}
       </button>
-      <RichContent v-else class="mt-1.5" :content="tip.content" :format="tip.content_type" />
+      <RichContent v-else class="mt-1.5" :content="tip.content" :format="tip.content_type" :lang="tipLang(tip.language)" />
 
       <!-- Meta + helpfulness totals -->
       <div class="mt-2.5 flex flex-col items-start gap-1.5 text-xs text-slate-400 sm:flex-row sm:items-center sm:gap-2">

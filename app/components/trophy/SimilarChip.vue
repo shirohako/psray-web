@@ -3,6 +3,7 @@ import { Globe, Users, ChevronRight } from 'lucide'
 import type { SimilarTrophySet } from '~/services/trophies'
 
 const props = defineProps<{ set: SimilarTrophySet }>()
+const nameLang = computed(() => contentLang(props.set.default_language, props.set.name))
 const { href } = useLangLink()
 
 // A small Twitter-style hovercard: the chip just shows the set id (the only
@@ -98,7 +99,7 @@ onBeforeUnmount(() => {
         <span class="font-medium tracking-wide text-slate-500">{{ set.region }}</span>
       </span>
       <!-- Anchor text for the link: the chip itself only shows the id. -->
-      <span class="sr-only">{{ set.name }}</span>
+      <span class="sr-only" :lang="nameLang">{{ set.name }}</span>
     </a>
 
     <ClientOnly>
@@ -144,7 +145,7 @@ onBeforeUnmount(() => {
                   <LucideIcon :icon="Globe" class="size-3 text-slate-400" />{{ set.region }}
                 </span>
               </div>
-              <h3 class="mt-1.5 line-clamp-2 text-sm font-semibold leading-snug text-slate-900">{{ set.name }}</h3>
+              <h3 class="mt-1.5 line-clamp-2 text-sm font-semibold leading-snug text-slate-900" :lang="nameLang">{{ set.name }}</h3>
             </div>
 
             <!-- Trophy tier breakdown -->

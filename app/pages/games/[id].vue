@@ -49,7 +49,7 @@
             </div>
             <div v-for="translation in data.translations" :key="translation.language_code" class="px-4 py-2.5">
               <dt class="text-[11px] text-slate-400">{{ langLabel(translation.language_code) }}</dt>
-              <dd class="mt-0.5 text-sm text-slate-800" :lang="translation.language_code">{{ translation.name }}</dd>
+              <dd class="mt-0.5 text-sm text-slate-800" :lang="contentLang(translation.language_code, translation.name)">{{ translation.name }}</dd>
             </div>
           </dl>
           <div v-if="data.aliases.length" class="border-t border-slate-100 px-4 py-3">

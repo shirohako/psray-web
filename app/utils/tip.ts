@@ -6,6 +6,19 @@ export const TIP_LANGUAGE_CODES: readonly TipLanguage[] = [
   'sv', 'da', 'nb', 'pl', 'tr', 'ar', 'cs', 'hu', 'el', 'ro', 'th',
 ] as const
 
+/**
+ * `lang` for a tip's body. The author chose the language, so it is trusted as
+ * is, with one exception: tips record a bare `zh`, which can't tell Simplified
+ * from Traditional, and that decides how shared Han characters are drawn (see
+ * the Fonts section of main.css). A reader on the Traditional interface most
+ * likely reads and writes Traditional, so they get that; everyone else gets
+ * Simplified.
+ */
+export function tipLang(language: string): string {
+  if (language !== 'zh') return language
+  return currentUiLocale() === 'zh-Hant' ? 'zh-Hant' : 'zh-Hans'
+}
+
 /** Convert a PSN/BCP-47 display language to the merged short code used by Tips. */
 export function normalizeTipLanguage(value?: string | null): TipLanguage {
   const shortCode = String(value ?? '').trim().toLowerCase().split(/[-_]/, 1)[0]

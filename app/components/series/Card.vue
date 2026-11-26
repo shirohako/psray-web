@@ -46,7 +46,7 @@ onMounted(() => requestAnimationFrame(() => { shown.value = true }))
     </div>
 
     <div class="flex flex-1 items-center gap-3 px-4 py-3">
-      <h2 class="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900 transition-colors group-hover:text-sky-700" :title="series.localized_name" :lang="series.display_language ?? undefined">
+      <h2 class="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900 transition-colors group-hover:text-sky-700" :title="series.localized_name" :lang="contentLang(series.display_language, series.localized_name)">
         {{ series.localized_name }}
       </h2>
       <div v-if="progress" class="flex shrink-0 items-center gap-2" :title="$t('series.progress', { done: progress.done, total: progress.total })">
