@@ -106,7 +106,7 @@ useSeo({
           <LucideIcon :icon="FileText" class="size-5 text-amber-700" />
           <div class="mt-3 flex items-center justify-between gap-3">
             <h3 class="font-bold text-slate-900">{{ t('about.policies.terms.title') }}</h3>
-            <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600">→</span>
+            <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600" aria-hidden="true">→</span>
           </div>
           <p class="mt-2 text-sm leading-6 text-slate-500">{{ t('about.policies.terms.body') }}</p>
           <span v-if="policiesJapaneseOnly" class="mt-3 inline-flex items-center gap-1 rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-semibold text-amber-800 ring-1 ring-amber-200">
@@ -118,7 +118,7 @@ useSeo({
           <LucideIcon :icon="ShieldCheck" class="size-5 text-emerald-700" />
           <div class="mt-3 flex items-center justify-between gap-3">
             <h3 class="font-bold text-slate-900">{{ t('about.policies.privacy.title') }}</h3>
-            <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600">→</span>
+            <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600" aria-hidden="true">→</span>
           </div>
           <p class="mt-2 text-sm leading-6 text-slate-500">{{ t('about.policies.privacy.body') }}</p>
           <span v-if="policiesJapaneseOnly" class="mt-3 inline-flex items-center gap-1 rounded-full bg-white/80 px-2.5 py-1 text-[11px] font-semibold text-emerald-800 ring-1 ring-emerald-200">
@@ -219,7 +219,7 @@ useSeo({
           <LucideIcon :icon="FilePenLine" class="size-5 text-sky-700" />
           <div class="mt-3 flex items-center justify-between gap-3">
             <h3 class="font-bold text-slate-900">{{ t('about.docs.markdown.title') }}</h3>
-            <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600">→</span>
+            <span class="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-600" aria-hidden="true">→</span>
           </div>
           <p class="mt-2 text-sm leading-6 text-slate-500">{{ t('about.docs.markdown.body') }}</p>
         </AppLink>
@@ -244,25 +244,29 @@ useSeo({
       </div>
       <div class="overflow-hidden rounded-2xl border border-sky-200 bg-white shadow-sm shadow-sky-900/5">
         <div v-for="(faq, index) in faqs" :key="faq.questionKey" class="border-b border-slate-100 last:border-b-0">
-          <button
-            type="button"
-            class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-slate-800 transition-colors duration-200 hover:bg-slate-50 sm:px-6"
-            :class="openFaqs.has(index) ? 'bg-sky-50/60' : 'bg-white'"
-            :aria-expanded="openFaqs.has(index)"
-            :aria-controls="`faq-answer-${index}`"
-            @click="toggleFaq(index)"
-          >
-            <span class="flex items-center gap-3">
-              <span
-                class="faq-motion grid size-8 shrink-0 place-items-center rounded-lg text-[11px] font-bold tabular-nums transition-transform duration-300"
-                :class="[faqNumberClasses[index % faqNumberClasses.length], openFaqs.has(index) ? 'scale-105' : '']"
-              >
-                {{ String(index + 1).padStart(2, '0') }}
+          <!-- WAI-ARIA accordion: the toggle sits in a heading, so each question
+               is reachable by heading navigation (and survives the Markdown view). -->
+          <h3>
+            <button
+              type="button"
+              class="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-slate-800 transition-colors duration-200 hover:bg-slate-50 sm:px-6"
+              :class="openFaqs.has(index) ? 'bg-sky-50/60' : 'bg-white'"
+              :aria-expanded="openFaqs.has(index)"
+              :aria-controls="`faq-answer-${index}`"
+              @click="toggleFaq(index)"
+            >
+              <span class="flex items-center gap-3">
+                <span
+                  class="faq-motion grid size-8 shrink-0 place-items-center rounded-lg text-[11px] font-bold tabular-nums transition-transform duration-300"
+                  :class="[faqNumberClasses[index % faqNumberClasses.length], openFaqs.has(index) ? 'scale-105' : '']"
+                >
+                  {{ String(index + 1).padStart(2, '0') }}
+                </span>
+                <span>{{ t(faq.questionKey) }}</span>
               </span>
-              <span>{{ t(faq.questionKey) }}</span>
-            </span>
-            <span class="faq-motion shrink-0 text-lg font-light text-slate-400 transition-transform duration-300" :class="openFaqs.has(index) ? 'rotate-45' : ''">+</span>
-          </button>
+              <span class="faq-motion shrink-0 text-lg font-light text-slate-400 transition-transform duration-300" :class="openFaqs.has(index) ? 'rotate-45' : ''" aria-hidden="true">+</span>
+            </button>
+          </h3>
           <div
             :id="`faq-answer-${index}`"
             class="faq-answer-grid grid transition-[grid-template-rows,opacity] duration-300 ease-out"

@@ -28,7 +28,7 @@ const goHome = () => clearError({ redirect: localizeTo('/') })
 </script>
 
 <template>
-  <div class="grid min-h-screen place-items-center bg-slate-50 p-6 text-slate-800">
+  <main class="grid min-h-screen place-items-center bg-slate-50 p-6 text-slate-800">
     <div class="space-y-3 text-center">
       <div class="mx-auto grid size-14 place-items-center rounded-full bg-rose-50 text-rose-500">
         <LucideIcon :icon="XCircle" class="size-7" />
@@ -45,5 +45,5 @@ const goHome = () => clearError({ redirect: localizeTo('/') })
         {{ $t('common.backHome') }}
       </button>
     </div>
-  </div>
+  </main>
 </template>

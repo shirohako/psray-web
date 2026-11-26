@@ -70,10 +70,11 @@ const createdDate = computed(() => props.game.created_at?.slice(0, 10) ?? null)
             v-for="kind in trophyKinds"
             :key="kind.key"
             class="inline-flex items-center gap-1 text-[11px] tabular-nums"
-            :aria-label="`${t(kind.labelKey)} ${game.defined_trophies[kind.key]}`"
             :title="t(kind.labelKey)"
           >
             <LucideIcon :icon="Trophy" class="size-3" :class="kind.text" stroke-width="1.75" />
+            <!-- Text, not aria-label: ARIA ignores aria-label on a plain span. -->
+            <span class="sr-only">{{ t(kind.labelKey) }}</span>
             <span class="text-slate-600">{{ game.defined_trophies[kind.key] }}</span>
           </span>
         </div>

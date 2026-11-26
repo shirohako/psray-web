@@ -69,6 +69,7 @@ const displayTrophies = computed(() => sortTrophies(
         <span v-for="t in trophyKinds" :key="t.key" class="inline-flex items-center gap-1">
           <span class="size-2 rounded-full" :class="t.dot" />
           <span class="text-xs font-bold text-slate-700">{{ group.defined_trophies[t.key] }}</span>
+          <span class="sr-only">{{ $t(t.labelKey) }}</span>
         </span>
       </div>
     </header>

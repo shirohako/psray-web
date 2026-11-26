@@ -41,6 +41,12 @@ const showEarned = computed(() => props.hasViewer && props.earned)
 const { rateBasis, trophyDensity } = usePreferences()
 const density = computed(() => trophyItemDensity[trophyDensity.value])
 const primaryRateLabel = computed(() => (rateBasis.value === 'psray' ? 'PSRay' : 'PSN'))
+// Spelled-out names for assistive tech (and the Markdown view): the tier is
+// otherwise only a coloured icon, and "PSN 0.1%" doesn't say it's an earn rate.
+const tierLabel = computed(() => t(`trophy.tier.${props.trophy.type}`))
+const primaryRateName = computed(() =>
+  t(rateBasis.value === 'psray' ? 'trophy.item.psrayRate' : 'trophy.item.psnRate'),
+)
 const primaryRate = computed(() =>
   rateBasis.value === 'psray' ? props.trophy.psray_rate : props.trophy.psn_earned_rate,
 )
@@ -134,9 +140,10 @@ const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
         <span
           class="absolute grid place-items-center rounded-full border-white bg-white shadow-sm"
           :class="[density.tierBadge, trophyTierColor(trophy.type)]"
-          :title="trophy.type"
+          :title="tierLabel"
         >
           <LucideIcon :icon="Trophy" :class="density.tierIcon" />
+          <span class="sr-only">{{ tierLabel }}</span>
         </span>
         <span
           v-if="showEarned"
@@ -145,6 +152,7 @@ const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
           :title="$t('trophy.item.earned')"
         >
           <LucideIcon :icon="Check" :class="density.earnedIcon" stroke-width="3" />
+          <span class="sr-only">{{ $t('trophy.item.earned') }}</span>
         </span>
       </div>
     </div>
@@ -229,7 +237,8 @@ const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
     <div class="flex shrink-0 items-center" :class="density.actions">
       <Tooltip placement="left">
         <div tabindex="0" class="flex cursor-pointer flex-col items-end leading-tight focus:outline-none" @click.stop>
-          <span class="text-[10px] font-medium text-slate-400 max-sm:hidden">{{ primaryRateLabel }}</span>
+          <span class="text-[10px] font-medium text-slate-400 max-sm:hidden" aria-hidden="true">{{ primaryRateLabel }}</span>
+          <span class="sr-only">{{ primaryRateName }}</span>
           <span class="font-semibold tabular-nums text-slate-700" :class="density.rate">{{ fmtRate(primaryRate) }}</span>
         </div>
         <template #content>
