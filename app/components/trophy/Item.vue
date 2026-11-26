@@ -137,6 +137,7 @@ const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
           class="rounded-lg bg-slate-100 object-cover shadow-sm"
           :class="[density.icon, { 'blur-[3px] grayscale': masked }]"
         />
+        <TrophyRareFrame v-if="isRareTrophy(trophy)" />
         <span
           class="absolute grid place-items-center rounded-full border-white bg-white shadow-sm"
           :class="[density.tierBadge, trophyTierColor(trophy.type)]"

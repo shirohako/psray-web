@@ -44,6 +44,7 @@ const TYPE_LABEL: Record<TrophyData['type'], string> = {
       <div class="flex gap-4">
         <div class="relative shrink-0">
           <img :src="trophy.icon_url" :alt="name" class="size-20 rounded-lg object-cover shadow-sm" />
+          <TrophyRareFrame v-if="isRareTrophy(trophy)" />
           <span
             class="absolute -bottom-1.5 -right-1.5 grid size-7 place-items-center rounded-full border-2 border-white bg-white shadow-sm"
             :class="trophyTierColor(trophy.type)"

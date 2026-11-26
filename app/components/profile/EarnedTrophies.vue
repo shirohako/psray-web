@@ -170,6 +170,7 @@ function psnEarnedRate(item: RecentTrophy) {
             :alt="item.trophy.name"
             class="size-14 rounded-lg object-cover shadow-sm"
           />
+          <TrophyRareFrame v-if="isRareTrophy(item.trophy)" />
           <span
             class="absolute -bottom-1.5 -right-1.5 grid size-6 place-items-center rounded-full border-2 border-white bg-white shadow-sm"
             :class="trophyTierColor(item.trophy.type)"

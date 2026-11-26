@@ -32,6 +32,15 @@ const TIER_TEXT: Record<TrophyType, string> = {
 }
 export const trophyTierColor = (t: TrophyType) => TIER_TEXT[t]
 
+/**
+ * Fewer than 5% of PSN players have earned it: the same cut the API uses for a
+ * set's `difficult_trophy_count`. These trophies get the animated rare frame.
+ */
+export const isRareTrophy = (t: { psn_earned_rate: number | string }) => {
+  const rate = Number(t.psn_earned_rate)
+  return Number.isFinite(rate) && rate < 5
+}
+
 /** Rarity label (translated at read time) + a soft pill colour scheme. */
 const RARITY: Record<Rarity, { labelKey: string; pill: string }> = {
   COMMON: { labelKey: 'trophy.rarity.common', pill: 'bg-slate-100 text-slate-600' },
