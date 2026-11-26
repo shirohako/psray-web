@@ -33,6 +33,10 @@
       "seoDescription": "瞭解 PSRay 獎盃留言支援的 Markdown 與進階內容區塊。"
     }
   },
+  "footer": {
+    "buildCommit": "建置提交",
+    "buildDate": "建置日期（UTC）"
+  },
   "nav": {
     "series": "系列",
     "trophies": "獎盃庫",

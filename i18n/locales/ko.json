@@ -33,6 +33,10 @@
       "seoDescription": "PSRay 트로피 댓글에서 지원하는 Markdown과 고급 콘텐츠 블록을 알아보세요."
     }
   },
+  "footer": {
+    "buildCommit": "빌드 커밋",
+    "buildDate": "빌드 날짜 (UTC)"
+  },
   "nav": {
     "series": "시리즈",
     "trophies": "트로피",

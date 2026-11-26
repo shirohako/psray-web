@@ -1,4 +1,20 @@
+import { execSync } from 'node:child_process'
 import tailwindcss from "@tailwindcss/vite";
+
+/**
+ * The commit this build was made from, shown in the footer next to the build
+ * date. scripts/deploy.sh names each release folder after the same short hash
+ * and UTC time, so a page can be matched to its release. Read when the config
+ * loads, i.e. at `nuxt build` (or when `nuxt dev` starts).
+ */
+function buildCommit(): string {
+  try {
+    return execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+  }
+  catch {
+    return 'unknown'
+  }
+}
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -60,6 +76,11 @@ export default defineNuxtConfig({
       umami: {
         scriptUrl: '',
         websiteId: '',
+      },
+      // Footer build stamp; see buildCommit() above. `time` is an ISO string in UTC.
+      build: {
+        commit: buildCommit(),
+        time: new Date().toISOString(),
       },
     },
   },

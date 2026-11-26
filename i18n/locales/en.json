@@ -33,6 +33,10 @@
       "seoDescription": "Learn the Markdown and advanced content blocks supported by PSRay trophy tips."
     }
   },
+  "footer": {
+    "buildCommit": "Build commit",
+    "buildDate": "Build date (UTC)"
+  },
   "nav": {
     "series": "Series",
     "trophies": "Trophy library",

@@ -33,6 +33,10 @@
       "seoDescription": "PSRay のトロフィーコメントで使える Markdown と拡張ブロックを紹介します。"
     }
   },
+  "footer": {
+    "buildCommit": "ビルドのコミット",
+    "buildDate": "ビルド日（UTC）"
+  },
   "nav": {
     "series": "シリーズ",
     "trophies": "トロフィー",

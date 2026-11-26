@@ -5,7 +5,14 @@
  * server-rendered HTML, so a crawler can reach every section and every
  * language from any page.
  */
+import { Calendar, GitCommitHorizontal } from 'lucide'
+
 const route = useRoute()
+
+// Which build is serving this page: short commit and UTC build date as YYMMDD
+// (e.g. 261126), the pair scripts/deploy.sh names release folders with.
+const { build } = useRuntimeConfig().public
+const buildDate = build.time.slice(2, 10).replaceAll('-', '')
 
 const sections = [
   { labelKey: 'nav.home', to: '/' },
@@ -26,6 +33,16 @@ const sections = [
       </AppLink>
     </nav>
     <LanguageLinks v-if="route.meta.languageLinks !== false" class="text-slate-400" />
+    <div class="flex flex-wrap items-center gap-1.5 font-mono text-[11px] text-slate-500">
+      <span class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-px" :title="$t('footer.buildCommit')">
+        <LucideIcon :icon="GitCommitHorizontal" class="size-3 text-slate-400" />
+        {{ build.commit }}
+      </span>
+      <time class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2 py-px" :datetime="build.time" :title="$t('footer.buildDate')">
+        <LucideIcon :icon="Calendar" class="size-3 text-slate-400" />
+        {{ buildDate }}
+      </time>
+    </div>
     <p class="text-slate-400">© 2026 PSRay</p>
   </footer>
 </template>
