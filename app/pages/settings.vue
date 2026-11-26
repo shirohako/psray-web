@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { User, ShieldCheck, Bell, Database, type IconNode } from 'lucide'
+import { User, LayoutDashboard, ShieldCheck, Bell, Database, type IconNode } from 'lucide'
 
 definePageMeta({ auth: true })
 
@@ -18,6 +18,7 @@ type NavItem = { to: string, labelKey: string, icon: IconNode }
 // matching child page under `app/pages/settings/`.
 const nav: NavItem[] = [
   { to: '/settings/profile', labelKey: 'settings.nav.profile', icon: User },
+  { to: '/settings/showcase', labelKey: 'settings.nav.showcase', icon: LayoutDashboard },
   { to: '/settings/security', labelKey: 'settings.nav.security', icon: ShieldCheck },
   { to: '/settings/notifications', labelKey: 'settings.nav.notifications', icon: Bell },
   { to: '/settings/data', labelKey: 'settings.nav.data', icon: Database },

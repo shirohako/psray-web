@@ -338,6 +338,75 @@
           "count": 4
         }
       ],
+      "rarest_trophies": [
+        {
+          "user_id": 1,
+          "trophy_set_id": 9991,
+          "trophy_id": 300384,
+          "earned_at": "2021-05-17T02:35:26.000000Z",
+          "trophy_set": {
+            "id": 9991,
+            "name": "Fall Guys",
+            "display_language": "en-US",
+            "icon_url": "https://image.api.playstation.com/trophy/np/NPWR19418_00_00DD64BDB8FDDEC62DE6E561F32D6232100339A04A/4E1DE7EDED859551704FF395BA37CADEB296E48D.PNG",
+            "platform": [
+              "PS4"
+            ]
+          },
+          "trophy": {
+            "id": 300384,
+            "trophy_group_id": 12594,
+            "type": "platinum",
+            "np_communication_id": "NPWR19418_00",
+            "psn_group_id": "default",
+            "psn_trophy_id": 0,
+            "name": "Ultimate Fall Guy",
+            "detail": "Acquire all other trophies",
+            "icon_url": "https://image.api.playstation.com/trophy/np/NPWR19418_00_00DD64BDB8FDDEC62DE6E561F32D6232100339A04A/35B1B297907FFA1134CBE16DD96C638DF466A200.PNG",
+            "is_hidden": false,
+            "psn_earned_rate": "0.1",
+            "psray_rate": 9.1,
+            "earned_count": 1699,
+            "rarity": "VERY RARE",
+            "tip_count": 0,
+            "display_language": "en-US"
+          }
+        },
+        {
+          "user_id": 1,
+          "trophy_set_id": 9991,
+          "trophy_id": 300399,
+          "earned_at": "2021-05-17T02:35:26.000000Z",
+          "trophy_set": {
+            "id": 9991,
+            "name": "Fall Guys",
+            "display_language": "en-US",
+            "icon_url": "https://image.api.playstation.com/trophy/np/NPWR19418_00_00DD64BDB8FDDEC62DE6E561F32D6232100339A04A/4E1DE7EDED859551704FF395BA37CADEB296E48D.PNG",
+            "platform": [
+              "PS4"
+            ]
+          },
+          "trophy": {
+            "id": 300399,
+            "trophy_group_id": 12594,
+            "type": "gold",
+            "np_communication_id": "NPWR19418_00",
+            "psn_group_id": "default",
+            "psn_trophy_id": 15,
+            "name": "Infallible",
+            "detail": "Win 5 Episodes in a row",
+            "icon_url": "https://image.api.playstation.com/trophy/np/NPWR19418_00_00DD64BDB8FDDEC62DE6E561F32D6232100339A04A/5990F30A72D69B80A9674BBCBFD20361F3EA1977.PNG",
+            "is_hidden": false,
+            "psn_earned_rate": "0.3",
+            "psray_rate": 12,
+            "earned_count": 2242,
+            "rarity": "RARE",
+            "tip_count": 0,
+            "display_language": "en-US"
+          }
+        }
+      ],
+      "featured_trophies": null,
       "recent_tips": [
         {
           "id": 45,
@@ -372,7 +441,17 @@
             "display_language": "ja-JP"
           }
         }
-      ]
+      ],
+      "showcases": {
+        "left": [
+          "calendar",
+          "rarest"
+        ],
+        "right": [
+          "tips",
+          "social"
+        ]
+      }
     }
   },
   "gamesShow": {

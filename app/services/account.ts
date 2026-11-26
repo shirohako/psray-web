@@ -6,6 +6,7 @@
  * Mirrors `useAuthApi()` in `~/services/auth` — thin wrappers over `useApi()`.
  */
 import type { MediaImage } from '~/types/media'
+import type { ShowcaseLayout, ShowcaseTrophy } from '~/services/profile'
 
 /** Standard success payload for the mutation endpoints: a displayable message. */
 export interface MessageResult {
@@ -29,6 +30,10 @@ export interface UpdateSettingPayload {
   mail_important?: boolean
   mail_features?: boolean
   mail_other?: boolean
+  /** The whole showcase layout: each column lists all of its showcases exactly once, in order. */
+  profile_showcases?: ShowcaseLayout
+  /** Featured trophies in display order (at most 12, all earned); replaces the saved list. */
+  featured_trophies?: { trophy_set_id: number, trophy_id: number }[]
 }
 
 /** Current account settings, as returned by `GET /user/setting`. */
@@ -45,6 +50,10 @@ export interface UserSetting {
   mail_important: boolean
   mail_features: boolean
   mail_other: boolean
+  /** Full showcase layout, including the showcases switched off. */
+  profile_showcases: ShowcaseLayout
+  /** Featured trophies with their details, in display order (returned even while the profile is private). */
+  featured_trophies: ShowcaseTrophy[]
 }
 
 export interface ChangePasswordPayload {

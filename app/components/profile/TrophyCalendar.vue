@@ -74,6 +74,9 @@ const weeks = computed(() => {
   )
 })
 
+// One equal column per week, shared by the month labels and the cells.
+const weekColumns = computed(() => ({ gridTemplateColumns: `repeat(${weeks.value.length}, minmax(0, 1fr))` }))
+
 const monthLabels = computed(() => weeks.value.map((week) => {
   const firstDay = week.find(day => day?.date.endsWith('-01'))
   if (!firstDay) return ''
@@ -127,26 +130,29 @@ function activityClass(count: number) {
       </div>
     </div>
 
+    <!-- The weeks share the width, so the year fills whichever column it sits
+         in; below the minimum width (phones) it scrolls sideways instead of
+         shrinking the cells out of sight. -->
     <div class="overflow-x-auto px-4 py-3 sm:px-5">
-      <div class="min-w-max">
-        <div class="ml-8 flex h-4 gap-0.75 text-[10px] leading-none text-slate-400">
+      <div class="min-w-150">
+        <div class="ml-8 grid h-4 gap-0.75 text-[10px] leading-none text-slate-400" :style="weekColumns">
           <span
             v-for="(month, index) in monthLabels"
             :key="index"
-            class="w-2.75 shrink-0 whitespace-nowrap"
+            class="min-w-0 overflow-visible whitespace-nowrap"
           >{{ month }}</span>
         </div>
 
         <div class="flex gap-2">
-          <div class="grid w-6 grid-rows-7 gap-0.75 text-[9px] text-slate-400">
+          <div class="grid w-6 shrink-0 grid-rows-7 gap-0.75 text-[9px] text-slate-400">
             <span
               v-for="(label, index) in WEEKDAY_LABELS"
               :key="index"
-              class="flex h-2.75 items-center justify-end leading-none"
+              class="flex items-center justify-end leading-none"
             >{{ label }}</span>
           </div>
-          <div class="flex gap-0.75">
-            <div v-for="(week, index) in weeks" :key="index" class="flex flex-col gap-0.75">
+          <div class="grid min-w-0 flex-1 gap-0.75" :style="weekColumns">
+            <div v-for="(week, index) in weeks" :key="index" class="grid grid-rows-7 gap-0.75">
               <template v-for="(day, dayIndex) in week" :key="day?.date ?? dayIndex">
                 <Tooltip
                   v-if="day"
@@ -154,12 +160,12 @@ function activityClass(count: number) {
                   placement="top"
                 >
                   <span
-                    class="size-2.75 rounded-[3px] ring-1 ring-inset transition duration-150 hover:scale-125 hover:ring-slate-900"
+                    class="aspect-square w-full rounded-[3px] ring-1 ring-inset transition duration-150 hover:scale-125 hover:ring-slate-900"
                     :class="activityClass(day.count)"
                     :aria-label="day.label"
                   />
                 </Tooltip>
-                <span v-else class="size-2.75" aria-hidden="true" />
+                <span v-else class="aspect-square w-full" aria-hidden="true" />
               </template>
             </div>
           </div>

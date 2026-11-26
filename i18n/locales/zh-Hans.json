@@ -614,6 +614,15 @@
       "expand": "展开最近玩过",
       "collapse": "收起最近玩过"
     },
+    "showcase": {
+      "rarest": {
+        "title": "最稀有的奖杯",
+        "order": "按 PSN 获得率从低到高"
+      },
+      "featured": {
+        "title": "精选奖杯"
+      }
+    },
     "tips": {
       "title": "最近发表的留言",
       "viewAll": "查看全部",
@@ -708,6 +717,7 @@
     "subheading": "管理你的账号资料与安全设置。",
     "nav": {
       "profile": "个人资料",
+      "showcase": "展柜",
       "security": "账号安全",
       "notifications": "通知",
       "data": "数据"
@@ -767,6 +777,78 @@
           "unreadable": "浏览器打不开这张图片，换一张 JPG、PNG 或 WebP 试试。",
           "uploadFailed": "上传失败"
         }
+      }
+    },
+    "showcase": {
+      "heading": "个人主页展柜",
+      "subheading": "选择个人主页上显示的卡片，拖动调整顺序，保存后在个人主页生效。",
+      "viewProfile": "查看个人主页",
+      "loadFailed": "设置加载失败，请重试。",
+      "saved": "展柜已保存",
+      "saveFailed": "保存失败",
+      "leaveConfirm": "有未保存的更改，确定离开吗？",
+      "privateNotice": "你的 PSN 奖杯未公开，用到奖杯的展柜（日历、最稀有、精选）暂时不会显示在个人主页上，也无法挑选精选奖杯。",
+      "move": "调整「{name}」的顺序（拖动或用方向键）",
+      "columns": {
+        "left": "左栏",
+        "leftHint": "显示在主卡片上方",
+        "right": "右栏",
+        "rightHint": "显示在统计概览和账号信息下方"
+      },
+      "fixed": {
+        "main": "主卡片（最近玩过、获得的奖杯等）始终显示",
+        "side": "统计概览和账号信息始终显示"
+      },
+      "items": {
+        "calendar": {
+          "name": "最近一年的活动",
+          "desc": "近一年的奖杯获得日历"
+        },
+        "rarest": {
+          "name": "最稀有的奖杯",
+          "desc": "自动显示 PSN 获得率最低的 6 个"
+        },
+        "featured": {
+          "name": "精选奖杯",
+          "desc": "显示你挑选的奖杯，最多 {max} 个"
+        },
+        "tips": {
+          "name": "最近发表的留言",
+          "desc": "你最新发表的 5 条留言"
+        },
+        "social": {
+          "name": "社交",
+          "desc": "粉丝数和关注数"
+        }
+      },
+      "unsaved": {
+        "layout": "显示与顺序",
+        "featured": "精选奖杯"
+      },
+      "tray": {
+        "hint": "拖动调整顺序，点 × 移除",
+        "empty": "点 + 挑选奖杯，选好后会自动开启精选奖杯。",
+        "add": "添加奖杯",
+        "remove": "移除「{name}」",
+        "moveTrophy": "调整「{name}」的顺序"
+      },
+      "picker": {
+        "title": "挑选精选奖杯",
+        "search": "搜索玩过的游戏",
+        "noGames": "没有找到游戏",
+        "loadMore": "加载更多",
+        "earned": "已获得 {earned} / {total}",
+        "pickedInGame": "已选 {count} 个",
+        "back": "返回游戏列表",
+        "filter": "显示的奖杯",
+        "all": "已获得 {count}",
+        "rare": "稀有（低于 5%） {count}",
+        "order": "按 PSN 获得率从低到高",
+        "noTrophies": "没有符合条件的奖杯",
+        "picked": "已选 {count} / {max}",
+        "limit": "最多可以选 {max} 个",
+        "done": "完成",
+        "loadFailed": "加载失败，请稍后再试。"
       }
     },
     "security": {
@@ -1725,8 +1807,11 @@
       "points": "奖杯点数",
       "rank": "全站排名和地区排名；不参与排名时为 null",
       "isPublic": "资料是否公开",
-      "calendar": "近一年每天获得的奖杯数，每项包含 date 和 count；资料未公开时为 null",
-      "recentTips": "最近发表的 5 条留言；未在本站注册的玩家为 null",
+      "calendar": "近一年每天获得的奖杯数，每项包含 date 和 count；资料未公开或展柜关闭时为 null",
+      "recentTips": "最近发表的 5 条留言；未在本站注册的玩家或展柜关闭时为 null",
+      "showcases": "要显示的展柜：left 和 right 按主人排好的顺序列出键（calendar、rarest、featured、tips、social），只含开启且有内容的",
+      "rarestTrophies": "PSN 获得率最低的 6 个已获得奖杯（含奖杯与所属奖杯组）；资料未公开或展柜关闭时为 null",
+      "featuredTrophies": "主人挑选的奖杯（最多 12 个，按其顺序）；资料未公开或展柜关闭时为 null",
       "gameId": "游戏 ID",
       "cover": "封面图，包含地址、尺寸和主色；可能为 null",
       "releaseDate": "首发日期；未定档时为 null",

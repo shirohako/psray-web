@@ -1,0 +1,113 @@
+import { Award, CalendarDays, Gem, MessageSquare, Users, type IconNode } from 'lucide'
+import type { Profile, ProfileShowcases, ShowcaseKey, ShowcaseLayout, ShowcaseTrophy } from '~/services/profile'
+import type { TrophyType } from '~/services/trophies'
+
+/**
+ * Profile showcases: the cards an owner can switch off and reorder within
+ * their column (registry and layout rules live in the API's
+ * `App\Support\ProfileShowcases`). The tabbed main card, stats and account
+ * cards are fixed and not showcases.
+ */
+
+/** Most trophies a featured showcase holds. */
+export const FEATURED_LIMIT = 12
+
+/** Settings labels and icon per showcase; `i18n` keys under `settings.showcase.items`. */
+export const SHOWCASE_META: Record<ShowcaseKey, { icon: IconNode, labelKey: string, descKey: string }> = {
+  calendar: { icon: CalendarDays, labelKey: 'settings.showcase.items.calendar.name', descKey: 'settings.showcase.items.calendar.desc' },
+  rarest: { icon: Gem, labelKey: 'settings.showcase.items.rarest.name', descKey: 'settings.showcase.items.rarest.desc' },
+  featured: { icon: Award, labelKey: 'settings.showcase.items.featured.name', descKey: 'settings.showcase.items.featured.desc' },
+  tips: { icon: MessageSquare, labelKey: 'settings.showcase.items.tips.name', descKey: 'settings.showcase.items.tips.desc' },
+  social: { icon: Users, labelKey: 'settings.showcase.items.social.name', descKey: 'settings.showcase.items.social.desc' },
+}
+
+/**
+ * The showcases a profile renders. Responses from before showcases existed
+ * have no `showcases`: fall back to the old fixed cards (calendar on the
+ * left, comments and social on the right) so the page still shows them.
+ */
+export function resolveShowcases(profile: Pick<Profile, 'showcases' | 'calendar' | 'recent_tips'>): ProfileShowcases {
+  if (profile.showcases) return profile.showcases
+  return {
+    left: profile.calendar?.length ? ['calendar'] : [],
+    right: profile.recent_tips != null ? ['tips', 'social'] : ['social'],
+  }
+}
+
+/** A copy of `list` with the item at `from` moved to `to` (indices clamped). */
+export function moveIndex<T>(list: readonly T[], from: number, to: number): T[] {
+  const next = [...list]
+  if (from < 0 || from >= next.length) return next
+  const target = Math.max(0, Math.min(next.length - 1, to))
+  const [item] = next.splice(from, 1)
+  next.splice(target, 0, item as T)
+  return next
+}
+
+/** Deep copy, so the form can be edited without touching the saved state. */
+export function cloneLayout(layout: ShowcaseLayout): ShowcaseLayout {
+  return {
+    left: layout.left.map(slot => ({ ...slot })),
+    right: layout.right.map(slot => ({ ...slot })),
+  }
+}
+
+export function sameLayout(a: ShowcaseLayout, b: ShowcaseLayout): boolean {
+  const same = (x: ShowcaseLayout['left'], y: ShowcaseLayout['left']) =>
+    x.length === y.length && x.every((slot, i) => slot.key === y[i]?.key && slot.on === y[i]?.on)
+  return same(a.left, b.left) && same(a.right, b.right)
+}
+
+/** A featured-trophy pick as the settings form and picker hold it. */
+export interface PickedTrophy {
+  trophy_set_id: number
+  trophy_id: number
+  name: string
+  icon_url: string
+  type: TrophyType
+  psn_earned_rate: number | string
+  set_name: string
+  /** Language `name` is in, for `lang`. */
+  display_language: string | null
+}
+
+export function toPicked(item: ShowcaseTrophy): PickedTrophy {
+  return {
+    trophy_set_id: item.trophy_set_id,
+    trophy_id: item.trophy_id,
+    name: item.trophy.name,
+    icon_url: item.trophy.icon_url,
+    type: item.trophy.type,
+    psn_earned_rate: item.trophy.psn_earned_rate,
+    set_name: item.trophy_set.name,
+    display_language: item.trophy.display_language,
+  }
+}
+
+/** What `PATCH /user/setting` stores for the featured showcase. */
+export function featuredRefs(picks: readonly PickedTrophy[]) {
+  return picks.map(p => ({ trophy_set_id: p.trophy_set_id, trophy_id: p.trophy_id }))
+}
+
+export function samePicks(a: readonly PickedTrophy[], b: readonly PickedTrophy[]): boolean {
+  return a.length === b.length && a.every((p, i) => p.trophy_id === b[i]?.trophy_id)
+}
+
+/**
+ * The layout after the featured picks change: picking the first trophy
+ * switches the featured showcase on, since an empty one never shows anyway.
+ * Anything else leaves the switch where the owner put it.
+ */
+export function layoutAfterPicking(layout: ShowcaseLayout, before: number, after: number): ShowcaseLayout {
+  if (before > 0 || after === 0) return layout
+  return {
+    ...layout,
+    left: layout.left.map(slot => (slot.key === 'featured' ? { ...slot, on: true } : slot)),
+  }
+}
+
+/** PSN rate as `"0.4%"`, or an em dash when unknown. */
+export function formatPsnRate(rate: number | string): string {
+  const value = Number(rate)
+  return Number.isFinite(value) ? `${value.toFixed(1)}%` : '—'
+}

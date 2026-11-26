@@ -8,45 +8,36 @@
   <div v-else-if="profile" class="space-y-6">
     <ProfileHeader :profile="profile" :follow-pending="followPending" @toggle-follow="toggleFollow" />
 
-    <template v-if="profile.is_profile_public">
-      <ProfileTrophyCalendar v-if="profile.calendar?.length" :calendar="profile.calendar" />
-
-      <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <!-- Left: tabbed activity -->
-        <div class="lg:col-span-2">
-          <ProfileMainCard :psnid="psnid" />
-        </div>
-
-        <!-- Right: extended info -->
-        <aside class="space-y-6">
-          <ProfileStatsCard :profile="profile" />
-          <ProfileRecentTips
-            v-if="profile.recent_tips !== null"
+    <!-- Showcases (the owner's choice and order, see ProfileShowcase) sit above
+         the tabbed main card on the left and below the fixed cards on the
+         right. Private: no trophy data (the stats come back zeroed), so the
+         API lists no left showcases; the basic profile and the player's
+         comments are still public. -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div class="min-w-0 space-y-6 lg:col-span-2">
+        <template v-if="profile.is_profile_public">
+          <ProfileShowcase
+            v-for="key in showcases.left"
+            :key="key"
+            :showcase="key"
+            :profile="profile"
             :psnid="psnid"
-            :tip-count="profile.tip_count"
-            :tips="profile.recent_tips"
           />
-          <ProfileSocialCard :profile="profile" />
-          <ProfileAccountCard :profile="profile" />
-        </aside>
+          <ProfileMainCard :psnid="psnid" />
+        </template>
+        <ProfilePrivatePanel v-else :psnid="profile.psnid" />
       </div>
-    </template>
 
-    <!-- Private: no trophy data (the stats come back zeroed), but the basic
-         profile and the player's comments are still public. -->
-    <div v-else class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      <div class="lg:col-span-2">
-        <ProfilePrivatePanel :psnid="profile.psnid" />
-      </div>
-      <aside class="space-y-6">
-        <ProfileRecentTips
-          v-if="profile.recent_tips !== null"
-          :psnid="psnid"
-          :tip-count="profile.tip_count"
-          :tips="profile.recent_tips"
-        />
-        <ProfileSocialCard :profile="profile" />
+      <aside class="min-w-0 space-y-6">
+        <ProfileStatsCard v-if="profile.is_profile_public" :profile="profile" />
         <ProfileAccountCard :profile="profile" />
+        <ProfileShowcase
+          v-for="key in showcases.right"
+          :key="key"
+          :showcase="key"
+          :profile="profile"
+          :psnid="psnid"
+        />
       </aside>
     </div>
 
@@ -125,6 +116,9 @@ function raiseFetchError(err: typeof error.value) {
 }
 raiseFetchError(error.value)
 watch(error, raiseFetchError)
+
+// The showcases to render; older API responses fall back to the fixed cards.
+const showcases = computed(() => (profile.value ? resolveShowcases(profile.value) : { left: [], right: [] }))
 
 const { follow, unfollow } = useProfiles()
 const followPending = ref(false)

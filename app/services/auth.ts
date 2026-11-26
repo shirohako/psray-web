@@ -25,12 +25,12 @@ export interface AccountSettings {
 /**
  * The authenticated account. Structurally the public {@link Profile} minus the
  * viewer-relative fields the backend omits when the profile *is* you
- * (follow flags, milestones, calendar), plus the private `email` and
+ * (follow flags, milestones, calendar, showcases), plus the private `email` and
  * `settings` only the logged-in user receives. `role` is inherited from
  * {@link Profile}.
  */
 export interface AuthUser
-  extends Omit<Profile, 'can_follow' | 'is_following' | 'is_follower' | 'milestones' | 'calendar' | 'social_account'> {
+  extends Omit<Profile, 'can_follow' | 'is_following' | 'is_follower' | 'milestones' | 'calendar' | 'social_account' | 'showcases' | 'rarest_trophies' | 'featured_trophies'> {
   email: string | null
   settings: AccountSettings
 }

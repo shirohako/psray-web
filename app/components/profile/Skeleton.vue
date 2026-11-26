@@ -1,8 +1,9 @@
 <script setup lang="ts">
 /**
- * Loading placeholder for a whole profile page: header card, trophy calendar,
- * the tabbed main card and the side cards, each on the real component's frame
- * so the page lands without shifting. Decorative only.
+ * Loading placeholder for a whole profile page in the default showcase layout:
+ * header card; calendar, rarest trophies and the tabbed main card on the left;
+ * stats, account, recent comments and social on the right. Each sits on the
+ * real component's frame so the page lands without shifting. Decorative only.
  */
 
 // Calendar: a year of weeks, with a faint scatter of activity so it reads as a
@@ -68,56 +69,79 @@ const ACCOUNT_GROUPS = [['w-20', 'w-24', 'w-28'], ['w-28', 'w-28'], ['w-12', 'w-
       </div>
     </section>
 
-    <!-- Trophy calendar -->
-    <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-      <div class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 px-4 py-3 sm:px-5">
-        <div class="flex items-center gap-2">
-          <div class="skeleton size-8 rounded-lg" />
-          <div class="space-y-1.5">
-            <div class="skeleton h-3.5 w-24 rounded" />
-            <div class="skeleton skeleton-soft h-2.5 w-40 rounded" />
-          </div>
-        </div>
-        <div class="flex items-center gap-5">
-          <div v-for="i in 3" :key="i" class="flex h-10 flex-col items-end justify-center gap-2" :class="{ 'max-sm:hidden': i === 3 }">
-            <div class="skeleton h-4 w-10 rounded" />
-            <div class="skeleton skeleton-soft h-2.5 w-14 rounded" />
-          </div>
-        </div>
-      </div>
-      <div class="overflow-hidden px-4 py-3 sm:px-5">
-        <div class="ml-8 h-4" />
-        <div class="ml-8 flex gap-0.75">
-          <div v-for="week in WEEKS" :key="week" class="flex flex-col gap-0.75">
-            <span
-              v-for="day in 7"
-              :key="day"
-              class="size-2.75 rounded-[3px]"
-              :class="ACTIVITY.has((week - 1) * 7 + day) ? 'bg-slate-200' : 'bg-slate-100'"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="flex justify-end border-t border-slate-100 bg-slate-50/60 px-4 py-2.5 sm:px-5">
-        <div class="skeleton skeleton-soft h-3 w-32 rounded" />
-      </div>
-    </section>
-
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      <!-- Tabbed main card, on its first tab -->
-      <div class="rounded-lg border border-slate-200 bg-white shadow-sm lg:col-span-2">
-        <div class="border-b border-slate-200 px-3 py-2.5 sm:hidden">
-          <div class="skeleton skeleton-soft h-10 rounded-lg" />
+      <div class="min-w-0 space-y-6 lg:col-span-2">
+        <!-- Trophy calendar -->
+        <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-100 px-4 py-3 sm:px-5">
+            <div class="flex items-center gap-2">
+              <div class="skeleton size-8 rounded-lg" />
+              <div class="space-y-1.5">
+                <div class="skeleton h-3.5 w-24 rounded" />
+                <div class="skeleton skeleton-soft h-2.5 w-40 rounded" />
+              </div>
+            </div>
+            <div class="flex items-center gap-5">
+              <div v-for="i in 3" :key="i" class="flex h-10 flex-col items-end justify-center gap-2" :class="{ 'max-sm:hidden': i === 3 }">
+                <div class="skeleton h-4 w-10 rounded" />
+                <div class="skeleton skeleton-soft h-2.5 w-14 rounded" />
+              </div>
+            </div>
+          </div>
+          <div class="overflow-hidden px-4 py-3 sm:px-5">
+            <div class="min-w-150">
+              <div class="h-4" />
+              <div class="ml-8 grid gap-0.75" :style="{ gridTemplateColumns: `repeat(${WEEKS}, minmax(0, 1fr))` }">
+                <div v-for="week in WEEKS" :key="week" class="grid grid-rows-7 gap-0.75">
+                  <span
+                    v-for="day in 7"
+                    :key="day"
+                    class="aspect-square w-full rounded-[3px]"
+                    :class="ACTIVITY.has((week - 1) * 7 + day) ? 'bg-slate-200' : 'bg-slate-100'"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-end border-t border-slate-100 bg-slate-50/60 px-4 py-2.5 sm:px-5">
+            <div class="skeleton skeleton-soft h-3 w-32 rounded" />
+          </div>
+        </section>
+
+        <!-- Rarest trophies -->
+        <section class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3.5 sm:px-5">
+            <div class="skeleton h-3.5 w-32 rounded" />
+            <div class="skeleton skeleton-soft h-2.5 w-24 rounded" />
+          </div>
+          <div class="grid gap-x-4 gap-y-1 p-3 sm:grid-cols-2 sm:px-4">
+            <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-2.5 py-2" :class="{ 'max-sm:hidden': i > 3 }">
+              <div class="skeleton skeleton-soft h-3 w-4 rounded" />
+              <div class="skeleton size-11 rounded-lg" />
+              <div class="min-w-0 flex-1 space-y-1.5">
+                <div class="skeleton h-3.5 w-3/4 rounded" />
+                <div class="skeleton skeleton-soft h-2.5 w-1/2 rounded" />
+              </div>
+              <div class="skeleton h-3.5 w-9 rounded" />
+            </div>
+          </div>
+        </section>
+
+        <!-- Tabbed main card, on its first tab -->
+        <div class="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="border-b border-slate-200 px-3 py-2.5 sm:hidden">
+            <div class="skeleton skeleton-soft h-10 rounded-lg" />
+          </div>
+          <div class="hidden gap-1 border-b border-slate-200 px-5 py-2.5 sm:flex">
+            <div class="h-8 w-28 rounded-md bg-slate-900/85" />
+            <div class="skeleton skeleton-soft h-8 w-24 rounded-md" />
+            <div class="skeleton skeleton-soft h-8 w-24 rounded-md" />
+          </div>
+          <div class="border-b border-slate-100 px-4 py-3 sm:px-5">
+            <div class="h-9 rounded-md border border-slate-200 bg-slate-50/60" />
+          </div>
+          <ProfileRecentlyPlayedSkeleton />
         </div>
-        <div class="hidden gap-1 border-b border-slate-200 px-5 py-2.5 sm:flex">
-          <div class="h-8 w-28 rounded-md bg-slate-900/85" />
-          <div class="skeleton skeleton-soft h-8 w-24 rounded-md" />
-          <div class="skeleton skeleton-soft h-8 w-24 rounded-md" />
-        </div>
-        <div class="border-b border-slate-100 px-4 py-3 sm:px-5">
-          <div class="h-9 rounded-md border border-slate-200 bg-slate-50/60" />
-        </div>
-        <ProfileRecentlyPlayedSkeleton />
       </div>
 
       <aside class="space-y-6">
@@ -141,18 +165,6 @@ const ACCOUNT_GROUPS = [['w-20', 'w-24', 'w-28'], ['w-28', 'w-28'], ['w-12', 'w-
           </div>
         </div>
 
-        <!-- Social -->
-        <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <div class="skeleton mb-5 h-3.5 w-16 rounded" />
-          <div class="grid grid-cols-2 gap-3">
-            <div v-for="i in 2" :key="i" class="flex items-center gap-2.5 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-3">
-              <div class="skeleton skeleton-soft size-4 rounded-full" />
-              <div class="skeleton h-4 w-8 rounded" />
-              <div class="skeleton skeleton-soft h-2.5 w-10 rounded" />
-            </div>
-          </div>
-        </div>
-
         <!-- Account -->
         <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
           <div class="skeleton mb-5 h-3.5 w-24 rounded" />
@@ -165,6 +177,35 @@ const ACCOUNT_GROUPS = [['w-20', 'w-24', 'w-28'], ['w-28', 'w-28'], ['w-12', 'w-
                 </div>
                 <div class="skeleton h-3 rounded" :class="width" />
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent comments -->
+        <div class="rounded-lg border border-slate-200 bg-white shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 px-4 py-3.5">
+            <div class="skeleton h-3.5 w-24 rounded" />
+            <div class="skeleton skeleton-soft h-2.5 w-12 rounded" />
+          </div>
+          <div class="divide-y divide-slate-100">
+            <div v-for="i in 2" :key="i" class="flex gap-3 px-4 py-3">
+              <div class="skeleton size-9 shrink-0 rounded-md" />
+              <div class="min-w-0 flex-1 space-y-1.5">
+                <div class="skeleton h-3 w-2/3 rounded" />
+                <div class="skeleton skeleton-soft h-2.5 w-full rounded" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Social -->
+        <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <div class="skeleton mb-5 h-3.5 w-16 rounded" />
+          <div class="grid grid-cols-2 gap-3">
+            <div v-for="i in 2" :key="i" class="flex items-center gap-2.5 rounded-lg border border-slate-100 bg-slate-50/70 px-3 py-3">
+              <div class="skeleton skeleton-soft size-4 rounded-full" />
+              <div class="skeleton h-4 w-8 rounded" />
+              <div class="skeleton skeleton-soft h-2.5 w-10 rounded" />
             </div>
           </div>
         </div>

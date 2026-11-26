@@ -614,6 +614,15 @@
       "expand": "Show all recently played",
       "collapse": "Collapse recently played"
     },
+    "showcase": {
+      "rarest": {
+        "title": "Rarest trophies",
+        "order": "Lowest PSN rate first"
+      },
+      "featured": {
+        "title": "Featured trophies"
+      }
+    },
     "tips": {
       "title": "Recent comments",
       "viewAll": "View all",
@@ -708,6 +717,7 @@
     "subheading": "Manage your account details and security.",
     "nav": {
       "profile": "Profile",
+      "showcase": "Showcase",
       "security": "Security",
       "notifications": "Notifications",
       "data": "Data"
@@ -767,6 +777,78 @@
           "unreadable": "Your browser can’t open this image. Try a JPG, PNG or WebP.",
           "uploadFailed": "Upload failed"
         }
+      }
+    },
+    "showcase": {
+      "heading": "Profile showcase",
+      "subheading": "Choose the cards your profile shows and drag them into order. Changes show on your profile once saved.",
+      "viewProfile": "View profile",
+      "loadFailed": "Couldn’t load your settings. Please retry.",
+      "saved": "Showcase saved",
+      "saveFailed": "Save failed",
+      "leaveConfirm": "You have unsaved changes. Leave this page anyway?",
+      "privateNotice": "Your PSN trophies are private, so the trophy showcases (calendar, rarest, featured) don’t show on your profile for now, and featured trophies can’t be picked.",
+      "move": "Reorder “{name}” (drag, or use the arrow keys)",
+      "columns": {
+        "left": "Left column",
+        "leftHint": "Above the main card",
+        "right": "Right column",
+        "rightHint": "Below Stats overview and Account details"
+      },
+      "fixed": {
+        "main": "The main card (Recently played, Earned trophies and more) always shows",
+        "side": "Stats overview and Account details always show"
+      },
+      "items": {
+        "calendar": {
+          "name": "Activity over the past year",
+          "desc": "Trophy calendar for the last 12 months"
+        },
+        "rarest": {
+          "name": "Rarest trophies",
+          "desc": "The 6 with the lowest PSN rate, picked automatically"
+        },
+        "featured": {
+          "name": "Featured trophies",
+          "desc": "Up to {max} trophies you pick"
+        },
+        "tips": {
+          "name": "Recent comments",
+          "desc": "Your 5 latest comments"
+        },
+        "social": {
+          "name": "Social",
+          "desc": "Follower and following counts"
+        }
+      },
+      "unsaved": {
+        "layout": "Showcases and order",
+        "featured": "Featured trophies"
+      },
+      "tray": {
+        "hint": "Drag to reorder, × to remove",
+        "empty": "Pick trophies with +. Picking one turns Featured trophies on.",
+        "add": "Add trophies",
+        "remove": "Remove “{name}”",
+        "moveTrophy": "Reorder “{name}”"
+      },
+      "picker": {
+        "title": "Pick featured trophies",
+        "search": "Search the games you’ve played",
+        "noGames": "No games found",
+        "loadMore": "Load more",
+        "earned": "{earned} / {total} earned",
+        "pickedInGame": "{count} picked",
+        "back": "Back to games",
+        "filter": "Trophies to show",
+        "all": "Earned {count}",
+        "rare": "Rare (under 5%) {count}",
+        "order": "Lowest PSN rate first",
+        "noTrophies": "No trophies here",
+        "picked": "Picked {count} / {max}",
+        "limit": "You can pick up to {max}",
+        "done": "Done",
+        "loadFailed": "Couldn’t load this. Please try again in a moment."
       }
     },
     "security": {
@@ -1725,8 +1807,11 @@
       "points": "Trophy points",
       "rank": "Global and regional rank; null when not ranked",
       "isPublic": "Whether the profile is public",
-      "calendar": "Trophies earned per day over the past year, each with date and count; null when private",
-      "recentTips": "The 5 latest comments; null for players who haven't signed up on PSRay",
+      "calendar": "Trophies earned per day over the past year, each with date and count; null when private or the showcase is off",
+      "recentTips": "The 5 latest comments; null for players who haven’t signed up on PSRay or when the showcase is off",
+      "showcases": "Showcases to render: left and right list keys (calendar, rarest, featured, tips, social) in the owner’s order, only those switched on and with content",
+      "rarestTrophies": "The 6 earned trophies with the lowest PSN rate, each with its trophy and set; null when private or the showcase is off",
+      "featuredTrophies": "Trophies the owner picked (up to 12, in their order); null when private or the showcase is off",
       "gameId": "Game ID",
       "cover": "Cover image with URL, size and main colour; may be null",
       "releaseDate": "First release date; null when not yet announced",

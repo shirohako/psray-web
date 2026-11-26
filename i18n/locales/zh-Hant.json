@@ -614,6 +614,15 @@
       "expand": "展開最近玩過",
       "collapse": "收合最近玩過"
     },
+    "showcase": {
+      "rarest": {
+        "title": "最稀有的獎盃",
+        "order": "依 PSN 獲得率由低到高"
+      },
+      "featured": {
+        "title": "精選獎盃"
+      }
+    },
     "tips": {
       "title": "最近發表的留言",
       "viewAll": "查看全部",
@@ -708,6 +717,7 @@
     "subheading": "管理你的帳號資料與安全設定。",
     "nav": {
       "profile": "個人資料",
+      "showcase": "展示櫃",
       "security": "帳號安全",
       "notifications": "通知",
       "data": "資料"
@@ -767,6 +777,78 @@
           "unreadable": "瀏覽器無法開啟這張圖片，換一張 JPG、PNG 或 WebP 試試。",
           "uploadFailed": "上傳失敗"
         }
+      }
+    },
+    "showcase": {
+      "heading": "個人主頁展示櫃",
+      "subheading": "選擇個人主頁上顯示的卡片，拖曳調整順序，儲存後在個人主頁生效。",
+      "viewProfile": "查看個人主頁",
+      "loadFailed": "設定載入失敗，請重試。",
+      "saved": "展示櫃已儲存",
+      "saveFailed": "儲存失敗",
+      "leaveConfirm": "有尚未儲存的變更，確定要離開嗎？",
+      "privateNotice": "你的 PSN 獎盃未公開，用到獎盃的展示櫃（日曆、最稀有、精選）暫時不會顯示在個人主頁上，也無法挑選精選獎盃。",
+      "move": "調整「{name}」的順序（拖曳或使用方向鍵）",
+      "columns": {
+        "left": "左欄",
+        "leftHint": "顯示在主卡片上方",
+        "right": "右欄",
+        "rightHint": "顯示在統計概覽和帳號資訊下方"
+      },
+      "fixed": {
+        "main": "主卡片（最近玩過、獲得的獎盃等）一律顯示",
+        "side": "統計概覽和帳號資訊一律顯示"
+      },
+      "items": {
+        "calendar": {
+          "name": "最近一年的活動",
+          "desc": "近一年的獎盃獲得日曆"
+        },
+        "rarest": {
+          "name": "最稀有的獎盃",
+          "desc": "自動顯示 PSN 獲得率最低的 6 個"
+        },
+        "featured": {
+          "name": "精選獎盃",
+          "desc": "顯示你挑選的獎盃，最多 {max} 個"
+        },
+        "tips": {
+          "name": "最近發表的留言",
+          "desc": "你最新發表的 5 則留言"
+        },
+        "social": {
+          "name": "社交",
+          "desc": "粉絲數和追蹤數"
+        }
+      },
+      "unsaved": {
+        "layout": "顯示與順序",
+        "featured": "精選獎盃"
+      },
+      "tray": {
+        "hint": "拖曳調整順序，點 × 移除",
+        "empty": "點 + 挑選獎盃，選好後會自動開啟精選獎盃。",
+        "add": "新增獎盃",
+        "remove": "移除「{name}」",
+        "moveTrophy": "調整「{name}」的順序"
+      },
+      "picker": {
+        "title": "挑選精選獎盃",
+        "search": "搜尋玩過的遊戲",
+        "noGames": "找不到遊戲",
+        "loadMore": "載入更多",
+        "earned": "已獲得 {earned} / {total}",
+        "pickedInGame": "已選 {count} 個",
+        "back": "返回遊戲列表",
+        "filter": "顯示的獎盃",
+        "all": "已獲得 {count}",
+        "rare": "稀有（低於 5%） {count}",
+        "order": "依 PSN 獲得率由低到高",
+        "noTrophies": "沒有符合條件的獎盃",
+        "picked": "已選 {count} / {max}",
+        "limit": "最多可以選 {max} 個",
+        "done": "完成",
+        "loadFailed": "載入失敗，請稍後再試。"
       }
     },
     "security": {
@@ -1725,8 +1807,11 @@
       "points": "獎盃點數",
       "rank": "全站排名和地區排名；不參與排名時為 null",
       "isPublic": "資料是否公開",
-      "calendar": "近一年每天獲得的獎盃數，每項包含 date 和 count；資料未公開時為 null",
-      "recentTips": "最近發表的 5 則留言；未在本站註冊的玩家為 null",
+      "calendar": "近一年每天獲得的獎盃數，每項包含 date 和 count；資料未公開或展示櫃關閉時為 null",
+      "recentTips": "最近發表的 5 則留言；未在本站註冊的玩家或展示櫃關閉時為 null",
+      "showcases": "要顯示的展示櫃：left 和 right 依主人排好的順序列出鍵（calendar、rarest、featured、tips、social），只含開啟且有內容的",
+      "rarestTrophies": "PSN 獲得率最低的 6 個已獲得獎盃（含獎盃與所屬獎盃組）；資料未公開或展示櫃關閉時為 null",
+      "featuredTrophies": "主人挑選的獎盃（最多 12 個，依其順序）；資料未公開或展示櫃關閉時為 null",
       "gameId": "遊戲 ID",
       "cover": "封面圖，包含網址、尺寸和主色；可能為 null",
       "releaseDate": "首發日期；未定檔時為 null",

@@ -83,8 +83,67 @@ export interface Profile {
   is_follower: boolean
 
   milestones: unknown | null
+  /** `null` when the profile is private or the calendar showcase is off. */
   calendar?: CalendarDay[] | null
   social_account: unknown | null
+
+  /**
+   * The showcases to render, in the owner's order: only those switched on and
+   * with something to show. Absent from API responses that predate showcases.
+   */
+  showcases?: ProfileShowcases
+  /** The six lowest-PSN-rate trophies earned; `null` when private or the showcase is off. */
+  rarest_trophies?: ShowcaseTrophy[] | null
+  /** Up to 12 trophies the owner picked, in their order; `null` when private or the showcase is off. */
+  featured_trophies?: ShowcaseTrophy[] | null
+}
+
+/** A showcase: a profile card its owner can switch off and reorder within its column. */
+export type ShowcaseKey = 'calendar' | 'rarest' | 'featured' | 'tips' | 'social'
+export type ShowcaseColumn = 'left' | 'right'
+
+/** Showcases to render per column, in order (`GET /profile/:psnid`). */
+export type ProfileShowcases = Record<ShowcaseColumn, ShowcaseKey[]>
+
+/** One showcase in the owner's full layout (`GET /user/setting`), on or off. */
+export interface ShowcaseSlot {
+  key: ShowcaseKey
+  on: boolean
+}
+
+/** The owner's full layout: every showcase of each column, in order. */
+export type ShowcaseLayout = Record<ShowcaseColumn, ShowcaseSlot[]>
+
+/**
+ * An earned trophy shown in the rarest or featured showcase: the `user_trophy`
+ * row with the trophy and its set. Names are already in the display language.
+ */
+export interface ShowcaseTrophy {
+  user_id: number
+  trophy_set_id: number
+  trophy_id: number
+  /** `null` when PSN never recorded when it was earned. */
+  earned_at: ApiDate | null
+  trophy: {
+    id: number
+    type: TrophyType
+    name: string
+    detail: string
+    icon_url: string
+    /** PSN official earn rate, %, as a one-decimal string. */
+    psn_earned_rate: number | string
+    psray_rate: number | string
+    rarity: Rarity
+    /** Language `name` is in. */
+    display_language: string | null
+  }
+  trophy_set: {
+    id: number
+    name: string
+    display_language: string | null
+    icon_url: string
+    platform: string[]
+  }
 }
 
 /** Trophy activity for one calendar day. */

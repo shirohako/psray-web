@@ -147,7 +147,10 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
       { name: 'points', type: 'integer', descKey: 'apiDocs.fields.points' },
       { name: 'rank / server_rank', type: 'integer | null', descKey: 'apiDocs.fields.rank' },
       { name: 'is_profile_public', type: 'boolean', descKey: 'apiDocs.fields.isPublic' },
+      { name: 'showcases', type: 'object', descKey: 'apiDocs.fields.showcases' },
       { name: 'calendar', type: 'array | null', descKey: 'apiDocs.fields.calendar' },
+      { name: 'rarest_trophies', type: 'array | null', descKey: 'apiDocs.fields.rarestTrophies' },
+      { name: 'featured_trophies', type: 'array | null', descKey: 'apiDocs.fields.featuredTrophies' },
       { name: 'recent_tips', type: 'array | null', descKey: 'apiDocs.fields.recentTips' },
     ],
     errors: [

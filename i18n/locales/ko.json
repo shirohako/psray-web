@@ -614,6 +614,15 @@
       "expand": "최근 플레이 모두 보기",
       "collapse": "최근 플레이 접기"
     },
+    "showcase": {
+      "rarest": {
+        "title": "가장 희귀한 트로피",
+        "order": "PSN 획득률 낮은 순"
+      },
+      "featured": {
+        "title": "즐겨찾는 트로피"
+      }
+    },
     "tips": {
       "title": "최근 댓글",
       "viewAll": "전체 보기",
@@ -708,6 +717,7 @@
     "subheading": "계정 정보와 보안 설정을 관리합니다.",
     "nav": {
       "profile": "프로필",
+      "showcase": "쇼케이스",
       "security": "계정 보안",
       "notifications": "알림",
       "data": "데이터"
@@ -767,6 +777,78 @@
           "unreadable": "브라우저에서 이 이미지를 열 수 없습니다. JPG, PNG, WebP 이미지를 사용해 보세요.",
           "uploadFailed": "업로드에 실패했습니다"
         }
+      }
+    },
+    "showcase": {
+      "heading": "프로필 쇼케이스",
+      "subheading": "프로필에 표시할 카드를 고르고 드래그해 순서를 바꿉니다. 저장하면 프로필에 반영됩니다.",
+      "viewProfile": "프로필 보기",
+      "loadFailed": "설정을 불러오지 못했습니다. 다시 시도해 주세요.",
+      "saved": "쇼케이스를 저장했습니다",
+      "saveFailed": "저장 실패",
+      "leaveConfirm": "저장하지 않은 변경 사항이 있습니다. 이 페이지를 떠날까요?",
+      "privateNotice": "PSN 트로피가 비공개라서 트로피를 쓰는 쇼케이스(캘린더, 희귀, 즐겨찾기)는 지금 프로필에 표시되지 않으며, 즐겨찾는 트로피도 고를 수 없습니다.",
+      "move": "‘{name}’ 순서 바꾸기(드래그 또는 방향키)",
+      "columns": {
+        "left": "왼쪽 열",
+        "leftHint": "메인 카드 위에 표시",
+        "right": "오른쪽 열",
+        "rightHint": "통계 요약과 계정 정보 아래에 표시"
+      },
+      "fixed": {
+        "main": "메인 카드(최근 플레이, 획득 트로피 등)는 항상 표시됩니다",
+        "side": "통계 요약과 계정 정보는 항상 표시됩니다"
+      },
+      "items": {
+        "calendar": {
+          "name": "지난 1년간의 활동",
+          "desc": "최근 1년의 트로피 획득 캘린더"
+        },
+        "rarest": {
+          "name": "가장 희귀한 트로피",
+          "desc": "PSN 획득률이 가장 낮은 6개를 자동으로 표시"
+        },
+        "featured": {
+          "name": "즐겨찾는 트로피",
+          "desc": "직접 고른 트로피를 최대 {max}개 표시"
+        },
+        "tips": {
+          "name": "최근 댓글",
+          "desc": "작성한 댓글 중 최신 5개"
+        },
+        "social": {
+          "name": "소셜",
+          "desc": "팔로워 수와 팔로잉 수"
+        }
+      },
+      "unsaved": {
+        "layout": "표시와 순서",
+        "featured": "즐겨찾는 트로피"
+      },
+      "tray": {
+        "hint": "드래그해 순서 변경, ×로 빼기",
+        "empty": "+로 트로피를 고르세요. 고르면 즐겨찾는 트로피가 켜집니다.",
+        "add": "트로피 추가",
+        "remove": "‘{name}’ 빼기",
+        "moveTrophy": "‘{name}’ 순서 바꾸기"
+      },
+      "picker": {
+        "title": "즐겨찾는 트로피 고르기",
+        "search": "플레이한 게임 검색",
+        "noGames": "게임을 찾을 수 없습니다",
+        "loadMore": "더 보기",
+        "earned": "{earned} / {total} 획득",
+        "pickedInGame": "{count}개 선택됨",
+        "back": "게임 목록으로",
+        "filter": "표시할 트로피",
+        "all": "획득 {count}",
+        "rare": "희귀(5% 미만) {count}",
+        "order": "PSN 획득률 낮은 순",
+        "noTrophies": "해당하는 트로피가 없습니다",
+        "picked": "선택 {count} / {max}",
+        "limit": "최대 {max}개까지 고를 수 있습니다",
+        "done": "완료",
+        "loadFailed": "불러오지 못했습니다. 잠시 후 다시 시도해 주세요."
       }
     },
     "security": {
@@ -1725,8 +1807,11 @@
       "points": "트로피 포인트",
       "rank": "전체 순위와 지역 순위. 순위 대상이 아니면 null",
       "isPublic": "프로필 공개 여부",
-      "calendar": "최근 1년간 날짜별 트로피 획득 수. 각 항목은 date와 count. 비공개면 null",
-      "recentTips": "최근 작성한 댓글 5개. PSRay에 가입하지 않은 플레이어는 null",
+      "calendar": "최근 1년간 날짜별 트로피 획득 수. 각 항목은 date와 count. 비공개이거나 쇼케이스가 꺼져 있으면 null",
+      "recentTips": "최근 작성한 댓글 5개. PSRay에 가입하지 않은 플레이어이거나 쇼케이스가 꺼져 있으면 null",
+      "showcases": "표시할 쇼케이스. left와 right에 소유자가 정한 순서대로 키(calendar, rarest, featured, tips, social)를 나열. 켜져 있고 내용이 있는 것만",
+      "rarestTrophies": "PSN 획득률이 가장 낮은 획득 트로피 6개(트로피와 소속 세트 포함). 비공개이거나 쇼케이스가 꺼져 있으면 null",
+      "featuredTrophies": "소유자가 고른 트로피(최대 12개, 정한 순서). 비공개이거나 쇼케이스가 꺼져 있으면 null",
       "gameId": "게임 ID",
       "cover": "커버 이미지(URL, 크기, 대표 색). null일 수 있음",
       "releaseDate": "최초 발매일. 미정이면 null",
