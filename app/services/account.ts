@@ -6,7 +6,7 @@
  * Mirrors `useAuthApi()` in `~/services/auth` — thin wrappers over `useApi()`.
  */
 import type { MediaImage } from '~/types/media'
-import type { ShowcaseLayout, ShowcaseTrophy } from '~/services/profile'
+import type { ShowcaseColumn, ShowcaseGame, ShowcaseLayout, ShowcaseText, ShowcaseTrophy } from '~/services/profile'
 
 /** Standard success payload for the mutation endpoints: a displayable message. */
 export interface MessageResult {
@@ -34,6 +34,10 @@ export interface UpdateSettingPayload {
   profile_showcases?: ShowcaseLayout
   /** Featured trophies in display order (at most 12, all earned); replaces the saved list. */
   featured_trophies?: { trophy_set_id: number, trophy_id: number }[]
+  /** Favorite games: played trophy-set ids in display order (at most 6); replaces the saved list. */
+  favorite_games?: number[]
+  /** Text showcases, per column; a column left out stays as it is. Title ≤ 40, body ≤ 5000 characters. */
+  showcase_texts?: Partial<Record<ShowcaseColumn, ShowcaseText>>
 }
 
 /** Current account settings, as returned by `GET /user/setting`. */
@@ -54,6 +58,10 @@ export interface UserSetting {
   profile_showcases: ShowcaseLayout
   /** Featured trophies with their details, in display order (returned even while the profile is private). */
   featured_trophies: ShowcaseTrophy[]
+  /** Favorite games in display order (returned even while the profile is private). */
+  favorite_games: ShowcaseGame[]
+  /** Both text showcases; empty strings when never written. */
+  showcase_texts: Record<ShowcaseColumn, ShowcaseText>
 }
 
 export interface ChangePasswordPayload {

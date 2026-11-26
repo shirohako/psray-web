@@ -1,5 +1,5 @@
-import { Award, CalendarDays, Gem, MessageSquare, Users, type IconNode } from 'lucide'
-import type { Profile, ProfileShowcases, ShowcaseKey, ShowcaseLayout, ShowcaseTrophy } from '~/services/profile'
+import { Award, CalendarDays, FileText, Gem, Heart, MessageSquare, Users, type IconNode } from 'lucide'
+import type { Profile, ProfileShowcases, ShowcaseColumn, ShowcaseGame, ShowcaseKey, ShowcaseLayout, ShowcaseText, ShowcaseTrophy } from '~/services/profile'
 import type { TrophyType } from '~/services/trophies'
 
 /**
@@ -12,11 +12,24 @@ import type { TrophyType } from '~/services/trophies'
 /** Most trophies a featured showcase holds. */
 export const FEATURED_LIMIT = 12
 
+/** Most games the favorite-games showcase holds. */
+export const GAMES_LIMIT = 6
+
+/** Character limits of a text showcase (the API counts characters, not bytes). */
+export const TEXT_TITLE_MAX = 40
+export const TEXT_BODY_MAX = 5000
+
+/** The text showcase of each column. */
+export const TEXT_KEYS = { left: 'text_left', right: 'text_right' } as const satisfies Record<ShowcaseColumn, ShowcaseKey>
+
 /** Settings labels and icon per showcase; `i18n` keys under `settings.showcase.items`. */
 export const SHOWCASE_META: Record<ShowcaseKey, { icon: IconNode, labelKey: string, descKey: string }> = {
   calendar: { icon: CalendarDays, labelKey: 'settings.showcase.items.calendar.name', descKey: 'settings.showcase.items.calendar.desc' },
   rarest: { icon: Gem, labelKey: 'settings.showcase.items.rarest.name', descKey: 'settings.showcase.items.rarest.desc' },
   featured: { icon: Award, labelKey: 'settings.showcase.items.featured.name', descKey: 'settings.showcase.items.featured.desc' },
+  games: { icon: Heart, labelKey: 'settings.showcase.items.games.name', descKey: 'settings.showcase.items.games.desc' },
+  text_left: { icon: FileText, labelKey: 'settings.showcase.items.text_left.name', descKey: 'settings.showcase.items.text_left.desc' },
+  text_right: { icon: FileText, labelKey: 'settings.showcase.items.text_right.name', descKey: 'settings.showcase.items.text_right.desc' },
   tips: { icon: MessageSquare, labelKey: 'settings.showcase.items.tips.name', descKey: 'settings.showcase.items.tips.desc' },
   social: { icon: Users, labelKey: 'settings.showcase.items.social.name', descKey: 'settings.showcase.items.social.desc' },
 }
@@ -94,16 +107,31 @@ export function samePicks(a: readonly PickedTrophy[], b: readonly PickedTrophy[]
 }
 
 /**
- * The layout after the featured picks change: picking the first trophy
- * switches the featured showcase on, since an empty one never shows anyway.
- * Anything else leaves the switch where the owner put it.
+ * The layout after a showcase's content changes: filling an empty showcase
+ * (the first trophy or game picked, the first text written) switches it on,
+ * since an empty one never shows anyway. Anything else leaves the switch
+ * where the owner put it.
  */
-export function layoutAfterPicking(layout: ShowcaseLayout, before: number, after: number): ShowcaseLayout {
-  if (before > 0 || after === 0) return layout
-  return {
-    ...layout,
-    left: layout.left.map(slot => (slot.key === 'featured' ? { ...slot, on: true } : slot)),
-  }
+export function layoutAfterFilling(layout: ShowcaseLayout, key: ShowcaseKey, wasEmpty: boolean, isEmpty: boolean): ShowcaseLayout {
+  if (!wasEmpty || isEmpty) return layout
+  const on = (slots: ShowcaseLayout['left']) => slots.map(slot => (slot.key === key ? { ...slot, on: true } : slot))
+  return { left: on(layout.left), right: on(layout.right) }
+}
+
+/** A favorite-game pick as the settings form and picker hold it. */
+export type PickedGame = ShowcaseGame
+
+export function sameGames(a: readonly PickedGame[], b: readonly PickedGame[]): boolean {
+  return a.length === b.length && a.every((g, i) => g.id === b[i]?.id)
+}
+
+export function sameTexts(a: Record<ShowcaseColumn, ShowcaseText>, b: Record<ShowcaseColumn, ShowcaseText>): boolean {
+  return (['left', 'right'] as const).every(c => a[c].title === b[c].title && a[c].body === b[c].body)
+}
+
+/** Length as the API counts it: characters (code points), so a kanji or emoji is one. */
+export function textLength(value: string): number {
+  return Array.from(value).length
 }
 
 /** PSN rate as `"0.4%"`, or an em dash when unknown. */

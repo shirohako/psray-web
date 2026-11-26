@@ -4,18 +4,25 @@ import {
   cloneLayout,
   featuredRefs,
   formatPsnRate,
-  layoutAfterPicking,
+  layoutAfterFilling,
   moveIndex,
   resolveShowcases,
+  sameGames,
   sameLayout,
   samePicks,
+  sameTexts,
+  textLength,
   toPicked,
 } from '~/utils/profileShowcase'
 
 const layout = (featuredOn = false): ShowcaseLayout => ({
-  left: [{ key: 'calendar', on: true }, { key: 'rarest', on: true }, { key: 'featured', on: featuredOn }],
-  right: [{ key: 'tips', on: true }, { key: 'social', on: true }],
+  left: [
+    { key: 'calendar', on: true }, { key: 'rarest', on: true }, { key: 'featured', on: featuredOn },
+    { key: 'games', on: false }, { key: 'text_left', on: false },
+  ],
+  right: [{ key: 'tips', on: true }, { key: 'social', on: true }, { key: 'text_right', on: false }],
 })
+const isOn = (l: ShowcaseLayout, key: string) => [...l.left, ...l.right].find(s => s.key === key)?.on
 
 const trophy = (id: number, setId = 1): ShowcaseTrophy => ({
   user_id: 1,
@@ -61,12 +68,32 @@ describe('profile showcases', () => {
     expect(sameLayout(a, { ...a, right: [...a.right].reverse() })).toBe(false)
   })
 
-  it('switches featured on when the first trophy is picked, and only then', () => {
-    expect(layoutAfterPicking(layout(), 0, 1).left.find(s => s.key === 'featured')?.on).toBe(true)
-    // Already had picks: the owner's switch stays as it is.
-    expect(layoutAfterPicking(layout(), 2, 3).left.find(s => s.key === 'featured')?.on).toBe(false)
-    // Emptying the list doesn't switch it off.
-    expect(layoutAfterPicking(layout(true), 3, 0).left.find(s => s.key === 'featured')?.on).toBe(true)
+  it('switches a showcase on when its first content arrives, and only then', () => {
+    expect(isOn(layoutAfterFilling(layout(), 'featured', true, false), 'featured')).toBe(true)
+    expect(isOn(layoutAfterFilling(layout(), 'games', true, false), 'games')).toBe(true)
+    // Works in the right column too.
+    expect(isOn(layoutAfterFilling(layout(), 'text_right', true, false), 'text_right')).toBe(true)
+    // Already had content: the owner's switch stays as it is.
+    expect(isOn(layoutAfterFilling(layout(), 'featured', false, false), 'featured')).toBe(false)
+    // Emptying it doesn't switch it off.
+    expect(isOn(layoutAfterFilling(layout(true), 'featured', false, true), 'featured')).toBe(true)
+    // Other showcases are untouched.
+    expect(isOn(layoutAfterFilling(layout(), 'games', true, false), 'text_left')).toBe(false)
+  })
+
+  it('compares favorite games by order and texts by content', () => {
+    const game = (id: number) => ({ id, name: `Game ${id}`, display_language: null, icon_url: '', platform: ['PS5'] })
+    expect(sameGames([game(1), game(2)], [game(1), game(2)])).toBe(true)
+    expect(sameGames([game(1), game(2)], [game(2), game(1)])).toBe(false)
+    const texts = { left: { title: 'Hi', body: 'x' }, right: { title: '', body: '' } }
+    expect(sameTexts(texts, { left: { ...texts.left }, right: { ...texts.right } })).toBe(true)
+    expect(sameTexts(texts, { ...texts, right: { title: '', body: 'y' } })).toBe(false)
+  })
+
+  it('counts text length in characters, as the API does', () => {
+    expect(textLength('ようこそ')).toBe(4)
+    expect(textLength('🎮🏆')).toBe(2)
+    expect(textLength('')).toBe(0)
   })
 
   it('turns API trophies into picks and picks into stored references', () => {

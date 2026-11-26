@@ -30,7 +30,7 @@ export interface AccountSettings {
  * {@link Profile}.
  */
 export interface AuthUser
-  extends Omit<Profile, 'can_follow' | 'is_following' | 'is_follower' | 'milestones' | 'calendar' | 'social_account' | 'showcases' | 'rarest_trophies' | 'featured_trophies'> {
+  extends Omit<Profile, 'can_follow' | 'is_following' | 'is_follower' | 'milestones' | 'calendar' | 'social_account' | 'showcases' | 'rarest_trophies' | 'featured_trophies' | 'favorite_games' | 'text_left' | 'text_right'> {
   email: string | null
   settings: AccountSettings
 }

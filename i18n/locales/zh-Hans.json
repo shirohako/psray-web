@@ -621,6 +621,12 @@
       },
       "featured": {
         "title": "精选奖杯"
+      },
+      "games": {
+        "title": "喜欢的游戏"
+      },
+      "text": {
+        "defaultTitle": "自我介绍"
       }
     },
     "tips": {
@@ -787,7 +793,7 @@
       "saved": "展柜已保存",
       "saveFailed": "保存失败",
       "leaveConfirm": "有未保存的更改，确定离开吗？",
-      "privateNotice": "你的 PSN 奖杯未公开，用到奖杯的展柜（日历、最稀有、精选）暂时不会显示在个人主页上，也无法挑选精选奖杯。",
+      "privateNotice": "你的 PSN 奖杯未公开，用到奖杯和游戏的展柜（日历、最稀有、精选奖杯、喜欢的游戏）暂时不会显示在个人主页上，也无法挑选奖杯和游戏。文字展柜照常显示。",
       "move": "调整「{name}」的顺序（拖动或用方向键）",
       "columns": {
         "left": "左栏",
@@ -819,18 +825,34 @@
         "social": {
           "name": "社交",
           "desc": "粉丝数和关注数"
+        },
+        "games": {
+          "name": "喜欢的游戏",
+          "desc": "从玩过的游戏里挑选，最多 {max} 个"
+        },
+        "text_left": {
+          "name": "文字（左栏）",
+          "desc": "自由填写标题和正文，支持 Markdown"
+        },
+        "text_right": {
+          "name": "文字（右栏）",
+          "desc": "自由填写标题和正文，支持 Markdown"
         }
       },
       "unsaved": {
         "layout": "显示与顺序",
-        "featured": "精选奖杯"
+        "featured": "精选奖杯",
+        "games": "喜欢的游戏",
+        "texts": "文字"
       },
       "tray": {
         "hint": "拖动调整顺序，点 × 移除",
-        "empty": "点 + 挑选奖杯，选好后会自动开启精选奖杯。",
-        "add": "添加奖杯",
+        "emptyTrophies": "点 + 挑选奖杯，选好后会自动开启精选奖杯。",
+        "emptyGames": "点 + 挑选游戏，选好后会自动开启喜欢的游戏。",
+        "addTrophies": "添加奖杯",
+        "addGames": "添加游戏",
         "remove": "移除「{name}」",
-        "moveTrophy": "调整「{name}」的顺序"
+        "move": "调整「{name}」的顺序"
       },
       "picker": {
         "title": "挑选精选奖杯",
@@ -849,6 +871,18 @@
         "limit": "最多可以选 {max} 个",
         "done": "完成",
         "loadFailed": "加载失败，请稍后再试。"
+      },
+      "gamesPicker": {
+        "title": "挑选喜欢的游戏"
+      },
+      "text": {
+        "dialogTitle": "编辑「{name}」",
+        "title": "标题",
+        "titleHint": "留空时显示为「{title}」。",
+        "placeholder": "自我介绍、喜欢的游戏、招募好友……想写什么都可以。",
+        "tooLong": "正文请控制在 {max} 字以内。",
+        "empty": "还没有写内容，写好后会自动开启这段文字。",
+        "edit": "编辑"
       }
     },
     "security": {
@@ -1809,9 +1843,11 @@
       "isPublic": "资料是否公开",
       "calendar": "近一年每天获得的奖杯数，每项包含 date 和 count；资料未公开或展柜关闭时为 null",
       "recentTips": "最近发表的 5 条留言；未在本站注册的玩家或展柜关闭时为 null",
-      "showcases": "要显示的展柜：left 和 right 按主人排好的顺序列出键（calendar、rarest、featured、tips、social），只含开启且有内容的",
+      "showcases": "要显示的展柜：left 和 right 按主人排好的顺序列出键（calendar、rarest、featured、games、text_left、tips、social、text_right），只含开启且有内容的",
       "rarestTrophies": "PSN 获得率最低的 6 个已获得奖杯（含奖杯与所属奖杯组）；资料未公开或展柜关闭时为 null",
       "featuredTrophies": "主人挑选的奖杯（最多 12 个，按其顺序）；资料未公开或展柜关闭时为 null",
+      "favoriteGames": "主人挑选的玩过的游戏（奖杯组，最多 6 个，按其顺序）；资料未公开或展柜关闭时为 null",
+      "texts": "左右两栏的文字，各含 title 和 body（Markdown）；展柜关闭或正文为空时为 null，资料未公开时照常返回",
       "gameId": "游戏 ID",
       "cover": "封面图，包含地址、尺寸和主色；可能为 null",
       "releaseDate": "首发日期；未定档时为 null",

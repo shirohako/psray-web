@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { AlertTriangle, ArrowLeft, Check, ChevronRight, Loader2, Search, Trophy } from 'lucide'
-import type { PlayedTrophySet } from '~/services/profile'
+import { AlertTriangle, ArrowLeft, Check, Loader2, Trophy } from 'lucide'
+import type { PlayedGameRow } from '~/composables/usePlayedGames'
 import type { TrophySetDetail } from '~/services/trophies'
 import type { PickedTrophy } from '~/utils/profileShowcase'
 
@@ -23,68 +23,7 @@ const working = ref<PickedTrophy[]>([])
 const selected = computed(() => new Set(working.value.map(p => p.trophy_id)))
 const full = computed(() => working.value.length >= FEATURED_LIMIT)
 
-// ── Step 1: games ───────────────────────────────────────────────────────────
-interface PageMeta { page: number; per_page: number; total: number; total_pages: number }
-interface GameRow { id: number; name: string; lang: string | null; icon: string; platform: string[]; earned: number; total: number }
-
-const query = ref('')
-const searchError = ref<string | null>(null)
-const games = ref<GameRow[]>([])
-const gamesPage = ref(0)
-const gamesTotalPages = ref(1)
-const gamesPending = ref(false)
-const gamesError = ref<string | null>(null)
-let gamesRequest = 0
-
-function toGame(row: PlayedTrophySet): GameRow {
-  const set = row.trophy_set
-  const d = set.defined_trophies
-  return {
-    id: row.trophy_set_id,
-    name: set.localized_name || set.name,
-    lang: set.display_language ?? set.default_language,
-    icon: set.icon_url,
-    platform: set.platform,
-    earned: row.earned_bronze + row.earned_silver + row.earned_gold + row.earned_platinum,
-    total: d.bronze + d.silver + d.gold + d.platinum,
-  }
-}
-
-async function loadGames(page: number) {
-  const request = ++gamesRequest
-  gamesPending.value = true
-  gamesError.value = null
-  try {
-    const res = await api.raw.get<PlayedTrophySet[], PageMeta>(recentlyPlayedPath(props.psnid, page, query.value))
-    if (request !== gamesRequest) return
-    const rows = (res.data ?? []).map(toGame)
-    games.value = page === 1 ? rows : [...games.value, ...rows]
-    gamesPage.value = page
-    gamesTotalPages.value = res.meta?.total_pages ?? 1
-  }
-  catch (error) {
-    if (request === gamesRequest) gamesError.value = errorText(error) ?? t('settings.showcase.picker.loadFailed')
-  }
-  finally {
-    if (request === gamesRequest) gamesPending.value = false
-  }
-}
-
-// Searches as you type, held back while the words are outside the API's bounds.
-let searchTimer: ReturnType<typeof setTimeout> | null = null
-watch(query, () => {
-  if (searchTimer) clearTimeout(searchTimer)
-  const result = validateRecentlyPlayedSearch(query.value)
-  searchError.value = result.error
-    ? t(`profile.recent.searchErrors.${result.error}`, {
-        min: RECENTLY_PLAYED_SEARCH_MIN_KEYWORD_LENGTH,
-        length: RECENTLY_PLAYED_SEARCH_MAX_LENGTH,
-      })
-    : null
-  if (result.error) return
-  searchTimer = setTimeout(() => loadGames(1), 300)
-})
-
+// ── Step 1: games (kept mounted under step 2, so going back keeps the list) ──
 const pickedPerGame = computed(() => {
   const counts = new Map<number, number>()
   for (const p of working.value) counts.set(p.trophy_set_id, (counts.get(p.trophy_set_id) ?? 0) + 1)
@@ -92,14 +31,14 @@ const pickedPerGame = computed(() => {
 })
 
 // ── Step 2: earned trophies of one game ─────────────────────────────────────
-const game = ref<GameRow | null>(null)
+const game = ref<PlayedGameRow | null>(null)
 const trophies = ref<PickedTrophy[]>([])
 const trophiesPending = ref(false)
 const trophiesError = ref<string | null>(null)
 const rareOnly = ref(false)
 let trophiesRequest = 0
 
-async function openGame(row: GameRow) {
+async function openGame(row: PlayedGameRow) {
   game.value = row
   rareOnly.value = false
   trophies.value = []
@@ -155,8 +94,6 @@ watch(open, (value) => {
   if (!value) return
   working.value = [...props.picks]
   game.value = null
-  if (query.value) query.value = ''
-  else if (!games.value.length || gamesError.value) loadGames(1)
 }, { immediate: true })
 
 function done() {
@@ -183,75 +120,16 @@ function done() {
     </template>
 
     <!-- Step 1: games -->
-    <div v-if="!game" class="px-5 py-4">
-      <div class="relative">
-        <LucideIcon :icon="Search" class="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" />
-        <input
-          v-model="query"
-          type="search"
-          :maxlength="RECENTLY_PLAYED_SEARCH_MAX_LENGTH"
-          :placeholder="t('settings.showcase.picker.search')"
-          :aria-label="t('settings.showcase.picker.search')"
-          :aria-invalid="Boolean(searchError)"
-          class="h-10 w-full rounded-lg border bg-slate-50/60 pl-9 pr-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:bg-white focus:ring-2"
-          :class="searchError ? 'border-red-300 focus:border-red-400 focus:ring-red-100' : 'border-slate-200 focus:border-slate-400 focus:ring-slate-100'"
-        />
-      </div>
-      <p v-if="searchError" class="mt-1.5 text-xs text-red-600" role="alert">{{ searchError }}</p>
-
-      <p v-if="gamesError" class="mt-4 flex items-center gap-2 rounded-lg bg-rose-50 px-3 py-2.5 text-sm text-rose-700">
-        <LucideIcon :icon="AlertTriangle" class="size-4 shrink-0" />{{ gamesError }}
-      </p>
-      <p v-else-if="!gamesPending && !games.length" class="py-12 text-center text-sm text-slate-400">
-        {{ t('settings.showcase.picker.noGames') }}
-      </p>
-
-      <ul class="mt-3 space-y-0.5 transition-opacity" :class="{ 'opacity-50': gamesPending && games.length }">
-        <li v-for="row in games" :key="row.id">
-          <button
-            type="button"
-            class="group flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition hover:bg-slate-100/80"
-            @click="openGame(row)"
-          >
-            <!-- Fixed slot: the art keeps its own aspect (PS5 square, older 320×176) inside it. -->
-            <span class="relative flex h-10 w-18 shrink-0 items-center justify-center">
-              <TrophySetImage :src="row.icon" :alt="row.name" :platform="row.platform" />
-            </span>
-            <span class="min-w-0 flex-1">
-              <span class="block truncate text-sm font-semibold text-slate-900" :lang="contentLang(row.lang, row.name)">{{ row.name }}</span>
-              <span class="mt-1 flex flex-wrap items-center gap-1.5">
-                <span v-for="platform in row.platform" :key="platform" class="rounded-full bg-slate-100 px-2 py-px text-[10px] font-medium text-slate-600">{{ platformLabel(platform) }}</span>
-                <span class="rounded-full bg-slate-100 px-2 py-px text-[10px] font-medium tabular-nums text-slate-600">
-                  {{ t('settings.showcase.picker.earned', { earned: row.earned, total: row.total }) }}
-                </span>
-                <span v-if="pickedPerGame.get(row.id)" class="rounded-full bg-sky-50 px-2 py-px text-[10px] font-semibold text-sky-700">
-                  {{ t('settings.showcase.picker.pickedInGame', { count: pickedPerGame.get(row.id) }) }}
-                </span>
-              </span>
-            </span>
-            <LucideIcon :icon="ChevronRight" class="size-4 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-500" />
-          </button>
-        </li>
-      </ul>
-
-      <div v-if="gamesPending && !games.length" class="grid place-items-center py-12">
-        <LucideIcon :icon="Loader2" class="size-5 animate-spin text-slate-400" />
-      </div>
-      <div v-else-if="gamesPage < gamesTotalPages" class="mt-3 flex justify-center">
-        <button
-          type="button"
-          class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
-          :disabled="gamesPending"
-          @click="loadGames(gamesPage + 1)"
-        >
-          <LucideIcon v-if="gamesPending" :icon="Loader2" class="size-3.5 animate-spin" />
-          {{ t('settings.showcase.picker.loadMore') }}
-        </button>
-      </div>
-    </div>
+    <SettingsPlayedGames v-show="!game" class="px-5 py-4" :psnid="psnid" mode="open" @select="openGame">
+      <template #badges="{ row }">
+        <span v-if="pickedPerGame.get(row.id)" class="rounded-full bg-sky-50 px-2 py-px text-[10px] font-semibold text-sky-700">
+          {{ t('settings.showcase.picker.pickedInGame', { count: pickedPerGame.get(row.id) }) }}
+        </span>
+      </template>
+    </SettingsPlayedGames>
 
     <!-- Step 2: earned trophies of the game -->
-    <div v-else class="px-5 py-4">
+    <div v-if="game" class="px-5 py-4">
       <div class="flex flex-wrap items-center gap-2">
         <div role="radiogroup" :aria-label="t('settings.showcase.picker.filter')" class="inline-flex rounded-lg bg-slate-100 p-1">
           <button
@@ -328,7 +206,17 @@ function done() {
           <span v-if="full" class="text-amber-600">{{ t('settings.showcase.picker.limit', { max: FEATURED_LIMIT }) }}</span>
           <span v-else-if="working.length > 1" class="text-slate-400">{{ t('settings.showcase.tray.hint') }}</span>
         </div>
-        <SettingsFeaturedTray v-model="working" size="sm" />
+        <SettingsSortTray
+          v-model="working"
+          :item-key="pick => pick.trophy_id"
+          :item-label="pick => pick.name"
+          :limit="FEATURED_LIMIT"
+          tile-class="size-10"
+        >
+          <template #tile="{ item }">
+            <SettingsTrophyTile :pick="item" />
+          </template>
+        </SettingsSortTray>
         <div class="flex justify-end gap-2">
           <button
             type="button"

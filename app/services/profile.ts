@@ -96,10 +96,16 @@ export interface Profile {
   rarest_trophies?: ShowcaseTrophy[] | null
   /** Up to 12 trophies the owner picked, in their order; `null` when private or the showcase is off. */
   featured_trophies?: ShowcaseTrophy[] | null
+  /** Up to 6 played games (trophy sets) the owner picked; `null` when private or the showcase is off. */
+  favorite_games?: ShowcaseGame[] | null
+  /** The left column's text; `null` when the showcase is off or has no text. Shown on private profiles too. */
+  text_left?: ShowcaseText | null
+  /** The right column's text, as `text_left`. */
+  text_right?: ShowcaseText | null
 }
 
 /** A showcase: a profile card its owner can switch off and reorder within its column. */
-export type ShowcaseKey = 'calendar' | 'rarest' | 'featured' | 'tips' | 'social'
+export type ShowcaseKey = 'calendar' | 'rarest' | 'featured' | 'games' | 'text_left' | 'tips' | 'social' | 'text_right'
 export type ShowcaseColumn = 'left' | 'right'
 
 /** Showcases to render per column, in order (`GET /profile/:psnid`). */
@@ -113,6 +119,21 @@ export interface ShowcaseSlot {
 
 /** The owner's full layout: every showcase of each column, in order. */
 export type ShowcaseLayout = Record<ShowcaseColumn, ShowcaseSlot[]>
+
+/** A favorite game: one of the owner's played trophy sets, name in the display language. */
+export interface ShowcaseGame {
+  id: number
+  name: string
+  display_language: string | null
+  icon_url: string
+  platform: string[]
+}
+
+/** A text showcase. `title` may be empty (the page shows a default); `body` is Markdown. */
+export interface ShowcaseText {
+  title: string
+  body: string
+}
 
 /**
  * An earned trophy shown in the rarest or featured showcase: the `user_trophy`

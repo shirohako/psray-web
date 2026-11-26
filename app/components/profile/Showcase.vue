@@ -22,6 +22,13 @@ defineProps<{ showcase: ShowcaseKey; profile: Profile; psnid: string }>()
     :psnid="psnid"
     :trophies="profile.featured_trophies"
   />
+  <ProfileShowcaseGames
+    v-else-if="showcase === 'games' && profile.favorite_games?.length"
+    :psnid="psnid"
+    :games="profile.favorite_games"
+  />
+  <ProfileShowcaseText v-else-if="showcase === 'text_left' && profile.text_left" :text="profile.text_left" />
+  <ProfileShowcaseText v-else-if="showcase === 'text_right' && profile.text_right" :text="profile.text_right" />
   <ProfileRecentTips
     v-else-if="showcase === 'tips' && profile.recent_tips"
     :psnid="psnid"

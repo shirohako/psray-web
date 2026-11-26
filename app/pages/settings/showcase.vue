@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { AlertTriangle, CircleDot, ExternalLink, GripVertical, LayoutDashboard, Loader2, Lock, LockKeyhole, RefreshCw } from 'lucide'
-import type { UserSetting } from '~/services/account'
+import { AlertTriangle, CircleDot, ExternalLink, GripVertical, LayoutDashboard, Loader2, Lock, LockKeyhole, Pencil, RefreshCw } from 'lucide'
+import type { UpdateSettingPayload, UserSetting } from '~/services/account'
 import { useAccountApi } from '~/services/account'
-import type { ShowcaseColumn, ShowcaseLayout } from '~/services/profile'
-import type { PickedTrophy } from '~/utils/profileShowcase'
+import type { ShowcaseColumn, ShowcaseKey, ShowcaseLayout, ShowcaseText } from '~/services/profile'
+import type { PickedGame, PickedTrophy } from '~/utils/profileShowcase'
 import { ApiError } from '~/utils/ApiError'
 
 /**
  * Profile showcases: switch each one on or off and drag it into place within
  * its column (left: above the tabbed main card; right: below stats and
- * account). The featured showcase's trophies are picked here too. Everything
- * is saved together from the unsaved-changes bar, like the profile page.
+ * account). What the featured and favorite-games showcases hold is picked
+ * here, and the two texts are written here. Everything is saved together from
+ * the unsaved-changes bar, like the profile page.
  */
 const { user } = useAuth()
 const { t } = useI18n()
@@ -21,40 +22,65 @@ const accountApi = useAccountApi()
 const { data: setting, pending: settingPending, error: settingError, refresh: refreshSetting }
   = await useApiFetch<UserSetting>('/user/setting')
 
+type Texts = Record<ShowcaseColumn, ShowcaseText>
 interface ShowcaseForm {
   layout: ShowcaseLayout
   featured: PickedTrophy[]
+  games: PickedGame[]
+  texts: Texts
 }
-const empty = (): ShowcaseForm => ({ layout: { left: [], right: [] }, featured: [] })
+const emptyText = (): ShowcaseText => ({ title: '', body: '' })
+const empty = (): ShowcaseForm => ({ layout: { left: [], right: [] }, featured: [], games: [], texts: { left: emptyText(), right: emptyText() } })
+const copyTexts = (texts: Texts): Texts => ({ left: { ...texts.left }, right: { ...texts.right } })
 // `saved` is what the account has now; the diff is what save sends.
 const form = reactive<ShowcaseForm>(empty())
 const saved = reactive<ShowcaseForm>(empty())
 
+function load(target: ShowcaseForm, s: UserSetting) {
+  target.layout = cloneLayout(s.profile_showcases)
+  target.featured = s.featured_trophies.map(toPicked)
+  target.games = [...s.favorite_games]
+  target.texts = copyTexts(s.showcase_texts)
+}
 watch(setting, (s) => {
   if (!s) return
-  const featured = s.featured_trophies.map(toPicked)
-  form.layout = cloneLayout(s.profile_showcases)
-  form.featured = [...featured]
-  saved.layout = cloneLayout(s.profile_showcases)
-  saved.featured = [...featured]
+  load(form, s)
+  load(saved, s)
 }, { immediate: true })
 
-const layoutChanged = computed(() => !sameLayout(form.layout, saved.layout))
-const featuredChanged = computed(() => !samePicks(form.featured, saved.featured))
-const dirty = computed(() => layoutChanged.value || featuredChanged.value)
-const changeTags = computed(() => [
-  ...(layoutChanged.value ? [t('settings.showcase.unsaved.layout')] : []),
-  ...(featuredChanged.value ? [t('settings.showcase.unsaved.featured')] : []),
-])
+const changed = computed(() => ({
+  layout: !sameLayout(form.layout, saved.layout),
+  featured: !samePicks(form.featured, saved.featured),
+  games: !sameGames(form.games, saved.games),
+  texts: !sameTexts(form.texts, saved.texts),
+}))
+const dirty = computed(() => Object.values(changed.value).some(Boolean))
+const changeTags = computed(() => (Object.keys(changed.value) as (keyof ShowcaseForm)[])
+  .filter(part => changed.value[part])
+  .map(part => t(`settings.showcase.unsaved.${part}`)))
 
+/** Fill a showcase's content; the first content switches the showcase on. */
+function fill(key: ShowcaseKey, wasEmpty: boolean, isEmpty: boolean) {
+  form.layout = layoutAfterFilling(form.layout, key, wasEmpty, isEmpty)
+}
 function setPicks(picks: PickedTrophy[]) {
-  form.layout = layoutAfterPicking(form.layout, form.featured.length, picks.length)
+  fill('featured', !form.featured.length, !picks.length)
   form.featured = picks
+}
+function setGames(games: PickedGame[]) {
+  fill('games', !form.games.length, !games.length)
+  form.games = games
+}
+function setText(column: ShowcaseColumn, text: ShowcaseText) {
+  fill(TEXT_KEYS[column], !form.texts[column].body, !text.body)
+  form.texts = { ...form.texts, [column]: text }
 }
 
 function discard() {
   form.layout = cloneLayout(saved.layout)
   form.featured = [...saved.featured]
+  form.games = [...saved.games]
+  form.texts = copyTexts(saved.texts)
 }
 
 // ── Sorting, one list per column ────────────────────────────────────────────
@@ -80,9 +106,25 @@ function setListRef(column: ShowcaseColumn, el: unknown) {
   ;(column === 'left' ? leftList : rightList).value = (el as HTMLElement | null) ?? null
 }
 
-// ── Featured picker ─────────────────────────────────────────────────────────
+// ── Pickers and the text editor ─────────────────────────────────────────────
 const pickerOpen = ref(false)
+const gamesPickerOpen = ref(false)
+const textColumn = ref<ShowcaseColumn>('left')
+const textOpen = ref(false)
+function editText(column: ShowcaseColumn) {
+  textColumn.value = column
+  textOpen.value = true
+}
+/** The text showcase in this layout row, if it is one. */
+const textColumnOf = (key: ShowcaseKey): ShowcaseColumn | null =>
+  key === TEXT_KEYS.left ? 'left' : key === TEXT_KEYS.right ? 'right' : null
+
 const isPrivate = computed(() => user.value?.is_profile_public === false)
+
+/** Row description, with the limit it mentions. */
+function describe(key: ShowcaseKey) {
+  return t(SHOWCASE_META[key].descKey, { max: key === 'games' ? GAMES_LIMIT : FEATURED_LIMIT })
+}
 
 // ── Save ────────────────────────────────────────────────────────────────────
 const saving = ref(false)
@@ -91,10 +133,12 @@ async function save() {
   if (saving.value || !dirty.value) return
   saving.value = true
   try {
-    await accountApi.updateSetting({
-      ...(layoutChanged.value ? { profile_showcases: cloneLayout(form.layout) } : {}),
-      ...(featuredChanged.value ? { featured_trophies: featuredRefs(form.featured) } : {}),
-    })
+    const payload: UpdateSettingPayload = {}
+    if (changed.value.layout) payload.profile_showcases = cloneLayout(form.layout)
+    if (changed.value.featured) payload.featured_trophies = featuredRefs(form.featured)
+    if (changed.value.games) payload.favorite_games = form.games.map(g => g.id)
+    if (changed.value.texts) payload.showcase_texts = copyTexts(form.texts)
+    await accountApi.updateSetting(payload)
     await refreshSetting()
     toast.success({ title: t('settings.showcase.saved') })
   }
@@ -218,7 +262,7 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
                     <p class="text-sm font-semibold transition-colors" :class="entry.on ? 'text-slate-900' : 'text-slate-500'">
                       {{ $t(SHOWCASE_META[entry.key].labelKey) }}
                     </p>
-                    <p class="mt-0.5 text-xs text-slate-400">{{ $t(SHOWCASE_META[entry.key].descKey, { max: FEATURED_LIMIT }) }}</p>
+                    <p class="mt-0.5 text-xs text-slate-400">{{ describe(entry.key) }}</p>
                   </div>
                   <SettingsSwitch v-model="entry.on" :label="$t(SHOWCASE_META[entry.key].labelKey)" :disabled="saving" />
                 </div>
@@ -229,19 +273,82 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
                   class="mx-3 mb-3 rounded-lg bg-slate-50 p-3 ring-1 ring-inset ring-slate-100 transition-opacity sm:ml-12"
                   :class="{ 'opacity-60': !entry.on }"
                 >
-                  <SettingsFeaturedTray
+                  <SettingsSortTray
                     :model-value="form.featured"
+                    :item-key="pick => pick.trophy_id"
+                    :item-label="pick => pick.name"
+                    :limit="FEATURED_LIMIT"
+                    tile-class="size-13"
                     addable
+                    :add-label="$t('settings.showcase.tray.addTrophies')"
                     :disabled="saving"
                     @update:model-value="setPicks"
                     @add="pickerOpen = true"
-                  />
+                  >
+                    <template #tile="{ item }">
+                      <SettingsTrophyTile :pick="item" badge />
+                    </template>
+                  </SettingsSortTray>
                   <div class="mt-2.5 flex items-center justify-between gap-3 text-[11px]">
                     <span class="text-slate-400">
-                      {{ form.featured.length ? $t('settings.showcase.tray.hint') : $t('settings.showcase.tray.empty') }}
+                      {{ form.featured.length ? $t('settings.showcase.tray.hint') : $t('settings.showcase.tray.emptyTrophies') }}
                     </span>
                     <span class="shrink-0 font-semibold tabular-nums text-slate-500">{{ form.featured.length }} / {{ FEATURED_LIMIT }}</span>
                   </div>
+                </div>
+
+                <!-- Favorite games: the picked games, inline -->
+                <div
+                  v-else-if="entry.key === 'games'"
+                  class="mx-3 mb-3 rounded-lg bg-slate-50 p-3 ring-1 ring-inset ring-slate-100 transition-opacity sm:ml-12"
+                  :class="{ 'opacity-60': !entry.on }"
+                >
+                  <SettingsSortTray
+                    :model-value="form.games"
+                    :item-key="game => game.id"
+                    :item-label="game => game.name"
+                    :limit="GAMES_LIMIT"
+                    tile-class="h-11 w-20"
+                    addable
+                    :add-label="$t('settings.showcase.tray.addGames')"
+                    :disabled="saving"
+                    @update:model-value="setGames"
+                    @add="gamesPickerOpen = true"
+                  >
+                    <template #tile="{ item }">
+                      <SettingsGameTile :game="item" />
+                    </template>
+                  </SettingsSortTray>
+                  <div class="mt-2.5 flex items-center justify-between gap-3 text-[11px]">
+                    <span class="text-slate-400">
+                      {{ form.games.length ? $t('settings.showcase.tray.hint') : $t('settings.showcase.tray.emptyGames') }}
+                    </span>
+                    <span class="shrink-0 font-semibold tabular-nums text-slate-500">{{ form.games.length }} / {{ GAMES_LIMIT }}</span>
+                  </div>
+                </div>
+
+                <!-- Text: title and an excerpt; "Edit" opens the editor -->
+                <div
+                  v-else-if="textColumnOf(entry.key)"
+                  class="mx-3 mb-3 flex items-center gap-3 rounded-lg bg-slate-50 px-3 py-2.5 ring-1 ring-inset ring-slate-100 transition-opacity sm:ml-12"
+                  :class="{ 'opacity-60': !entry.on }"
+                >
+                  <div v-if="form.texts[textColumnOf(entry.key)!].body" class="min-w-0 flex-1">
+                    <p class="truncate text-[13px] font-semibold text-slate-900">
+                      {{ form.texts[textColumnOf(entry.key)!].title || $t('profile.showcase.text.defaultTitle') }}
+                    </p>
+                    <p class="mt-0.5 line-clamp-2 text-xs text-slate-500">{{ tipExcerpt(form.texts[textColumnOf(entry.key)!].body, 160) }}</p>
+                  </div>
+                  <p v-else class="min-w-0 flex-1 text-xs text-slate-400">{{ $t('settings.showcase.text.empty') }}</p>
+                  <button
+                    type="button"
+                    class="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
+                    :disabled="saving"
+                    @click="editText(textColumnOf(entry.key)!)"
+                  >
+                    <LucideIcon :icon="Pencil" class="size-3.5" />
+                    {{ $t('settings.showcase.text.edit') }}
+                  </button>
                 </div>
               </li>
             </TransitionGroup>
@@ -304,12 +411,15 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
       </template>
     </div>
 
-    <SettingsFeaturedPicker
-      v-if="user"
-      v-model:open="pickerOpen"
-      :psnid="user.psnid"
-      :picks="form.featured"
-      @apply="setPicks"
+    <template v-if="user">
+      <SettingsFeaturedPicker v-model:open="pickerOpen" :psnid="user.psnid" :picks="form.featured" @apply="setPicks" />
+      <SettingsGamesPicker v-model:open="gamesPickerOpen" :psnid="user.psnid" :picks="form.games" @apply="setGames" />
+    </template>
+    <SettingsTextDialog
+      v-model:open="textOpen"
+      :column="textColumn"
+      :text="form.texts[textColumn]"
+      @apply="setText(textColumn, $event)"
     />
   </section>
 </template>

@@ -621,6 +621,12 @@
       },
       "featured": {
         "title": "Featured trophies"
+      },
+      "games": {
+        "title": "Favorite games"
+      },
+      "text": {
+        "defaultTitle": "About me"
       }
     },
     "tips": {
@@ -787,7 +793,7 @@
       "saved": "Showcase saved",
       "saveFailed": "Save failed",
       "leaveConfirm": "You have unsaved changes. Leave this page anyway?",
-      "privateNotice": "Your PSN trophies are private, so the trophy showcases (calendar, rarest, featured) don’t show on your profile for now, and featured trophies can’t be picked.",
+      "privateNotice": "Your PSN trophies are private, so the showcases built from trophies and games (calendar, rarest, featured trophies, favorite games) don’t show on your profile for now, and trophies and games can’t be picked. Your texts still show.",
       "move": "Reorder “{name}” (drag, or use the arrow keys)",
       "columns": {
         "left": "Left column",
@@ -819,18 +825,34 @@
         "social": {
           "name": "Social",
           "desc": "Follower and following counts"
+        },
+        "games": {
+          "name": "Favorite games",
+          "desc": "Up to {max} of the games you’ve played"
+        },
+        "text_left": {
+          "name": "Text (left column)",
+          "desc": "A title and free text, with Markdown"
+        },
+        "text_right": {
+          "name": "Text (right column)",
+          "desc": "A title and free text, with Markdown"
         }
       },
       "unsaved": {
         "layout": "Showcases and order",
-        "featured": "Featured trophies"
+        "featured": "Featured trophies",
+        "games": "Favorite games",
+        "texts": "Texts"
       },
       "tray": {
         "hint": "Drag to reorder, × to remove",
-        "empty": "Pick trophies with +. Picking one turns Featured trophies on.",
-        "add": "Add trophies",
+        "emptyTrophies": "Pick trophies with +. Picking one turns Featured trophies on.",
+        "emptyGames": "Pick games with +. Picking one turns Favorite games on.",
+        "addTrophies": "Add trophies",
+        "addGames": "Add games",
         "remove": "Remove “{name}”",
-        "moveTrophy": "Reorder “{name}”"
+        "move": "Reorder “{name}”"
       },
       "picker": {
         "title": "Pick featured trophies",
@@ -849,6 +871,18 @@
         "limit": "You can pick up to {max}",
         "done": "Done",
         "loadFailed": "Couldn’t load this. Please try again in a moment."
+      },
+      "gamesPicker": {
+        "title": "Pick favorite games"
+      },
+      "text": {
+        "dialogTitle": "Edit “{name}”",
+        "title": "Title",
+        "titleHint": "Left empty, it shows as “{title}”.",
+        "placeholder": "Introduce yourself, your favorite games, who you’d like to play with — anything you like.",
+        "tooLong": "Keep the text within {max} characters.",
+        "empty": "Nothing written yet. Writing something turns this text on.",
+        "edit": "Edit"
       }
     },
     "security": {
@@ -1809,9 +1843,11 @@
       "isPublic": "Whether the profile is public",
       "calendar": "Trophies earned per day over the past year, each with date and count; null when private or the showcase is off",
       "recentTips": "The 5 latest comments; null for players who haven’t signed up on PSRay or when the showcase is off",
-      "showcases": "Showcases to render: left and right list keys (calendar, rarest, featured, tips, social) in the owner’s order, only those switched on and with content",
+      "showcases": "Showcases to render: left and right list keys (calendar, rarest, featured, games, text_left, tips, social, text_right) in the owner’s order, only those switched on and with content",
       "rarestTrophies": "The 6 earned trophies with the lowest PSN rate, each with its trophy and set; null when private or the showcase is off",
       "featuredTrophies": "Trophies the owner picked (up to 12, in their order); null when private or the showcase is off",
+      "favoriteGames": "Played games (trophy sets) the owner picked, up to 6 in their order; null when private or the showcase is off",
+      "texts": "The left and right column texts, each with title and body (Markdown); null when the showcase is off or the body is empty. Returned for private profiles too",
       "gameId": "Game ID",
       "cover": "Cover image with URL, size and main colour; may be null",
       "releaseDate": "First release date; null when not yet announced",

@@ -407,6 +407,26 @@
         }
       ],
       "featured_trophies": null,
+      "favorite_games": [
+        {
+          "id": 25526,
+          "name": "FINAL FANTASY VII REBIRTH",
+          "display_language": "en-US",
+          "icon_url": "https://psnobj.prod.dl.playstation.net/psnobj/NPWR35316_00/bd6c3068-37e0-40eb-8081-eee7323b04f0.PNG",
+          "platform": [
+            "PS5"
+          ]
+        },
+        {
+          "id": 29327,
+          "name": "Metaphor: ReFantazio",
+          "display_language": "en-US",
+          "icon_url": "https://psnobj.prod.dl.playstation.net/psnobj/NPWR25347_00/acc1ea23-8069-438d-84a7-585bde6ab21c.png",
+          "platform": [
+            "PS5"
+          ]
+        }
+      ],
       "recent_tips": [
         {
           "id": 45,
@@ -442,10 +462,17 @@
           }
         }
       ],
+      "text_left": {
+        "title": "ようこそ！",
+        "body": "JRPG を中心にトロコンを目指しています。**軌跡シリーズ**は全作プラチナ取得済み。"
+      },
+      "text_right": null,
       "showcases": {
         "left": [
           "calendar",
-          "rarest"
+          "rarest",
+          "games",
+          "text_left"
         ],
         "right": [
           "tips",

@@ -621,6 +621,12 @@
       },
       "featured": {
         "title": "즐겨찾는 트로피"
+      },
+      "games": {
+        "title": "즐겨찾는 게임"
+      },
+      "text": {
+        "defaultTitle": "자기소개"
       }
     },
     "tips": {
@@ -787,7 +793,7 @@
       "saved": "쇼케이스를 저장했습니다",
       "saveFailed": "저장 실패",
       "leaveConfirm": "저장하지 않은 변경 사항이 있습니다. 이 페이지를 떠날까요?",
-      "privateNotice": "PSN 트로피가 비공개라서 트로피를 쓰는 쇼케이스(캘린더, 희귀, 즐겨찾기)는 지금 프로필에 표시되지 않으며, 즐겨찾는 트로피도 고를 수 없습니다.",
+      "privateNotice": "PSN 트로피가 비공개라서 트로피와 게임을 쓰는 쇼케이스(캘린더, 희귀, 즐겨찾는 트로피와 게임)는 지금 프로필에 표시되지 않으며, 트로피와 게임도 고를 수 없습니다. 텍스트는 그대로 표시됩니다.",
       "move": "‘{name}’ 순서 바꾸기(드래그 또는 방향키)",
       "columns": {
         "left": "왼쪽 열",
@@ -819,18 +825,34 @@
         "social": {
           "name": "소셜",
           "desc": "팔로워 수와 팔로잉 수"
+        },
+        "games": {
+          "name": "즐겨찾는 게임",
+          "desc": "플레이한 게임 중 최대 {max}개를 골라 표시"
+        },
+        "text_left": {
+          "name": "텍스트(왼쪽 열)",
+          "desc": "제목과 본문을 자유롭게 작성(Markdown 지원)"
+        },
+        "text_right": {
+          "name": "텍스트(오른쪽 열)",
+          "desc": "제목과 본문을 자유롭게 작성(Markdown 지원)"
         }
       },
       "unsaved": {
         "layout": "표시와 순서",
-        "featured": "즐겨찾는 트로피"
+        "featured": "즐겨찾는 트로피",
+        "games": "즐겨찾는 게임",
+        "texts": "텍스트"
       },
       "tray": {
         "hint": "드래그해 순서 변경, ×로 빼기",
-        "empty": "+로 트로피를 고르세요. 고르면 즐겨찾는 트로피가 켜집니다.",
-        "add": "트로피 추가",
+        "emptyTrophies": "+로 트로피를 고르세요. 고르면 즐겨찾는 트로피가 켜집니다.",
+        "emptyGames": "+로 게임을 고르세요. 고르면 즐겨찾는 게임이 켜집니다.",
+        "addTrophies": "트로피 추가",
+        "addGames": "게임 추가",
         "remove": "‘{name}’ 빼기",
-        "moveTrophy": "‘{name}’ 순서 바꾸기"
+        "move": "‘{name}’ 순서 바꾸기"
       },
       "picker": {
         "title": "즐겨찾는 트로피 고르기",
@@ -849,6 +871,18 @@
         "limit": "최대 {max}개까지 고를 수 있습니다",
         "done": "완료",
         "loadFailed": "불러오지 못했습니다. 잠시 후 다시 시도해 주세요."
+      },
+      "gamesPicker": {
+        "title": "즐겨찾는 게임 고르기"
+      },
+      "text": {
+        "dialogTitle": "‘{name}’ 편집",
+        "title": "제목",
+        "titleHint": "비워 두면 ‘{title}’(으)로 표시됩니다.",
+        "placeholder": "자기소개, 좋아하는 게임, 친구 모집 등 자유롭게 써 주세요.",
+        "tooLong": "본문은 {max}자 이내로 써 주세요.",
+        "empty": "아직 아무것도 쓰지 않았습니다. 쓰면 이 텍스트가 켜집니다.",
+        "edit": "편집"
       }
     },
     "security": {
@@ -1809,9 +1843,11 @@
       "isPublic": "프로필 공개 여부",
       "calendar": "최근 1년간 날짜별 트로피 획득 수. 각 항목은 date와 count. 비공개이거나 쇼케이스가 꺼져 있으면 null",
       "recentTips": "최근 작성한 댓글 5개. PSRay에 가입하지 않은 플레이어이거나 쇼케이스가 꺼져 있으면 null",
-      "showcases": "표시할 쇼케이스. left와 right에 소유자가 정한 순서대로 키(calendar, rarest, featured, tips, social)를 나열. 켜져 있고 내용이 있는 것만",
+      "showcases": "표시할 쇼케이스. left와 right에 소유자가 정한 순서대로 키(calendar, rarest, featured, games, text_left, tips, social, text_right)를 나열. 켜져 있고 내용이 있는 것만",
       "rarestTrophies": "PSN 획득률이 가장 낮은 획득 트로피 6개(트로피와 소속 세트 포함). 비공개이거나 쇼케이스가 꺼져 있으면 null",
       "featuredTrophies": "소유자가 고른 트로피(최대 12개, 정한 순서). 비공개이거나 쇼케이스가 꺼져 있으면 null",
+      "favoriteGames": "소유자가 고른 플레이한 게임(트로피 세트, 최대 6개, 정한 순서). 비공개이거나 쇼케이스가 꺼져 있으면 null",
+      "texts": "왼쪽과 오른쪽 열의 텍스트. 각각 title과 body(Markdown). 쇼케이스가 꺼져 있거나 본문이 비어 있으면 null. 비공개여도 반환",
       "gameId": "게임 ID",
       "cover": "커버 이미지(URL, 크기, 대표 색). null일 수 있음",
       "releaseDate": "최초 발매일. 미정이면 null",
