@@ -714,27 +714,59 @@
     },
     "profile": {
       "heading": "프로필",
-      "subheading": "프로필 페이지의 배너와 아바타를 설정합니다.",
+      "subheading": "배너나 아바타를 클릭해 바꿀 수 있습니다. 저장하면 프로필에 반영됩니다.",
       "loadFailed": "설정을 불러오지 못했습니다. 다시 시도해 주세요.",
-      "updatePreview": "미리보기 갱신",
-      "noChanges": "저장할 변경 사항이 없습니다",
       "saved": "설정이 업데이트되었습니다",
       "saveFailed": "저장 실패",
+      "leaveConfirm": "저장하지 않은 변경 사항이 있습니다. 이 페이지를 떠날까요?",
       "banner": {
-        "title": "프로필 배너",
-        "hint": "프로필 페이지 상단에 표시되는 이미지입니다.",
-        "urlLabel": "배너 이미지 URL",
-        "sizeHint": "약 4.5:1 비율의 와이드 이미지(예: 1440×320)를 권장합니다. 너무 작은 이미지는 큰 화면에서 흐려집니다.",
-        "uploadHint": "외부 이미지 호스팅에 업로드한 뒤 링크를 붙여넣으세요. 직접 업로드는 준비 중입니다."
+        "default": "기본 배너",
+        "change": "배너 변경",
+        "remove": "배너 삭제"
       },
       "avatar": {
-        "title": "아바타",
-        "hint": "동기화된 PSN 아바타를 쓰거나 직접 이미지 URL을 지정합니다.",
-        "usePsn": "PSN 아바타 사용",
-        "useCustom": "사용자 지정 이미지 사용",
-        "urlLabel": "아바타 이미지 URL",
-        "urlRequired": "아바타 이미지 URL을 입력해 주세요",
-        "uploadHint": "외부 이미지 호스팅을 사용할 수 있습니다. 직접 업로드는 준비 중입니다."
+        "change": "아바타 변경",
+        "sourceTitle": "사용할 아바타",
+        "sourceHint": "PSN 아바타로 되돌려도 업로드한 아바타는 남아 있습니다.",
+        "psn": "PSN 아바타",
+        "custom": "직접 올린 이미지",
+        "upload": "아바타 업로드"
+      },
+      "unsaved": {
+        "title": "저장하지 않은 변경 사항",
+        "banner": "배너 변경됨",
+        "bannerRemoved": "배너 삭제됨",
+        "avatar": "아바타 변경됨",
+        "avatarSource": "사용할 아바타 변경됨",
+        "discard": "변경 취소"
+      },
+      "crop": {
+        "titleBanner": "배너 자르기",
+        "titleAvatar": "아바타 자르기",
+        "hint": "이미지를 드래그해 위치를 맞추고, 휠이나 두 손가락 또는 슬라이더로 크기를 조절하세요.",
+        "stageLabel": "자르기 영역: 방향키로 이미지 이동, 더하기와 빼기로 크기 조절",
+        "zoom": "크기 조절",
+        "zoomIn": "확대",
+        "zoomOut": "축소",
+        "source": "원본 {size}",
+        "ratio": "{ratio} 비율로 자르기",
+        "output": "출력 {size}",
+        "previewHeading": "프로필에서 보이는 모습",
+        "previewLists": "랭킹, 팔로우 목록 등에서는 원형으로 표시됩니다",
+        "loading": "이미지를 읽는 중…",
+        "preparing": "자르는 중…",
+        "uploading": "업로드 중",
+        "uploadNote": "브라우저에서 자르고 압축해 {size}만 업로드합니다",
+        "uploadingButton": "업로드 중…",
+        "confirm": "자르고 업로드",
+        "chooseAnother": "다른 이미지 선택",
+        "errors": {
+          "notImage": "이미지 파일을 선택해 주세요.",
+          "tooLarge": "이미지가 {max}를 넘습니다. 더 작은 이미지를 선택해 주세요.",
+          "tooSmall": "이미지가 너무 작습니다. 최소 {min}이어야 하는데 이 이미지는 {size}입니다.",
+          "unreadable": "브라우저에서 이 이미지를 열 수 없습니다. JPG, PNG, WebP 이미지를 사용해 보세요.",
+          "uploadFailed": "업로드에 실패했습니다"
+        }
       }
     },
     "security": {

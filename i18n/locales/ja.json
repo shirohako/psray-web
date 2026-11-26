@@ -714,27 +714,59 @@
     },
     "profile": {
       "heading": "プロフィール",
-      "subheading": "プロフィールページのバナーとアバターをカスタマイズします。",
+      "subheading": "バナーやアバターをクリックして変更できます。保存するとプロフィールに反映されます。",
       "loadFailed": "設定の読み込みに失敗しました。再試行してください。",
-      "updatePreview": "プレビューを更新",
-      "noChanges": "保存する変更はありません",
       "saved": "設定を更新しました",
       "saveFailed": "保存に失敗しました",
+      "leaveConfirm": "保存していない変更があります。このページを離れますか？",
       "banner": {
-        "title": "プロフィールバナー",
-        "hint": "プロフィールページ上部に表示される画像です。",
-        "urlLabel": "バナー画像の URL",
-        "sizeHint": "横長（およそ 4.5:1、例：1440×320）の画像を推奨します。小さすぎる画像は大画面でぼやけます。",
-        "uploadHint": "外部の画像ホスティングサービスにアップロードし、そのリンクを貼り付けてください。直接アップロードは準備中です。"
+        "default": "デフォルトのバナー",
+        "change": "バナーを変更",
+        "remove": "バナーを削除"
       },
       "avatar": {
-        "title": "アバター",
-        "hint": "同期した PSN のアバターを使うか、画像の URL を指定します。",
-        "usePsn": "PSN のアバターを使う",
-        "useCustom": "カスタム画像を使う",
-        "urlLabel": "アバター画像の URL",
-        "urlRequired": "アバター画像の URL を入力してください",
-        "uploadHint": "外部の画像ホスティングサービスも利用できます。直接アップロードは準備中です。"
+        "change": "アバターを変更",
+        "sourceTitle": "使用するアバター",
+        "sourceHint": "PSN のアバターに戻しても、アップロードしたアバターは残ります。",
+        "psn": "PSN アバター",
+        "custom": "カスタム",
+        "upload": "アップロード"
+      },
+      "unsaved": {
+        "title": "保存していない変更があります",
+        "banner": "バナーを変更",
+        "bannerRemoved": "バナーを削除",
+        "avatar": "アバターを変更",
+        "avatarSource": "使用するアバターを変更",
+        "discard": "破棄"
+      },
+      "crop": {
+        "titleBanner": "バナーを切り抜く",
+        "titleAvatar": "アバターを切り抜く",
+        "hint": "画像をドラッグして位置を調整し、ホイール、ピンチ、スライダーで拡大縮小します。",
+        "stageLabel": "切り抜き範囲：矢印キーで画像を移動、プラスとマイナスで拡大縮小",
+        "zoom": "拡大縮小",
+        "zoomIn": "拡大",
+        "zoomOut": "縮小",
+        "source": "元画像 {size}",
+        "ratio": "{ratio} で切り抜き",
+        "output": "出力 {size}",
+        "previewHeading": "プロフィールでの見え方",
+        "previewLists": "ランキングやフォローリストなどでは丸く表示されます",
+        "loading": "画像を読み込んでいます…",
+        "preparing": "切り抜いています…",
+        "uploading": "アップロード中",
+        "uploadNote": "ブラウザで切り抜いて圧縮したので、アップロードは {size} だけです",
+        "uploadingButton": "アップロード中…",
+        "confirm": "切り抜いてアップロード",
+        "chooseAnother": "別の画像を選ぶ",
+        "errors": {
+          "notImage": "画像ファイルを選んでください。",
+          "tooLarge": "画像が {max} を超えています。もっと小さい画像を選んでください。",
+          "tooSmall": "画像が小さすぎます。{min} 以上が必要ですが、この画像は {size} です。",
+          "unreadable": "ブラウザでこの画像を開けません。JPG、PNG、WebP をお試しください。",
+          "uploadFailed": "アップロードに失敗しました"
+        }
       }
     },
     "security": {

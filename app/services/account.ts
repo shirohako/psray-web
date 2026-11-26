@@ -5,6 +5,7 @@
  *
  * Mirrors `useAuthApi()` in `~/services/auth` — thin wrappers over `useApi()`.
  */
+import type { MediaImage } from '~/types/media'
 
 /** Standard success payload for the mutation endpoints: a displayable message. */
 export interface MessageResult {
@@ -12,14 +13,14 @@ export interface MessageResult {
 }
 
 export interface UpdateSettingPayload {
-  /** Custom profile banner image URL; `null` clears it. */
-  banner_url?: string | null
-  /** Custom avatar image URL; `null` clears it. */
-  avatar_url?: string | null
+  /** Image id of the profile banner (upload it first, purpose `banner`); `null` removes it. */
+  banner?: string | null
+  /** Image id of the custom avatar (purpose `avatar`); `null` removes it. */
+  avatar?: string | null
   /**
-   * `true` — stop overwriting the avatar with the synced PSN one.
-   * `false` — resume PSN sync, restoring the official avatar next sync.
-   * Omitted while only `avatar_url` is sent: the backend infers `true`.
+   * `true` — show the custom avatar. `false` — switch back to the PSN avatar
+   * at once; the uploaded one is kept for switching back later.
+   * Omitted while only `avatar` is sent: an image turns it on, `null` off.
    */
   use_custom_avatar?: boolean
   /** Language mails are sent in — one of the five UI locales. */
@@ -32,9 +33,14 @@ export interface UpdateSettingPayload {
 
 /** Current account settings, as returned by `GET /user/setting`. */
 export interface UserSetting {
-  banner_url: string | null
+  /** The avatar shown right now: the custom one when it is on, else the PSN one. */
   avatar_url: string | null
+  /** The PSN avatar; `null` until the first sync brings it in. */
+  psn_avatar_url: string | null
+  /** The uploaded avatar, kept while the PSN one is in use. */
+  avatar: MediaImage | null
   use_custom_avatar: boolean
+  banner: MediaImage | null
   locale: string
   mail_important: boolean
   mail_features: boolean

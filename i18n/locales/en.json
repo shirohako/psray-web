@@ -714,27 +714,59 @@
     },
     "profile": {
       "heading": "Profile",
-      "subheading": "Customise the banner and avatar on your profile page.",
+      "subheading": "Click the banner or avatar to change it. Changes show on your profile once saved.",
       "loadFailed": "Couldn’t load your settings. Please retry.",
-      "updatePreview": "Update preview",
-      "noChanges": "Nothing to save",
       "saved": "Settings updated",
       "saveFailed": "Save failed",
+      "leaveConfirm": "You have unsaved changes. Leave this page anyway?",
       "banner": {
-        "title": "Profile banner",
-        "hint": "The image shown at the top of your profile page.",
-        "urlLabel": "Banner image URL",
-        "sizeHint": "A wide image of roughly 4.5:1 (e.g. 1440×320) works best; small images look blurry on large screens.",
-        "uploadHint": "Upload to an image host and paste the link here. Direct uploads are in the works."
+        "default": "Default banner",
+        "change": "Change banner",
+        "remove": "Remove banner"
       },
       "avatar": {
-        "title": "Avatar",
-        "hint": "Use your synced PSN avatar, or point to your own image.",
-        "usePsn": "Use PSN avatar",
-        "useCustom": "Use a custom image",
-        "urlLabel": "Avatar image URL",
-        "urlRequired": "Please enter an avatar image URL",
-        "uploadHint": "Any image host works. Direct uploads are in the works."
+        "change": "Change avatar",
+        "sourceTitle": "Avatar to show",
+        "sourceHint": "Your uploaded avatar is kept when you switch back to the PSN one.",
+        "psn": "PSN avatar",
+        "custom": "Custom",
+        "upload": "Upload avatar"
+      },
+      "unsaved": {
+        "title": "Unsaved changes",
+        "banner": "New banner",
+        "bannerRemoved": "Banner removed",
+        "avatar": "New avatar",
+        "avatarSource": "Avatar switched",
+        "discard": "Discard"
+      },
+      "crop": {
+        "titleBanner": "Crop banner",
+        "titleAvatar": "Crop avatar",
+        "hint": "Drag the image to position it. Zoom with the scroll wheel, two fingers or the slider.",
+        "stageLabel": "Crop area: arrow keys move the image, plus and minus zoom",
+        "zoom": "Zoom",
+        "zoomIn": "Zoom in",
+        "zoomOut": "Zoom out",
+        "source": "Original {size}",
+        "ratio": "Cropped to {ratio}",
+        "output": "Output {size}",
+        "previewHeading": "On your profile",
+        "previewLists": "Shown round in the leaderboard, follow lists and elsewhere",
+        "loading": "Reading the image…",
+        "preparing": "Cropping…",
+        "uploading": "Uploading",
+        "uploadNote": "Cropped and compressed in your browser, so only {size} is uploaded",
+        "uploadingButton": "Uploading…",
+        "confirm": "Crop and upload",
+        "chooseAnother": "Choose another image",
+        "errors": {
+          "notImage": "Please choose an image file.",
+          "tooLarge": "The image is over {max}. Please choose a smaller one.",
+          "tooSmall": "The image is too small: it needs to be at least {min}, and this one is {size}.",
+          "unreadable": "Your browser can’t open this image. Try a JPG, PNG or WebP.",
+          "uploadFailed": "Upload failed"
+        }
       }
     },
     "security": {

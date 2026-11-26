@@ -714,27 +714,59 @@
     },
     "profile": {
       "heading": "個人資料",
-      "subheading": "自訂個人首頁的橫幅與頭像展示。",
+      "subheading": "點橫幅或頭像就能更換，儲存後在個人主頁生效。",
       "loadFailed": "設定載入失敗，請重試。",
-      "updatePreview": "更新預覽",
-      "noChanges": "沒有需要儲存的變更",
       "saved": "設定已更新",
       "saveFailed": "儲存失敗",
+      "leaveConfirm": "有尚未儲存的變更，確定要離開嗎？",
       "banner": {
-        "title": "個人橫幅 Banner",
-        "hint": "展示在個人首頁頂部的橫幅圖片。",
-        "urlLabel": "橫幅圖片 URL",
-        "sizeHint": "建議使用約 4.5:1 的寬幅圖片（如 1440×320），過小的圖片在大螢幕上可能模糊。",
-        "uploadHint": "可先用第三方圖床上傳圖片，再把連結填到這裡。直接上傳功能開發中。"
+        "default": "預設橫幅",
+        "change": "更換橫幅",
+        "remove": "移除橫幅"
       },
       "avatar": {
-        "title": "頭像",
-        "hint": "使用同步的 PSN 頭像，或填寫自訂圖片連結。",
-        "usePsn": "使用 PSN 頭像",
-        "useCustom": "使用自訂頭像",
-        "urlLabel": "頭像圖片 URL",
-        "urlRequired": "請填寫頭像圖片 URL",
-        "uploadHint": "可以使用第三方圖床。直接上傳功能開發中。"
+        "change": "更換頭像",
+        "sourceTitle": "頭像來源",
+        "sourceHint": "換回 PSN 頭像時，上傳的頭像會保留。",
+        "psn": "PSN 頭像",
+        "custom": "自訂",
+        "upload": "上傳頭像"
+      },
+      "unsaved": {
+        "title": "有尚未儲存的變更",
+        "banner": "橫幅已更換",
+        "bannerRemoved": "橫幅已移除",
+        "avatar": "頭像已更換",
+        "avatarSource": "頭像來源已切換",
+        "discard": "捨棄"
+      },
+      "crop": {
+        "titleBanner": "裁切橫幅",
+        "titleAvatar": "裁切頭像",
+        "hint": "拖曳圖片調整位置，用滾輪、雙指或滑桿縮放。",
+        "stageLabel": "裁切區域：方向鍵移動圖片，加號和減號縮放",
+        "zoom": "縮放",
+        "zoomIn": "放大",
+        "zoomOut": "縮小",
+        "source": "原圖 {size}",
+        "ratio": "裁成 {ratio}",
+        "output": "輸出 {size}",
+        "previewHeading": "在個人主頁上的樣子",
+        "previewLists": "排行榜、追蹤列表等處會顯示為圓形",
+        "loading": "正在讀取圖片…",
+        "preparing": "正在裁切…",
+        "uploading": "上傳中",
+        "uploadNote": "已在瀏覽器裡裁好並壓縮，只上傳 {size}",
+        "uploadingButton": "上傳中…",
+        "confirm": "確認並上傳",
+        "chooseAnother": "重新選擇圖片",
+        "errors": {
+          "notImage": "請選擇圖片檔案。",
+          "tooLarge": "圖片超過 {max}，請換一張小一點的。",
+          "tooSmall": "圖片太小了：至少要 {min}，這張是 {size}。",
+          "unreadable": "瀏覽器無法開啟這張圖片，換一張 JPG、PNG 或 WebP 試試。",
+          "uploadFailed": "上傳失敗"
+        }
       }
     },
     "security": {

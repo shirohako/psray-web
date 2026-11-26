@@ -714,27 +714,59 @@
     },
     "profile": {
       "heading": "个人资料",
-      "subheading": "自定义个人主页的横幅与头像展示。",
+      "subheading": "点横幅或头像就能更换，保存后在个人主页生效。",
       "loadFailed": "设置加载失败，请重试。",
-      "updatePreview": "更新预览",
-      "noChanges": "没有需要保存的更改",
       "saved": "设置已更新",
       "saveFailed": "保存失败",
+      "leaveConfirm": "有未保存的更改，确定离开吗？",
       "banner": {
-        "title": "个人横幅 Banner",
-        "hint": "展示在个人主页顶部的横幅图片。",
-        "urlLabel": "横幅图片 URL",
-        "sizeHint": "建议使用约 4.5:1 的宽幅图片（如 1440×320），过小的图片在大屏上可能模糊。",
-        "uploadHint": "可先用第三方图床上传图片，再把链接填到这里。直接上传功能开发中。"
+        "default": "默认横幅",
+        "change": "更换横幅",
+        "remove": "移除横幅"
       },
       "avatar": {
-        "title": "头像",
-        "hint": "使用同步的 PSN 头像，或填写自定义图片链接。",
-        "usePsn": "使用 PSN 头像",
-        "useCustom": "使用自定义头像",
-        "urlLabel": "头像图片 URL",
-        "urlRequired": "请填写头像图片 URL",
-        "uploadHint": "可以使用第三方图床。直接上传功能开发中。"
+        "change": "更换头像",
+        "sourceTitle": "头像来源",
+        "sourceHint": "换回 PSN 头像时，上传的头像会保留。",
+        "psn": "PSN 头像",
+        "custom": "自定义",
+        "upload": "上传头像"
+      },
+      "unsaved": {
+        "title": "有未保存的更改",
+        "banner": "横幅已更换",
+        "bannerRemoved": "横幅已移除",
+        "avatar": "头像已更换",
+        "avatarSource": "头像来源已切换",
+        "discard": "放弃"
+      },
+      "crop": {
+        "titleBanner": "裁剪横幅",
+        "titleAvatar": "裁剪头像",
+        "hint": "拖动图片调整位置，用滚轮、双指或滑杆缩放。",
+        "stageLabel": "裁剪区域：方向键移动图片，加号和减号缩放",
+        "zoom": "缩放",
+        "zoomIn": "放大",
+        "zoomOut": "缩小",
+        "source": "原图 {size}",
+        "ratio": "裁成 {ratio}",
+        "output": "输出 {size}",
+        "previewHeading": "在个人主页上的样子",
+        "previewLists": "排行榜、关注列表等处显示为圆形",
+        "loading": "正在读取图片…",
+        "preparing": "正在裁剪…",
+        "uploading": "上传中",
+        "uploadNote": "已在浏览器里裁好并压缩，只上传 {size}",
+        "uploadingButton": "上传中…",
+        "confirm": "确认并上传",
+        "chooseAnother": "重新选择图片",
+        "errors": {
+          "notImage": "请选择图片文件。",
+          "tooLarge": "图片超过 {max}，请换一张小一点的。",
+          "tooSmall": "图片太小了：至少要 {min}，这张是 {size}。",
+          "unreadable": "浏览器打不开这张图片，换一张 JPG、PNG 或 WebP 试试。",
+          "uploadFailed": "上传失败"
+        }
       }
     },
     "security": {
