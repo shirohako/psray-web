@@ -122,17 +122,17 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
 <template>
   <section class="rounded-lg border border-slate-200 bg-white shadow-sm">
     <div class="space-y-6 p-5">
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <SettingsHero :icon="LayoutDashboard" eyebrow="Showcase" :title="$t('settings.showcase.heading')" :description="$t('settings.showcase.subheading')" />
+      <!-- The link sits in the banner's own slot, styled for its dark ground. -->
+      <SettingsHero :icon="LayoutDashboard" eyebrow="Showcase" :title="$t('settings.showcase.heading')" :description="$t('settings.showcase.subheading')">
         <AppLink
           v-if="user"
           :to="`/p/${encodeURIComponent(user.psnid)}`"
-          class="inline-flex shrink-0 items-center gap-1.5 self-start rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900 sm:self-auto"
+          class="inline-flex shrink-0 items-center gap-1.5 justify-self-start whitespace-nowrap rounded-lg bg-white/10 px-3 py-2 text-sm font-semibold text-white ring-1 ring-inset ring-white/15 transition hover:bg-white/15"
         >
-          <LucideIcon :icon="ExternalLink" class="size-4" />
+          <LucideIcon :icon="ExternalLink" class="size-4 text-sky-200" />
           {{ $t('settings.showcase.viewProfile') }}
         </AppLink>
-      </div>
+      </SettingsHero>
 
       <!-- Loading -->
       <div v-if="settingPending" class="space-y-3">
