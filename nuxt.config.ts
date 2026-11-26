@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 /**
  * The commit this build was made from, shown in the footer next to the build
- * date. scripts/deploy.sh names each release folder after the same short hash
+ * date. psray-deploy names each release folder after the same short hash
  * and UTC time, so a page can be matched to its release. Read when the config
  * loads, i.e. at `nuxt build` (or when `nuxt dev` starts).
  */

@@ -10,7 +10,7 @@ import { Calendar, GitCommitHorizontal } from 'lucide'
 const route = useRoute()
 
 // Which build is serving this page: short commit and UTC build date as YYMMDD
-// (e.g. 261126), the pair scripts/deploy.sh names release folders with. Both
+// (e.g. 261126), the pair psray-deploy names release folders with. Both
 // chips form one link to the repository.
 const { build } = useRuntimeConfig().public
 const buildDate = build.time.slice(2, 10).replaceAll('-', '')

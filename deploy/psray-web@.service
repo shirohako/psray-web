@@ -1,12 +1,12 @@
-# PSRay Web (Nuxt SSR) — one instance per port, used blue/green by scripts/deploy.sh.
+# PSRay Web (Nuxt SSR) — one instance per port, used blue/green by psray-deploy.
 #
 # The instance name is the port: psray-web@3630 / psray-web@3631. Each runs the
 # release that /var/www/psray-web-releases/slot-<port> points to. nginx sends
 # traffic to whichever port /etc/nginx/psray-web-active.inc names; the other
 # instance is stopped and keeps pointing at the previous release for rollback.
 #
-# Installed by scripts/deploy.sh (copied to /etc/systemd/system/ when it changes).
-# Edit it here, not in /etc.
+# Installed by psray-deploy (copied to /etc/systemd/system/ when it changes; the
+# command lives in the psray-api repo as scripts/deploy.sh). Edit it here, not in /etc.
 
 [Unit]
 Description=PSRay Web (Nuxt SSR, 127.0.0.1:%i)
