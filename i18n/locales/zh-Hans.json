@@ -1503,6 +1503,10 @@
     "tocLabel": "页面目录"
   },
   "apiDocs": {
+    "layout": {
+      "title": "API 文档",
+      "backToSite": "返回主站"
+    },
     "seoTitle": "API 文档",
     "seoDescription": "PSRay 公开 API 的使用说明：读取奖杯组、玩家资料、游戏和系列数据的接口、参数、响应字段和示例，并可在页面上直接试用。",
     "lead": "用简单的 HTTP 请求读取 PSRay 的奖杯组、玩家资料、游戏和系列数据。本页列出最常用的公开只读接口，每个接口都可以直接在页面上试用。",

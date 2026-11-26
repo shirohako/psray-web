@@ -6,8 +6,6 @@ declare module '#app' {
     guestOnly?: boolean
     /** `false` when the page renders its own `<LanguageLinks>` (its editions); see `SiteFooter`. */
     languageLinks?: boolean
-    /** Widen the default layout's content column beyond `max-w-6xl` (e.g. the three-column /docs/api). */
-    wide?: boolean
   }
 }
 
@@ -16,7 +14,6 @@ declare module 'vue-router' {
     auth?: boolean | AuthRequirement
     guestOnly?: boolean
     languageLinks?: boolean
-    wide?: boolean
   }
 }
 

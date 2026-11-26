@@ -227,7 +227,7 @@ function isActive(to: string) {
       :class="collapsed ? 'lg:pl-17' : 'lg:pl-56'"
     >
       <!-- Extra bottom room so the feedback button never covers a page's last row (e.g. its pager) -->
-      <div class="mx-auto p-4 pb-16 sm:p-6 sm:pb-16 lg:p-8 lg:pb-16" :class="route.meta.wide ? 'max-w-[96rem]' : 'max-w-6xl'">
+      <div class="mx-auto max-w-6xl p-4 pb-16 sm:p-6 sm:pb-16 lg:p-8 lg:pb-16">
         <slot />
       </div>
       <SiteFooter />

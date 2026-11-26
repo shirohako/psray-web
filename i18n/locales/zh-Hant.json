@@ -1503,6 +1503,10 @@
     "tocLabel": "頁面目錄"
   },
   "apiDocs": {
+    "layout": {
+      "title": "API 文件",
+      "backToSite": "返回主站"
+    },
     "seoTitle": "API 文件",
     "seoDescription": "PSRay 公開 API 的使用說明：讀取獎盃組、玩家資料、遊戲和系列資料的介面、參數、回應欄位和範例，並可在頁面上直接試用。",
     "lead": "用簡單的 HTTP 請求讀取 PSRay 的獎盃組、玩家資料、遊戲和系列資料。本頁列出最常用的公開唯讀介面，每個介面都可以直接在頁面上試用。",

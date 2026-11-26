@@ -2,23 +2,24 @@
 /**
  * One row of /docs/api: prose on the left, code on a dark column to the right.
  * Rows sit flush against each other, so the dark cells read as one continuous
- * column. The split follows the width of the surrounding `@container` rather
- * than the viewport, because the site sidebar can be expanded or collapsed;
+ * column, which on very wide screens takes the extra width so it still runs
+ * to the window's edge. The split follows the width of the surrounding
+ * `@container` (the page minus its section nav) rather than the viewport;
  * below the breakpoint the code stacks under the prose.
  */
 defineProps<{ id: string }>()
 </script>
 
 <template>
-  <section :id="id" class="api-section grid scroll-mt-20 @4xl:grid-cols-[minmax(0,1fr)_24rem] @6xl:grid-cols-[minmax(0,1fr)_28rem]">
-    <div class="api-section__text min-w-0 border-t border-slate-200 px-5 py-8 sm:px-8 sm:py-10">
+  <section :id="id" class="api-section grid scroll-mt-20 @4xl:grid-cols-[minmax(0,1fr)_24rem] @6xl:grid-cols-[minmax(0,1fr)_28rem] @7xl:grid-cols-[minmax(0,60rem)_minmax(28rem,1fr)]">
+    <div class="api-section__text min-w-0 border-t border-slate-200 px-5 py-8 sm:px-8 sm:py-10 @4xl:px-10">
       <slot />
     </div>
     <div
       class="api-section__code min-w-0 bg-slate-950 px-4 py-5 sm:px-5 @4xl:border-t @4xl:border-slate-800 @4xl:py-10"
       :class="$slots.code ? '' : 'hidden @4xl:block'"
     >
-      <div class="flex flex-col gap-4 @4xl:sticky @4xl:top-24 @4xl:max-h-[calc(100vh-7rem)]">
+      <div class="flex flex-col gap-4 @4xl:sticky @4xl:top-[5.5rem] @4xl:max-h-[calc(100vh-7rem)]">
         <slot name="code" />
       </div>
     </div>

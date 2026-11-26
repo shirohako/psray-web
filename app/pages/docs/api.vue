@@ -36,7 +36,7 @@ import {
   type ApiGroupId,
 } from '~/utils/apiDocs'
 
-definePageMeta({ wide: true })
+definePageMeta({ layout: 'docs' })
 
 const { t } = useI18n()
 
@@ -143,9 +143,9 @@ const statusTone = (status: number) => status >= 500
 </script>
 
 <template>
-  <div class="grid items-start gap-6 lg:grid-cols-[12rem_minmax(0,1fr)]">
-    <!-- Section nav: a scrolling strip on small screens, a sticky column from lg -->
-    <nav :aria-label="$t('apiDocs.nav.label')" class="overflow-x-auto rounded-xl border border-slate-200 bg-white p-2 shadow-sm lg:hidden">
+  <div class="lg:grid lg:grid-cols-[15rem_minmax(0,1fr)]">
+    <!-- Section nav: a sticky scrolling strip on small screens, a full-height column from lg -->
+    <nav :aria-label="$t('apiDocs.nav.label')" class="sticky top-14 z-30 overflow-x-auto border-b border-slate-200 bg-white/95 px-3 py-2 backdrop-blur-md lg:hidden">
       <ul class="flex min-w-max gap-1">
         <template v-for="group in navGroups" :key="group.id">
           <li v-for="item in group.items" :key="item.id">
@@ -162,7 +162,7 @@ const statusTone = (status: number) => status >= 500
       </ul>
     </nav>
 
-    <nav :aria-label="$t('apiDocs.nav.label')" class="sticky top-24 hidden max-h-[calc(100vh-7rem)] overflow-y-auto rounded-xl border border-slate-200 bg-white p-3 shadow-sm lg:block">
+    <nav :aria-label="$t('apiDocs.nav.label')" class="sticky top-14 hidden h-[calc(100vh-3.5rem)] self-start overflow-y-auto border-r border-slate-200 bg-white px-3 py-5 lg:block">
       <div v-for="group in navGroups" :key="group.id" class="not-first:mt-3">
         <p class="flex items-center gap-1.5 px-3 pb-1 pt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400">
           <LucideIcon :icon="group.icon" class="size-3.5" />
@@ -189,7 +189,7 @@ const statusTone = (status: number) => status >= 500
       </div>
     </nav>
 
-    <article class="@container overflow-clip rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <article class="@container min-w-0 bg-white">
       <!-- Introduction -->
       <DocsApiSection id="introduction">
         <p class="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">Developers</p>

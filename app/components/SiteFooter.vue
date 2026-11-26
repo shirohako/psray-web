@@ -7,6 +7,15 @@
  */
 import { Calendar, GitCommitHorizontal } from 'lucide'
 
+defineProps<{
+  /**
+   * Span the full width, aligned with the docs layout's top bar, instead of
+   * the centred content column. Less bottom room: that layout has no
+   * floating feedback button to keep clear of.
+   */
+  fluid?: boolean
+}>()
+
 const route = useRoute()
 
 // Which build is serving this page: short commit and UTC build date as YYMMDD
@@ -29,7 +38,10 @@ const sections = [
 </script>
 
 <template>
-  <footer class="mx-auto max-w-6xl space-y-3 border-t border-slate-200 px-4 pt-6 pb-20 text-xs text-slate-500 sm:px-6 lg:px-8">
+  <footer
+    class="space-y-3 border-t border-slate-200 pt-6 text-xs text-slate-500"
+    :class="fluid ? 'px-3 pb-10 sm:px-5' : 'mx-auto max-w-6xl px-4 pb-20 sm:px-6 lg:px-8'"
+  >
     <nav :aria-label="$t('nav.sectionLabel')" class="flex flex-wrap items-center gap-x-4 gap-y-1">
       <AppLink v-for="item in sections" :key="item.to" :to="item.to" class="transition hover:text-slate-900">
         {{ $t(item.labelKey) }}

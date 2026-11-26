@@ -1503,6 +1503,10 @@
     "tocLabel": "On this page"
   },
   "apiDocs": {
+    "layout": {
+      "title": "API docs",
+      "backToSite": "Back to PSRay"
+    },
     "seoTitle": "API documentation",
     "seoDescription": "How to use the public PSRay API: endpoints, parameters, response fields and samples for trophy sets, player profiles, games and series, with a console to try each request.",
     "lead": "Read PSRay's trophy sets, player profiles, games and series with plain HTTP requests. This page covers the most common public, read-only endpoints, and you can try each one right here.",
