@@ -69,7 +69,8 @@
       "profile": "プロフィール",
       "settings": "アカウント設定",
       "sync": "アカウント同期",
-      "tips": "自分のコメント"
+      "tips": "自分のコメント",
+      "screenshots": "スクリーンショット"
     }
   },
   "home": {
@@ -206,7 +207,9 @@
       "VERIFICATION_CODE_EXPIRED": "認証コードの有効期限が切れています。再送信してからもう一度お試しください。",
       "INVALID_CREDENTIALS": "メールアドレスまたはパスワードが正しくありません。",
       "ACCOUNT_TERMINATED": "このアカウントは停止されています。",
-      "FEEDBACK_NOT_FOUND": "フィードバックが見つかりません。削除されたか、まだ公開されていない可能性があります。"
+      "FEEDBACK_NOT_FOUND": "フィードバックが見つかりません。削除されたか、まだ公開されていない可能性があります。",
+      "SCREENSHOT_NOT_FOUND": "スクリーンショットが見つかりません。",
+      "SCREENSHOT_QUOTA_EXCEEDED": "スクリーンショットの上限に達しました。いくつか削除してからアップロードしてください。"
     }
   },
   "toast": {
@@ -627,6 +630,17 @@
       },
       "text": {
         "defaultTitle": "自己紹介"
+      },
+      "screenshots": {
+        "title": "スクリーンショット",
+        "count": "{count} 枚",
+        "all": "すべて {count} 枚",
+        "view": "スクリーンショットを見る",
+        "dialogTitle": "{psnid} のスクリーンショット（{count} 枚）",
+        "loadMore": "もっと見る"
+      },
+      "favoriteScreenshots": {
+        "title": "お気に入りのスクリーンショット"
       }
     },
     "tips": {
@@ -837,13 +851,22 @@
         "text_right": {
           "name": "テキスト（右カラム）",
           "desc": "タイトルと本文を自由に書けます（Markdown 対応）"
+        },
+        "favorite_screenshots": {
+          "name": "お気に入りのスクリーンショット",
+          "desc": "公開したスクリーンショットから最大 {max} 枚を選んで大きく表示"
+        },
+        "screenshots": {
+          "name": "スクリーンショット",
+          "desc": "新しく公開したスクリーンショット 6 枚を自動で表示"
         }
       },
       "unsaved": {
         "layout": "表示と並び順",
         "featured": "お気に入りのトロフィー",
         "games": "お気に入りのゲーム",
-        "texts": "テキスト"
+        "texts": "テキスト",
+        "screenshots": "お気に入りのスクリーンショット"
       },
       "tray": {
         "hint": "ドラッグで並べ替え、× で外す",
@@ -852,7 +875,9 @@
         "addTrophies": "トロフィーを追加",
         "addGames": "ゲームを追加",
         "remove": "「{name}」を外す",
-        "move": "「{name}」を並べ替え"
+        "move": "「{name}」を並べ替え",
+        "addScreenshots": "スクリーンショットを追加",
+        "emptyScreenshots": "＋ からスクリーンショットを選んでください。選ぶとお気に入りのスクリーンショットがオンになります。"
       },
       "picker": {
         "title": "お気に入りのトロフィーを選ぶ",
@@ -883,6 +908,15 @@
         "tooLong": "本文は {max} 文字以内にしてください。",
         "empty": "まだ何も書いていません。書くとこのテキストがオンになります。",
         "edit": "編集"
+      },
+      "screenshotsPicker": {
+        "title": "お気に入りのスクリーンショットを選ぶ",
+        "empty": "公開しているスクリーンショットがありません。",
+        "manage": "スクリーンショットを管理"
+      },
+      "screenshots": {
+        "note": "公開・非公開の切り替えとアップロードはスクリーンショットのページで行います。",
+        "manage": "スクリーンショットへ"
       }
     },
     "security": {
@@ -1139,7 +1173,8 @@
     },
     "me": {
       "following": "フォロー中",
-      "tips": "自分のコメント"
+      "tips": "自分のコメント",
+      "screenshots": "スクリーンショット"
     },
     "unsubscribe": {
       "title": "メール配信停止"
@@ -2018,6 +2053,106 @@
       "failed": "画像を作成できませんでした。もう一度お試しください。",
       "missing": "{n} 枚の画像を読み込めなかったため、代わりの図で表示しています。",
       "preview": "書き出しプレビュー"
+    }
+  },
+  "screenshots": {
+    "title": "スクリーンショット",
+    "description": "ゲームのスクリーンショットをアップロードして管理できます。公開したものはプロフィールのショーケースに表示されます。",
+    "public": "公開",
+    "private": "非公開",
+    "noGame": "ゲーム未設定",
+    "count": "{total} 枚",
+    "loadError": "スクリーンショットを読み込めませんでした",
+    "empty": "まだスクリーンショットがありません。",
+    "emptyHint": "左のエリアに画像をドロップするか、クリックして選んでください。まとめて選べます。",
+    "emptyFiltered": "条件に一致するスクリーンショットはありません。",
+    "deleteTitle": "スクリーンショットを削除",
+    "deleteBody": "このスクリーンショットを削除しますか？画像ファイルもすぐに削除され、元に戻せません。",
+    "deleting": "削除中…",
+    "usage": {
+      "title": "使用量",
+      "count": "枚数",
+      "storage": "容量"
+    },
+    "filters": {
+      "visibility": "公開設定",
+      "all": "すべて",
+      "public": "公開",
+      "private": "非公開",
+      "game": "ゲームで絞り込む",
+      "allGames": "すべてのゲーム",
+      "reset": "絞り込みを解除"
+    },
+    "upload": {
+      "title": "アップロード",
+      "drop": "ここにドロップ、またはクリックして選択",
+      "formats": "JPEG・PNG・WebP、複数選択可。長辺 2560px を超える画像は縮小され、WebP で保存されます",
+      "public": "公開",
+      "publicHint": "プロフィールのショーケースに表示",
+      "watermarkPsn": "PSN ID の透かし",
+      "watermarkPsnHint": "左下に {psnid} を入れる",
+      "watermarkProfile": "psray の透かし",
+      "watermarkProfileHint": "右下にロゴとプロフィールのリンク",
+      "watermarkFinal": "透かしは画像に書き込まれるため、アップロード後は変更できません。",
+      "game": "ゲーム（任意）",
+      "noGame": "ゲームを選ぶ",
+      "clearGame": "ゲームを外す",
+      "waiting": "待機中",
+      "processing": "処理中",
+      "retry": "失敗した {count} 件を再試行",
+      "clear": "完了分を消す",
+      "done": "{count} 枚アップロードしました",
+      "leaveConfirm": "アップロード中です。このページを離れると残りはアップロードされません。移動しますか？",
+      "errors": {
+        "notImage": "画像として読み込めませんでした",
+        "tooLarge": "ファイルが大きすぎます",
+        "tooSmall": "{min} 以上の画像を選んでください",
+        "cancelled": "キャンセルしました"
+      }
+    },
+    "tile": {
+      "view": "拡大して見る",
+      "actions": "操作",
+      "makePublic": "公開にする",
+      "makePrivate": "非公開にする",
+      "edit": "説明とゲームを編集",
+      "copyLink": "画像のリンクをコピー",
+      "delete": "削除"
+    },
+    "watermarks": {
+      "psn": "PSN ID",
+      "profile": "psray",
+      "drawn": "透かし：{list}"
+    },
+    "toast": {
+      "madePublic": "公開にしました",
+      "madePrivate": "非公開にしました",
+      "updateFailed": "変更できませんでした",
+      "linkCopied": "リンクをコピーしました",
+      "linkCopiedPrivate": "非公開のスクリーンショットでも、リンクを知っている人は開けます。",
+      "copyFailed": "コピーできませんでした",
+      "deleted": "削除しました",
+      "deleteFailed": "削除できませんでした"
+    },
+    "edit": {
+      "title": "スクリーンショットを編集",
+      "caption": "説明",
+      "captionPlaceholder": "ひとこと（任意）",
+      "game": "ゲーム",
+      "saved": "保存しました",
+      "saveFailed": "保存できませんでした",
+      "watermarkFixed": "（透かしは変更できません）",
+      "noWatermark": "透かしなしでアップロードされています。"
+    },
+    "gamePicker": {
+      "title": "ゲームを選ぶ"
+    },
+    "lightbox": {
+      "label": "スクリーンショット",
+      "position": "{n} / {total}",
+      "original": "元のサイズで開く",
+      "previous": "前へ",
+      "next": "次へ"
     }
   }
 }

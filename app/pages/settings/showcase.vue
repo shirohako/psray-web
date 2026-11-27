@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { AlertTriangle, CircleDot, ExternalLink, GripVertical, LayoutDashboard, Loader2, Lock, LockKeyhole, Pencil, RefreshCw } from 'lucide'
+import { AlertTriangle, ChevronRight, CircleDot, ExternalLink, GripVertical, LayoutDashboard, Loader2, Lock, LockKeyhole, Pencil, RefreshCw } from 'lucide'
 import type { UpdateSettingPayload, UserSetting } from '~/services/account'
 import { useAccountApi } from '~/services/account'
 import type { ShowcaseColumn, ShowcaseKey, ShowcaseLayout, ShowcaseText } from '~/services/profile'
-import type { PickedGame, PickedTrophy } from '~/utils/profileShowcase'
+import type { PickedGame, PickedScreenshot, PickedTrophy } from '~/utils/profileShowcase'
 import { ApiError } from '~/utils/ApiError'
 
 /**
  * Profile showcases: switch each one on or off and drag it into place within
  * its column (left: above the tabbed main card; right: below stats and
- * account). What the featured and favorite-games showcases hold is picked
- * here, and the two texts are written here. Everything is saved together from
+ * account). What the featured, favorite-games and favorite-screenshots
+ * showcases hold is picked here, and the two texts are written here. Everything is saved together from
  * the unsaved-changes bar, like the profile page.
  */
 const { user } = useAuth()
@@ -27,10 +27,11 @@ interface ShowcaseForm {
   layout: ShowcaseLayout
   featured: PickedTrophy[]
   games: PickedGame[]
+  screenshots: PickedScreenshot[]
   texts: Texts
 }
 const emptyText = (): ShowcaseText => ({ title: '', body: '' })
-const empty = (): ShowcaseForm => ({ layout: { left: [], right: [] }, featured: [], games: [], texts: { left: emptyText(), right: emptyText() } })
+const empty = (): ShowcaseForm => ({ layout: { left: [], right: [] }, featured: [], games: [], screenshots: [], texts: { left: emptyText(), right: emptyText() } })
 const copyTexts = (texts: Texts): Texts => ({ left: { ...texts.left }, right: { ...texts.right } })
 // `saved` is what the account has now; the diff is what save sends.
 const form = reactive<ShowcaseForm>(empty())
@@ -40,6 +41,7 @@ function load(target: ShowcaseForm, s: UserSetting) {
   target.layout = cloneLayout(s.profile_showcases)
   target.featured = s.featured_trophies.map(toPicked)
   target.games = [...s.favorite_games]
+  target.screenshots = [...(s.favorite_screenshots ?? [])]
   target.texts = copyTexts(s.showcase_texts)
 }
 watch(setting, (s) => {
@@ -52,6 +54,7 @@ const changed = computed(() => ({
   layout: !sameLayout(form.layout, saved.layout),
   featured: !samePicks(form.featured, saved.featured),
   games: !sameGames(form.games, saved.games),
+  screenshots: !sameScreenshots(form.screenshots, saved.screenshots),
   texts: !sameTexts(form.texts, saved.texts),
 }))
 const dirty = computed(() => Object.values(changed.value).some(Boolean))
@@ -71,6 +74,10 @@ function setGames(games: PickedGame[]) {
   fill('games', !form.games.length, !games.length)
   form.games = games
 }
+function setScreenshots(picks: PickedScreenshot[]) {
+  fill('favorite_screenshots', !form.screenshots.length, !picks.length)
+  form.screenshots = picks
+}
 function setText(column: ShowcaseColumn, text: ShowcaseText) {
   fill(TEXT_KEYS[column], !form.texts[column].body, !text.body)
   form.texts = { ...form.texts, [column]: text }
@@ -80,6 +87,7 @@ function discard() {
   form.layout = cloneLayout(saved.layout)
   form.featured = [...saved.featured]
   form.games = [...saved.games]
+  form.screenshots = [...saved.screenshots]
   form.texts = copyTexts(saved.texts)
 }
 
@@ -109,6 +117,7 @@ function setListRef(column: ShowcaseColumn, el: unknown) {
 // ── Pickers and the text editor ─────────────────────────────────────────────
 const pickerOpen = ref(false)
 const gamesPickerOpen = ref(false)
+const screenshotsPickerOpen = ref(false)
 const textColumn = ref<ShowcaseColumn>('left')
 const textOpen = ref(false)
 function editText(column: ShowcaseColumn) {
@@ -123,7 +132,8 @@ const isPrivate = computed(() => user.value?.is_profile_public === false)
 
 /** Row description, with the limit it mentions. */
 function describe(key: ShowcaseKey) {
-  return t(SHOWCASE_META[key].descKey, { max: key === 'games' ? GAMES_LIMIT : FEATURED_LIMIT })
+  const max = key === 'games' ? GAMES_LIMIT : key === 'favorite_screenshots' ? FAVORITE_SCREENSHOTS_LIMIT : FEATURED_LIMIT
+  return t(SHOWCASE_META[key].descKey, { max })
 }
 
 // ── Save ────────────────────────────────────────────────────────────────────
@@ -137,6 +147,7 @@ async function save() {
     if (changed.value.layout) payload.profile_showcases = cloneLayout(form.layout)
     if (changed.value.featured) payload.featured_trophies = featuredRefs(form.featured)
     if (changed.value.games) payload.favorite_games = form.games.map(g => g.id)
+    if (changed.value.screenshots) payload.favorite_screenshots = form.screenshots.map(shot => shot.id)
     if (changed.value.texts) payload.showcase_texts = copyTexts(form.texts)
     await accountApi.updateSetting(payload)
     await refreshSetting()
@@ -327,6 +338,52 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
                   </div>
                 </div>
 
+                <!-- Favorite screenshots: the picked screenshots, inline -->
+                <div
+                  v-else-if="entry.key === 'favorite_screenshots'"
+                  class="mx-3 mb-3 rounded-lg bg-slate-50 p-3 ring-1 ring-inset ring-slate-100 transition-opacity sm:ml-12"
+                  :class="{ 'opacity-60': !entry.on }"
+                >
+                  <SettingsSortTray
+                    :model-value="form.screenshots"
+                    :item-key="shot => shot.id"
+                    :item-label="shot => shot.caption || shot.game?.name || String(shot.id)"
+                    :limit="FAVORITE_SCREENSHOTS_LIMIT"
+                    tile-class="h-11 w-20"
+                    addable
+                    :add-label="$t('settings.showcase.tray.addScreenshots')"
+                    :disabled="saving"
+                    @update:model-value="setScreenshots"
+                    @add="screenshotsPickerOpen = true"
+                  >
+                    <template #tile="{ item }">
+                      <img :src="item.image.url" :srcset="item.image.srcset ?? undefined" sizes="80px" alt="" class="size-full rounded object-cover">
+                    </template>
+                  </SettingsSortTray>
+                  <div class="mt-2.5 flex items-center justify-between gap-3 text-[11px]">
+                    <span class="text-slate-400">
+                      {{ form.screenshots.length ? $t('settings.showcase.tray.hint') : $t('settings.showcase.tray.emptyScreenshots') }}
+                    </span>
+                    <span class="shrink-0 font-semibold tabular-nums text-slate-500">{{ form.screenshots.length }} / {{ FAVORITE_SCREENSHOTS_LIMIT }}</span>
+                  </div>
+                </div>
+
+                <!-- Newest screenshots: managed on their own page -->
+                <div
+                  v-else-if="entry.key === 'screenshots'"
+                  class="mx-3 mb-3 flex items-center justify-between gap-3 rounded-lg bg-slate-50 px-3 py-2.5 ring-1 ring-inset ring-slate-100 transition-opacity sm:ml-12"
+                  :class="{ 'opacity-60': !entry.on }"
+                >
+                  <p class="min-w-0 text-xs text-slate-400">{{ $t('settings.showcase.screenshots.note') }}</p>
+                  <AppLink
+                    to="/me/screenshots"
+                    class="inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-900"
+                  >
+                    {{ $t('settings.showcase.screenshots.manage') }}
+                    <LucideIcon :icon="ChevronRight" class="size-3.5" />
+                  </AppLink>
+                </div>
+
                 <!-- Text: title and an excerpt; "Edit" opens the editor -->
                 <div
                   v-else-if="textColumnOf(entry.key)"
@@ -415,6 +472,7 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
       <SettingsFeaturedPicker v-model:open="pickerOpen" :psnid="user.psnid" :picks="form.featured" @apply="setPicks" />
       <SettingsGamesPicker v-model:open="gamesPickerOpen" :psnid="user.psnid" :picks="form.games" @apply="setGames" />
     </template>
+    <SettingsScreenshotsPicker v-model:open="screenshotsPickerOpen" :picks="form.screenshots" @apply="setScreenshots" />
     <SettingsTextDialog
       v-model:open="textOpen"
       :column="textColumn"

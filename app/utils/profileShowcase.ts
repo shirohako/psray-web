@@ -1,5 +1,6 @@
-import { Award, CalendarDays, FileText, Gem, Heart, MessageSquare, Users, type IconNode } from 'lucide'
+import { Award, CalendarDays, FileText, Gem, GalleryHorizontal, Heart, Images, MessageSquare, Users, type IconNode } from 'lucide'
 import type { Profile, ProfileShowcases, ShowcaseColumn, ShowcaseGame, ShowcaseKey, ShowcaseLayout, ShowcaseText, ShowcaseTrophy } from '~/services/profile'
+import type { Screenshot } from '~/services/screenshots'
 import type { TrophyType } from '~/services/trophies'
 
 /**
@@ -14,6 +15,9 @@ export const FEATURED_LIMIT = 12
 
 /** Most games the favorite-games showcase holds. */
 export const GAMES_LIMIT = 6
+
+/** Most screenshots the favorite-screenshots showcase holds. */
+export const FAVORITE_SCREENSHOTS_LIMIT = 6
 
 /** Character limits of a text showcase (the API counts characters, not bytes). */
 export const TEXT_TITLE_MAX = 40
@@ -32,6 +36,8 @@ export const SHOWCASE_META: Record<ShowcaseKey, { icon: IconNode, labelKey: stri
   text_right: { icon: FileText, labelKey: 'settings.showcase.items.text_right.name', descKey: 'settings.showcase.items.text_right.desc' },
   tips: { icon: MessageSquare, labelKey: 'settings.showcase.items.tips.name', descKey: 'settings.showcase.items.tips.desc' },
   social: { icon: Users, labelKey: 'settings.showcase.items.social.name', descKey: 'settings.showcase.items.social.desc' },
+  favorite_screenshots: { icon: GalleryHorizontal, labelKey: 'settings.showcase.items.favorite_screenshots.name', descKey: 'settings.showcase.items.favorite_screenshots.desc' },
+  screenshots: { icon: Images, labelKey: 'settings.showcase.items.screenshots.name', descKey: 'settings.showcase.items.screenshots.desc' },
 }
 
 /**
@@ -123,6 +129,13 @@ export type PickedGame = ShowcaseGame
 
 export function sameGames(a: readonly PickedGame[], b: readonly PickedGame[]): boolean {
   return a.length === b.length && a.every((g, i) => g.id === b[i]?.id)
+}
+
+/** A favorite-screenshot pick as the settings form and picker hold it. */
+export type PickedScreenshot = Screenshot
+
+export function sameScreenshots(a: readonly PickedScreenshot[], b: readonly PickedScreenshot[]): boolean {
+  return a.length === b.length && a.every((s, i) => s.id === b[i]?.id)
 }
 
 export function sameTexts(a: Record<ShowcaseColumn, ShowcaseText>, b: Record<ShowcaseColumn, ShowcaseText>): boolean {

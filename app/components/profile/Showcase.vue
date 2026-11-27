@@ -28,6 +28,10 @@ defineProps<{ showcase: ShowcaseKey; profile: Profile; psnid: string }>()
     :games="profile.favorite_games"
   />
   <ProfileShowcaseText v-else-if="showcase === 'text_left' && profile.text_left" :text="profile.text_left" />
+  <ProfileShowcaseFavoriteScreenshots
+    v-else-if="showcase === 'favorite_screenshots' && profile.favorite_screenshots?.length"
+    :screenshots="profile.favorite_screenshots"
+  />
   <ProfileShowcaseText v-else-if="showcase === 'text_right' && profile.text_right" :text="profile.text_right" />
   <ProfileRecentTips
     v-else-if="showcase === 'tips' && profile.recent_tips"
@@ -36,4 +40,10 @@ defineProps<{ showcase: ShowcaseKey; profile: Profile; psnid: string }>()
     :tips="profile.recent_tips"
   />
   <ProfileSocialCard v-else-if="showcase === 'social'" :profile="profile" />
+  <ProfileShowcaseScreenshots
+    v-else-if="showcase === 'screenshots' && profile.screenshots?.items.length"
+    :psnid="psnid"
+    :screenshots="profile.screenshots.items"
+    :total="profile.screenshots.total"
+  />
 </template>

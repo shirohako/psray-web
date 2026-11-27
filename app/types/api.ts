@@ -34,6 +34,9 @@ export type ErrorCode =
   // Series: missing or unpublished; the admin editor's save lost a race (stale revision).
   | 'SERIES_NOT_FOUND'
   | 'SERIES_CONFLICT'
+  // Game screenshots: missing or someone else's; the owner's count or storage limit reached.
+  | 'SCREENSHOT_NOT_FOUND'
+  | 'SCREENSHOT_QUOTA_EXCEEDED'
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {})
 

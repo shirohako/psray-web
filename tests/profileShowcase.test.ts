@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { ShowcaseLayout, ShowcaseTrophy } from '~/services/profile'
 import {
+  SHOWCASE_META,
   cloneLayout,
   featuredRefs,
   formatPsnRate,
@@ -10,6 +11,7 @@ import {
   sameGames,
   sameLayout,
   samePicks,
+  sameScreenshots,
   sameTexts,
   textLength,
   toPicked,
@@ -88,6 +90,18 @@ describe('profile showcases', () => {
     const texts = { left: { title: 'Hi', body: 'x' }, right: { title: '', body: '' } }
     expect(sameTexts(texts, { left: { ...texts.left }, right: { ...texts.right } })).toBe(true)
     expect(sameTexts(texts, { ...texts, right: { title: '', body: 'y' } })).toBe(false)
+  })
+
+  it('compares favorite screenshots by order', () => {
+    const shot = (id: number) => ({ id, image: { id: `k${id}`, url: '', width: 1, height: 1, color: null, srcset: null }, caption: null, game: null, created_at: '' })
+    expect(sameScreenshots([shot(1), shot(2)], [shot(1), shot(2)])).toBe(true)
+    expect(sameScreenshots([shot(1), shot(2)], [shot(2), shot(1)])).toBe(false)
+    expect(sameScreenshots([shot(1)], [])).toBe(false)
+  })
+
+  it('has settings labels for every showcase key', () => {
+    const keys = ['calendar', 'rarest', 'featured', 'games', 'text_left', 'favorite_screenshots', 'tips', 'social', 'text_right', 'screenshots'] as const
+    expect(Object.keys(SHOWCASE_META).sort()).toEqual([...keys].sort())
   })
 
   it('counts text length in characters, as the API does', () => {

@@ -7,6 +7,7 @@
  */
 import type { MediaImage } from '~/types/media'
 import type { ShowcaseColumn, ShowcaseGame, ShowcaseLayout, ShowcaseText, ShowcaseTrophy } from '~/services/profile'
+import type { Screenshot } from '~/services/screenshots'
 
 /** Standard success payload for the mutation endpoints: a displayable message. */
 export interface MessageResult {
@@ -36,6 +37,8 @@ export interface UpdateSettingPayload {
   featured_trophies?: { trophy_set_id: number, trophy_id: number }[]
   /** Favorite games: played trophy-set ids in display order (at most 6); replaces the saved list. */
   favorite_games?: number[]
+  /** Favorite screenshots: ids of the owner's public screenshots, in order, at most 6. */
+  favorite_screenshots?: number[]
   /** Text showcases, per column; a column left out stays as it is. Title ≤ 40, body ≤ 5000 characters. */
   showcase_texts?: Partial<Record<ShowcaseColumn, ShowcaseText>>
 }
@@ -60,6 +63,8 @@ export interface UserSetting {
   featured_trophies: ShowcaseTrophy[]
   /** Favorite games in display order (returned even while the profile is private). */
   favorite_games: ShowcaseGame[]
+  /** Favorite screenshots, in order; ones deleted or made private are left out. */
+  favorite_screenshots: Screenshot[]
   /** Both text showcases; empty strings when never written. */
   showcase_texts: Record<ShowcaseColumn, ShowcaseText>
 }

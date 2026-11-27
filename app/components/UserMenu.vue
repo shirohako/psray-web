@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ChevronRight, LayoutDashboard, LogOut, MessageSquareText, RefreshCw, Settings, User, Users, type IconNode } from 'lucide'
+import { ChevronRight, Images, LayoutDashboard, LogOut, MessageSquareText, RefreshCw, Settings, User, Users, type IconNode } from 'lucide'
 
 /**
  * The signed-in user's menu in the top bar: a dropdown under their name from
@@ -30,6 +30,7 @@ const groups = computed<UserMenuGroup[]>(() => [
       { labelKey: 'nav.user.profile', to: profilePath.value, icon: User },
       { labelKey: 'nav.user.following', to: '/me/following', icon: Users },
       { labelKey: 'nav.user.tips', to: '/me/tips', icon: MessageSquareText },
+      { labelKey: 'nav.user.screenshots', to: '/me/screenshots', icon: Images },
     ],
   },
   {

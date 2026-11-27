@@ -69,7 +69,8 @@
       "profile": "个人资料",
       "settings": "用户设置",
       "sync": "同步账户",
-      "tips": "我的留言"
+      "tips": "我的留言",
+      "screenshots": "游戏截图"
     }
   },
   "home": {
@@ -206,7 +207,9 @@
       "VERIFICATION_CODE_EXPIRED": "验证码已过期，请重新发送后再试。",
       "INVALID_CREDENTIALS": "账号或密码错误。",
       "ACCOUNT_TERMINATED": "账号已被封禁。",
-      "FEEDBACK_NOT_FOUND": "找不到这条反馈，它可能已被删除，或者还没有公开。"
+      "FEEDBACK_NOT_FOUND": "找不到这条反馈，它可能已被删除，或者还没有公开。",
+      "SCREENSHOT_NOT_FOUND": "找不到这张截图。",
+      "SCREENSHOT_QUOTA_EXCEEDED": "截图已达上限，删除一些后再上传。"
     }
   },
   "toast": {
@@ -627,6 +630,17 @@
       },
       "text": {
         "defaultTitle": "自我介绍"
+      },
+      "screenshots": {
+        "title": "截图",
+        "count": "{count} 张",
+        "all": "全部 {count} 张",
+        "view": "查看截图",
+        "dialogTitle": "{psnid} 的截图（{count} 张）",
+        "loadMore": "加载更多"
+      },
+      "favoriteScreenshots": {
+        "title": "喜欢的截图"
       }
     },
     "tips": {
@@ -837,13 +851,22 @@
         "text_right": {
           "name": "文字（右栏）",
           "desc": "自由填写标题和正文，支持 Markdown"
+        },
+        "favorite_screenshots": {
+          "name": "喜欢的截图",
+          "desc": "从公开的截图里选最多 {max} 张，大图展示"
+        },
+        "screenshots": {
+          "name": "截图",
+          "desc": "自动显示最新公开的 6 张截图"
         }
       },
       "unsaved": {
         "layout": "显示与顺序",
         "featured": "精选奖杯",
         "games": "喜欢的游戏",
-        "texts": "文字"
+        "texts": "文字",
+        "screenshots": "喜欢的截图"
       },
       "tray": {
         "hint": "拖动调整顺序，点 × 移除",
@@ -852,7 +875,9 @@
         "addTrophies": "添加奖杯",
         "addGames": "添加游戏",
         "remove": "移除「{name}」",
-        "move": "调整「{name}」的顺序"
+        "move": "调整「{name}」的顺序",
+        "addScreenshots": "添加截图",
+        "emptyScreenshots": "点 + 挑选截图，选好后会自动开启喜欢的截图。"
       },
       "picker": {
         "title": "挑选精选奖杯",
@@ -883,6 +908,15 @@
         "tooLong": "正文请控制在 {max} 字以内。",
         "empty": "还没有写内容，写好后会自动开启这段文字。",
         "edit": "编辑"
+      },
+      "screenshotsPicker": {
+        "title": "挑选喜欢的截图",
+        "empty": "还没有公开的截图。",
+        "manage": "管理截图"
+      },
+      "screenshots": {
+        "note": "上传截图、切换公开或私密在截图页面进行。",
+        "manage": "前往截图"
       }
     },
     "security": {
@@ -1139,7 +1173,8 @@
     },
     "me": {
       "following": "我的关注",
-      "tips": "我的留言"
+      "tips": "我的留言",
+      "screenshots": "我的游戏截图"
     },
     "unsubscribe": {
       "title": "退订邮件"
@@ -2018,6 +2053,106 @@
       "failed": "图片生成失败，请重试。",
       "missing": "{n} 张图片没能加载，已用占位图代替。",
       "preview": "导出预览"
+    }
+  },
+  "screenshots": {
+    "title": "游戏截图",
+    "description": "上传和管理你的游戏截图。公开的截图会出现在个人资料的展柜里。",
+    "public": "公开",
+    "private": "私密",
+    "noGame": "未关联游戏",
+    "count": "共 {total} 张",
+    "loadError": "截图加载失败",
+    "empty": "还没有截图。",
+    "emptyHint": "把图片拖到左侧的上传卡片里，或点击后一次选多张。",
+    "emptyFiltered": "没有符合条件的截图。",
+    "deleteTitle": "删除截图",
+    "deleteBody": "删除这张截图吗？图片文件会立即删除，无法恢复。",
+    "deleting": "正在删除…",
+    "usage": {
+      "title": "用量",
+      "count": "张数",
+      "storage": "存储"
+    },
+    "filters": {
+      "visibility": "可见性",
+      "all": "全部",
+      "public": "公开",
+      "private": "私密",
+      "game": "按游戏筛选",
+      "allGames": "所有游戏",
+      "reset": "清除筛选"
+    },
+    "upload": {
+      "title": "上传",
+      "drop": "拖放截图到这里，或点击选择",
+      "formats": "JPEG / PNG / WebP，可多选；长边超过 2560 自动缩小，统一存为 WebP",
+      "public": "公开",
+      "publicHint": "出现在个人资料的展柜里",
+      "watermarkPsn": "PSN 水印",
+      "watermarkPsnHint": "左下角写上 {psnid}",
+      "watermarkProfile": "psray 水印",
+      "watermarkProfileHint": "右下角放 logo 和资料页链接",
+      "watermarkFinal": "水印会画进图片，上传后不能更改。",
+      "game": "关联游戏（可选）",
+      "noGame": "选择游戏",
+      "clearGame": "取消关联",
+      "waiting": "等待中",
+      "processing": "处理中",
+      "retry": "重试失败的 {count} 张",
+      "clear": "清除已完成",
+      "done": "已上传 {count} 张截图",
+      "leaveConfirm": "还有截图正在上传，离开后剩下的不会上传。确定离开吗？",
+      "errors": {
+        "notImage": "无法作为图片读取",
+        "tooLarge": "文件太大",
+        "tooSmall": "图片至少要 {min}",
+        "cancelled": "已取消"
+      }
+    },
+    "tile": {
+      "view": "查看大图",
+      "actions": "操作",
+      "makePublic": "设为公开",
+      "makePrivate": "设为私密",
+      "edit": "编辑说明和游戏",
+      "copyLink": "复制图片链接",
+      "delete": "删除"
+    },
+    "watermarks": {
+      "psn": "PSN",
+      "profile": "psray",
+      "drawn": "水印：{list}"
+    },
+    "toast": {
+      "madePublic": "已设为公开",
+      "madePrivate": "已设为私密",
+      "updateFailed": "修改失败",
+      "linkCopied": "已复制链接",
+      "linkCopiedPrivate": "私密截图知道链接的人也能打开。",
+      "copyFailed": "复制失败",
+      "deleted": "已删除",
+      "deleteFailed": "删除失败"
+    },
+    "edit": {
+      "title": "编辑截图",
+      "caption": "说明",
+      "captionPlaceholder": "写一句话（可选）",
+      "game": "关联游戏",
+      "saved": "已保存",
+      "saveFailed": "保存失败",
+      "watermarkFixed": "（水印不能更改）",
+      "noWatermark": "上传时没有加水印。"
+    },
+    "gamePicker": {
+      "title": "选择游戏"
+    },
+    "lightbox": {
+      "label": "截图",
+      "position": "{n} / {total}",
+      "original": "打开原图",
+      "previous": "上一张",
+      "next": "下一张"
     }
   }
 }

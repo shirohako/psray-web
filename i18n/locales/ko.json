@@ -69,7 +69,8 @@
       "profile": "프로필",
       "settings": "계정 설정",
       "sync": "계정 동기화",
-      "tips": "내 댓글"
+      "tips": "내 댓글",
+      "screenshots": "스크린샷"
     }
   },
   "home": {
@@ -206,7 +207,9 @@
       "VERIFICATION_CODE_EXPIRED": "인증 코드가 만료되었습니다. 다시 발송한 후 시도해 주세요.",
       "INVALID_CREDENTIALS": "이메일 또는 비밀번호가 올바르지 않습니다.",
       "ACCOUNT_TERMINATED": "이 계정은 정지되었습니다.",
-      "FEEDBACK_NOT_FOUND": "피드백을 찾을 수 없습니다. 삭제되었거나 아직 공개되지 않았을 수 있습니다."
+      "FEEDBACK_NOT_FOUND": "피드백을 찾을 수 없습니다. 삭제되었거나 아직 공개되지 않았을 수 있습니다.",
+      "SCREENSHOT_NOT_FOUND": "스크린샷을 찾을 수 없습니다.",
+      "SCREENSHOT_QUOTA_EXCEEDED": "스크린샷 한도에 도달했습니다. 일부를 삭제한 뒤 올려 주세요."
     }
   },
   "toast": {
@@ -627,6 +630,17 @@
       },
       "text": {
         "defaultTitle": "자기소개"
+      },
+      "screenshots": {
+        "title": "스크린샷",
+        "count": "{count}장",
+        "all": "전체 {count}장",
+        "view": "스크린샷 보기",
+        "dialogTitle": "{psnid}의 스크린샷 ({count}장)",
+        "loadMore": "더 보기"
+      },
+      "favoriteScreenshots": {
+        "title": "즐겨찾는 스크린샷"
       }
     },
     "tips": {
@@ -837,13 +851,22 @@
         "text_right": {
           "name": "텍스트(오른쪽 열)",
           "desc": "제목과 본문을 자유롭게 작성(Markdown 지원)"
+        },
+        "favorite_screenshots": {
+          "name": "즐겨찾는 스크린샷",
+          "desc": "공개한 스크린샷 중 최대 {max}장을 골라 크게 표시"
+        },
+        "screenshots": {
+          "name": "스크린샷",
+          "desc": "최근 공개한 스크린샷 6장을 자동으로 표시"
         }
       },
       "unsaved": {
         "layout": "표시와 순서",
         "featured": "즐겨찾는 트로피",
         "games": "즐겨찾는 게임",
-        "texts": "텍스트"
+        "texts": "텍스트",
+        "screenshots": "즐겨찾는 스크린샷"
       },
       "tray": {
         "hint": "드래그해 순서 변경, ×로 빼기",
@@ -852,7 +875,9 @@
         "addTrophies": "트로피 추가",
         "addGames": "게임 추가",
         "remove": "‘{name}’ 빼기",
-        "move": "‘{name}’ 순서 바꾸기"
+        "move": "‘{name}’ 순서 바꾸기",
+        "addScreenshots": "스크린샷 추가",
+        "emptyScreenshots": "+로 스크린샷을 고르세요. 고르면 즐겨찾는 스크린샷이 켜집니다."
       },
       "picker": {
         "title": "즐겨찾는 트로피 고르기",
@@ -883,6 +908,15 @@
         "tooLong": "본문은 {max}자 이내로 써 주세요.",
         "empty": "아직 아무것도 쓰지 않았습니다. 쓰면 이 텍스트가 켜집니다.",
         "edit": "편집"
+      },
+      "screenshotsPicker": {
+        "title": "즐겨찾는 스크린샷 선택",
+        "empty": "공개한 스크린샷이 없습니다.",
+        "manage": "스크린샷 관리"
+      },
+      "screenshots": {
+        "note": "업로드와 공개 설정은 스크린샷 페이지에서 합니다.",
+        "manage": "스크린샷으로"
       }
     },
     "security": {
@@ -1139,7 +1173,8 @@
     },
     "me": {
       "following": "팔로잉",
-      "tips": "내 댓글"
+      "tips": "내 댓글",
+      "screenshots": "내 스크린샷"
     },
     "unsubscribe": {
       "title": "메일 수신 거부"
@@ -2018,6 +2053,106 @@
       "failed": "이미지를 만들지 못했습니다. 다시 시도해 주세요.",
       "missing": "이미지 {n}개를 불러오지 못해 대체 이미지로 표시했습니다.",
       "preview": "내보내기 미리보기"
+    }
+  },
+  "screenshots": {
+    "title": "스크린샷",
+    "description": "게임 스크린샷을 올리고 관리할 수 있습니다. 공개한 스크린샷은 프로필 쇼케이스에 표시됩니다.",
+    "public": "공개",
+    "private": "비공개",
+    "noGame": "게임 없음",
+    "count": "{total}장",
+    "loadError": "스크린샷을 불러오지 못했습니다",
+    "empty": "아직 스크린샷이 없습니다.",
+    "emptyHint": "업로드 카드에 이미지를 끌어다 놓거나, 클릭해서 여러 장을 한 번에 고르세요.",
+    "emptyFiltered": "조건에 맞는 스크린샷이 없습니다.",
+    "deleteTitle": "스크린샷 삭제",
+    "deleteBody": "이 스크린샷을 삭제할까요? 이미지 파일도 바로 삭제되며 되돌릴 수 없습니다.",
+    "deleting": "삭제 중…",
+    "usage": {
+      "title": "사용량",
+      "count": "장수",
+      "storage": "용량"
+    },
+    "filters": {
+      "visibility": "공개 설정",
+      "all": "전체",
+      "public": "공개",
+      "private": "비공개",
+      "game": "게임으로 필터",
+      "allGames": "모든 게임",
+      "reset": "필터 해제"
+    },
+    "upload": {
+      "title": "업로드",
+      "drop": "여기에 끌어다 놓거나 클릭해서 선택",
+      "formats": "JPEG・PNG・WebP, 여러 장 선택 가능. 긴 변이 2560px를 넘으면 축소되고 WebP로 저장됩니다",
+      "public": "공개",
+      "publicHint": "프로필 쇼케이스에 표시",
+      "watermarkPsn": "PSN ID 워터마크",
+      "watermarkPsnHint": "왼쪽 아래에 {psnid} 표시",
+      "watermarkProfile": "psray 워터마크",
+      "watermarkProfileHint": "오른쪽 아래에 로고와 프로필 링크",
+      "watermarkFinal": "워터마크는 이미지에 새겨지므로 업로드 후에는 바꿀 수 없습니다.",
+      "game": "게임 (선택)",
+      "noGame": "게임 선택",
+      "clearGame": "게임 해제",
+      "waiting": "대기 중",
+      "processing": "처리 중",
+      "retry": "실패한 {count}건 재시도",
+      "clear": "완료 항목 지우기",
+      "done": "{count}장을 올렸습니다",
+      "leaveConfirm": "업로드 중입니다. 이 페이지를 떠나면 나머지는 올라가지 않습니다. 이동할까요?",
+      "errors": {
+        "notImage": "이미지로 읽을 수 없습니다",
+        "tooLarge": "파일이 너무 큽니다",
+        "tooSmall": "{min} 이상의 이미지를 선택하세요",
+        "cancelled": "취소했습니다"
+      }
+    },
+    "tile": {
+      "view": "크게 보기",
+      "actions": "작업",
+      "makePublic": "공개로 전환",
+      "makePrivate": "비공개로 전환",
+      "edit": "설명과 게임 편집",
+      "copyLink": "이미지 링크 복사",
+      "delete": "삭제"
+    },
+    "watermarks": {
+      "psn": "PSN ID",
+      "profile": "psray",
+      "drawn": "워터마크: {list}"
+    },
+    "toast": {
+      "madePublic": "공개로 전환했습니다",
+      "madePrivate": "비공개로 전환했습니다",
+      "updateFailed": "변경하지 못했습니다",
+      "linkCopied": "링크를 복사했습니다",
+      "linkCopiedPrivate": "비공개 스크린샷이라도 링크를 아는 사람은 열 수 있습니다.",
+      "copyFailed": "복사하지 못했습니다",
+      "deleted": "삭제했습니다",
+      "deleteFailed": "삭제하지 못했습니다"
+    },
+    "edit": {
+      "title": "스크린샷 편집",
+      "caption": "설명",
+      "captionPlaceholder": "한마디 (선택)",
+      "game": "게임",
+      "saved": "저장했습니다",
+      "saveFailed": "저장하지 못했습니다",
+      "watermarkFixed": "(워터마크는 바꿀 수 없습니다)",
+      "noWatermark": "워터마크 없이 업로드되었습니다."
+    },
+    "gamePicker": {
+      "title": "게임 선택"
+    },
+    "lightbox": {
+      "label": "스크린샷",
+      "position": "{n} / {total}",
+      "original": "원본 크기로 열기",
+      "previous": "이전",
+      "next": "다음"
     }
   }
 }

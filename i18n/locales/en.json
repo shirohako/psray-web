@@ -69,7 +69,8 @@
       "profile": "Profile",
       "settings": "Settings",
       "sync": "Sync account",
-      "tips": "My tips"
+      "tips": "My tips",
+      "screenshots": "Screenshots"
     }
   },
   "home": {
@@ -206,7 +207,9 @@
       "VERIFICATION_CODE_EXPIRED": "That code has expired. Send a new one and try again.",
       "INVALID_CREDENTIALS": "Incorrect email or password.",
       "ACCOUNT_TERMINATED": "This account has been suspended.",
-      "FEEDBACK_NOT_FOUND": "Feedback not found. It may have been deleted, or it isn't public yet."
+      "FEEDBACK_NOT_FOUND": "Feedback not found. It may have been deleted, or it isn't public yet.",
+      "SCREENSHOT_NOT_FOUND": "Screenshot not found.",
+      "SCREENSHOT_QUOTA_EXCEEDED": "You've reached your screenshot limit. Delete some to upload more."
     }
   },
   "toast": {
@@ -627,6 +630,17 @@
       },
       "text": {
         "defaultTitle": "About me"
+      },
+      "screenshots": {
+        "title": "Screenshots",
+        "count": "{count}",
+        "all": "All {count}",
+        "view": "View screenshot",
+        "dialogTitle": "{psnid}'s screenshots ({count})",
+        "loadMore": "Load more"
+      },
+      "favoriteScreenshots": {
+        "title": "Favorite screenshots"
       }
     },
     "tips": {
@@ -837,13 +851,22 @@
         "text_right": {
           "name": "Text (right column)",
           "desc": "A title and free text, with Markdown"
+        },
+        "favorite_screenshots": {
+          "name": "Favorite screenshots",
+          "desc": "Up to {max} of your public screenshots, shown large"
+        },
+        "screenshots": {
+          "name": "Screenshots",
+          "desc": "Your 6 newest public screenshots, automatically"
         }
       },
       "unsaved": {
         "layout": "Showcases and order",
         "featured": "Featured trophies",
         "games": "Favorite games",
-        "texts": "Texts"
+        "texts": "Texts",
+        "screenshots": "Favorite screenshots"
       },
       "tray": {
         "hint": "Drag to reorder, × to remove",
@@ -852,7 +875,9 @@
         "addTrophies": "Add trophies",
         "addGames": "Add games",
         "remove": "Remove “{name}”",
-        "move": "Reorder “{name}”"
+        "move": "Reorder “{name}”",
+        "addScreenshots": "Add screenshots",
+        "emptyScreenshots": "Pick screenshots with +. Picking one turns Favorite screenshots on."
       },
       "picker": {
         "title": "Pick featured trophies",
@@ -883,6 +908,15 @@
         "tooLong": "Keep the text within {max} characters.",
         "empty": "Nothing written yet. Writing something turns this text on.",
         "edit": "Edit"
+      },
+      "screenshotsPicker": {
+        "title": "Choose favorite screenshots",
+        "empty": "You have no public screenshots yet.",
+        "manage": "Manage screenshots"
+      },
+      "screenshots": {
+        "note": "Upload screenshots and choose which are public on the Screenshots page.",
+        "manage": "Screenshots"
       }
     },
     "security": {
@@ -1139,7 +1173,8 @@
     },
     "me": {
       "following": "Following",
-      "tips": "My tips"
+      "tips": "My tips",
+      "screenshots": "My screenshots"
     },
     "unsubscribe": {
       "title": "Unsubscribe"
@@ -2018,6 +2053,106 @@
       "failed": "Couldn't create the image. Please try again.",
       "missing": "{n} image couldn't be loaded and was replaced by a placeholder. | {n} images couldn't be loaded and were replaced by placeholders.",
       "preview": "Export preview"
+    }
+  },
+  "screenshots": {
+    "title": "Screenshots",
+    "description": "Upload and manage your game screenshots. Public ones appear in the showcases on your profile.",
+    "public": "Public",
+    "private": "Private",
+    "noGame": "No game",
+    "count": "{total} screenshots",
+    "loadError": "Couldn't load your screenshots",
+    "empty": "No screenshots yet.",
+    "emptyHint": "Drop pictures on the upload card, or click it to pick several at once.",
+    "emptyFiltered": "No screenshots match these filters.",
+    "deleteTitle": "Delete screenshot",
+    "deleteBody": "Delete this screenshot? The picture is deleted right away and can't be restored.",
+    "deleting": "Deleting…",
+    "usage": {
+      "title": "Storage",
+      "count": "Screenshots",
+      "storage": "Space"
+    },
+    "filters": {
+      "visibility": "Visibility",
+      "all": "All",
+      "public": "Public",
+      "private": "Private",
+      "game": "Filter by game",
+      "allGames": "All games",
+      "reset": "Clear filters"
+    },
+    "upload": {
+      "title": "Upload",
+      "drop": "Drop pictures here, or click to choose",
+      "formats": "JPEG, PNG or WebP, several at once. Anything over 2560 px on the long side is scaled down; all are stored as WebP",
+      "public": "Public",
+      "publicHint": "Shown in your profile's showcases",
+      "watermarkPsn": "PSN ID watermark",
+      "watermarkPsnHint": "Puts {psnid} in the bottom left",
+      "watermarkProfile": "psray watermark",
+      "watermarkProfileHint": "Logo and your profile link in the bottom right",
+      "watermarkFinal": "Watermarks are drawn into the picture and can't be changed after uploading.",
+      "game": "Game (optional)",
+      "noGame": "Choose a game",
+      "clearGame": "Remove the game",
+      "waiting": "Waiting",
+      "processing": "Processing",
+      "retry": "Retry {count} failed",
+      "clear": "Clear finished",
+      "done": "Uploaded {count} screenshots",
+      "leaveConfirm": "Screenshots are still uploading. Leave anyway? The rest won't be uploaded.",
+      "errors": {
+        "notImage": "This file couldn't be read as a picture",
+        "tooLarge": "This file is too large",
+        "tooSmall": "Pictures must be at least {min}",
+        "cancelled": "Cancelled"
+      }
+    },
+    "tile": {
+      "view": "View larger",
+      "actions": "Actions",
+      "makePublic": "Make public",
+      "makePrivate": "Make private",
+      "edit": "Edit caption and game",
+      "copyLink": "Copy image link",
+      "delete": "Delete"
+    },
+    "watermarks": {
+      "psn": "PSN ID",
+      "profile": "psray",
+      "drawn": "Watermarks: {list}"
+    },
+    "toast": {
+      "madePublic": "Now public",
+      "madePrivate": "Now private",
+      "updateFailed": "Couldn't update the screenshot",
+      "linkCopied": "Link copied",
+      "linkCopiedPrivate": "Anyone with the link can open it, even while it is private.",
+      "copyFailed": "Couldn't copy the link",
+      "deleted": "Screenshot deleted",
+      "deleteFailed": "Couldn't delete the screenshot"
+    },
+    "edit": {
+      "title": "Edit screenshot",
+      "caption": "Caption",
+      "captionPlaceholder": "A few words (optional)",
+      "game": "Game",
+      "saved": "Saved",
+      "saveFailed": "Couldn't save",
+      "watermarkFixed": "(watermarks can't be changed)",
+      "noWatermark": "Uploaded without watermarks."
+    },
+    "gamePicker": {
+      "title": "Choose a game"
+    },
+    "lightbox": {
+      "label": "Screenshot",
+      "position": "{n} / {total}",
+      "original": "Open full size",
+      "previous": "Previous",
+      "next": "Next"
     }
   }
 }

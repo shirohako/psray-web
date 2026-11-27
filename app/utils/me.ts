@@ -65,3 +65,34 @@ export function myTipsRouteQuery(state: MyTipsState): Record<string, string> {
   if (state.page > 1) query.page = String(state.page)
   return query
 }
+
+// ── My screenshots (/me/screenshots) ─────────────────────────────────────────
+
+export type ScreenshotVisibility = 'all' | 'public' | 'private'
+
+export interface MyScreenshotsState {
+  visibility: ScreenshotVisibility
+  /** Trophy set id the list is narrowed to. */
+  game: number | null
+  page: number
+}
+
+/** Read the list state from the route query, ignoring anything unrecognised. */
+export function parseMyScreenshotsQuery(query: Record<string, RouteQueryValue>): MyScreenshotsState {
+  const visibility = first(query.visibility)
+  const game = Number.parseInt(first(query.game), 10)
+  return {
+    visibility: visibility === 'public' || visibility === 'private' ? visibility : 'all',
+    game: Number.isFinite(game) && game > 0 ? game : null,
+    page: pageOf(query.page),
+  }
+}
+
+/** Inverse of `parseMyScreenshotsQuery`; also the API query. Defaults are left out to keep URLs short. */
+export function myScreenshotsRouteQuery(state: MyScreenshotsState): Record<string, string> {
+  const query: Record<string, string> = {}
+  if (state.visibility !== 'all') query.visibility = state.visibility
+  if (state.game) query.game = String(state.game)
+  if (state.page > 1) query.page = String(state.page)
+  return query
+}

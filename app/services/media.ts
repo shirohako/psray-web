@@ -23,16 +23,24 @@ export interface UploadOptions {
   filename?: string
   /** Fraction of the body sent so far, 0–1. */
   onProgress?: (fraction: number) => void
+  /** The whole body has been sent; the server is now working on it. */
+  onSent?: () => void
   /** Aborting rejects with a `DOMException` named `AbortError`. */
   signal?: AbortSignal
 }
 
-export function useMediaApi() {
+/**
+ * Sends a multipart form with upload progress, the same headers as the `$api`
+ * plugin, and the same {@link ApiError}s. Resolves with the envelope's `data`.
+ * Shared by every endpoint that takes a file (`POST /media`,
+ * `POST /user/screenshots`).
+ */
+export function useUploadRequest() {
   const config = useRuntimeConfig()
   const token = useCookie<string | null>('auth_token', { readonly: true })
   const { acceptLanguage } = usePreferences()
 
-  function upload(file: Blob, purpose: UserMediaPurpose, options: UploadOptions = {}): Promise<UploadedMedia> {
+  return function send<T>(path: string, body: FormData, options: Omit<UploadOptions, 'filename'> = {}): Promise<T> {
     return new Promise((resolve, reject) => {
       if (options.signal?.aborted) {
         reject(new DOMException('The upload was aborted.', 'AbortError'))
@@ -40,7 +48,7 @@ export function useMediaApi() {
       }
 
       const xhr = new XMLHttpRequest()
-      xhr.open('POST', `${String(config.public.apiBase).replace(/\/+$/, '')}/media`)
+      xhr.open('POST', `${String(config.public.apiBase).replace(/\/+$/, '')}${path}`)
       xhr.responseType = 'json'
       xhr.setRequestHeader('Accept', 'application/json')
       xhr.setRequestHeader('X-Request-Id', crypto.randomUUID())
@@ -50,10 +58,14 @@ export function useMediaApi() {
       xhr.upload.onprogress = (event) => {
         if (event.lengthComputable && event.total > 0) options.onProgress?.(event.loaded / event.total)
       }
+      xhr.upload.onload = () => {
+        options.onProgress?.(1)
+        options.onSent?.()
+      }
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300 && xhr.response?.data) {
           options.onProgress?.(1)
-          resolve(xhr.response.data as UploadedMedia)
+          resolve(xhr.response.data as T)
         }
         else {
           reject(ApiError.fromResponse(xhr.status, xhr.response))
@@ -64,17 +76,26 @@ export function useMediaApi() {
       xhr.onabort = () => reject(new DOMException('The upload was aborted.', 'AbortError'))
       options.signal?.addEventListener('abort', () => xhr.abort(), { once: true })
 
-      const body = new FormData()
-      body.append('purpose', purpose)
-      body.append('file', file, options.filename ?? `${purpose}.${extensionOf(file.type)}`)
       xhr.send(body)
     })
+  }
+}
+
+export function useMediaApi() {
+  const send = useUploadRequest()
+
+  function upload(file: Blob, purpose: UserMediaPurpose, options: UploadOptions = {}): Promise<UploadedMedia> {
+    const body = new FormData()
+    body.append('purpose', purpose)
+    body.append('file', file, options.filename ?? `${purpose}.${extensionOf(file.type)}`)
+    return send<UploadedMedia>('/media', body, options)
   }
 
   return { upload }
 }
 
-function extensionOf(type: string): string {
+/** File extension for a MIME type, for the uploaded file's name. */
+export function extensionOf(type: string): string {
   if (type === 'image/jpeg') return 'jpg'
   return type.startsWith('image/') ? type.slice(6) : 'bin'
 }

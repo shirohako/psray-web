@@ -9,6 +9,7 @@
 import type { Rarity, TrophyType } from '~/services/trophies'
 import type { ProfileRecentTip } from '~/types/tip'
 import type { MediaImage } from '~/types/media'
+import type { Screenshot } from '~/services/screenshots'
 
 export type ApiDate = number | string
 
@@ -102,10 +103,14 @@ export interface Profile {
   text_left?: ShowcaseText | null
   /** The right column's text, as `text_left`. */
   text_right?: ShowcaseText | null
+  /** Up to 6 public screenshots the owner picked, in their order; `null` when private or the showcase is off. */
+  favorite_screenshots?: Screenshot[] | null
+  /** The newest public screenshots (up to 6) and how many there are; `null` when the showcase is off. Shown on private profiles too. */
+  screenshots?: { items: Screenshot[], total: number } | null
 }
 
 /** A showcase: a profile card its owner can switch off and reorder within its column. */
-export type ShowcaseKey = 'calendar' | 'rarest' | 'featured' | 'games' | 'text_left' | 'tips' | 'social' | 'text_right'
+export type ShowcaseKey = 'calendar' | 'rarest' | 'featured' | 'games' | 'text_left' | 'favorite_screenshots' | 'tips' | 'social' | 'text_right' | 'screenshots'
 export type ShowcaseColumn = 'left' | 'right'
 
 /** Showcases to render per column, in order (`GET /profile/:psnid`). */
