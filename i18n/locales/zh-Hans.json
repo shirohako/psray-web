@@ -454,6 +454,7 @@
     "totalPlayers": "共 {count} 名玩家",
     "range": "第 {start}–{end} 名 / 共 {total} 名玩家",
     "you": "我",
+    "playerMissing": "{psnid} 不在这个排行榜上。",
     "self": {
       "title": "我的排名",
       "top": "排名前",
@@ -547,6 +548,7 @@
       "views": "浏览次数",
       "globalRank": "全球排名",
       "rankUpdateHint": "排名每天更新。",
+      "viewOnLeaderboard": "在排行榜中查看",
       "regionRank": "地区排名",
       "points": "奖杯点数",
       "unranked": "暂无排名"

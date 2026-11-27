@@ -48,3 +48,23 @@ export function leaderboardRouteQuery(
   if (page > 1) query.page = String(page)
   return query
 }
+
+// ── Opening the board at a player ────────────────────────────────────────────
+//
+// A profile's rank opens its board at the page that player is on now. Which
+// player travels as `navState('leaderboardPlayer')`, not in the URL, so links
+// and the address bar stay plain board URLs: the leaderboard page asks the API
+// for that player's page, then replaces the URL with that page.
+
+/** The board a profile rank links to: points, or the player's region. */
+export function leaderboardBoardPath(region?: string): string {
+  const query = leaderboardRouteQuery({
+    board: region ? 'points-region' : 'points',
+    region: region ?? LEADERBOARD_DEFAULT_REGION,
+    registeredOnly: false,
+    page: 1,
+  }, 'points')
+  const search = new URLSearchParams(query).toString()
+  return search ? `/leaderboard?${search}` : '/leaderboard'
+}
+

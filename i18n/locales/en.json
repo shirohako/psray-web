@@ -454,6 +454,7 @@
     "totalPlayers": "{count} players",
     "range": "{start}–{end} of {total}",
     "you": "You",
+    "playerMissing": "{psnid} isn't on this leaderboard.",
     "self": {
       "title": "Your rank",
       "top": "Top",
@@ -547,6 +548,7 @@
       "views": "Views",
       "globalRank": "Global rank",
       "rankUpdateHint": "Rankings are updated daily.",
+      "viewOnLeaderboard": "View on the leaderboard",
       "regionRank": "Regional rank",
       "points": "Trophy points",
       "unranked": "Unranked"

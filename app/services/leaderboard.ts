@@ -59,6 +59,17 @@ export interface LeaderboardMe {
   on_page: number | null
 }
 
+/**
+ * Where the `?player=` player is on the board right now: the rank as the rows
+ * show it (live, unlike the profile's nightly `rank`) and the page holding it.
+ */
+export interface LeaderboardPlayer {
+  psnid: string
+  user_id: number
+  rank: number
+  page: number
+}
+
 /** Pagination plus an echo of the request flags. */
 export interface LeaderboardMeta {
   registered_only?: boolean
@@ -70,6 +81,8 @@ export interface LeaderboardMeta {
   total_pages: number
   /** Points boards: `null` when anonymous; absent on boards that don't report it. */
   me?: LeaderboardMe | null
+  /** Only when `player` was asked for: where they are, `null` when not on this board. */
+  player?: LeaderboardPlayer | null
 }
 
 /** Query shared by boards that support these filters. */
@@ -77,6 +90,8 @@ export interface LeaderboardQuery {
   page?: number
   /** Restrict to registered users only (Laravel-truthy; sent as `1`). */
   registered_only?: boolean
+  /** PSN ID to find: the API returns the page they are on instead of `page`. */
+  player?: string | null
 }
 
 // Map our flags onto the query the API expects. `registered_only` is only sent
@@ -85,6 +100,7 @@ function toQuery(q?: LeaderboardQuery) {
   return {
     page: q?.page,
     registered_only: q?.registered_only ? 1 : undefined,
+    player: q?.player || undefined,
   }
 }
 

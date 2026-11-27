@@ -22,6 +22,8 @@ const props = defineProps<{
   pending?: boolean
   /** PSN ID of the signed-in user; their row is highlighted. */
   selfPsnid?: string
+  /** PSN ID the board was opened at (`?player=`); their row is marked for scrolling to. */
+  focusPsnid?: string
 }>()
 
 // Single source of truth for each column's header + layout. Boards only choose
@@ -68,9 +70,20 @@ const SELF_TAG = 'shrink-0 rounded bg-sky-100 px-1.5 py-px text-[10px] font-semi
 // shows on the striped rows. The self row keeps its own colour instead.
 const STRIPE_ROW = 'even:bg-slate-50 hover:bg-slate-200/50'
 
+// The row the board was opened at, in the board's violet; it wins over the self colours.
+const FOCUS_ROW = 'bg-violet-50/80'
+const FOCUS_AVATAR = 'ring-2 ring-violet-300 ring-offset-2 ring-offset-violet-50'
+
 function isSelf(row: LeaderboardRow) {
   return !!props.selfPsnid && row.psnid.toLowerCase() === props.selfPsnid.toLowerCase()
 }
+
+function isFocus(row: LeaderboardRow) {
+  return !!props.focusPsnid && row.psnid.toLowerCase() === props.focusPsnid.toLowerCase()
+}
+
+const rowClass = (row: LeaderboardRow) => (isFocus(row) ? FOCUS_ROW : isSelf(row) ? SELF_ROW : STRIPE_ROW)
+const avatarClass = (row: LeaderboardRow) => (isFocus(row) ? FOCUS_AVATAR : isSelf(row) ? SELF_AVATAR : '')
 
 function primaryValue(row: LeaderboardRow) {
   if (primary.value === 'points') return fmt(row.points)
@@ -117,13 +130,13 @@ function skeletonDelay(index: number) {
     <template v-if="rows.length || pending">
       <!-- Phones: two-line rows instead of a sideways-scrolling table -->
       <ul v-if="rows.length" class="divide-y divide-slate-100 transition-opacity md:hidden" :class="{ 'opacity-50': pending }">
-        <li v-for="r in rows" :key="r.user_id" :data-self-row="isSelf(r) || undefined" :class="isSelf(r) ? SELF_ROW : STRIPE_ROW">
+        <li v-for="r in rows" :key="r.user_id" :data-self-row="isSelf(r) || undefined" :data-focus-row="isFocus(r) || undefined" :class="rowClass(r)">
           <AppLink :to="`/p/${r.psnid}`" class="flex items-center gap-2.5 px-3 py-2.5">
             <span
               class="grid h-7 min-w-7 shrink-0 place-items-center rounded-md px-1 text-xs font-bold tabular-nums"
               :class="rankClass(r.rank)"
             >{{ r.rank }}</span>
-            <img :src="r.avatar_url" :alt="r.psnid" class="size-9 shrink-0 rounded-full bg-slate-100 object-cover" :class="{ [SELF_AVATAR]: isSelf(r) }">
+            <img :src="r.avatar_url" :alt="r.psnid" class="size-9 shrink-0 rounded-full bg-slate-100 object-cover" :class="avatarClass(r)">
             <div class="min-w-0 flex-1 space-y-1">
               <div class="flex items-center gap-1.5">
                 <RegionFlag :country="r.country" class="shrink-0 text-sm" />
@@ -197,8 +210,9 @@ function skeletonDelay(index: number) {
               v-for="r in rows"
               :key="r.user_id"
               :data-self-row="isSelf(r) || undefined"
+              :data-focus-row="isFocus(r) || undefined"
               class="transition"
-              :class="isSelf(r) ? SELF_ROW : STRIPE_ROW"
+              :class="rowClass(r)"
             >
               <td
                 v-for="c in columns"
@@ -215,7 +229,7 @@ function skeletonDelay(index: number) {
 
                 <!-- Player -->
                 <AppLink v-else-if="c === 'user'" :to="`/p/${r.psnid}`" class="group flex items-center gap-3">
-                  <img :src="r.avatar_url" :alt="r.psnid" class="size-9 shrink-0 rounded-full bg-slate-100 object-cover" :class="{ [SELF_AVATAR]: isSelf(r) }">
+                  <img :src="r.avatar_url" :alt="r.psnid" class="size-9 shrink-0 rounded-full bg-slate-100 object-cover" :class="avatarClass(r)">
                   <span class="flex min-w-0 items-center gap-1.5">
                     <RegionFlag :country="r.country" class="shrink-0 text-sm" />
                     <span class="truncate font-semibold text-slate-900 group-hover:text-sky-600">{{ r.psnid }}</span>

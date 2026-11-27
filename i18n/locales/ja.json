@@ -454,6 +454,7 @@
     "totalPlayers": "全 {count} 人",
     "range": "{start}–{end} 位 / 全 {total} 人",
     "you": "あなた",
+    "playerMissing": "{psnid} はこのランキングに載っていません。",
     "self": {
       "title": "あなたの順位",
       "top": "上位",
@@ -547,6 +548,7 @@
       "views": "閲覧数",
       "globalRank": "世界ランキング",
       "rankUpdateHint": "ランキングは毎日更新されます。",
+      "viewOnLeaderboard": "ランキングで見る",
       "regionRank": "地域ランキング",
       "points": "トロフィーポイント",
       "unranked": "ランキング外"

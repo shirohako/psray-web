@@ -454,6 +454,7 @@
     "totalPlayers": "총 {count}명",
     "range": "{start}–{end}위 / 총 {total}명",
     "you": "나",
+    "playerMissing": "{psnid} 님은 이 랭킹에 없습니다.",
     "self": {
       "title": "내 순위",
       "top": "상위",
@@ -547,6 +548,7 @@
       "views": "조회수",
       "globalRank": "전체 순위",
       "rankUpdateHint": "순위는 매일 업데이트됩니다.",
+      "viewOnLeaderboard": "랭킹에서 보기",
       "regionRank": "지역 순위",
       "points": "트로피 포인트",
       "unranked": "순위 없음"

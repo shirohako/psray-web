@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { leaderboardRouteQuery, parseLeaderboardQuery } from '~/utils/leaderboardQuery'
+import { leaderboardBoardPath, leaderboardRouteQuery, parseLeaderboardQuery } from '~/utils/leaderboardQuery'
 
 const boards = ['points', 'points-region'] as const
 
@@ -15,6 +15,14 @@ describe('leaderboard route query', () => {
     const query = leaderboardRouteQuery(state, 'points')
     expect(query).toEqual({ board: 'points-region', region: 'US', registered: '1', page: '4' })
     expect(parseLeaderboardQuery(query, boards)).toEqual(state)
+  })
+
+  it('links a profile rank to the plain board, with the player kept out of the URL', () => {
+    expect(leaderboardBoardPath()).toBe('/leaderboard')
+    expect(leaderboardBoardPath('JP')).toBe('/leaderboard?board=points-region')
+    expect(leaderboardBoardPath('HK')).toBe('/leaderboard?board=points-region&region=HK')
+    // Anything else in the URL is not read as a player.
+    expect(parseLeaderboardQuery({ player: 'Kirara_07' }, boards)).toEqual({ board: 'points', region: 'JP', registeredOnly: false, page: 1 })
   })
 
   it('falls back to defaults for unknown or malformed values', () => {

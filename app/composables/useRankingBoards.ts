@@ -8,6 +8,8 @@ export interface LeaderboardCtx {
   page: number
   registeredOnly: boolean
   region: string
+  /** PSN ID to open the board at (points boards); `null` for the plain page. */
+  player: string | null
 }
 
 /**
@@ -49,7 +51,7 @@ export function useRankingBoards(): LeaderboardBoard[] {
       accent: 'violet',
       columns: ['rank', 'user', 'level', 'platinum', 'gold', 'silver', 'bronze', 'mix', 'points'],
       registered: true,
-      fetch: ({ page, registeredOnly }) => api.points({ page, registered_only: registeredOnly }),
+      fetch: ({ page, registeredOnly, player }) => api.points({ page, registered_only: registeredOnly, player }),
     },
     {
       key: 'points-region',
@@ -60,8 +62,8 @@ export function useRankingBoards(): LeaderboardBoard[] {
       columns: ['rank', 'user', 'level', 'platinum', 'gold', 'silver', 'bronze', 'mix', 'points'],
       region: true,
       registered: true,
-      fetch: ({ page, registeredOnly, region }) =>
-        api.pointsByRegion(region, { page, registered_only: registeredOnly }),
+      fetch: ({ page, registeredOnly, region, player }) =>
+        api.pointsByRegion(region, { page, registered_only: registeredOnly, player }),
     },
     {
       key: 'tips',

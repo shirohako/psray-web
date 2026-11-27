@@ -2,9 +2,14 @@
 import { Trophy } from 'lucide'
 import type { LeaderboardRow, LeaderboardMeta } from '~/services/leaderboard'
 import { LEADERBOARD_DEFAULT_REGION, leaderboardRouteQuery, parseLeaderboardQuery, type LeaderboardQueryState } from '~/utils/leaderboardQuery'
+import { readNavState } from '~/utils/navState'
 
 const { t } = useI18n()
 const auth = useAuth()
+
+// Opened at a player (a profile's rank, `navState('leaderboardPlayer')`): this
+// page scrolls to their row once it is there, so the router doesn't scroll.
+definePageMeta({ scrollToTop: () => !readNavState('leaderboardPlayer') })
 
 // All available boards (registry). Each owns its label, icon, filters, columns
 // and fetcher — see `useRankingBoards`.
@@ -25,7 +30,6 @@ const board = computed(() => boards.find(b => b.key === activeKey.value) ?? defa
 // Page-level filters. A board only consumes the ones it declares support for.
 const region = computed(() => state.value.region)
 const registeredOnly = computed(() => state.value.registeredOnly)
-const page = computed(() => state.value.page)
 
 // One fetcher driven by the active board; SSR-rendered, re-run whenever the URL
 // state changes. `lazy` lets client-side navigation open the page at once and
@@ -33,14 +37,32 @@ const page = computed(() => state.value.page)
 // key is static and carries no locale: leaderboard rows are PSN IDs and
 // numbers, with no localized body text to refetch on a language switch. Add the
 // locale to the key if the backend ever starts translating anything here.
-const { data, status, error } = await useAsyncData('leaderboard', () =>
-  board.value.fetch({ page: page.value, registeredOnly: registeredOnly.value, region: region.value }),
-{ watch: [state], lazy: true })
+//
+// Opened at a player with no page in the URL yet, the request names them and
+// the API answers with the page they are on (`meta.player`); the URL is then
+// replaced with that page, and that second fetch reuses the first response.
+type BoardResponse = Awaited<ReturnType<typeof defaultBoard.fetch>>
+const stateKey = (s: LeaderboardQueryState) => `${s.board}|${s.region}|${s.registeredOnly}|${s.page}`
+let located: { key: string, response: BoardResponse } | null = null
+
+const { data, status, error } = await useAsyncData('leaderboard', async () => {
+  const reuse = located
+  located = null
+  if (reuse?.key === stateKey(state.value)) return reuse.response
+
+  const player = route.query.page ? null : readNavState('leaderboardPlayer')
+  const response = await board.value.fetch({ page: state.value.page, registeredOnly: registeredOnly.value, region: region.value, player })
+  const found = response.meta?.player
+  if (found && found.page > 1) located = { key: stateKey({ ...state.value, page: found.page }), response }
+  return response
+}, { watch: [state], lazy: true })
 
 const rows = computed<LeaderboardRow[]>(() => data.value?.data ?? [])
 const meta = computed<LeaderboardMeta | undefined>(() => data.value?.meta)
-const totalPages = computed(() => meta.value?.total_pages ?? 1)
 const pending = useFetchPending(status)
+// The page on screen: the URL's, or the one the API picked for a player.
+const page = computed(() => (!route.query.page && !pending.value && meta.value?.player?.page) || state.value.page)
+const totalPages = computed(() => meta.value?.total_pages ?? 1)
 const rangeStart = computed(() => rows.value.length ? (page.value - 1) * (meta.value?.per_page ?? rows.value.length) + 1 : 0)
 const rangeEnd = computed(() => rows.value.length ? rangeStart.value + rows.value.length - 1 : 0)
 
@@ -137,6 +159,39 @@ function goToSelf(selfPage: number) {
 watch(rows, () => {
   if (revealSelfPending.value) revealSelf()
 })
+
+// Opened at a player: put the page the API picked into the URL, so reload and
+// Back land on it. Replacing keeps history.state, and so the player.
+watch(() => meta.value?.player, (found) => {
+  if (found && found.page > 1 && !route.query.page) router.replace(locationFor({ page: found.page }))
+})
+
+// The player this history entry opened the board at. Only the browser knows it,
+// so it's read once mounted and again on each URL change (Back, Forward, paging).
+const statePlayer = ref<string | null>(null)
+watch(() => route.fullPath, () => {
+  statePlayer.value = readNavState('leaderboardPlayer')
+})
+
+// Mark their row and bring it to the middle of the screen whenever their page
+// arrives (or is already there after a reload).
+const focusPsnid = computed(() => meta.value?.player?.psnid ?? statePlayer.value ?? undefined)
+const playerMissing = computed(() => (statePlayer.value && !pending.value && meta.value?.player === null ? statePlayer.value : null))
+
+function revealPlayer() {
+  nextTick(() => {
+    const marked = Array.from(document.querySelectorAll<HTMLElement>('[data-focus-row]'))
+    marked.find(el => el.offsetParent !== null)?.scrollIntoView({ block: 'center' })
+  })
+}
+
+onMounted(() => {
+  statePlayer.value = readNavState('leaderboardPlayer')
+  if (focusPsnid.value) revealPlayer()
+})
+watch(rows, () => {
+  if (focusPsnid.value) revealPlayer()
+})
 </script>
 
 <template>
@@ -163,8 +218,12 @@ watch(rows, () => {
       @jump="goToSelf"
     />
 
+    <p v-if="playerMissing" class="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-500 shadow-sm">
+      {{ $t('leaderboard.playerMissing', { psnid: playerMissing }) }}
+    </p>
+
     <section id="leaderboard-results" class="scroll-mt-20" :aria-label="$t(board.labelKey)">
-      <LeaderboardTable :columns="board.columns" :rows="rows" :pending="pending" :self-psnid="user?.psnid">
+      <LeaderboardTable :columns="board.columns" :rows="rows" :pending="pending" :self-psnid="user?.psnid" :focus-psnid="focusPsnid">
         <!-- Filters the active board supports, right above the rows they filter -->
         <template v-if="board.region" #header>
           <div class="flex items-center gap-3">
