@@ -656,6 +656,12 @@
       "shareCard": {
         "title": "프로필 카드",
         "enlarge": "프로필 카드 크게 보기"
+      },
+      "accounts": {
+        "title": "다른 플랫폼",
+        "social": "소셜 미디어",
+        "copy": "{name} {value} 복사",
+        "copied": "복사 완료"
       }
     },
     "tips": {
@@ -878,6 +884,10 @@
         "share_card": {
           "name": "프로필 카드",
           "desc": "프로필 공유 이미지를 자동으로 표시하고 링크를 바로 복사"
+        },
+        "accounts": {
+          "name": "다른 플랫폼",
+          "desc": "닌텐도, Steam, Xbox 계정과 소셜 미디어 링크"
         }
       },
       "unsaved": {
@@ -885,7 +895,8 @@
         "featured": "즐겨찾는 트로피",
         "games": "즐겨찾는 게임",
         "texts": "텍스트",
-        "screenshots": "즐겨찾는 스크린샷"
+        "screenshots": "즐겨찾는 스크린샷",
+        "accounts": "다른 플랫폼"
       },
       "tray": {
         "hint": "드래그해 순서 변경, ×로 빼기",
@@ -936,6 +947,28 @@
       "screenshots": {
         "note": "업로드와 공개 설정은 스크린샷 페이지에서 합니다.",
         "manage": "스크린샷으로"
+      },
+      "accounts": {
+        "add": "계정 추가",
+        "hint": "드래그해서 순서를 바꾸세요. 프로필 링크를 붙여 넣어도 됩니다",
+        "empty": "첫 계정을 입력하면 이 쇼케이스가 켜집니다.",
+        "invalid": "형식이 맞지 않는 계정이 있습니다. 빨간색으로 표시된 칸을 확인해 주세요.",
+        "fields": {
+          "friendCode": "친구 코드",
+          "profileLink": "프로필 링크",
+          "gamertag": "게이머태그",
+          "username": "사용자 이름",
+          "channel": "핸들",
+          "uid": "UID"
+        },
+        "errors": {
+          "friendCode": "친구 코드는 12자리 숫자입니다",
+          "profileLink": "Steam 프로필 링크를 입력해 주세요(예: steamcommunity.com/id/…)",
+          "gamertag": "게이머태그에는 문자, 숫자, 공백만 쓸 수 있습니다",
+          "username": "사용자 이름 형식이 맞지 않습니다. 프로필 링크를 붙여 넣어도 됩니다",
+          "channel": "채널의 {'@'}핸들을 입력하거나 youtube.com/{'@'}… 링크를 붙여 넣어 주세요",
+          "uid": "UID는 숫자입니다. 스페이스 링크를 붙여 넣어도 됩니다"
+        }
       }
     },
     "security": {
@@ -1902,6 +1935,7 @@
       "featuredTrophies": "소유자가 고른 트로피(최대 12개, 정한 순서). 비공개이거나 쇼케이스가 꺼져 있으면 null",
       "favoriteGames": "소유자가 고른 플레이한 게임(트로피 세트, 최대 6개, 정한 순서). 비공개이거나 쇼케이스가 꺼져 있으면 null",
       "texts": "왼쪽과 오른쪽 열의 텍스트. 각각 title과 body(Markdown). 쇼케이스가 꺼져 있거나 본문이 비어 있으면 null. 비공개여도 반환",
+      "accounts": "다른 플랫폼 계정(정렬한 순서). 각각 platform, value, url(친구 코드와 게이머태그는 링크가 없어 null). 쇼케이스가 꺼져 있거나 비어 있으면 null. 비공개여도 반환",
       "gameId": "게임 ID",
       "cover": "커버 이미지(URL, 크기, 대표 색). null일 수 있음",
       "releaseDate": "최초 발매일. 미정이면 null",

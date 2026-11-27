@@ -6,7 +6,7 @@
  * Mirrors `useAuthApi()` in `~/services/auth` — thin wrappers over `useApi()`.
  */
 import type { MediaImage } from '~/types/media'
-import type { ShowcaseColumn, ShowcaseGame, ShowcaseLayout, ShowcaseText, ShowcaseTrophy } from '~/services/profile'
+import type { AccountPlatform, ProfileAccount, ShowcaseColumn, ShowcaseGame, ShowcaseLayout, ShowcaseText, ShowcaseTrophy } from '~/services/profile'
 import type { Screenshot } from '~/services/screenshots'
 
 /** Standard success payload for the mutation endpoints: a displayable message. */
@@ -41,6 +41,11 @@ export interface UpdateSettingPayload {
   favorite_screenshots?: number[]
   /** Text showcases, per column; a column left out stays as it is. Title ≤ 40, body ≤ 5000 characters. */
   showcase_texts?: Partial<Record<ShowcaseColumn, ShowcaseText>>
+  /**
+   * Accounts on other platforms, in display order, one per platform; replaces
+   * the saved list. `value` may be a handle, an ID or a pasted profile link.
+   */
+  accounts?: { platform: AccountPlatform, value: string }[]
 }
 
 /** Current account settings, as returned by `GET /user/setting`. */
@@ -67,6 +72,8 @@ export interface UserSetting {
   favorite_screenshots: Screenshot[]
   /** Both text showcases; empty strings when never written. */
   showcase_texts: Record<ShowcaseColumn, ShowcaseText>
+  /** Accounts on other platforms, in display order; `[]` when none. */
+  accounts: ProfileAccount[]
 }
 
 export interface ChangePasswordPayload {

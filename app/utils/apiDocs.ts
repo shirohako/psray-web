@@ -153,6 +153,7 @@ export const API_ENDPOINTS: ApiEndpoint[] = [
       { name: 'featured_trophies', type: 'array | null', descKey: 'apiDocs.fields.featuredTrophies' },
       { name: 'favorite_games', type: 'array | null', descKey: 'apiDocs.fields.favoriteGames' },
       { name: 'text_left / text_right', type: 'object | null', descKey: 'apiDocs.fields.texts' },
+      { name: 'accounts', type: 'array | null', descKey: 'apiDocs.fields.accounts' },
       { name: 'recent_tips', type: 'array | null', descKey: 'apiDocs.fields.recentTips' },
     ],
     errors: [

@@ -40,6 +40,7 @@ defineProps<{ showcase: ShowcaseKey; profile: Profile; psnid: string }>()
     :tips="profile.recent_tips"
   />
   <ProfileSocialCard v-else-if="showcase === 'social'" :profile="profile" />
+  <ProfileShowcaseAccounts v-else-if="showcase === 'accounts' && profile.accounts?.length" :accounts="profile.accounts" />
   <ProfileShowcaseScreenshots
     v-else-if="showcase === 'screenshots' && profile.screenshots?.items.length"
     :psnid="psnid"

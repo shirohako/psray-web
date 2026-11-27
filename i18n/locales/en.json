@@ -656,6 +656,12 @@
       "shareCard": {
         "title": "Profile card",
         "enlarge": "Enlarge the profile card"
+      },
+      "accounts": {
+        "title": "Other platforms",
+        "social": "Social media",
+        "copy": "Copy {name} {value}",
+        "copied": "Copied"
       }
     },
     "tips": {
@@ -878,6 +884,10 @@
         "share_card": {
           "name": "Profile card",
           "desc": "Your profile share image, with one-click link copy"
+        },
+        "accounts": {
+          "name": "Other platforms",
+          "desc": "Nintendo, Steam and Xbox accounts and social media links"
         }
       },
       "unsaved": {
@@ -885,7 +895,8 @@
         "featured": "Featured trophies",
         "games": "Favorite games",
         "texts": "Texts",
-        "screenshots": "Favorite screenshots"
+        "screenshots": "Favorite screenshots",
+        "accounts": "Other platforms"
       },
       "tray": {
         "hint": "Drag to reorder, × to remove",
@@ -936,6 +947,28 @@
       "screenshots": {
         "note": "Upload screenshots and choose which are public on the Screenshots page.",
         "manage": "Screenshots"
+      },
+      "accounts": {
+        "add": "Add account",
+        "hint": "Drag to reorder. Pasting a profile link works too.",
+        "empty": "Add your first account and this showcase turns on.",
+        "invalid": "Some accounts aren't in the right format. Check the fields marked in red.",
+        "fields": {
+          "friendCode": "Friend code",
+          "profileLink": "Profile link",
+          "gamertag": "Gamertag",
+          "username": "Username",
+          "channel": "Handle",
+          "uid": "UID"
+        },
+        "errors": {
+          "friendCode": "A friend code is 12 digits",
+          "profileLink": "Enter your Steam profile link, e.g. steamcommunity.com/id/…",
+          "gamertag": "A gamertag can only have letters, numbers and spaces",
+          "username": "That username doesn't look right. Pasting the profile link works too.",
+          "channel": "Enter the channel's {'@'}handle or paste a youtube.com/{'@'}… link",
+          "uid": "A UID is a number. Pasting the space link works too."
+        }
       }
     },
     "security": {
@@ -1902,6 +1935,7 @@
       "featuredTrophies": "Trophies the owner picked (up to 12, in their order); null when private or the showcase is off",
       "favoriteGames": "Played games (trophy sets) the owner picked, up to 6 in their order; null when private or the showcase is off",
       "texts": "The left and right column texts, each with title and body (Markdown); null when the showcase is off or the body is empty. Returned for private profiles too",
+      "accounts": "Accounts on other platforms, in the owner's order, each with platform, value and url (null for the friend code and gamertag, which have no link); null when the showcase is off or empty. Returned for private profiles too",
       "gameId": "Game ID",
       "cover": "Cover image with URL, size and main colour; may be null",
       "releaseDate": "First release date; null when not yet announced",

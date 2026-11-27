@@ -656,6 +656,12 @@
       "shareCard": {
         "title": "个人资料卡片",
         "enlarge": "放大查看个人资料卡片"
+      },
+      "accounts": {
+        "title": "其他平台",
+        "social": "社交媒体",
+        "copy": "复制 {name}：{value}",
+        "copied": "已复制"
       }
     },
     "tips": {
@@ -878,6 +884,10 @@
         "share_card": {
           "name": "个人资料卡片",
           "desc": "自动显示你的个人资料分享图片，可一键复制链接"
+        },
+        "accounts": {
+          "name": "其他平台",
+          "desc": "任天堂、Steam、Xbox 账号和社交媒体链接"
         }
       },
       "unsaved": {
@@ -885,7 +895,8 @@
         "featured": "精选奖杯",
         "games": "喜欢的游戏",
         "texts": "文字",
-        "screenshots": "喜欢的截图"
+        "screenshots": "喜欢的截图",
+        "accounts": "其他平台"
       },
       "tray": {
         "hint": "拖动调整顺序，点 × 移除",
@@ -936,6 +947,28 @@
       "screenshots": {
         "note": "上传截图、切换公开或私密在截图页面进行。",
         "manage": "前往截图"
+      },
+      "accounts": {
+        "add": "添加账号",
+        "hint": "拖动调整顺序，可以直接粘贴主页链接",
+        "empty": "填好第一个账号后会自动开启这个展柜。",
+        "invalid": "有账号的格式不对，请检查标红的栏位。",
+        "fields": {
+          "friendCode": "好友码",
+          "profileLink": "个人资料链接",
+          "gamertag": "玩家代号",
+          "username": "用户名",
+          "channel": "频道名称",
+          "uid": "UID"
+        },
+        "errors": {
+          "friendCode": "好友码是 12 位数字",
+          "profileLink": "请填写 Steam 个人资料链接，例如 steamcommunity.com/id/…",
+          "gamertag": "玩家代号只能包含文字、数字和空格",
+          "username": "用户名格式不对，也可以直接粘贴主页链接",
+          "channel": "请填写频道的 {'@'} 名称，或粘贴 youtube.com/{'@'}… 链接",
+          "uid": "UID 是一串数字，也可以直接粘贴空间链接"
+        }
       }
     },
     "security": {
@@ -1902,6 +1935,7 @@
       "featuredTrophies": "主人挑选的奖杯（最多 12 个，按其顺序）；资料未公开或展柜关闭时为 null",
       "favoriteGames": "主人挑选的玩过的游戏（奖杯组，最多 6 个，按其顺序）；资料未公开或展柜关闭时为 null",
       "texts": "左右两栏的文字，各含 title 和 body（Markdown）；展柜关闭或正文为空时为 null，资料未公开时照常返回",
+      "accounts": "主人在其他平台的账号（按其顺序），每项包含 platform、value 和 url（好友码、玩家代号没有链接，为 null）；展柜关闭或没填时为 null，资料未公开时照常返回",
       "gameId": "游戏 ID",
       "cover": "封面图，包含地址、尺寸和主色；可能为 null",
       "releaseDate": "首发日期；未定档时为 null",

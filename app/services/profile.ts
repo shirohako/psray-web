@@ -114,10 +114,15 @@ export interface Profile {
    * the showcase is off, or no card exists yet.
    */
   share_card?: { version: string } | null
+  /**
+   * The owner's accounts on other platforms, in their order; `null` when the
+   * showcase is off or empty. Not trophy data: shown on private profiles too.
+   */
+  accounts?: ProfileAccount[] | null
 }
 
 /** A showcase: a profile card its owner can switch off and reorder within its column. */
-export type ShowcaseKey = 'calendar' | 'rarest' | 'featured' | 'games' | 'text_left' | 'favorite_screenshots' | 'tips' | 'social' | 'text_right' | 'screenshots' | 'share_card'
+export type ShowcaseKey = 'calendar' | 'rarest' | 'featured' | 'games' | 'text_left' | 'favorite_screenshots' | 'tips' | 'social' | 'accounts' | 'text_right' | 'screenshots' | 'share_card'
 export type ShowcaseColumn = 'left' | 'right'
 
 /** Showcases to render per column, in order (`GET /profile/:psnid`). */
@@ -139,6 +144,21 @@ export interface ShowcaseGame {
   display_language: string | null
   icon_url: string
   platform: string[]
+}
+
+/** A platform of the "other platforms" showcase (see `~/utils/profileAccounts`). */
+export type AccountPlatform = 'nintendo' | 'steam' | 'xbox' | 'x' | 'instagram' | 'facebook' | 'threads' | 'youtube' | 'bilibili'
+
+/**
+ * An account on another platform. `value` is normalized by the API (a handle
+ * without `@`, a friend code as `SW-1234-5678-9012`, Steam as `id/…` or
+ * `profiles/…`); `url` is its page, `null` for the copy-only friend code and
+ * gamertag.
+ */
+export interface ProfileAccount {
+  platform: AccountPlatform
+  value: string
+  url: string | null
 }
 
 /** A text showcase. `title` may be empty (the page shows a default); `body` is Markdown. */

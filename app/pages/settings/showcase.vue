@@ -4,13 +4,15 @@ import type { UpdateSettingPayload, UserSetting } from '~/services/account'
 import { useAccountApi } from '~/services/account'
 import type { ShowcaseColumn, ShowcaseKey, ShowcaseLayout, ShowcaseText } from '~/services/profile'
 import type { PickedGame, PickedScreenshot, PickedTrophy } from '~/utils/profileShowcase'
+import type { AccountDraft } from '~/utils/profileAccounts'
 import { ApiError } from '~/utils/ApiError'
 
 /**
  * Profile showcases: switch each one on or off and drag it into place within
  * its column (left: above the tabbed main card; right: below stats and
  * account). What the featured, favorite-games and favorite-screenshots
- * showcases hold is picked here, and the two texts are written here. Everything is saved together from
+ * showcases hold is picked here, the two texts are written here and the
+ * other-platform accounts filled in here. Everything is saved together from
  * the unsaved-changes bar, like the profile page.
  */
 const { user } = useAuth()
@@ -29,9 +31,10 @@ interface ShowcaseForm {
   games: PickedGame[]
   screenshots: PickedScreenshot[]
   texts: Texts
+  accounts: AccountDraft[]
 }
 const emptyText = (): ShowcaseText => ({ title: '', body: '' })
-const empty = (): ShowcaseForm => ({ layout: { left: [], right: [] }, featured: [], games: [], screenshots: [], texts: { left: emptyText(), right: emptyText() } })
+const empty = (): ShowcaseForm => ({ layout: { left: [], right: [] }, featured: [], games: [], screenshots: [], texts: { left: emptyText(), right: emptyText() }, accounts: [] })
 const copyTexts = (texts: Texts): Texts => ({ left: { ...texts.left }, right: { ...texts.right } })
 // `saved` is what the account has now; the diff is what save sends.
 const form = reactive<ShowcaseForm>(empty())
@@ -43,6 +46,7 @@ function load(target: ShowcaseForm, s: UserSetting) {
   target.games = [...s.favorite_games]
   target.screenshots = [...(s.favorite_screenshots ?? [])]
   target.texts = copyTexts(s.showcase_texts)
+  target.accounts = toDrafts(s.accounts ?? [])
 }
 watch(setting, (s) => {
   if (!s) return
@@ -56,6 +60,7 @@ const changed = computed(() => ({
   games: !sameGames(form.games, saved.games),
   screenshots: !sameScreenshots(form.screenshots, saved.screenshots),
   texts: !sameTexts(form.texts, saved.texts),
+  accounts: !sameDrafts(form.accounts, saved.accounts),
 }))
 const dirty = computed(() => Object.values(changed.value).some(Boolean))
 const changeTags = computed(() => (Object.keys(changed.value) as (keyof ShowcaseForm)[])
@@ -82,6 +87,11 @@ function setText(column: ShowcaseColumn, text: ShowcaseText) {
   fill(TEXT_KEYS[column], !form.texts[column].body, !text.body)
   form.texts = { ...form.texts, [column]: text }
 }
+function setAccounts(drafts: AccountDraft[]) {
+  const filled = (list: AccountDraft[]) => list.some(d => d.input.trim())
+  fill('accounts', !filled(form.accounts), !filled(drafts))
+  form.accounts = drafts
+}
 
 function discard() {
   form.layout = cloneLayout(saved.layout)
@@ -89,6 +99,8 @@ function discard() {
   form.games = [...saved.games]
   form.screenshots = [...saved.screenshots]
   form.texts = copyTexts(saved.texts)
+  form.accounts = [...saved.accounts]
+  accountErrors.value = false
 }
 
 // ── Sorting, one list per column ────────────────────────────────────────────
@@ -138,9 +150,16 @@ function describe(key: ShowcaseKey) {
 
 // ── Save ────────────────────────────────────────────────────────────────────
 const saving = ref(false)
+/** Set when a save was refused for accounts that can't be saved, so every such row shows why. */
+const accountErrors = ref(false)
 
 async function save() {
   if (saving.value || !dirty.value) return
+  if (changed.value.accounts && form.accounts.some(isInvalidDraft)) {
+    accountErrors.value = true
+    toast.error({ title: t('settings.showcase.saveFailed'), description: t('settings.showcase.accounts.invalid') })
+    return
+  }
   saving.value = true
   try {
     const payload: UpdateSettingPayload = {}
@@ -149,8 +168,10 @@ async function save() {
     if (changed.value.games) payload.favorite_games = form.games.map(g => g.id)
     if (changed.value.screenshots) payload.favorite_screenshots = form.screenshots.map(shot => shot.id)
     if (changed.value.texts) payload.showcase_texts = copyTexts(form.texts)
+    if (changed.value.accounts) payload.accounts = accountsPayload(form.accounts)
     await accountApi.updateSetting(payload)
     await refreshSetting()
+    accountErrors.value = false
     toast.success({ title: t('settings.showcase.saved') })
   }
   catch (error) {
@@ -406,6 +427,20 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload)
                     <LucideIcon :icon="Pencil" class="size-3.5" />
                     {{ $t('settings.showcase.text.edit') }}
                   </button>
+                </div>
+
+                <!-- Other platforms: the accounts, edited inline -->
+                <div
+                  v-else-if="entry.key === 'accounts'"
+                  class="mx-3 mb-3 rounded-lg bg-slate-50 p-2.5 ring-1 ring-inset ring-slate-100 transition-opacity sm:ml-12"
+                  :class="{ 'opacity-60': !entry.on }"
+                >
+                  <SettingsAccountsEditor
+                    :model-value="form.accounts"
+                    :disabled="saving"
+                    :show-errors="accountErrors"
+                    @update:model-value="setAccounts"
+                  />
                 </div>
               </li>
             </TransitionGroup>

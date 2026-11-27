@@ -104,7 +104,7 @@ describe('profile showcases', () => {
   })
 
   it('has settings labels for every showcase key', () => {
-    const keys = ['calendar', 'rarest', 'featured', 'games', 'text_left', 'favorite_screenshots', 'tips', 'social', 'text_right', 'screenshots', 'share_card'] as const
+    const keys = ['calendar', 'rarest', 'featured', 'games', 'text_left', 'favorite_screenshots', 'tips', 'social', 'accounts', 'text_right', 'screenshots', 'share_card'] as const
     expect(Object.keys(SHOWCASE_META).sort()).toEqual([...keys].sort())
   })
 

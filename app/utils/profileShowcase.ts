@@ -1,4 +1,4 @@
-import { Award, CalendarDays, FileText, Gem, GalleryHorizontal, Heart, Image, Images, MessageSquare, Users, type IconNode } from 'lucide'
+import { Award, CalendarDays, FileText, Gamepad2, Gem, GalleryHorizontal, Heart, Image, Images, MessageSquare, Users, type IconNode } from 'lucide'
 import type { Profile, ProfileShowcases, ShowcaseColumn, ShowcaseGame, ShowcaseKey, ShowcaseLayout, ShowcaseText, ShowcaseTrophy } from '~/services/profile'
 import type { Screenshot } from '~/services/screenshots'
 import type { TrophyType } from '~/services/trophies'
@@ -36,6 +36,7 @@ export const SHOWCASE_META: Record<ShowcaseKey, { icon: IconNode, labelKey: stri
   text_right: { icon: FileText, labelKey: 'settings.showcase.items.text_right.name', descKey: 'settings.showcase.items.text_right.desc' },
   tips: { icon: MessageSquare, labelKey: 'settings.showcase.items.tips.name', descKey: 'settings.showcase.items.tips.desc' },
   social: { icon: Users, labelKey: 'settings.showcase.items.social.name', descKey: 'settings.showcase.items.social.desc' },
+  accounts: { icon: Gamepad2, labelKey: 'settings.showcase.items.accounts.name', descKey: 'settings.showcase.items.accounts.desc' },
   favorite_screenshots: { icon: GalleryHorizontal, labelKey: 'settings.showcase.items.favorite_screenshots.name', descKey: 'settings.showcase.items.favorite_screenshots.desc' },
   screenshots: { icon: Images, labelKey: 'settings.showcase.items.screenshots.name', descKey: 'settings.showcase.items.screenshots.desc' },
   share_card: { icon: Image, labelKey: 'settings.showcase.items.share_card.name', descKey: 'settings.showcase.items.share_card.desc' },

@@ -656,6 +656,12 @@
       "shareCard": {
         "title": "個人資料卡片",
         "enlarge": "放大檢視個人資料卡片"
+      },
+      "accounts": {
+        "title": "其他平台",
+        "social": "社群媒體",
+        "copy": "複製 {name}：{value}",
+        "copied": "已複製"
       }
     },
     "tips": {
@@ -878,6 +884,10 @@
         "share_card": {
           "name": "個人資料卡片",
           "desc": "自動顯示你的個人資料分享圖片，可一鍵複製連結"
+        },
+        "accounts": {
+          "name": "其他平台",
+          "desc": "任天堂、Steam、Xbox 帳號和社群媒體連結"
         }
       },
       "unsaved": {
@@ -885,7 +895,8 @@
         "featured": "精選獎盃",
         "games": "喜歡的遊戲",
         "texts": "文字",
-        "screenshots": "喜歡的截圖"
+        "screenshots": "喜歡的截圖",
+        "accounts": "其他平台"
       },
       "tray": {
         "hint": "拖曳調整順序，點 × 移除",
@@ -936,6 +947,28 @@
       "screenshots": {
         "note": "上傳截圖、切換公開或私密在截圖頁面進行。",
         "manage": "前往截圖"
+      },
+      "accounts": {
+        "add": "新增帳號",
+        "hint": "拖曳調整順序，可以直接貼上個人頁面連結",
+        "empty": "填好第一個帳號後會自動開啟這個展示櫃。",
+        "invalid": "有帳號的格式不對，請檢查標紅的欄位。",
+        "fields": {
+          "friendCode": "好友編號",
+          "profileLink": "個人檔案連結",
+          "gamertag": "玩家代號",
+          "username": "使用者名稱",
+          "channel": "頻道名稱",
+          "uid": "UID"
+        },
+        "errors": {
+          "friendCode": "好友編號是 12 位數字",
+          "profileLink": "請填寫 Steam 個人檔案連結，例如 steamcommunity.com/id/…",
+          "gamertag": "玩家代號只能包含文字、數字和空格",
+          "username": "使用者名稱格式不對，也可以直接貼上個人頁面連結",
+          "channel": "請填寫頻道的 {'@'} 名稱，或貼上 youtube.com/{'@'}… 連結",
+          "uid": "UID 是一串數字，也可以直接貼上空間連結"
+        }
       }
     },
     "security": {
@@ -1902,6 +1935,7 @@
       "featuredTrophies": "主人挑選的獎盃（最多 12 個，依其順序）；資料未公開或展示櫃關閉時為 null",
       "favoriteGames": "主人挑選的玩過的遊戲（獎盃組，最多 6 個，依其順序）；資料未公開或展示櫃關閉時為 null",
       "texts": "左右兩欄的文字，各含 title 和 body（Markdown）；展示櫃關閉或內文為空時為 null，資料未公開時照常回傳",
+      "accounts": "主人在其他平台的帳號（按其順序），每項包含 platform、value 和 url（好友編號、玩家代號沒有連結，為 null）；展示櫃關閉或沒填時為 null，資料未公開時照常回傳",
       "gameId": "遊戲 ID",
       "cover": "封面圖，包含網址、尺寸和主色；可能為 null",
       "releaseDate": "首發日期；未定檔時為 null",
