@@ -652,6 +652,10 @@
       },
       "favoriteScreenshots": {
         "title": "喜欢的截图"
+      },
+      "shareCard": {
+        "title": "个人资料卡片",
+        "enlarge": "放大查看个人资料卡片"
       }
     },
     "tips": {
@@ -870,6 +874,10 @@
         "screenshots": {
           "name": "截图",
           "desc": "自动显示最新公开的 6 张截图"
+        },
+        "share_card": {
+          "name": "个人资料卡片",
+          "desc": "自动显示你的个人资料分享图片，可一键复制链接"
         }
       },
       "unsaved": {

@@ -652,6 +652,10 @@
       },
       "favoriteScreenshots": {
         "title": "喜歡的截圖"
+      },
+      "shareCard": {
+        "title": "個人資料卡片",
+        "enlarge": "放大檢視個人資料卡片"
       }
     },
     "tips": {
@@ -870,6 +874,10 @@
         "screenshots": {
           "name": "截圖",
           "desc": "自動顯示最新公開的 6 張截圖"
+        },
+        "share_card": {
+          "name": "個人資料卡片",
+          "desc": "自動顯示你的個人資料分享圖片，可一鍵複製連結"
         }
       },
       "unsaved": {

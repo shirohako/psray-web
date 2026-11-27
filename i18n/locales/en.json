@@ -652,6 +652,10 @@
       },
       "favoriteScreenshots": {
         "title": "Favorite screenshots"
+      },
+      "shareCard": {
+        "title": "Profile card",
+        "enlarge": "Enlarge the profile card"
       }
     },
     "tips": {
@@ -870,6 +874,10 @@
         "screenshots": {
           "name": "Screenshots",
           "desc": "Your 6 newest public screenshots, automatically"
+        },
+        "share_card": {
+          "name": "Profile card",
+          "desc": "Your profile share image, with one-click link copy"
         }
       },
       "unsaved": {

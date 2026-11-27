@@ -123,7 +123,7 @@ const route = useRoute()
 const router = useRouter()
 const { t, locale } = useI18n()
 const id = computed(() => String(route.params.id))
-const cardBase = useRuntimeConfig().public.cardBase.replace(/\/+$/, '')
+const cardBase = useRuntimeConfig().public.cardBase
 
 // Optional viewer progress is driven entirely by the `?psnid=` query param.
 // The player may have no record for this title — the API decides via
@@ -350,7 +350,7 @@ const seo = useSeo({
   description: () => seoDescription.value,
   // The set icon is a 512×512 square; the generated card is already 2:1, so no
   // platform has to crop the cover art to make it fit.
-  image: () => (data.value ? `${cardBase}/card/trophies/${id.value}.png?v=3` : undefined),
+  image: () => (data.value ? `${shareCardUrl(cardBase, 'trophies', id.value)}?v=${SHARE_CARD_VERSION.trophies}` : undefined),
   imageAlt: () => (data.value ? t('card.alt', { name: seoName.value }) : undefined),
   // Dimensions of the backend-generated card.
   imageWidth: 1200,

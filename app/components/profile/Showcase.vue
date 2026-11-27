@@ -46,4 +46,9 @@ defineProps<{ showcase: ShowcaseKey; profile: Profile; psnid: string }>()
     :screenshots="profile.screenshots.items"
     :total="profile.screenshots.total"
   />
+  <ProfileShowcaseShareCard
+    v-else-if="showcase === 'share_card' && profile.share_card"
+    :psnid="profile.psnid"
+    :version="profile.share_card.version"
+  />
 </template>

@@ -107,10 +107,17 @@ export interface Profile {
   favorite_screenshots?: Screenshot[] | null
   /** The newest public screenshots (up to 6) and how many there are; `null` when the showcase is off. Shown on private profiles too. */
   screenshots?: { items: Screenshot[], total: number } | null
+  /**
+   * The owner's share card, once one has been drawn: `version` is when the card
+   * file was last written (seconds), for the image URL's cache-busting query —
+   * it changes on every redraw, style-only ones included. `null` when private,
+   * the showcase is off, or no card exists yet.
+   */
+  share_card?: { version: string } | null
 }
 
 /** A showcase: a profile card its owner can switch off and reorder within its column. */
-export type ShowcaseKey = 'calendar' | 'rarest' | 'featured' | 'games' | 'text_left' | 'favorite_screenshots' | 'tips' | 'social' | 'text_right' | 'screenshots'
+export type ShowcaseKey = 'calendar' | 'rarest' | 'featured' | 'games' | 'text_left' | 'favorite_screenshots' | 'tips' | 'social' | 'text_right' | 'screenshots' | 'share_card'
 export type ShowcaseColumn = 'left' | 'right'
 
 /** Showcases to render per column, in order (`GET /profile/:psnid`). */

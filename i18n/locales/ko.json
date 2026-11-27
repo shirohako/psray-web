@@ -652,6 +652,10 @@
       },
       "favoriteScreenshots": {
         "title": "즐겨찾는 스크린샷"
+      },
+      "shareCard": {
+        "title": "프로필 카드",
+        "enlarge": "프로필 카드 크게 보기"
       }
     },
     "tips": {
@@ -870,6 +874,10 @@
         "screenshots": {
           "name": "스크린샷",
           "desc": "최근 공개한 스크린샷 6장을 자동으로 표시"
+        },
+        "share_card": {
+          "name": "프로필 카드",
+          "desc": "프로필 공유 이미지를 자동으로 표시하고 링크를 바로 복사"
         }
       },
       "unsaved": {

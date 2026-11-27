@@ -59,7 +59,7 @@ const route = useRoute()
 const { t, locale } = useI18n()
 const psnid = computed(() => String(route.params.psnid))
 const auth = useAuth()
-const cardBase = useRuntimeConfig().public.cardBase.replace(/\/+$/, '')
+const cardBase = useRuntimeConfig().public.cardBase
 // Server-only: both write to the response of the page render.
 const requestEvent = import.meta.server ? useRequestEvent() : undefined
 const cacheControl = import.meta.server ? useResponseHeader('cache-control') : undefined
@@ -223,7 +223,7 @@ const seo = useSeo({
   // every platform then stretches or shrinks to fit its 2:1 preview slot.
   // Private profiles advertise nothing and fall back to the brand card.
   image: () => (profile.value?.is_profile_public
-    ? `${cardBase}/card/profile/${encodeURIComponent(profile.value.psnid.toLowerCase())}.png?v=4`
+    ? `${shareCardUrl(cardBase, 'profile', profile.value.psnid.toLowerCase())}?v=${SHARE_CARD_VERSION.profile}`
     : undefined),
   imageAlt: () => (profile.value?.is_profile_public ? t('card.alt', { name: profile.value.psnid }) : undefined),
   // Dimensions of the backend-generated card.
