@@ -1615,7 +1615,8 @@
       "contact": "運営・お問い合わせ",
       "docs": "ドキュメント",
       "faq": "よくある質問",
-      "openSource": "オープンソース"
+      "openSource": "オープンソース",
+      "community": "公式コミュニティ"
     },
     "intro": {
       "title": "PSRay について",
@@ -1739,6 +1740,34 @@
     "openSource": {
       "title": "オープンソースへの感謝",
       "lead": "PSRay は、以下のオープンソースプロジェクトに支えられています。"
+    },
+    "community": {
+      "title": "公式コミュニティ",
+      "lead": "公式チャンネルやグループに参加すると、更新のお知らせをいち早く受け取れるほか、ほかのプレイヤーとも交流できます。",
+      "kinds": {
+        "news": "お知らせ",
+        "chat": "交流"
+      },
+      "join": "参加",
+      "copyNumber": "グループ番号をコピー",
+      "qqNumber": "グループ番号 {number}",
+      "qqNumberLabel": "QQ グループ番号",
+      "telegramChannel": {
+        "title": "Telegram チャンネル",
+        "body": "更新とメンテナンスのお知らせ"
+      },
+      "telegramGroup": {
+        "title": "Telegram グループ",
+        "body": "プレイヤー同士の交流、不具合の報告"
+      },
+      "discord": {
+        "title": "Discord",
+        "body": "プレイヤー同士の交流、不具合の報告"
+      },
+      "qq": {
+        "title": "QQ グループ",
+        "body": "プレイヤー同士の交流、不具合の報告"
+      }
     }
   },
   "staticPage": {

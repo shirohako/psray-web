@@ -1615,7 +1615,8 @@
       "contact": "运营与联系",
       "docs": "文档",
       "faq": "常见问题",
-      "openSource": "开源项目"
+      "openSource": "开源项目",
+      "community": "官方社群"
     },
     "intro": {
       "title": "关于 PSRay",
@@ -1739,6 +1740,34 @@
     "openSource": {
       "title": "感谢开源",
       "lead": "PSRay 的运行离不开以下开源项目。"
+    },
+    "community": {
+      "title": "官方社群",
+      "lead": "加入官方频道和讨论群，第一时间收到更新通知，也可以和其他玩家交流。",
+      "kinds": {
+        "news": "公告",
+        "chat": "讨论"
+      },
+      "join": "加入",
+      "copyNumber": "复制群号",
+      "qqNumber": "群号 {number}",
+      "qqNumberLabel": "QQ 群号",
+      "telegramChannel": {
+        "title": "Telegram 频道",
+        "body": "更新公告和维护通知"
+      },
+      "telegramGroup": {
+        "title": "Telegram 群组",
+        "body": "玩家交流、问题反馈"
+      },
+      "discord": {
+        "title": "Discord",
+        "body": "玩家交流、问题反馈"
+      },
+      "qq": {
+        "title": "QQ 群",
+        "body": "玩家交流、问题反馈"
+      }
     }
   },
   "staticPage": {

@@ -1615,7 +1615,8 @@
       "contact": "운영·문의",
       "docs": "문서",
       "faq": "자주 묻는 질문",
-      "openSource": "오픈소스"
+      "openSource": "오픈소스",
+      "community": "공식 커뮤니티"
     },
     "intro": {
       "title": "PSRay 소개",
@@ -1739,6 +1740,34 @@
     "openSource": {
       "title": "오픈소스에 대한 감사",
       "lead": "PSRay는 다음 오픈소스 프로젝트의 도움을 받고 있습니다."
+    },
+    "community": {
+      "title": "공식 커뮤니티",
+      "lead": "공식 채널과 그룹에 참여하면 업데이트 소식을 가장 먼저 받고 다른 플레이어와 이야기할 수 있습니다.",
+      "kinds": {
+        "news": "공지",
+        "chat": "대화"
+      },
+      "join": "참여",
+      "copyNumber": "그룹 번호 복사",
+      "qqNumber": "그룹 번호 {number}",
+      "qqNumberLabel": "QQ 그룹 번호",
+      "telegramChannel": {
+        "title": "Telegram 채널",
+        "body": "업데이트와 점검 공지"
+      },
+      "telegramGroup": {
+        "title": "Telegram 그룹",
+        "body": "플레이어 교류, 문제 제보"
+      },
+      "discord": {
+        "title": "Discord",
+        "body": "플레이어 교류, 문제 제보"
+      },
+      "qq": {
+        "title": "QQ 그룹",
+        "body": "플레이어 교류, 문제 제보"
+      }
     }
   },
   "staticPage": {

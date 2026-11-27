@@ -1615,7 +1615,8 @@
       "contact": "Operator & contact",
       "docs": "Documentation",
       "faq": "FAQ",
-      "openSource": "Open source"
+      "openSource": "Open source",
+      "community": "Community"
     },
     "intro": {
       "title": "About PSRay",
@@ -1739,6 +1740,34 @@
     "openSource": {
       "title": "Thanks to open source",
       "lead": "PSRay is made possible by the following open source projects."
+    },
+    "community": {
+      "title": "Official community",
+      "lead": "Join the official channel and groups to hear about updates first and talk with other players.",
+      "kinds": {
+        "news": "News",
+        "chat": "Chat"
+      },
+      "join": "Join",
+      "copyNumber": "Copy group number",
+      "qqNumber": "Group {number}",
+      "qqNumberLabel": "QQ group number",
+      "telegramChannel": {
+        "title": "Telegram channel",
+        "body": "Update and maintenance announcements"
+      },
+      "telegramGroup": {
+        "title": "Telegram group",
+        "body": "Chat with players, report problems"
+      },
+      "discord": {
+        "title": "Discord",
+        "body": "Chat with players, report problems"
+      },
+      "qq": {
+        "title": "QQ group",
+        "body": "Chat with players, report problems"
+      }
     }
   },
   "staticPage": {

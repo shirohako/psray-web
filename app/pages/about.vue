@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import {
+  ArrowUpRight,
   BookOpen,
   Bug,
   CircleHelp,
   Code2,
+  Copy,
   Database,
   ExternalLink,
   FileText,
   FilePenLine,
   Languages,
   Mail,
+  Megaphone,
+  MessagesSquare,
   RefreshCw,
   ShieldCheck,
   UserRoundCog,
@@ -17,7 +21,7 @@ import {
 
 const { t, locale } = useI18n()
 
-const updatedAt = '2026-08-12'
+const updatedAt = '2026-11-27'
 
 const toc = computed(() => [
   { id: 'about', labelKey: 'about.toc.about' },
@@ -25,6 +29,7 @@ const toc = computed(() => [
   { id: 'data', labelKey: 'about.toc.data' },
   { id: 'removal', labelKey: 'about.toc.removal' },
   { id: 'contact', labelKey: 'about.toc.contact' },
+  { id: 'community', labelKey: 'about.toc.community' },
   { id: 'docs', labelKey: 'about.toc.docs' },
   { id: 'faq', labelKey: 'about.toc.faq' },
   { id: 'open-source', labelKey: 'about.toc.openSource' },
@@ -41,6 +46,34 @@ const faqs = [
   { questionKey: 'about.faq.items.tips.question', answerKey: 'about.faq.items.tips.answer' },
   { questionKey: 'about.faq.items.api.question', answerKey: 'about.faq.items.api.answer' },
 ]
+
+/** Brand colours of the community rows: a light tint behind the glyph and the join button, a shade dark enough to read on it. */
+const BRANDS = {
+  telegram: { glyph: '#26A5E4', tint: 'rgb(38 165 228 / 0.10)', tintHover: 'rgb(38 165 228 / 0.18)', ink: '#0874AE' },
+  discord: { glyph: '#5865F2', tint: 'rgb(88 101 242 / 0.10)', tintHover: 'rgb(88 101 242 / 0.18)', ink: '#4752C4' },
+  qq: { glyph: '#1EBAFC', tint: 'rgb(30 186 252 / 0.12)', tintHover: 'rgb(30 186 252 / 0.20)', ink: '#0779B8' },
+}
+
+/** Brand glyphs from simple-icons 16.38.1 (CC0-1.0), 24×24 viewBox. */
+const GLYPHS = {
+  telegram: 'M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z',
+  discord: 'M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z',
+  qq: 'M21.395 15.035a40 40 0 0 0-.803-2.264l-1.079-2.695c.001-.032.014-.562.014-.836C19.526 4.632 17.351 0 12 0S4.474 4.632 4.474 9.241c0 .274.013.804.014.836l-1.08 2.695a39 39 0 0 0-.802 2.264c-1.021 3.283-.69 4.643-.438 4.673.54.065 2.103-2.472 2.103-2.472 0 1.469.756 3.387 2.394 4.771-.612.188-1.363.479-1.845.835-.434.32-.379.646-.301.778.343.578 5.883.369 7.482.189 1.6.18 7.14.389 7.483-.189.078-.132.132-.458-.301-.778-.483-.356-1.233-.646-1.846-.836 1.637-1.384 2.393-3.302 2.393-4.771 0 0 1.563 2.537 2.103 2.472.251-.03.581-1.39-.438-4.673',
+}
+
+/**
+ * Official community: the Telegram channel carries announcements, the three
+ * groups are for chat. The QQ group can also be joined by number.
+ */
+const QQ_GROUP = '664366349'
+const community = [
+  { key: 'telegramChannel', brand: 'telegram', kind: 'news', url: 'https://t.me/psraynet', handle: 't.me/psraynet' },
+  { key: 'telegramGroup', brand: 'telegram', kind: 'chat', url: 'https://t.me/psraychat', handle: 't.me/psraychat' },
+  { key: 'discord', brand: 'discord', kind: 'chat', url: 'https://discord.gg/cwaPGv5Wb', handle: 'discord.gg/cwaPGv5Wb' },
+  { key: 'qq', brand: 'qq', kind: 'chat', url: 'https://qm.qq.com/q/IKzFhh5i8Y', handle: null },
+] as const
+
+const copyText = useCopyText()
 
 // /terms and /privacy exist in Japanese only; say so before the click.
 const policiesJapaneseOnly = computed(() => locale.value !== 'ja')
@@ -207,6 +240,64 @@ useSeo({
           <p class="mt-2 text-sm leading-7 text-slate-600">{{ t('about.contact.bugs.body') }}</p>
         </article>
       </div>
+    </section>
+
+    <section id="community" class="scroll-mt-24 space-y-4">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.15em] text-sky-700">Community</p>
+        <h2 class="mt-1 text-xl font-bold tracking-tight text-slate-950">{{ t('about.community.title') }}</h2>
+        <p class="mt-2 text-sm leading-7 text-slate-500">{{ t('about.community.lead') }}</p>
+      </div>
+      <ul class="divide-y divide-slate-100 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <li
+          v-for="item in community"
+          :key="item.key"
+          class="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 px-4 py-3.5 sm:px-5 md:grid-cols-[auto_minmax(0,1fr)_auto_auto] md:gap-x-4"
+          :style="{ '--tint': BRANDS[item.brand].tint, '--tint-hover': BRANDS[item.brand].tintHover, '--ink': BRANDS[item.brand].ink }"
+        >
+          <span class="row-span-2 grid size-10 place-items-center self-center rounded-xl bg-(--tint) md:row-span-1">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="size-5" :fill="BRANDS[item.brand].glyph"><path :d="GLYPHS[item.brand]" /></svg>
+          </span>
+          <div class="min-w-0">
+            <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+              <h3 class="text-sm font-bold text-slate-900">{{ t(`about.community.${item.key}.title`) }}</h3>
+              <span
+                class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                :class="item.kind === 'news' ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-500'"
+              >
+                <LucideIcon :icon="item.kind === 'news' ? Megaphone : MessagesSquare" class="size-3" />
+                {{ t(`about.community.kinds.${item.kind}`) }}
+              </span>
+            </div>
+            <p class="mt-0.5 text-xs leading-5 text-slate-500">{{ t(`about.community.${item.key}.body`) }}</p>
+          </div>
+          <!-- Under the text on phones, beside the buttons from md up. -->
+          <span class="col-start-2 row-start-2 truncate text-xs leading-5 text-slate-400 md:col-start-3 md:row-start-1">
+            {{ item.handle ?? t('about.community.qqNumber', { number: QQ_GROUP }) }}
+          </span>
+          <div class="col-start-3 row-span-2 row-start-1 flex items-center gap-2 md:col-start-4 md:row-span-1">
+            <button
+              v-if="item.brand === 'qq'"
+              type="button"
+              class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-[13px] font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 sm:px-3"
+              :aria-label="t('about.community.copyNumber')"
+              @click="copyText(QQ_GROUP, t('about.community.qqNumberLabel'))"
+            >
+              <LucideIcon :icon="Copy" class="size-3.5 text-slate-500" />
+              <span class="hidden sm:inline">{{ t('about.community.copyNumber') }}</span>
+            </button>
+            <a
+              :href="item.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="group inline-flex h-8 items-center gap-1.5 rounded-lg bg-(--tint) px-3 text-[13px] font-semibold text-(--ink) transition hover:bg-(--tint-hover)"
+            >
+              <LucideIcon :icon="ArrowUpRight" class="size-3.5 transition group-hover:-translate-y-px group-hover:translate-x-px motion-reduce:transform-none" />
+              {{ t('about.community.join') }}
+            </a>
+          </div>
+        </li>
+      </ul>
     </section>
 
     <section id="docs" class="scroll-mt-24 space-y-4">
