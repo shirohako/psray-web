@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Profile } from '~/services/profile'
-import { earnedTiers, formatHourInterval, levelTier, platformLabel, profilePageJsonLd, resolveHourInterval, stopwatch, toIsoDate } from '~/utils/profile'
+import { AUTO_SYNC_TIERS, earnedTiers, formatHourInterval, levelTier, platformLabel, profilePageJsonLd, resolveHourInterval, stopwatch, toIsoDate } from '~/utils/profile'
 
 const compact = (value: string | null) => value?.replace(/\s/g, '')
 
@@ -30,6 +30,13 @@ describe('profile formatting', () => {
     expect(resolveHourInterval(168)).toEqual({ amount: 1, unit: 'week' })
     expect(resolveHourInterval(336)).toEqual({ amount: 2, unit: 'week' })
     expect(resolveHourInterval(8760)).toEqual({ amount: 1, unit: 'year' })
+  })
+
+  it('schedules auto-sync at the upper bound of each inactivity tier, at most yearly', () => {
+    const days = AUTO_SYNC_TIERS.map(tier => tier.upTo.unit === 'day' ? tier.upTo.amount : tier.upTo.amount * 365)
+    expect(days).toEqual([...days].sort((a, b) => a - b))
+    for (const tier of AUTO_SYNC_TIERS.slice(0, -1)) expect(tier.everyHours).toBe(tier.upTo.amount * 24)
+    expect(AUTO_SYNC_TIERS.at(-1)).toEqual({ upTo: { amount: 5, unit: 'year' }, everyHours: 8760 })
   })
 
   it('turns API timestamps into zoned ISO strings for <LocalTime>', () => {

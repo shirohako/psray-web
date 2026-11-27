@@ -570,6 +570,15 @@
         "week": { "one": "1 week", "other": "{count} weeks" },
         "year": { "one": "1 year", "other": "{count} years" }
       },
+      "syncHint": {
+        "label": "How the auto-sync interval is set",
+        "intro": "After each update, the time since the last trophy decides how long until the next auto-sync.",
+        "since": "Since last trophy",
+        "every": "Interval",
+        "within": "Within {time}",
+        "over": "{time} or more",
+        "note": "Next sync = last updated + interval. A manual update recalculates it; when syncs are busy it may run a little late."
+      },
       "never": "Never"
     },
     "calendar": {

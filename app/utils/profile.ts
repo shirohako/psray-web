@@ -73,6 +73,23 @@ export function resolveHourInterval(
   return { amount, unit }
 }
 
+/**
+ * How auto-sync is scheduled, mirroring psray-api `User::syncIntervalFor`
+ * (change them together). After each sync, the time since the player's last
+ * trophy picks the tier: below `upTo`, the next sync is `everyHours` after
+ * this one. From the last `upTo` (5 years) on, auto-sync stops.
+ */
+export const AUTO_SYNC_TIERS = [
+  { upTo: { amount: 1, unit: 'day' }, everyHours: 24 },
+  { upTo: { amount: 3, unit: 'day' }, everyHours: 72 },
+  { upTo: { amount: 7, unit: 'day' }, everyHours: 168 },
+  { upTo: { amount: 15, unit: 'day' }, everyHours: 360 },
+  { upTo: { amount: 30, unit: 'day' }, everyHours: 720 },
+  { upTo: { amount: 60, unit: 'day' }, everyHours: 1440 },
+  { upTo: { amount: 180, unit: 'day' }, everyHours: 4320 },
+  { upTo: { amount: 5, unit: 'year' }, everyHours: 8760 },
+] as const satisfies readonly { upTo: HourInterval, everyHours: number }[]
+
 export function formatHourInterval(
   value: number | null | undefined,
   locale = currentLocale(),
