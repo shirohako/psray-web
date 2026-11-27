@@ -21,11 +21,13 @@ const open = ref(false)
 const loaded = ref(false)
 const failed = ref(false)
 const attempt = ref(0)
+/** Per-kind cache-busting version; keep each in step with that page's `og:image` URL. */
+const CARD_VERSION = { profile: 4, trophies: 3 } as const
 // `cardUrl` is what we show, copy and open: clean, no cache-busting noise.
 // `imageUrl` is what the <img> actually requests — the `v=` bump matches the
 // `og:image` URLs, and `preview=` forces a fresh fetch when a retry is asked for.
 const cardUrl = computed(() => `${config.public.cardBase.replace(/\/+$/, '')}/card/${props.kind}/${encodeURIComponent(String(props.slug))}.png`)
-const imageUrl = computed(() => `${cardUrl.value}?v=3${attempt.value ? `&preview=${attempt.value}` : ''}`)
+const imageUrl = computed(() => `${cardUrl.value}?v=${CARD_VERSION[props.kind]}${attempt.value ? `&preview=${attempt.value}` : ''}`)
 
 async function copyLink() {
   try {

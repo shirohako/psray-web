@@ -223,7 +223,7 @@ const seo = useSeo({
   // every platform then stretches or shrinks to fit its 2:1 preview slot.
   // Private profiles advertise nothing and fall back to the brand card.
   image: () => (profile.value?.is_profile_public
-    ? `${cardBase}/card/profile/${encodeURIComponent(profile.value.psnid.toLowerCase())}.png?v=3`
+    ? `${cardBase}/card/profile/${encodeURIComponent(profile.value.psnid.toLowerCase())}.png?v=4`
     : undefined),
   imageAlt: () => (profile.value?.is_profile_public ? t('card.alt', { name: profile.value.psnid }) : undefined),
   // Dimensions of the backend-generated card.
