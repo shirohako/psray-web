@@ -84,7 +84,10 @@ function openRouteTip(value: unknown) {
   if (trophy) open('tips', trophy)
 }
 
+// Opened from a tip elsewhere (`navState('openTips')`), or a `?tips=` link (the
+// admin tip panel's new tab, older links): open that trophy's tips.
 watch(() => route.query.tips, openRouteTip, { immediate: true })
+onMounted(() => openRouteTip(readNavState('openTips')))
 
 defineExpose({ open })
 </script>

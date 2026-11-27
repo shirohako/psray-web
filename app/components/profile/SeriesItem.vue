@@ -4,21 +4,26 @@ import type { ProfileSeriesItem } from '~/services/series'
 
 /**
  * One series on a profile's series tab: its stage icons and name, the
- * player's stage track and standing. Opens the series with this player's
- * progress.
+ * player's stage track and standing. The `href` is the public series page;
+ * a plain click opens it with this player's progress (`?psnid=`, a personal
+ * view kept out of the index), as trophy links on a profile do.
  */
 const props = defineProps<{ series: ProfileSeriesItem; psnid: string }>()
 
 const { t } = useI18n()
 const { href } = useLangLink()
+function openWithProgress(event: MouseEvent) {
+  interceptClick(event, () => navigateTo(localizeTo({ path: `/series/${props.series.id}`, query: { psnid: props.psnid } })))
+}
 const track = computed(() => props.series.progress.stages.map(state => ({ state })))
 const summary = computed(() => t('series.viewer.done', { done: props.series.progress.done, total: props.series.progress.total }))
 </script>
 
 <template>
   <a
-    :href="href({ path: `/series/${series.id}`, query: { psnid } })"
+    :href="href(`/series/${series.id}`)"
     class="group flex flex-col gap-3 px-4 py-3.5 transition-colors hover:bg-slate-50 sm:flex-row sm:items-center sm:gap-4"
+    @click="openWithProgress"
   >
     <div class="flex min-w-0 flex-1 items-center gap-3.5">
       <SeriesCoverStack :covers="series.covers" size="sm" />

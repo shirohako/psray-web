@@ -78,7 +78,7 @@ function goToProfile() {
 function goToSync() {
   const id = psnid.value.trim()
   if (!id) return
-  navigateTo(localizeTo(`/sync?psnid=${encodeURIComponent(id)}`))
+  navigateTo(localizeTo({ path: '/sync', state: navState('syncPsnid', id) }))
 }
 
 useSeo({

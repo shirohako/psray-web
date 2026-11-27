@@ -18,7 +18,7 @@ const profilePath = computed(() => user.value?.psnid ? `/p/${encodeURIComponent(
 type UserMenuGroup = {
   /** Message key of the group heading. */
   labelKey: string
-  items: { labelKey: string; to: string | { path: string; query: Record<string, string | undefined> }; icon: IconNode }[]
+  items: { labelKey: string; to: string; state?: Record<string, string>; icon: IconNode }[]
 }
 
 // The menu, by group. Add an entry here for a new page; add a group when
@@ -36,7 +36,7 @@ const groups = computed<UserMenuGroup[]>(() => [
   {
     labelKey: 'nav.user.groups.account',
     items: [
-      { labelKey: 'nav.user.sync', to: { path: '/sync', query: { psnid: user.value?.psnid } }, icon: RefreshCw },
+      { labelKey: 'nav.user.sync', to: '/sync', state: user.value?.psnid ? navState('syncPsnid', user.value.psnid) : undefined, icon: RefreshCw },
       { labelKey: 'nav.user.settings', to: '/settings', icon: Settings },
     ],
   },
@@ -46,8 +46,8 @@ const groups = computed<UserMenuGroup[]>(() => [
 ])
 
 /** Whether a menu entry points at the page being shown. */
-function isCurrentPage(to: string | { path: string }) {
-  return route.path === (typeof to === 'string' ? to : to.path)
+function isCurrentPage(to: string) {
+  return route.path === to
 }
 
 async function onLogout() {
@@ -99,6 +99,7 @@ async function onLogout() {
             v-for="item in group.items"
             :key="item.labelKey"
             :to="item.to"
+            :state="item.state"
             class="flex items-center gap-2.5 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
             @click="close"
           >
@@ -140,6 +141,7 @@ async function onLogout() {
               v-for="item in group.items"
               :key="item.labelKey"
               :to="item.to"
+              :state="item.state"
               class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition active:bg-slate-100"
               :class="isCurrentPage(item.to) ? 'bg-slate-50 text-slate-900' : 'text-slate-700 hover:bg-slate-50'"
               :aria-current="isCurrentPage(item.to) ? 'page' : undefined"

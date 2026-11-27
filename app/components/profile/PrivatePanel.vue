@@ -64,7 +64,8 @@ const PREVIEW = [
 
       <div class="mt-5 flex justify-center">
         <AppLink
-          :to="{ path: '/sync', query: { psnid } }"
+          to="/sync"
+          :state="navState('syncPsnid', psnid)"
           class="inline-flex h-10 items-center gap-2 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white shadow-sm shadow-slate-900/20 transition hover:bg-slate-700 active:scale-[0.98]"
         >
           <LucideIcon :icon="RefreshCw" class="size-4" />

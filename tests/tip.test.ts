@@ -38,15 +38,18 @@ See **this** [guide](/docs/markdown), ||including spoilers||.
   })
 
   it('links a Tip to its trophy row with the Tips open, keeping a profile view when given', () => {
+    // Which Tips to open rides in history state, not the URL.
     expect(tipTrophyLink({ trophy_id: 3, trophy_set_id: 12 })).toEqual({
       path: '/trophies/12',
-      query: { tips: '3' },
+      query: {},
       hash: '#trophy-3',
+      state: { openTips: '3' },
     })
     expect(tipTrophyLink({ trophy_id: 3, trophy_set_id: 12 }, 'player')).toEqual({
       path: '/trophies/12',
-      query: { psnid: 'player', tips: '3' },
+      query: { psnid: 'player' },
       hash: '#trophy-3',
+      state: { openTips: '3' },
     })
     expect(tipTrophyLink({ trophy_id: 3, trophy_set_id: null })).toBeNull()
   })

@@ -22,7 +22,11 @@ const api = useAdminApi()
 const busy = ref<string | null>(null)
 const error = ref<any>(null)
 const path = computed(() => `/tips/${props.detail.id}`)
-const trophyPage = computed(() => tipTrophyLink(props.detail))
+// Opens in a new tab, where history state doesn't go: ask for the tips in the URL.
+const trophyPage = computed(() => {
+  const link = tipTrophyLink(props.detail)
+  return link && { path: link.path, query: { tips: String(props.detail.trophy_id) }, hash: link.hash }
+})
 const edited = computed(() => props.detail.updated_at !== props.detail.created_at)
 
 async function run(action: string, request: () => Promise<unknown>, after?: () => Promise<unknown> | void) {

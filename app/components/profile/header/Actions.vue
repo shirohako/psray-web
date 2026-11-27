@@ -38,7 +38,8 @@ const followButtonSkin = 'bg-zinc-900/90 text-white hover:bg-zinc-950'
 
       <template #menu="{ close }">
         <AppLink
-          :to="{ path: '/sync', query: { psnid: profile.psnid } }"
+          to="/sync"
+          :state="navState('syncPsnid', profile.psnid)"
           class="flex w-full items-center gap-2 px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
           @click="close"
         >
@@ -84,7 +85,8 @@ const followButtonSkin = 'bg-zinc-900/90 text-white hover:bg-zinc-950'
     <!-- sm+: inline buttons -->
     <div class="hidden items-center gap-2 sm:flex">
       <AppLink
-        :to="{ path: '/sync', query: { psnid: profile.psnid } }"
+        to="/sync"
+        :state="navState('syncPsnid', profile.psnid)"
         :class="[actionButtonBase, syncButtonSkin]"
       >
         <LucideIcon :icon="RefreshCw" class="size-3" />

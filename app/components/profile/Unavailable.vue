@@ -43,7 +43,7 @@ async function startSync() {
   if (submitting.value) return
   errorText.value = ''
   submitting.value = true
-  const target = localizeTo({ path: '/sync', query: { psnid: props.psnid } })
+  const target = localizeTo({ path: '/sync', state: navState('syncPsnid', props.psnid) })
   try {
     await sync.submit(props.psnid)
     await navigateTo(target)

@@ -20,13 +20,14 @@ function onSubmit() {
   submit(psnid.value.trim())
 }
 
-// Prefill from links like `/sync?psnid=foo`, but never auto-submit. Syncing is
-// intentionally user-triggered so opening a link cannot enqueue work by itself.
-// A job that is already running for that ID (e.g. just requested from its
-// profile page) is picked up and followed, though: reading status starts nothing.
+// Prefill the PSN ID the link came with (`navState('syncPsnid')`, or an older
+// `/sync?psnid=foo` link), but never auto-submit. Syncing is intentionally
+// user-triggered so opening a link cannot enqueue work by itself. A job that is
+// already running for that ID (e.g. just requested from its profile page) is
+// picked up and followed, though: reading status starts nothing.
 onMounted(() => {
   const q = useRoute().query.psnid
-  const id = (Array.isArray(q) ? q[0] : q)?.trim()
+  const id = (readNavState('syncPsnid') ?? (Array.isArray(q) ? q[0] : q))?.trim()
   if (!id) return
   psnid.value = id
   resume(id)
