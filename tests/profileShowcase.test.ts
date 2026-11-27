@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ShowcaseLayout, ShowcaseTrophy } from '~/services/profile'
+import type { Profile, ShowcaseLayout, ShowcaseTrophy } from '~/services/profile'
 import {
   SHOWCASE_META,
   cloneLayout,
@@ -45,8 +45,12 @@ describe('profile showcases', () => {
   })
 
   it('falls back to the old fixed cards for responses without showcases', () => {
-    expect(resolveShowcases({ calendar: [{ date: '2026-11-01', count: 1 }], recent_tips: [] }))
+    const tips = [{ id: 1 }] as unknown as NonNullable<Profile['recent_tips']>
+    expect(resolveShowcases({ calendar: [{ date: '2026-11-01', count: 1 }], recent_tips: tips }))
       .toEqual({ left: ['calendar'], right: ['tips', 'social'] })
+    // No tips yet: the comments card waits for the first one.
+    expect(resolveShowcases({ calendar: [{ date: '2026-11-01', count: 1 }], recent_tips: [] }))
+      .toEqual({ left: ['calendar'], right: ['social'] })
     // Unregistered (no tips) and private (no calendar).
     expect(resolveShowcases({ calendar: null, recent_tips: null })).toEqual({ left: [], right: ['social'] })
   })

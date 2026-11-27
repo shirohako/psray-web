@@ -44,12 +44,13 @@ export const SHOWCASE_META: Record<ShowcaseKey, { icon: IconNode, labelKey: stri
  * The showcases a profile renders. Responses from before showcases existed
  * have no `showcases`: fall back to the old fixed cards (calendar on the
  * left, comments and social on the right) so the page still shows them.
+ * Like the API, comments only show once there is one.
  */
 export function resolveShowcases(profile: Pick<Profile, 'showcases' | 'calendar' | 'recent_tips'>): ProfileShowcases {
   if (profile.showcases) return profile.showcases
   return {
     left: profile.calendar?.length ? ['calendar'] : [],
-    right: profile.recent_tips != null ? ['tips', 'social'] : ['social'],
+    right: profile.recent_tips?.length ? ['tips', 'social'] : ['social'],
   }
 }
 

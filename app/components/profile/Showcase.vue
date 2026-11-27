@@ -34,7 +34,7 @@ defineProps<{ showcase: ShowcaseKey; profile: Profile; psnid: string }>()
   />
   <ProfileShowcaseText v-else-if="showcase === 'text_right' && profile.text_right" :text="profile.text_right" />
   <ProfileRecentTips
-    v-else-if="showcase === 'tips' && profile.recent_tips"
+    v-else-if="showcase === 'tips' && profile.recent_tips?.length"
     :psnid="psnid"
     :tip-count="profile.tip_count"
     :tips="profile.recent_tips"
