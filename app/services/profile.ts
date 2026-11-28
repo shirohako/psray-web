@@ -20,7 +20,8 @@ export interface Profile {
   psnid: string
   account_id: string
   status: number
-  country: string
+  /** ISO 3166-1 alpha-2 (e.g. `JP`); `null` when PSN didn’t tell us. */
+  country: string | null
   language: string[]
   avatar_url: string
   /** Profile banner (9:2); `null` if the user hasn't set one. */
@@ -40,6 +41,11 @@ export interface Profile {
   silver: number
   bronze: number
   points: number
+  /**
+   * Trophies in games the player hid on PSN, per tier: PSN's account totals minus
+   * what was synced here. `null` until a sync has worked it out.
+   */
+  hidden_trophies?: { platinum: number; gold: number; silver: number; bronze: number } | null
 
   rank: number | null
   server_rank: number | null
@@ -333,7 +339,8 @@ export interface ProfileFollowEntry {
   profile_id: number
   psnid: string
   avatar_url: string
-  country: string
+  /** ISO 3166-1 alpha-2 (e.g. `JP`); `null` when PSN didn’t tell us. */
+  country: string | null
   trophy_level: number
   /** When the follow was made: `YYYY-MM-DD HH:MM:SS` in UTC, with no zone marker. */
   followed_at: string

@@ -162,13 +162,43 @@ export const TROPHY_SET_SORT_OPTIONS = [
 
 // ── Logs ─────────────────────────────────────────────────────────────────────
 
+/** pino-style levels of the PSN bridge's NDJSON log, as the viewer's tints. */
+const JSON_LOG_LEVELS: Record<string, LogLine['level']> = {
+  fatal: 'error',
+  error: 'error',
+  warn: 'warning',
+  info: 'info',
+  debug: 'info',
+  trace: 'info',
+}
+
+/**
+ * A line of the PSN bridge log (`psn-bridge` source): one JSON object with
+ * `level` and `time`. Returns null for anything else.
+ */
+function jsonLogLine(line: string): LogLine | null {
+  if (!line.startsWith('{')) return null
+  try {
+    const entry = JSON.parse(line) as { level?: unknown; time?: unknown }
+    const level = typeof entry.level === 'string' ? JSON_LOG_LEVELS[entry.level] : undefined
+    if (!level) return null
+    return { text: line, stamp: typeof entry.time === 'string' ? `[${entry.time}]` : '', level }
+  }
+  catch {
+    return null
+  }
+}
+
 /**
  * Split a log window into lines and tag each with a severity so the viewer
  * can tint it; the text itself stays verbatim, with a leading `[timestamp]`
- * split off.
+ * split off. JSON lines (the PSN bridge log) take their level from `level`
+ * and their stamp from `time`, and keep the whole object as text.
  */
 export function adminLogLines(text: string): LogLine[] {
   return text.split('\n').map((line) => {
+    const json = jsonLogLine(line)
+    if (json) return json
     const level = /\.(ERROR|CRITICAL|ALERT|EMERGENCY)\b/.test(line)
       ? 'error'
       : /\.WARNING\b/.test(line)
@@ -187,6 +217,7 @@ export const statusLabels: Record<string, string> = {
   success: '成功',
   failed: '失败',
   partial: '部分失败',
+  released: '已放回队列',
   running: '执行中',
   queued: '等待执行',
   pending: '等待执行',
@@ -452,3 +483,53 @@ export function adminQuery(query: Record<string, unknown>) {
     ),
   )
 }
+
+// ── PSN connection ───────────────────────────────────────────────────────────
+
+const PSN_STATES: Record<string, { label: string; tone: 'good' | 'warn' | 'bad' | 'muted' }> = {
+  ready: { label: '可用', tone: 'good' },
+  authenticating: { label: '登录中', tone: 'muted' },
+  degraded: { label: '暂时登录不上', tone: 'warn' },
+  npsso_invalid: { label: 'npsso 失效', tone: 'bad' },
+  failed: { label: '登录失败', tone: 'bad' },
+  unconfigured: { label: '未配置', tone: 'muted' },
+}
+
+/** Tag text and tone for a PSN account; a disabled account is just "已停用". */
+export function adminPsnState(state: string | null, enabled: boolean): { label: string; tone: 'good' | 'warn' | 'bad' | 'muted' } {
+  if (!enabled) return { label: '已停用', tone: 'muted' }
+  return PSN_STATES[state ?? ''] ?? { label: state ?? '未知', tone: 'muted' }
+}
+
+/** Whole days from `now` until `value` (negative once past); null without a date. */
+export function adminDaysLeft(value: unknown, now: Date = new Date()): number | null {
+  const date = value instanceof Date ? value : adminParseDate(value)
+  if (!date) return null
+  return Math.floor((date.getTime() - now.getTime()) / 86_400_000)
+}
+
+/** Data endpoints of the bridge; ops calls (status, health, reload) don't count as traffic. */
+const PSN_OPS_ENDPOINTS = new Set(['status', 'ready', 'live', 'reload', 'verify'])
+
+/**
+ * The bridge's cumulative counters (since it started) boiled down for the side
+ * panel: requests served, those that failed (429 / 5xx), and calls turned away
+ * by the rate limiter.
+ */
+export function adminPsnTotals(counters: Record<string, number> | undefined): { requests: number; failed: number; rateLimited: number } {
+  let requests = 0
+  let failed = 0
+  let rateLimited = 0
+  for (const [key, value] of Object.entries(counters ?? {})) {
+    const [kind, name, outcome] = key.split('.')
+    if (kind === 'http' && name && !PSN_OPS_ENDPOINTS.has(name)) {
+      requests += value
+      const status = Number(outcome)
+      if (status === 429 || status >= 500) failed += value
+    } else if (kind === 'limiter' && name === 'rejected') {
+      rateLimited += value
+    }
+  }
+  return { requests, failed, rateLimited }
+}
+

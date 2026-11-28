@@ -145,11 +145,13 @@ function rankClass(rank: number) {
               <LucideIcon v-if="p.earned_platinum > 0" :icon="Trophy" class="size-3.5 shrink-0 text-cyan-500" />
             </div>
             <div class="mt-0.5 flex min-w-0 items-center gap-2 text-xs text-slate-400">
-              <span class="inline-flex min-w-0 items-center gap-1">
-                <RegionFlag :country="p.country" class="shrink-0" />
-                <span class="truncate" :class="{ 'hidden sm:inline': finished(p) }">{{ regionName(p.country) }}</span>
-              </span>
-              <span class="shrink-0" :class="{ 'hidden sm:inline': finished(p) }">·</span>
+              <template v-if="p.country">
+                <span class="inline-flex min-w-0 items-center gap-1">
+                  <RegionFlag :country="p.country" class="shrink-0" />
+                  <span class="truncate" :class="{ 'hidden sm:inline': finished(p) }">{{ regionName(p.country) }}</span>
+                </span>
+                <span class="shrink-0" :class="{ 'hidden sm:inline': finished(p) }">·</span>
+              </template>
               <span v-if="shownType === 'speedrun'" class="inline-flex shrink-0 items-center gap-1" :title="$t('trophy.players.completedOn')">
                 <LucideIcon :icon="CalendarCheck" class="size-3" /><LocalTime :value="p.last_earned_at" format="day" />
               </span>

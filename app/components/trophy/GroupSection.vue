@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { EarnedInfo, Trophy, TrophyGroup } from '~/services/trophies'
-import { filterTrophies, isTrophyEarned, sortTrophies, type TrophyFilterMode, type TrophySortMode } from '~/utils/trophyList'
+import type { EarnedInfo, Trophy, TrophyGroup, TrophyProgressValue } from '~/services/trophies'
+import { filterTrophies, isTrophyEarned, sortTrophies, trophyProgressState, type TrophyFilterMode, type TrophySortMode } from '~/utils/trophyList'
 
 const props = defineProps<{
   /** A group whose trophies are already in PSN order (see `sortTrophyGroups`). */
@@ -16,6 +16,8 @@ const props = defineProps<{
   numbers: Map<number, number>
   /** Counts refreshed after publishing or deleting a tip. */
   tipCounts: Record<number, number>
+  /** The viewer's progress on PS5 progress trophies (`viewer_progress.trophy_progress`). */
+  trophyProgress?: Record<string, TrophyProgressValue>
 }>()
 
 const emit = defineEmits<{
@@ -88,6 +90,7 @@ const displayTrophies = computed(() => sortTrophies(
         :trophy="trophy"
         :has-viewer="hasViewer"
         :earned="isEarned(trophy)"
+        :progress="trophyProgressState(trophy, hasViewer, isEarned(trophy), trophyProgress)"
         :earned-at="earnedAt(trophy)"
         :timestamp-missing="earnedInfo.get(trophy.id)?.timestampMissing"
         :earned-order="earnedOrder(trophy)"

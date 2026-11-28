@@ -3,7 +3,7 @@ import { adminValue } from '~/utils/admin'
 const props = defineProps<{ value: unknown }>()
 const GOOD = ['success', 'healthy', 'online', 'completed', 'sent', 'done']
 const BAD = ['failed', 'offline', 'stale', 'termination']
-const WARN = ['partial', 'running', 'queued', 'pending', 'sending', 'ranking_ban', 'suspected_interrupted', 'open', 'in_progress']
+const WARN = ['partial', 'released', 'running', 'queued', 'pending', 'sending', 'ranking_ban', 'suspected_interrupted', 'open', 'in_progress']
 const tone = computed(() => {
   const value = String(props.value)
   if (GOOD.includes(value)) return 'bg-emerald-500 ring-emerald-500/20'

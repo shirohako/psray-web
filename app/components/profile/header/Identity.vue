@@ -43,7 +43,7 @@ const isRegistered = computed(() => props.profile.registered_at != null)
         {{ profile.about_me || $t('profile.identity.noAboutMe') }}
       </p>
       <div class="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
-        <span class="inline-flex items-center gap-1">
+        <span v-if="profile.country" class="inline-flex items-center gap-1">
           <RegionFlag :country="profile.country" /> {{ regionName(profile.country) }}
         </span>
         <span v-if="profile.last_synced_at != null" class="inline-flex items-center gap-1">

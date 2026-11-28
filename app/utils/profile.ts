@@ -156,8 +156,9 @@ const REGION_NAMES = Object.fromEntries(REGIONS.map(r => [r.code, r.name]))
 // English country names derived from our stable region list first. Intl is only
 // a fallback because Node and browsers can ship different ICU display names.
 const regionNames = new Intl.DisplayNames(['en'], { type: 'region' })
-/** Country code → English country name (falls back to the raw code). */
-export function regionName(c: string) {
+/** Country code → English country name (falls back to the raw code; empty when there is no country). */
+export function regionName(c: string | null | undefined) {
+  if (!c) return ''
   if (!/^[A-Za-z]{2}$/.test(c)) return c
   const code = c.toUpperCase()
   if (REGION_NAMES[code]) return REGION_NAMES[code]
@@ -221,6 +222,12 @@ export const rankText = (r: number | null | undefined) =>
 
 /** Sum of all four trophy tiers. */
 export const sumTrophies = (p: Profile) => p.platinum + p.gold + p.silver + p.bronze
+
+/** Trophies in games hidden on PSN (0 when unknown); the profile shows the entry only above 0. */
+export function hiddenTrophyTotal(p: Pick<Profile, 'hidden_trophies'>): number {
+  const h = p.hidden_trophies
+  return h ? Math.max(0, h.platinum) + Math.max(0, h.gold) + Math.max(0, h.silver) + Math.max(0, h.bronze) : 0
+}
 
 export type PlatformValue = string | string[] | null | undefined
 

@@ -15,7 +15,17 @@ describe('pickTrophyLanguage mirrors TranslationResolver::pick', () => {
     expect(pickTrophyLanguage(['en-US', 'ja-JP'], ['fr-FR'], 'en-US')).toBe('en-US')
     expect(pickTrophyLanguage(['en-US', 'ja-JP'], [], 'en-US')).toBe('en-US')
     expect(pickTrophyLanguage([], ['zh-Hant'], 'en-US')).toBe('en-US')
-    expect(pickTrophyLanguage(['de-DE', 'fr-FR'], ['ja-JP'], 'en-US')).toBe('de-DE')
+  })
+
+  it('never falls back to some other translation: the default, even without its row, or null', () => {
+    expect(pickTrophyLanguage(['ja-JP'], ['fr-FR'], 'en-US')).toBe('en-US')
+    expect(pickTrophyLanguage(['de-DE', 'fr-FR'], ['ja-JP'], 'en-US')).toBe('en-US')
+    expect(pickTrophyLanguage(['ja-JP', 'zh-Hant'], ['fr-FR'], null)).toBeNull()
+  })
+
+  it('serves a variant the set does not keep from its main variant (en-GB → en-US)', () => {
+    expect(pickTrophyLanguage(['ja-JP', 'en-US', 'fr-FR'], ['en-GB'], 'ja-JP')).toBe('en-US')
+    expect(pickTrophyLanguage(['ja-JP', 'en-US', 'fr-FR'], ['fr-CA'], 'ja-JP')).toBe('fr-FR')
   })
 })
 

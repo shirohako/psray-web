@@ -7,6 +7,9 @@ import {
   adminField,
   adminLocalToUtc,
   adminLogLines,
+  adminDaysLeft,
+  adminPsnState,
+  adminPsnTotals,
   adminMailPlaceholder,
   adminParseTrophySetIds,
   adminQuery,
@@ -128,6 +131,15 @@ describe('admin contract helpers', () => {
     expect(lines[7]).toEqual({ stamp: '', text: 'plain text', level: 'info' })
     expect(adminLogLines('')).toEqual([{ stamp: '', text: '', level: 'info' }])
   })
+  it('reads levels and times from the PSN bridge NDJSON log', () => {
+    const warn = '{"level":"warn","time":"2026-11-28T03:00:00.000Z","event":"upstream.retry","msg":"retrying"}'
+    const lines = adminLogLines(
+      [warn, '{"level":"error","time":"2026-11-28T03:00:01.000Z","msg":"failed"}', '{"level":"info","msg":"ok"}', '{not json'].join('\n'),
+    )
+    expect(lines.map((l) => l.level)).toEqual(['warning', 'error', 'info', 'info'])
+    expect(lines[0]).toEqual({ stamp: '[2026-11-28T03:00:00.000Z]', text: warn, level: 'warning' })
+    expect(lines[2]!.stamp).toBe('')
+  })
   it('writes mail template variables the way template copy spells them', () => {
     expect(adminMailPlaceholder('code')).toBe('{{ code }}')
   })
@@ -139,3 +151,25 @@ describe('admin contract helpers', () => {
     expect(adminCampaignFinished({ queued: 5 })).toBe(0)
   })
 })
+
+describe('PSN connection page helpers', () => {
+  it('labels account states and says when one is switched off', () => {
+    expect(adminPsnState('ready', true)).toEqual({ label: '可用', tone: 'good' })
+    expect(adminPsnState('npsso_invalid', true).tone).toBe('bad')
+    expect(adminPsnState('ready', false)).toEqual({ label: '已停用', tone: 'muted' })
+  })
+  it('counts whole days to a date', () => {
+    const now = new Date('2026-11-28T00:00:00Z')
+    expect(adminDaysLeft('2026-12-02T12:00:00+00:00', now)).toBe(4)
+    expect(adminDaysLeft('2026-11-27T00:00:00+00:00', now)).toBe(-1)
+    expect(adminDaysLeft(null, now)).toBeNull()
+  })
+  it('sums data traffic, failures and limiter rejections from the counters', () => {
+    expect(adminPsnTotals({
+      'http.trophySet.200': 10, 'http.trophySet.429': 2, 'http.trophyTitles.502': 1, 'http.status.200': 9,
+      'limiter.rejected.trophy': 4, 'upstream.trophyGroups.ok': 99,
+    })).toEqual({ requests: 13, failed: 3, rateLimited: 4 })
+    expect(adminPsnTotals(undefined)).toEqual({ requests: 0, failed: 0, rateLimited: 0 })
+  })
+})
+

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Trophy } from 'lucide'
+import { EyeOff, Trophy } from 'lucide'
 import type { Profile } from '~/services/profile'
 
 /**
@@ -10,6 +10,8 @@ import type { Profile } from '~/services/profile'
 const props = defineProps<{ profile: Profile }>()
 
 const total = computed(() => sumTrophies(props.profile))
+// Trophies in games hidden on PSN: a fifth item after the tiers, per tier on hover/focus.
+const hiddenTotal = computed(() => hiddenTrophyTotal(props.profile))
 </script>
 
 <template>
@@ -47,6 +49,37 @@ const total = computed(() => sumTrophies(props.profile))
           <span class="text-xs" :class="t.text">{{ $t(t.labelKey) }}</span>
         </span>
       </div>
+      <template v-if="hiddenTotal > 0">
+        <div class="hidden h-8 w-px shrink-0 bg-slate-200 @4xl:block" />
+        <Tooltip placement="bottom" class="self-start @4xl:self-auto">
+          <button
+            type="button"
+            class="inline-flex items-baseline gap-1.5 rounded-sm text-slate-500 transition hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900/20"
+            :aria-label="$t('profile.summary.hiddenTitle', { count: hiddenTotal })"
+          >
+            <LucideIcon :icon="EyeOff" class="size-3.5 shrink-0 translate-y-0.5 text-slate-400" />
+            <span class="text-sm font-bold tabular-nums">{{ hiddenTotal.toLocaleString() }}</span>
+            <span class="text-xs text-slate-400">{{ $t('profile.summary.hidden') }}</span>
+          </button>
+          <template #content>
+            <div class="w-56 p-1">
+              <div class="flex items-center gap-1.5 text-sm font-semibold text-white">
+                <LucideIcon :icon="EyeOff" class="size-3.5 text-slate-400" />
+                {{ $t('profile.summary.hiddenTitle', { count: hiddenTotal }) }}
+              </div>
+              <dl class="mt-2 space-y-1">
+                <div v-for="t in trophyKinds" :key="t.key" class="flex items-center justify-between gap-3 text-xs">
+                  <dt class="inline-flex items-center gap-1.5 text-slate-300">
+                    <span class="size-2.5 rounded-full" :class="t.dot" />{{ $t(t.labelKey) }}
+                  </dt>
+                  <dd class="font-semibold tabular-nums text-white">{{ profile.hidden_trophies?.[t.key] ?? 0 }}</dd>
+                </div>
+              </dl>
+              <p class="mt-2 text-[11px] leading-snug text-slate-400">{{ $t('profile.summary.hiddenNote') }}</p>
+            </div>
+          </template>
+        </Tooltip>
+      </template>
     </div>
   </div>
 </template>

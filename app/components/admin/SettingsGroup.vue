@@ -18,10 +18,25 @@ const drafts = reactive<Record<string, string>>({}),
   busy = ref(false),
   error = ref<any>(null),
   savedCount = ref<number | null>(null)
+/** Booleans are edited as a two-option select; their drafts are '1' / '0'. */
+const BOOLEAN_OPTIONS = [
+  { value: '1', label: '开启' },
+  { value: '0', label: '关闭' },
+]
+function itemOptions(item: SystemSettingItem) {
+  return item.options.length ? item.options : item.type === 'boolean' ? BOOLEAN_OPTIONS : []
+}
+/** A setting value as its draft / option string. */
+function asDraft(item: SystemSettingItem, value: unknown) {
+  if (item.type === 'boolean' && value !== null && value !== undefined && value !== '') {
+    return value === true || value === 1 || value === '1' || value === 'true' ? '1' : '0'
+  }
+  return String(value ?? '')
+}
 // Inputs start from the database value only, so an env value never gets
 // copied into the database by saving the form unchanged.
 function initial(item: SystemSettingItem) {
-  return !item.secret && item.source === 'database' ? String(item.value ?? '') : ''
+  return !item.secret && item.source === 'database' ? asDraft(item, item.value) : ''
 }
 function reset() {
   for (const item of props.group.items) drafts[item.key] = initial(item)
@@ -29,7 +44,7 @@ function reset() {
 }
 watch(() => props.group, reset, { immediate: true })
 const changes = computed(() => {
-  const values: Record<string, string | number | null> = {}
+  const values: Record<string, string | number | boolean | null> = {}
   for (const item of props.group.items) {
     if (clearing.value.includes(item.key)) {
       values[item.key] = null
@@ -39,14 +54,20 @@ const changes = computed(() => {
     if (item.secret) {
       if (draft) values[item.key] = draft
     } else if (draft !== initial(item)) {
-      values[item.key] = draft === '' ? null : item.type === 'integer' ? Number(draft) : draft
+      values[item.key] = draft === ''
+        ? null
+        : item.type === 'integer'
+          ? Number(draft)
+          : item.type === 'boolean'
+            ? draft === '1'
+            : draft
     }
   }
   return values
 })
 const dirty = computed(() => Object.keys(changes.value).length > 0)
 function optionLabel(item: SystemSettingItem, value: unknown) {
-  return item.options.find((o) => o.value === value)?.label ?? String(value)
+  return itemOptions(item).find((o) => o.value === asDraft(item, value))?.label ?? String(value)
 }
 function placeholder(item: SystemSettingItem) {
   if (item.secret) {
@@ -55,7 +76,7 @@ function placeholder(item: SystemSettingItem) {
     return '未设置'
   }
   // Selects show this as their empty option, so it names what "empty" means.
-  const shown = item.options.length ? optionLabel(item, item.value) : item.value
+  const shown = itemOptions(item).length ? optionLabel(item, item.value) : item.value
   if (item.source === 'env') return `正在使用环境变量 ${item.env}：${shown}`
   if (item.source === 'default') return `使用默认值：${shown}`
   if (item.source === 'database') {
@@ -142,10 +163,10 @@ async function save() {
         <div class="min-w-0 space-y-1.5">
           <div class="flex items-center gap-2">
             <SelectMenu
-              v-if="item.options.length"
+              v-if="itemOptions(item).length"
               :id="`setting-${item.key}`"
               v-model="drafts[item.key]"
-              :options="[{ value: '', label: placeholder(item) }, ...item.options]"
+              :options="[{ value: '', label: placeholder(item) }, ...itemOptions(item)]"
               :disabled="busy || clearing.includes(item.key)"
               size="sm"
               class="w-full"

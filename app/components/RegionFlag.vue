@@ -4,10 +4,11 @@
  * the JavaScript bundle lets the browser fetch and cache only those visible on
  * the current page. Size follows the inherited font size.
  */
-const props = defineProps<{ country: string }>()
+const props = defineProps<{ country: string | null | undefined }>()
 
-const valid = computed(() => /^[A-Za-z]{2}$/.test(props.country))
-const src = computed(() => flagSrc(props.country))
+// The API's country is null when PSN didn't tell us the region: render nothing.
+const valid = computed(() => !!props.country && /^[A-Za-z]{2}$/.test(props.country))
+const src = computed(() => (valid.value ? flagSrc(props.country!) : ''))
 </script>
 
 <template>

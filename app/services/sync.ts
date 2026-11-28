@@ -3,11 +3,25 @@
  *
  * `submit` enqueues a sync job; `status` reports the user's most recent job.
  * Both build on `useApi()`, so errors surface as {@link ApiError} — branch on
- * `code` (e.g. `SYNC_WORKER_UNAVAILABLE`, `SYNC_IN_PROGRESS`).
+ * `code` (e.g. `SYNC_IN_PROGRESS`, `SYNC_WORKER_UNAVAILABLE`, `SYNC_QUEUE_FULL`,
+ * `USER_NOT_FOUND`, `PSN_UNAVAILABLE`, `PSN_PROFILE_PRIVATE`, `TOO_MANY_REQUESTS`).
  */
 
 /** Sync job lifecycle. */
 export type SyncStatus = 'queued' | 'calculating' | 'syncing' | 'completed' | 'failed'
+
+/** Why a sync failed (`error_code` of a failed status); the UI shows `sync.failure.<code>`. */
+export type SyncErrorCode =
+  | 'psn_unavailable'
+  | 'all_games_failed'
+  | 'game_list_failed'
+  | 'interrupted'
+  | 'internal'
+  | 'profile_private'
+  | 'profile_not_found'
+  | 'psn_no_trophy_data'
+  | 'account_terminated'
+  | 'user_missing'
 
 /** Result of enqueueing a sync job. */
 export interface SyncSubmitResult {
@@ -31,7 +45,7 @@ export interface SyncStatusInfo {
   failed: number
   /** Tasks skipped (already synced site-wide) — not counted toward `total`/`completed`/`failed`. */
   skipped: number
-  /** NP Communication ID of the game currently syncing (empty when none). */
+  /** NP Communication ID (e.g. `NPWR33408_00`) of the game currently syncing; empty when none. */
   current_game: string
   /** Unix seconds. */
   started_at: number
@@ -39,7 +53,9 @@ export interface SyncStatusInfo {
   updated_at: number
   /** Unix seconds. */
   completed_at: number
-  /** Failure reason (empty unless `status === 'failed'`). */
+  /** Why it failed, as a stable code (empty unless `status === 'failed'`). Translate this, not `error`. */
+  error_code: SyncErrorCode | ''
+  /** Chinese fallback text for `error_code`; never contains internal details. */
   error: string
   /** Unfinished jobs ahead of this one — only present while `queued`. */
   queue_ahead?: number

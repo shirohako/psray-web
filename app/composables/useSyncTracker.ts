@@ -2,6 +2,15 @@ import { useSync, type SyncStatusInfo } from '~/services/sync'
 import { ApiError } from '~/utils/ApiError'
 
 const POLL_INTERVAL_MS = 5000
+
+/** Submit errors with a dedicated message; anything else falls back to the server's text. */
+const SUBMIT_ERROR_KEYS: Record<string, string> = {
+  SYNC_WORKER_UNAVAILABLE: 'sync.errors.workerUnavailable',
+  SYNC_QUEUE_FULL: 'sync.errors.queueFull',
+  PSN_UNAVAILABLE: 'sync.errors.psnUnavailable',
+  USER_NOT_FOUND: 'sync.errors.userNotFound',
+  TOO_MANY_REQUESTS: 'sync.errors.tooMany',
+}
 // The "refreshing" beat lasts at least this long, so a fast poll doesn't just flicker.
 const REFRESHING_MIN_MS = 650
 
@@ -80,8 +89,11 @@ export function useSyncTracker() {
     try {
       const s = await sync.status(activePsnid.value)
       if (!s) {
+        // The record went away while we were following it (expired, or the queue was cleared):
+        // say so instead of silently dropping the card.
         if (info.value) {
           info.value = null
+          errorMessage.value = t('sync.errors.statusExpired')
           stopPolling()
         }
         return
@@ -90,8 +102,8 @@ export function useSyncTracker() {
       if (s.status === 'completed' || s.status === 'failed') stopPolling()
     }
     catch (error) {
-      // Right after submit the status row may not exist yet — keep polling.
-      if (error instanceof ApiError && error.code === 'NOT_FOUND') return
+      // Right after submit the status row may not exist yet, and a throttled poll just skips a beat — keep polling.
+      if (error instanceof ApiError && (error.code === 'NOT_FOUND' || error.code === 'TOO_MANY_REQUESTS')) return
       errorMessage.value = error instanceof ApiError ? error.message : t('sync.errors.status')
       stopPolling()
     }
@@ -134,9 +146,8 @@ export function useSyncTracker() {
           return
         }
 
-        errorMessage.value = error.code === 'SYNC_WORKER_UNAVAILABLE'
-          ? t('sync.errors.workerUnavailable')
-          : error.message || t('sync.errors.submit')
+        const key = SUBMIT_ERROR_KEYS[error.code]
+        errorMessage.value = key ? t(key) : error.message || t('sync.errors.submit')
       }
       else {
         errorMessage.value = t('sync.errors.submitRetry')

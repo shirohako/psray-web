@@ -45,6 +45,8 @@ export interface Trophy {
   rarity: Rarity
   /** Number of community guides/tips. */
   tip_count: number
+  /** PS5 progress trophies only: the target (e.g. 50 for "defeat 50 enemies"); null otherwise. */
+  progress_target?: number | null
   /** Title in `display_language`; falls back to `name` when untranslated. */
   localized_name?: string
   /** Description in `display_language`; falls back to `detail`. */
@@ -204,7 +206,8 @@ export interface RecentPlayer {
   rank?: number
   psnid: string
   avatar_url: string
-  country: string
+  /** ISO 3166-1 alpha-2 (e.g. `JP`); `null` when PSN didn’t tell us. */
+  country: string | null
   /** Completion percent, 0–100. */
   progress: number
   earned_platinum: number
@@ -243,6 +246,19 @@ export interface ViewerProgress {
    * the trophy is earned but PSN never recorded when.
    */
   earned_trophies_at?: Record<string, ApiDate | null>
+  /**
+   * PS5 progress trophies the viewer has started but not earned: trophy db id →
+   * current progress. Earned ones aren't here (they count as done); started-but-zero
+   * ones aren't either (show 0 / target).
+   */
+  trophy_progress?: Record<string, TrophyProgressValue>
+}
+
+/** The viewer's current value on one PS5 progress trophy. */
+export interface TrophyProgressValue {
+  progress: number
+  /** When it last moved, if PSN said. */
+  progressed_at: ApiDate | null
 }
 
 /** Per-trophy view of `ViewerProgress`, keyed by trophy db id on the set page. */
@@ -259,8 +275,12 @@ export interface EarnedInfo {
 /** Full payload of `GET /trophies/:id`. */
 export interface TrophySetDetail {
   trophy_set: TrophySetDetailInfo
-  /** Language the server best-matched this payload to (a `language_code`). */
-  display_language: string
+  /**
+   * Language the server best-matched this payload to (a `language_code`);
+   * `null` when nothing matched and the set's default language is unknown —
+   * the text is then the base table's.
+   */
+  display_language: string | null
   /** Every language this set can be switched to. */
   available_languages: AvailableLanguage[]
   groups: TrophyGroup[]
@@ -281,7 +301,8 @@ export interface PlayerRanking {
   rank: number
   psnid: string
   avatar_url: string
-  country: string
+  /** ISO 3166-1 alpha-2 (e.g. `JP`); `null` when PSN didn’t tell us. */
+  country: string | null
   /** Completion percent, 0–100. */
   progress: number
   earned_platinum: number
@@ -305,7 +326,8 @@ export interface PlayersMeta {
 export interface TrophyPlayer {
   psnid: string
   avatar_url: string
-  country: string
+  /** ISO 3166-1 alpha-2 (e.g. `JP`); `null` when PSN didn’t tell us. */
+  country: string | null
   /** Unix seconds — when this player earned the trophy. */
   earned_at: number
 }

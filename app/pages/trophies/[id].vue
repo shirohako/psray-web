@@ -22,7 +22,7 @@
           <TrophyListHeading
             :total="totalDefined(data.trophy_set.defined_trophies)"
             :languages="availableLanguages"
-            :current="data.display_language"
+            :current="data.display_language ?? ''"
             :loading="pending"
             @language="switchLanguage"
           />
@@ -46,6 +46,7 @@
               :show-spoilers="showSpoilers"
               :numbers="trophyNumbers"
               :tip-counts="tipCounts"
+              :trophy-progress="data.viewer_progress?.trophy_progress"
               @detail="dialogHost?.open('detail', $event)"
               @earners="dialogHost?.open('earners', $event)"
               @tips="dialogHost?.open('tips', $event)"
@@ -79,7 +80,7 @@
     <TrophyDialogHost
       ref="dialogHost"
       :trophies="allTrophies"
-      :display-language="data.display_language"
+      :display-language="data.display_language ?? ''"
       @count="updateTipCount"
     />
 

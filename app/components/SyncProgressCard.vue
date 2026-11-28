@@ -26,6 +26,12 @@ const STATUS_META: Record<SyncStatus, { labelKey: string; pill: string; bar: str
   failed: { labelKey: 'sync.status.failed', pill: 'bg-rose-50 text-rose-600', bar: 'bg-rose-500', text: 'text-rose-600', icon: XCircle },
 }
 const meta = computed(() => STATUS_META[props.info.status])
+const { t, te } = useI18n()
+/** Failure reason in the viewer's language; the server's Chinese text only for a code we don't know yet. */
+const failureReason = computed(() => {
+  const key = `sync.failure.${props.info.error_code}`
+  return props.info.error_code && te(key) ? t(key) : props.info.error
+})
 const progress = computed(() => Math.max(0, Math.min(100, props.info.progress ?? 0)))
 const inProgress = computed(() => props.info.status !== 'completed' && props.info.status !== 'failed')
 </script>
@@ -141,10 +147,10 @@ const inProgress = computed(() => props.info.status !== 'completed' && props.inf
 
     <!-- Failure reason -->
     <p
-      v-if="info.status === 'failed' && info.error"
+      v-if="info.status === 'failed' && failureReason"
       class="mt-3 rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-sm font-medium text-rose-700"
     >
-      {{ info.error }}
+      {{ failureReason }}
     </p>
 
     <!-- Done: go to the profile -->

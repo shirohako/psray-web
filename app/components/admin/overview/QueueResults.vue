@@ -5,10 +5,12 @@ import type { AdminOverview } from '~/types/admin'
 /** The last 24 hours of queue jobs by outcome: a donut and its legend. */
 const props = defineProps<{ counts: AdminOverview['queue_results'] }>()
 
-const resultOrder = ['success', 'partial', 'failed']
+const resultOrder = ['success', 'partial', 'skipped', 'released', 'failed']
 const resultColor: Record<string, { bar: string; stroke: string }> = {
   success: { bar: 'bg-emerald-500', stroke: 'stroke-emerald-500' },
   partial: { bar: 'bg-amber-400', stroke: 'stroke-amber-400' },
+  // Put back on the queue to run again later (interrupted render, delayed retry): not an outcome yet.
+  released: { bar: 'bg-sky-400', stroke: 'stroke-sky-400' },
   failed: { bar: 'bg-red-500', stroke: 'stroke-red-500' },
 }
 const fallbackColor = { bar: 'bg-slate-400', stroke: 'stroke-slate-400' }

@@ -4,8 +4,8 @@ import { adminDate, adminValue } from '~/utils/admin'
 import type { AdminOverview } from '~/types/admin'
 /**
  * Top of the overview: a verdict from the health checks (worker, scheduler,
- * sync failures) and a KPI strip of queued work, the last 24 hours of jobs
- * and the scheduled tasks.
+ * PSN connection, auto-sync backlog, sync failures) and a KPI strip of queued
+ * work, the last 24 hours of jobs and the scheduled tasks.
  */
 const props = defineProps<{ data: AdminOverview; busy: boolean }>()
 defineEmits<{ refresh: [] }>()
@@ -28,19 +28,55 @@ const totals = computed(() => {
 })
 
 type Check = { key: string; label: string; ok: boolean; detail: string }
+/** Why the last `sync:dispatch-due` run dispatched nothing. */
+const DISPATCH_SKIPS: Record<string, string> = {
+  auto_sync_disabled: '已关闭',
+  workers_unavailable: 'worker 不可用，未派发',
+  psn_unavailable: 'PSN 不可用，未派发',
+  queue_full: '队列积压，未派发',
+}
 const checks = computed<Check[]>(() => {
-  const { queues, scheduler, recent_failures } = props.data
+  const { queues, scheduler, recent_failures, psn, sync } = props.data
+  const paused = queues.paused_supervisors?.length ?? 0
   const workerOk =
     queues.available &&
-    ['running', 'online', 'active'].includes(queues.worker_status)
+    ['running', 'online', 'active'].includes(queues.worker_status) &&
+    !paused
+  const psnProblems = psn.accounts.filter((account) => account.problem).length
+  const skipped = sync?.last_dispatch?.skipped
   return [
     {
       key: 'worker',
       label: '队列 Worker',
       ok: workerOk,
-      detail: queues.available
-        ? adminValue(queues.worker_status)
-        : queues.message || '不可用',
+      detail: !queues.available
+        ? queues.message || '不可用'
+        : paused
+          ? `已暂停 ${paused} 个`
+          : adminValue(queues.worker_status),
+    },
+    {
+      key: 'psn',
+      label: 'PSN 连接',
+      ok: psn.ok && !psnProblems,
+      detail: !psn.ok
+        ? psn.reason || '不可用'
+        : psnProblems
+          ? `${psnProblems} 个账号需要处理`
+          : '正常',
+    },
+    {
+      key: 'auto-sync',
+      label: '自动同步',
+      // Switched off on purpose is a state, not a problem.
+      ok: sync !== null && !sync.overdue_1h && (!skipped || skipped === 'auto_sync_disabled'),
+      detail: sync === null
+        ? '读取失败'
+        : skipped
+          ? DISPATCH_SKIPS[skipped] ?? skipped
+          : sync.overdue_1h
+            ? `${sync.overdue_1h} 人超时未派发`
+            : '正常',
     },
     {
       key: 'scheduler',

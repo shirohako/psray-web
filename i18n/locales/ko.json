@@ -313,6 +313,11 @@
       "psnRate": "PSN 획득률",
       "psrayRate": "PSRay 획득률",
       "tips": "댓글",
+      "progress": "진행",
+      "progressDone": "달성",
+      "progressTarget": "목표",
+      "progressTitle": "진행 {current} / {target}",
+      "progressTargetTitle": "진행 목표 {target}",
       "menu": {
         "view": "트로피 보기",
         "viewTips": "트로피 댓글 보기",
@@ -326,7 +331,8 @@
     "detail": {
       "title": "트로피 상세",
       "id": "트로피 ID",
-      "tipCount": "댓글 수"
+      "tipCount": "댓글 수",
+      "progressTarget": "진행 목표"
     },
     "group": {
       "baseGame": "본편",
@@ -554,7 +560,10 @@
       "unranked": "순위 없음"
     },
     "summary": {
-      "level": "계정 레벨"
+      "level": "계정 레벨",
+      "hidden": "숨김",
+      "hiddenTitle": "숨긴 게임에 트로피 {count}개",
+      "hiddenNote": "PSN 계정의 트로피 총수에서 이 사이트에 동기화된 수를 뺀 값입니다. PSN에서 숨긴 게임은 동기화되지 않습니다."
     },
     "account": {
       "title": "계정 정보",
@@ -750,7 +759,24 @@
       "status": "동기화 진행 상황을 가져오지 못했습니다.",
       "submit": "동기화 요청 제출에 실패했습니다.",
       "submitRetry": "동기화 요청 제출에 실패했습니다. 잠시 후 다시 시도해 주세요.",
-      "workerUnavailable": "동기화 서비스를 일시적으로 사용할 수 없습니다. 잠시 후 다시 시도해 주세요."
+      "workerUnavailable": "동기화 서비스를 일시적으로 사용할 수 없습니다. 잠시 후 다시 시도해 주세요.",
+      "queueFull": "대기 중인 동기화 요청이 너무 많습니다. 몇 분 후에 다시 시도해 주세요.",
+      "psnUnavailable": "지금은 PSN에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.",
+      "userNotFound": "PSN에 이 PSN ID를 가진 계정이 없습니다. 철자를 확인해 주세요.",
+      "tooMany": "너무 자주 제출했습니다. 잠시 후 다시 시도해 주세요.",
+      "statusExpired": "이 동기화의 진행 기록이 만료되었습니다. 다시 제출해 주세요."
+    },
+    "failure": {
+      "psn_unavailable": "PSN을 일시적으로 사용할 수 없어 동기화가 중간에 종료되었습니다. 이미 동기화된 게임은 유지됩니다. 잠시 후 다시 시도해 주세요.",
+      "all_games_failed": "이번에 동기화할 게임이 모두 실패했습니다. 잠시 후 다시 시도해 주세요.",
+      "game_list_failed": "게임 목록을 가져오지 못했습니다. 잠시 후 다시 시도해 주세요.",
+      "interrupted": "동기화가 여러 번 중단되었습니다(사이트 업데이트 중). 잠시 후 다시 시도해 주세요.",
+      "internal": "동기화 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+      "profile_private": "이 PSN 프로필의 트로피가 비공개입니다. PlayStation 개인정보 설정에서 트로피를 공개한 후 다시 시도해 주세요.",
+      "profile_not_found": "PSN에 더 이상 이 계정이 없습니다.",
+      "psn_no_trophy_data": "PSN이 이 계정의 트로피 데이터를 제공하지 않습니다.",
+      "account_terminated": "이 계정은 정지되어 동기화할 수 없습니다.",
+      "user_missing": "이 사용자는 더 이상 존재하지 않습니다. 동기화를 다시 제출할 수 있습니다."
     }
   },
   "settings": {

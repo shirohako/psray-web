@@ -313,6 +313,11 @@
       "psnRate": "PSN earn rate",
       "psrayRate": "PSRay earn rate",
       "tips": "Tips",
+      "progress": "Progress",
+      "progressDone": "Done",
+      "progressTarget": "Target",
+      "progressTitle": "Progress {current} / {target}",
+      "progressTargetTitle": "Progress target {target}",
       "menu": {
         "view": "View trophy",
         "viewTips": "View trophy comments",
@@ -326,7 +331,8 @@
     "detail": {
       "title": "Trophy details",
       "id": "Trophy ID",
-      "tipCount": "Tips"
+      "tipCount": "Tips",
+      "progressTarget": "Progress target"
     },
     "group": {
       "baseGame": "Base game",
@@ -554,7 +560,10 @@
       "unranked": "Unranked"
     },
     "summary": {
-      "level": "Account level"
+      "level": "Account level",
+      "hidden": "hidden",
+      "hiddenTitle": "Trophies in hidden games: {count}",
+      "hiddenNote": "PSN’s account total minus what was synced here. Games hidden on PSN aren’t synced."
     },
     "account": {
       "title": "Account details",
@@ -750,7 +759,24 @@
       "status": "Couldn’t fetch sync progress.",
       "submit": "Couldn’t submit the sync request.",
       "submitRetry": "Couldn’t submit the sync request. Please try again later.",
-      "workerUnavailable": "The sync service is temporarily unavailable. Please try again later."
+      "workerUnavailable": "The sync service is temporarily unavailable. Please try again later.",
+      "queueFull": "Too many syncs are waiting right now. Please try again in a few minutes.",
+      "psnUnavailable": "We can’t reach PSN right now. Please try again later.",
+      "userNotFound": "No PSN account has this PSN ID. Please check the spelling.",
+      "tooMany": "You’re submitting too often. Please try again later.",
+      "statusExpired": "The progress record for this sync has expired. Please submit it again."
+    },
+    "failure": {
+      "psn_unavailable": "PSN is temporarily unavailable, so this sync stopped early. Games already synced are kept; please try again later.",
+      "all_games_failed": "Every game in this sync failed. Please try again later.",
+      "game_list_failed": "Couldn’t fetch the game list. Please try again later.",
+      "interrupted": "The sync was interrupted several times (the site is being updated). Please try again later.",
+      "internal": "Something went wrong with the sync. Please try again later.",
+      "profile_private": "This PSN profile’s trophies aren’t public. Make them public in your PlayStation privacy settings, then try again.",
+      "profile_not_found": "This account no longer exists on PSN.",
+      "psn_no_trophy_data": "PSN doesn’t provide trophy data for this account.",
+      "account_terminated": "This account has been suspended and can’t be synced.",
+      "user_missing": "This user no longer exists. You can submit the sync again."
     }
   },
   "settings": {

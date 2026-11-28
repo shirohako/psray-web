@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Trophy, Check, Eye, EyeOff, MessageSquare, Copy, FileText, Users, Info, Clock3, Medal, Timer, type IconNode } from 'lucide'
 import type { Trophy as TrophyData } from '~/services/trophies'
+import type { TrophyProgressState } from '~/utils/trophyList'
 
 const props = defineProps<{
   trophy: TrophyData
@@ -22,6 +23,8 @@ const props = defineProps<{
   number: number
   /** Locally refreshed count supplied by the shared dialog host. */
   tipCount?: number
+  /** PS5 progress trophies: the target, and the viewer's value when one is selected. */
+  progress?: TrophyProgressState | null
 }>()
 
 const emit = defineEmits<{
@@ -110,6 +113,26 @@ async function copy(text: string, label: string) {
 }
 
 const displayedTipCount = computed(() => props.tipCount ?? props.trophy.tip_count)
+// Progress column (left of the earn rate): "2/5" over a short bar with a viewer,
+// just the target without one.
+const progressLabel = computed(() => {
+  const p = props.progress
+  if (!p) return ''
+  if (p.current === null) return t('trophy.item.progressTarget')
+  return t(p.done ? 'trophy.item.progressDone' : 'trophy.item.progress')
+})
+const progressValue = computed(() => {
+  const p = props.progress
+  if (!p) return ''
+  return p.current === null ? String(p.target) : `${p.current}/${p.target}`
+})
+const progressTitle = computed(() => {
+  const p = props.progress
+  if (!p) return ''
+  return p.current === null
+    ? t('trophy.item.progressTargetTitle', { target: p.target })
+    : t('trophy.item.progressTitle', { current: p.current, target: p.target })
+})
 
 // The row's menu, in order: the trophy's dialogs and copying its text.
 const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
@@ -236,6 +259,26 @@ const menuItems: { icon: IconNode; labelKey: string; run: () => void }[] = [
     </div>
 
     <div class="flex shrink-0 items-center" :class="density.actions">
+      <div
+        v-if="progress"
+        class="flex flex-col items-end leading-tight"
+        :title="progressTitle"
+      >
+        <span class="text-[10px] font-medium text-slate-400 max-sm:hidden" aria-hidden="true">{{ progressLabel }}</span>
+        <span class="sr-only">{{ progressTitle }}</span>
+        <span
+          class="font-semibold tabular-nums"
+          :class="[density.rate, progress.done ? 'text-emerald-600' : progress.current === null ? 'text-slate-700' : 'text-slate-900']"
+          aria-hidden="true"
+        >{{ progressValue }}</span>
+        <span v-if="progress.current !== null" class="mt-0.5 h-[3px] w-11 overflow-hidden rounded-full bg-slate-200" aria-hidden="true">
+          <span
+            class="block h-full rounded-full transition-[width] duration-500"
+            :class="progress.done ? 'bg-emerald-500' : 'bg-sky-500'"
+            :style="{ width: `${(progress.current / progress.target) * 100}%` }"
+          />
+        </span>
+      </div>
       <Tooltip placement="left">
         <div tabindex="0" class="flex cursor-pointer flex-col items-end leading-tight focus:outline-none" @click.stop>
           <span class="text-[10px] font-medium text-slate-400 max-sm:hidden" aria-hidden="true">{{ primaryRateLabel }}</span>

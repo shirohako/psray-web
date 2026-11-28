@@ -313,6 +313,11 @@
       "psnRate": "PSN 獲得率",
       "psrayRate": "PSRay 獲得率",
       "tips": "コメント",
+      "progress": "進捗",
+      "progressDone": "達成",
+      "progressTarget": "目標",
+      "progressTitle": "進捗 {current} / {target}",
+      "progressTargetTitle": "進捗目標 {target}",
       "menu": {
         "view": "トロフィーを見る",
         "viewTips": "トロフィーのコメントを見る",
@@ -326,7 +331,8 @@
     "detail": {
       "title": "トロフィーの詳細",
       "id": "トロフィー ID",
-      "tipCount": "コメント数"
+      "tipCount": "コメント数",
+      "progressTarget": "進捗目標"
     },
     "group": {
       "baseGame": "本編",
@@ -554,7 +560,10 @@
       "unranked": "ランキング外"
     },
     "summary": {
-      "level": "アカウントレベル"
+      "level": "アカウントレベル",
+      "hidden": "非表示",
+      "hiddenTitle": "非表示のゲームにトロフィーが {count} 個あります",
+      "hiddenNote": "PSN アカウントのトロフィー総数から、このサイトに同期された数を引いた値です。PSN で非表示にしたゲームは同期されません。"
     },
     "account": {
       "title": "アカウント情報",
@@ -750,7 +759,24 @@
       "status": "同期の進捗を取得できませんでした。",
       "submit": "同期リクエストの送信に失敗しました。",
       "submitRetry": "同期リクエストの送信に失敗しました。しばらくしてからもう一度お試しください。",
-      "workerUnavailable": "同期サービスが一時的に利用できません。しばらくしてからもう一度お試しください。"
+      "workerUnavailable": "同期サービスが一時的に利用できません。しばらくしてからもう一度お試しください。",
+      "queueFull": "同期待ちのリクエストが多すぎます。数分後にもう一度お試しください。",
+      "psnUnavailable": "現在 PSN に接続できません。しばらくしてからもう一度お試しください。",
+      "userNotFound": "この PSN ID のアカウントは PSN 上に見つかりません。綴りを確認してください。",
+      "tooMany": "送信回数が多すぎます。しばらくしてからもう一度お試しください。",
+      "statusExpired": "この同期の進捗記録は期限切れです。もう一度送信してください。"
+    },
+    "failure": {
+      "psn_unavailable": "PSN が一時的に利用できないため、同期を途中で終了しました。同期済みのゲームは保持されます。しばらくしてからもう一度お試しください。",
+      "all_games_failed": "今回同期するゲームがすべて失敗しました。しばらくしてからもう一度お試しください。",
+      "game_list_failed": "ゲーム一覧を取得できませんでした。しばらくしてからもう一度お試しください。",
+      "interrupted": "同期が何度も中断されました（サイトを更新中です）。しばらくしてからもう一度お試しください。",
+      "internal": "同期中にエラーが発生しました。しばらくしてからもう一度お試しください。",
+      "profile_private": "この PSN プロフィールのトロフィーは非公開です。PlayStation のプライバシー設定でトロフィーを公開してからもう一度お試しください。",
+      "profile_not_found": "このアカウントは PSN 上に存在しません。",
+      "psn_no_trophy_data": "PSN はこのアカウントのトロフィーデータを提供していません。",
+      "account_terminated": "このアカウントは停止されているため同期できません。",
+      "user_missing": "このユーザーは存在しません。もう一度同期を送信できます。"
     }
   },
   "settings": {

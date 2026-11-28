@@ -14,7 +14,8 @@ export interface LeaderboardRowBase {
   user_id: number
   psnid: string
   avatar_url: string
-  country: string
+  /** ISO 3166-1 alpha-2 (e.g. `JP`); `null` when PSN didn’t tell us. */
+  country: string | null
   trophy_level: number
   platinum: number
   gold: number

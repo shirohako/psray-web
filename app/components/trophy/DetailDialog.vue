@@ -93,6 +93,10 @@ const TYPE_LABEL: Record<TrophyData['type'], string> = {
           <dt class="text-slate-400">{{ $t('trophy.item.psrayRate') }}</dt>
           <dd class="font-semibold tabular-nums text-slate-900">{{ fmtRate(trophy.psray_rate) }}</dd>
         </div>
+        <div v-if="trophy.progress_target" class="flex items-center justify-between gap-2">
+          <dt class="text-slate-400">{{ $t('trophy.detail.progressTarget') }}</dt>
+          <dd class="font-semibold tabular-nums text-slate-900">{{ trophy.progress_target }}</dd>
+        </div>
       </dl>
     </div>
   </Dialog>

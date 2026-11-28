@@ -54,9 +54,10 @@ const liveColumns = [
   { key: 'attempts', label: '尝试次数' },
 ]
 const failedColumns = [
-  { key: 'uuid', label: 'UUID', mono: true },
+  { key: 'subject', label: '对象' },
   { key: 'job', label: '任务' },
   { key: 'queue', label: '队列', mono: true },
+  { key: 'error', label: '失败原因' },
   { key: 'failed_at', label: '失败时间' },
   { key: 'retryable', label: '支持重试' },
 ]
@@ -203,6 +204,7 @@ function afterRetry(uuid: string, reload: () => Promise<unknown>, close: () => v
     id-key="uuid"
     :columns="failedColumns"
     :filters="[
+      { key: 'q', label: 'UUID / PSN ID / 业务对象' },
       { key: 'queue', label: '队列', options: queues },
       ...timeFilters,
     ]"
@@ -224,7 +226,7 @@ function afterRetry(uuid: string, reload: () => Promise<unknown>, close: () => v
     v-else
     key="history"
     title="执行历史"
-    description="partial 为分项失败，不代表存在可重试的 failed_jobs 记录。自动同步和卡片记录保留 3 个月，其余队列保留 1 年。"
+    description="partial 为分项失败，不代表存在可重试的 failed_jobs 记录；released 是任务放回队列稍后重来，同一个任务之后还会再有一行。自动同步和卡片记录保留 3 个月，其余队列保留 1 年。"
     embedded
     endpoint="/queue-logs"
     :columns="historyColumns"
@@ -234,7 +236,7 @@ function afterRetry(uuid: string, reload: () => Promise<unknown>, close: () => v
       {
         key: 'status',
         label: '结果',
-        options: ['success', 'partial', 'failed'].map((value) => ({
+        options: ['success', 'partial', 'skipped', 'released', 'failed'].map((value) => ({
           value,
           label: statusLabels[value]!,
         })),

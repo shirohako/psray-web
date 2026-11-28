@@ -13,7 +13,9 @@ export type RouteQuery = Record<string, unknown>
 /**
  * The language a trophy set is shown in, for an ordered preference list: for
  * each preference the exact code, then any variant of the same language; then
- * the set's default language; then whatever it has.
+ * the set's default language, whose text is the base table's — so it holds
+ * even when the set has no row for it. `null` when that is unknown too: the
+ * page then shows the base text as it is, never some other translation.
  *
  * A line-for-line mirror of the API's `TranslationResolver::pick`, which
  * decides what the page actually shows — keep the two identical (the tests
@@ -23,7 +25,7 @@ export function pickTrophyLanguage(
   available: readonly string[],
   preferred: readonly string[],
   defaultLanguage?: string | null,
-): string {
+): string | null {
   for (const code of preferred) {
     if (!code) continue
     if (available.includes(code)) return code
@@ -31,8 +33,7 @@ export function pickTrophyLanguage(
     const variant = available.find(candidate => candidate.split('-')[0] === iso)
     if (variant) return variant
   }
-  if (defaultLanguage && (!available.length || available.includes(defaultLanguage))) return defaultLanguage
-  return available[0] ?? defaultLanguage ?? ''
+  return defaultLanguage ?? null
 }
 
 /**
@@ -52,8 +53,8 @@ export interface TrophyLanguageState {
   /** Every language the set ships in (`available_languages`). */
   available: readonly string[]
   defaultLanguage?: string | null
-  /** The language the API actually served for this request. */
-  served: string
+  /** The language the API actually served for this request (`null`: the base text, language unknown). */
+  served: string | null
   /** Whether the reader has a trophy-language preference switched on. */
   preferenceEnabled: boolean
 }

@@ -27,8 +27,36 @@ export interface AdminOverview {
   queue_results: { status: string; count: number }[]
   queues: QueueSummary
   scheduler: ScheduleSummary['scheduler']
+  /** Can the site talk to PSN right now, and which accounts need attention. */
+  psn: AdminPsnHealth
+  /** Auto-sync backlog; `null` when it couldn't be read. */
+  sync: AdminSyncBacklog | null
   recent_failures: SyncFailureRecord[]
   updated_at: string
+}
+
+export interface AdminPsnHealth {
+  ok: boolean
+  /** Why not, when `ok` is false. */
+  reason: string | null
+  accounts: { label: string; state: string | null; problem: string | null }[]
+}
+
+export interface AdminSyncBacklog {
+  /** Earliest `sync_next_at` among due users not dispatched yet. */
+  oldest_due_at: string | null
+  /** Due for more than an hour and still not dispatched: should stay 0. */
+  overdue_1h: number
+  /** Outcome of the last `sync:dispatch-due` run (null: none in the last two days). */
+  last_dispatch: {
+    at: string
+    dispatched: number
+    skipped?: 'auto_sync_disabled' | 'workers_unavailable' | 'psn_unavailable' | 'queue_full'
+    detail?: string
+  } | null
+  /** Failed games waiting for the next run / given up after 5 attempts. */
+  pending_games: number
+  abandoned_games: number
 }
 
 // ── Queues, schedules, logs ──────────────────────────────────────────────────
@@ -38,7 +66,16 @@ export interface QueueSummary {
   worker_status: string
   message?: string
   updated_at?: string
-  queues: { name: string; waiting: number; delayed: number; reserved: number }[]
+  queues: {
+    name: string
+    waiting: number
+    delayed: number
+    reserved: number
+    /** How long the job at the head of the queue has been waiting; null when empty. */
+    oldest_wait_seconds: number | null
+  }[]
+  /** Supervisors paused (e.g. by `sync:drain`): their queues only fill up. */
+  paused_supervisors?: string[]
   supervisors: unknown[]
 }
 export type ScheduleRunStatus =
@@ -738,3 +775,83 @@ export interface AdminIgdbSearchResult {
   platforms: string[]
   imported_game_id: number | null
 }
+
+// ── PSN connection (`/admin/psn`) ────────────────────────────────────────────
+
+export type AdminPsnAccountState = 'unconfigured' | 'authenticating' | 'ready' | 'degraded' | 'npsso_invalid' | 'failed'
+
+/** One PSN service account. The npsso itself is never returned, only its fingerprint. */
+export interface AdminPsnAccount {
+  id: number
+  label: string
+  is_enabled: boolean
+  npsso_set: boolean
+  npsso_fingerprint: string | null
+  npsso_updated_at: string | null
+  /** Estimated from when it was set; Sony offers no way to ask. `npsso_valid=false` is what counts. */
+  npsso_expected_to_expire_at: string | null
+  npsso_valid: boolean | null
+  npsso_checked_at: string | null
+  psn_account_id: string | null
+  psn_online_id: string | null
+  state: AdminPsnAccountState | null
+  state_reason: string | null
+  logged_in_at: string | null
+  session_expires_at: string | null
+  last_error: string | null
+  last_error_at: string | null
+  checked_at: string | null
+  /** Something a person has to do (npsso rejected, about to expire, can't sign in); null when fine. */
+  problem: string | null
+  /** Same PSN account as another entry (adds no capacity). Only while the bridge is reachable. */
+  duplicate_of: number | null
+  /** Rate-limit headroom per lane. Only while the bridge is reachable. */
+  lanes: Record<string, { available: number; inFlight: number; cooldownUntil: string | null }> | null
+  created_at: string | null
+}
+
+export interface AdminPsnRecentError {
+  at: string
+  requestId: string | null
+  endpoint: string
+  host: string
+  accountId: number | null
+  code: string
+  status: number | null
+  sonyCode: number | string | null
+  message: string
+  referenceId: string | null
+  durationMs: number | null
+}
+
+export interface AdminPsnBridge {
+  reachable: boolean
+  /** Why not, when unreachable. */
+  error?: string | null
+  version?: string | null
+  started_at?: string | null
+  uptime_seconds?: number | null
+  ready?: boolean
+  upstream_healthy?: boolean
+  config?: { loaded: boolean; loaded_at: string | null; last_error: string | null; in_sync: boolean }
+  waiting?: Record<string, number>
+  breakers?: Record<string, { state: string; consecutiveFailures: number; openUntil: string | null; openedAt: string | null }>
+  /** Cumulative since the bridge started. */
+  counters?: Record<string, number>
+  timings?: Record<string, { count: number; totalMs: number; maxMs: number; avgMs: number }>
+  recent_errors?: AdminPsnRecentError[]
+}
+
+export interface AdminPsnOverview {
+  bridge: AdminPsnBridge
+  accounts: AdminPsnAccount[]
+  npsso_lifetime_days: number
+}
+
+/** Answer to adding / changing / verifying an account. */
+export interface AdminPsnSaved {
+  /** False: saved, but the bridge was unreachable; the scheduled check will catch up. */
+  bridge_reloaded: boolean
+  account: AdminPsnAccount
+}
+

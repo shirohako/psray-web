@@ -1,4 +1,4 @@
-import type { ApiDate, EarnedInfo, Trophy, TrophyGroup, ViewerProgress } from '~/services/trophies'
+import type { ApiDate, EarnedInfo, Trophy, TrophyGroup, TrophyProgressValue, ViewerProgress } from '~/services/trophies'
 
 /**
  * Framework-free logic behind the trophy list on the trophy-set page: PSN's
@@ -157,4 +157,32 @@ export function countVisibleTrophies(
   earnedInfo: ReadonlyMap<number, EarnedInfo>,
 ): number {
   return groups.reduce((count, group) => count + filterTrophies(group.trophies, filter, hasViewer, earnedInfo).length, 0)
+}
+
+/** What a trophy row shows for a PS5 progress trophy; see {@link trophyProgressState}. */
+export interface TrophyProgressState {
+  target: number
+  /** The viewer's value (capped at the target); null when no viewer is selected. */
+  current: number | null
+  /** Earned: counts as reaching the target. */
+  done: boolean
+}
+
+/**
+ * Progress shown on a trophy row: null for trophies without a target; only the
+ * target without a viewer; otherwise the viewer's value, the target once earned
+ * (PSN stops reporting progress then), and 0 when there's nothing recorded yet.
+ */
+export function trophyProgressState(
+  trophy: Trophy,
+  hasViewer: boolean,
+  earned: boolean,
+  progress?: Record<string, TrophyProgressValue>,
+): TrophyProgressState | null {
+  const target = trophy.progress_target
+  if (!target || target <= 0) return null
+  if (!hasViewer) return { target, current: null, done: false }
+  if (earned) return { target, current: target, done: true }
+  const current = progress?.[String(trophy.id)]?.progress ?? 0
+  return { target, current: Math.min(Math.max(0, current), target), done: false }
 }

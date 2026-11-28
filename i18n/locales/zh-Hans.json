@@ -313,6 +313,11 @@
       "psnRate": "PSN 完成率",
       "psrayRate": "PSRay 完成率",
       "tips": "留言",
+      "progress": "进度",
+      "progressDone": "已达成",
+      "progressTarget": "目标",
+      "progressTitle": "进度 {current} / {target}",
+      "progressTargetTitle": "进度目标 {target}",
       "menu": {
         "view": "查看奖杯",
         "viewTips": "查看奖杯留言",
@@ -326,7 +331,8 @@
     "detail": {
       "title": "奖杯详情",
       "id": "奖杯 ID",
-      "tipCount": "留言数"
+      "tipCount": "留言数",
+      "progressTarget": "进度目标"
     },
     "group": {
       "baseGame": "本篇",
@@ -554,7 +560,10 @@
       "unranked": "暂无排名"
     },
     "summary": {
-      "level": "账户等级"
+      "level": "账户等级",
+      "hidden": "隐藏",
+      "hiddenTitle": "隐藏的游戏里还有 {count} 个奖杯",
+      "hiddenNote": "PSN 账户的奖杯总数减去站内同步到的数量。在 PSN 上隐藏的游戏不会同步到站内。"
     },
     "account": {
       "title": "账号信息",
@@ -750,7 +759,24 @@
       "status": "获取同步进度失败。",
       "submit": "提交同步请求失败。",
       "submitRetry": "提交同步请求失败，请稍后再试。",
-      "workerUnavailable": "同步服务暂时不可用，请稍后再试。"
+      "workerUnavailable": "同步服务暂时不可用，请稍后再试。",
+      "queueFull": "等待同步的请求太多，请几分钟后再试。",
+      "psnUnavailable": "暂时连不上 PSN，请稍后再试。",
+      "userNotFound": "PSN 上找不到这个 PSN ID，请检查拼写。",
+      "tooMany": "提交得太频繁，请稍后再试。",
+      "statusExpired": "这次同步的进度记录已过期，请重新提交。"
+    },
+    "failure": {
+      "psn_unavailable": "PSN 暂时不可用，这次同步提前结束了。已同步的游戏会保留，请稍后再试。",
+      "all_games_failed": "这次要同步的游戏全部失败了，请稍后再试。",
+      "game_list_failed": "获取游戏列表失败，请稍后再试。",
+      "interrupted": "同步多次被中断（站点正在更新），请稍后再试。",
+      "internal": "同步出错了，请稍后再试。",
+      "profile_private": "该 PSN 资料的奖杯未公开。请在 PlayStation 隐私设置中公开奖杯后重试。",
+      "profile_not_found": "PSN 上已经没有这个账号。",
+      "psn_no_trophy_data": "PSN 没有提供这个账号的奖杯数据。",
+      "account_terminated": "该账号已被停用，无法同步。",
+      "user_missing": "该用户已不存在，可以重新提交同步。"
     }
   },
   "settings": {

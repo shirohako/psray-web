@@ -8,6 +8,7 @@ import {
   isTrophyEarned,
   sortTrophies,
   sortTrophyGroups,
+  trophyProgressState,
 } from '~/utils/trophyList'
 
 const trophy = (id: number, extra: Partial<Trophy> = {}): Trophy => ({
@@ -149,5 +150,25 @@ describe('trophy list filter and sort', () => {
     expect(countVisibleTrophies(groups, 'earned', true, earned(1, 4))).toBe(2)
     expect(countVisibleTrophies(groups, 'unearned', true, earned(1, 4))).toBe(2)
     expect(countVisibleTrophies(groups, 'earned', false, earned(1, 4))).toBe(4)
+  })
+})
+
+describe('PS5 trophy progress', () => {
+  const counter = trophy(28, { progress_target: 5 })
+
+  it('shows nothing for trophies without a target', () => {
+    expect(trophyProgressState(trophy(1), true, false, {})).toBeNull()
+    expect(trophyProgressState(trophy(1, { progress_target: null }), false, false)).toBeNull()
+  })
+
+  it('shows only the target when no viewer is selected', () => {
+    expect(trophyProgressState(counter, false, false)).toEqual({ target: 5, current: null, done: false })
+  })
+
+  it("shows the viewer's value, the target once earned, and 0 when nothing is recorded", () => {
+    expect(trophyProgressState(counter, true, false, { 28: { progress: 2, progressed_at: null } })).toEqual({ target: 5, current: 2, done: false })
+    expect(trophyProgressState(counter, true, true, {})).toEqual({ target: 5, current: 5, done: true })
+    expect(trophyProgressState(counter, true, false, {})).toEqual({ target: 5, current: 0, done: false })
+    expect(trophyProgressState(counter, true, false, { 28: { progress: 9, progressed_at: null } })!.current).toBe(5)
   })
 })

@@ -41,7 +41,7 @@ const syncTiers = computed(() => {
     <h2 class="mb-4 text-sm font-semibold text-slate-900">{{ $t('profile.account.title') }}</h2>
     <div class="divide-y divide-slate-100 text-sm">
       <dl class="space-y-3 pb-2.5">
-        <div class="flex items-center justify-between gap-3">
+        <div v-if="profile.country" class="flex items-center justify-between gap-3">
           <dt class="inline-flex items-center gap-2 text-slate-500">
             <LucideIcon :icon="Globe" class="size-4 text-slate-400" />{{ $t('profile.account.region') }}
           </dt>

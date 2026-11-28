@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Profile } from '~/services/profile'
-import { AUTO_SYNC_TIERS, earnedTiers, formatHourInterval, levelTier, platformLabel, profilePageJsonLd, resolveHourInterval, stopwatch, toIsoDate } from '~/utils/profile'
+import { AUTO_SYNC_TIERS, earnedTiers, formatHourInterval, hiddenTrophyTotal, levelTier, platformLabel, profilePageJsonLd, resolveHourInterval, stopwatch, toIsoDate } from '~/utils/profile'
 
 const compact = (value: string | null) => value?.replace(/\s/g, '')
 
@@ -127,5 +127,13 @@ describe('profile structured data', () => {
   it('leaves out an unreadable registration date', () => {
     const data = profilePageJsonLd({ ...profile, registered_at: 'not a date' }, url, 'ja-JP')
     expect(JSON.parse(JSON.stringify(data))).not.toHaveProperty('dateCreated')
+  })
+})
+
+describe('hidden trophies', () => {
+  it('adds up the tiers and treats unknown as none', () => {
+    expect(hiddenTrophyTotal({ hidden_trophies: { platinum: 1, gold: 3, silver: 10, bronze: 42 } })).toBe(56)
+    expect(hiddenTrophyTotal({ hidden_trophies: null })).toBe(0)
+    expect(hiddenTrophyTotal({})).toBe(0)
   })
 })

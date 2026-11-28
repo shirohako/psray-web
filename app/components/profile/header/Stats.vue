@@ -47,7 +47,7 @@ const RANK_LINK = 'rounded font-bold tabular-nums text-slate-900 underline-offse
       <span v-if="profile.server_rank == null" class="font-bold tabular-nums text-slate-900">{{ rankText(null) }}</span>
       <AppLink
         v-else-if="regionBoard"
-        :to="leaderboardBoardPath(profile.country)"
+        :to="leaderboardBoardPath(profile.country ?? undefined)"
         :state="navState('leaderboardPlayer', profile.psnid)"
         :class="RANK_LINK"
         :title="$t('profile.stats.viewOnLeaderboard')"

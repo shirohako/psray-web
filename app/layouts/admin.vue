@@ -12,6 +12,7 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Settings,
+  Plug,
   Database,
   Mail,
   FileStack,
@@ -86,7 +87,10 @@ const groups = [
   },
   {
     label: '系统',
-    items: [{ name: '系统设置', to: '/admin/settings', icon: Settings }],
+    items: [
+      { name: 'PSN 连接', to: '/admin/psn', icon: Plug },
+      { name: '系统设置', to: '/admin/settings', icon: Settings },
+    ],
   },
 ]
 // Work waiting in a section, shown next to its nav item: feedback to review or answer.
